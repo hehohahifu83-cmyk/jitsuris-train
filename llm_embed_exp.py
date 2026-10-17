@@ -24,14 +24,26 @@ model = AutoModel.from_pretrained(NAME, torch_dtype=torch.float16 if DEV == "cud
 print("device", DEV, NAME, flush=True)
 
 
-def embed(texts, bs=32):
-    out = []
-    with torch.no_grad():
-        for i in range(0, len(texts), bs):
-            enc = tok(texts[i:i + bs], truncation=True, max_length=256, padding=True, return_tensors="pt").to(DEV)
-            h = model(**enc).last_hidden_state.float()
-            m = enc["attention_mask"].unsqueeze(-1).float()
-            out.append(((h * m).sum(1) / m.sum(1)).cpu().numpy())
+def embed(texts, bs=None):
+    # CUDA は小さめの束で開始し、OOMなら半分にして同じ位置から再試行する。
+    bs = bs or (8 if DEV == "cuda" else 32)
+    out = []; i = 0
+    while i < len(texts):
+        n = min(bs, len(texts) - i)
+        try:
+            with torch.no_grad():
+                enc = tok(texts[i:i + n], truncation=True, max_length=256, padding=True, return_tensors="pt").to(DEV)
+                h = model(**enc).last_hidden_state.float()
+                m = enc["attention_mask"].unsqueeze(-1).float()
+                vec = ((h * m).sum(1) / m.sum(1)).cpu().numpy()
+            out.append(vec); i += n
+            del enc, h, m, vec
+        except torch.cuda.OutOfMemoryError:
+            if DEV != "cuda" or n <= 1: raise
+            bs = max(1, min(bs // 2, n // 2))
+            print(f"GPUメモリ不足のため埋め込みバッチを{bs}に下げて再試行します（位置 {i}）", flush=True)
+            import gc
+            gc.collect(); torch.cuda.empty_cache()
     return np.vstack(out)
 
 
