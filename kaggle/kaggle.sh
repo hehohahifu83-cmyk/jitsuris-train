@@ -35,6 +35,7 @@ if [ "$mode" = train ]; then
   echo "$out" | grep -qiE 'error|fail|invalid|denied|exceed' && { echo "Kaggle が依頼を受け付けなかった"; exit 1; }
   sleep 30; echo "$(date -u +%FT%TZ) 依頼直後の状態：$(kaggle kernels status "$K" 2>&1 | tr '\n' ' ')" >> KAGGLE_LOG.md
   { echo "$(date -u +%FT%TZ) train を依頼：$(cat args.txt)"; echo "送ったモデル：$(head -1 /tmp/hf.txt 2>/dev/null)・束の中のモデルのファイル数 $(tar -tf /tmp/ds/bundle.tar | grep -c '^hfmodel/')"; } >> KAGGLE_LOG.md
+  [ -n "${PROGRESS_PUSH:-}" ] && ( cd .. && git add kaggle/KAGGLE_LOG.md && git commit -qm "Kaggle に依頼した直後の状態" && git pull -q --rebase && git push -q ) || true
 fi
 # 終わるまで待って（最長 ${WAIT_MIN:-290} 分）、結果を取りに行く
 st=""; q=0
