@@ -41,3 +41,10 @@
 2026-10-17T14:45:00Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
 2026-10-17T14:45:01Z train を依頼：hfmodel/intfloat__multilingual-e5-large 2 FT_LR=2e-5 FT_BS=16 FT_ACC=4 FT_CKPT=1
 送ったモデル：2.2G	hfmodel・束の中のモデルのファイル数 55
+2026-10-17T14:48:04Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.ERROR"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/1_Pooling /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/1_Pooling/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx/config.json
+    model: hfmodel/intfloat__multilingual-e5-large exists=True
+    cuda: True Tesla T4
