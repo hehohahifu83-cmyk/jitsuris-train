@@ -2,28 +2,24 @@ name, memory.total [MiB]\n
 Tesla T4
 Tesla T4
 device cuda
- GPU 0 has a total capacity of 14.56 GiB of which 20.81 MiB is f
 ---
-stream_name":"stderr","time":74.127563783,"data":"    return forward_call(*args, **kwargs)\n"}
-,{"stream_name":"stderr","time":74.127565993,"data":"  File \"/usr/local/lib/python3.13/dist-packages/torch/nn/modules/normalization.py\", line 229, in forward\n"}
-,{"stream_name":"stderr","time":74.127568291,"data":"    return F.layer_norm(\n"}
-,{"stream_name":"stderr","time":74.12757041,"data":"           ~~~~~~~~~~~~^\n"}
-,{"stream_name":"stderr","time":74.127572561,"data":"        input, self.normalized_shape, self.weight, self.bias, self.eps\n"}
-,{"stream_name":"stderr","time":74.12757479,"data":"        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stderr","time":74.127577004,"data":"    )\n"}
-,{"stream_name":"stderr","time":74.127579066,"data":"    ^\n"}
-,{"stream_name":"stderr","time":74.127581113,"data":"  File \"/usr/local/lib/python3.13/dist-packages/torch/nn/functional.py\", line 2935, in layer_norm\n"}
-,{"stream_name":"stderr","time":74.127583404,"data":"    return torch.layer_norm(\n"}
-,{"stream_name":"stderr","time":74.127585558,"data":"           ~~~~~~~~~~~~~~~~^\n"}
-,{"stream_name":"stderr","time":74.127587665,"data":"        input, normalized_shape, weight, bias, eps, torch.backends.cudnn.enabled\n"}
-,{"stream_name":"stderr","time":74.127589883,"data":"        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stderr","time":74.127592073,"data":"    )\n"}
-,{"stream_name":"stderr","time":74.127594131,"data":"    ^\n"}
-,{"stream_name":"stderr","time":74.127598463,"data":"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 0 has a total capacity of 14.56 GiB of which 20.81 MiB is free. Including non-PyTorch memory, this process has 14.54 GiB memory in use. Of the allocated memory 14.34 GiB is allocated by PyTorch, and 61.16 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n"}
-,{"stream_name":"stderr","time":81.602785496,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":81.602808799,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":81.867272864,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":81.867295699,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":82.649758623,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":83.668492443,"data":"[NbConvertApp] Writing 291335 bytes to __results__.html\n"}
+ [00:00\u003c00:00, 508.42it/s]\n"}
+,{"stream_name":"stderr","time":127.117387968,"data":"[transformers] \u001b[1mQwen3Model LOAD REPORT\u001b[0m from: hfmodel/Qwen__Qwen3-0.6B\n"}
+,{"stream_name":"stderr","time":127.117428614,"data":"Key            | Status     |  | \n"}
+,{"stream_name":"stderr","time":127.11743339,"data":"---------------+------------+--+-\n"}
+,{"stream_name":"stderr","time":127.117436631,"data":"lm_head.weight | UNEXPECTED |  | \n"}
+,{"stream_name":"stderr","time":127.117439739,"data":"\n"}
+,{"stream_name":"stderr","time":127.117442582,"data":"Notes:\n"}
+,{"stream_name":"stderr","time":127.117445678,"data":"- UNEXPECTED:\tcan be ignored when loading from different task/architecture; not ok if you expect identical arch.\n"}
+,{"stream_name":"stdout","time":127.796097813,"data":"device cuda hfmodel/Qwen__Qwen3-0.6B\n"}
+,{"stream_name":"stdout","time":694.092646949,"data":"埋め込み (54853, 1024) 571s\n"}
+,{"stream_name":"stdout","time":1010.179070874,"data":"| hfmodel/Qwen__Qwen3-0.6B 凍結埋め込み・埋め込み＋LR | 開発用220 正78.2% 誤30 不明18 重大5 | 本物（一般） 正78.6% 誤44 不明19 重大6 | 本物（業務） 正84.6% 誤38 不明35 重大6 | 本物（業務2） 正79.8% 誤78 不明106 重大12 | 本物（日本の調達） 正84.8% 誤10 不明4 重大1 | 887秒 |\n"}
+,{"stream_name":"stdout","time":1012.416526769,"data":"| hfmodel/Qwen__Qwen3-0.6B 凍結埋め込み・埋め込み＋今の特徴＋LR | 開発用220 正85.5% 誤24 不明8 重大2 | 本物（一般） 正83.1% 誤30 不明20 重大3 | 本物（業務） 正85.3% 誤32 不明38 重大5 | 本物（業務2） 正82.0% 誤62 不明102 重大9 | 本物（日本の調達） 正87.0% 誤7 不明5 重大2 | 889秒 |\n"}
+,{"stream_name":"stdout","time":1014.899214252,"data":"| hfmodel/Qwen__Qwen3-0.6B 凍結埋め込み・埋め込み＋LR と近傍の半々 | 開発用220 正69.5% 誤16 不明51 重大3 | 本物（一般） 正76.6% 誤24 不明45 重大1 | 本物（業務） 正77.5% 誤21 不明86 重大4 | 本物（業務2） 正78.6% 誤32 不明163 重大5 | 本物（日本の調達） 正85.9% 誤8 不明5 重大7 | 892秒 |\n"}
+,{"stream_name":"stderr","time":1025.405349287,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1025.405416177,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1025.807021941,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1025.807062716,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1026.782244531,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1028.243843128,"data":"[NbConvertApp] Writing 291320 bytes to __results__.html\n"}
 ]

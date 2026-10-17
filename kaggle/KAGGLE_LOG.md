@@ -56,3 +56,8 @@
 2026-10-17T15:15:27Z 状態：queue-timeout
 2026-10-17T15:55:22Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED"
 2026-10-17T18:26:20Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING"
+2026-10-17T20:51:15Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/Qwen__Qwen3-0.6B /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/Qwen__Qwen3-0.6B/config.json
+    model: hfmodel/Qwen__Qwen3-0.6B exists=True
+    cuda: True Tesla T4
