@@ -16,7 +16,7 @@ if [ "$mode" = train ]; then
   sed -i "1s#^[^ ]*#$D#" args.txt
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
       *.py kaggle/args.txt materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
-      materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl hfmodel )
+      materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
   printf '{"title":"jitsuris-data","id":"%s","licenses":[{"name":"other"}]}' "$DS" > /tmp/ds/dataset-metadata.json
   if kaggle datasets status "$DS" >/dev/null 2>&1; then kaggle datasets version -p /tmp/ds -m "update $(date -u +%FT%TZ)"

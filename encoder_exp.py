@@ -15,7 +15,7 @@ gen.HARD_NUMERIC = 0.0
 import os
 gtr, gte = split(load_real(("materials/real_labels.jsonl",))); btr, bte = split(load_real(("materials/real_labels_biz.jsonl",)))
 b2tr, b2te = split(load_real(("materials/real_labels_biz2.jsonl", "materials/real_labels_direct.jsonl"))) if os.path.exists("materials/real_labels_biz2.jsonl") else ([], [])
-jtr, jte = split(load_real(("materials/real_labels_jp.jsonl",))) if os.path.exists("materials/real_labels_jp.jsonl") else ([], [])
+jtr, jte = split(load_real(tuple(f for f in ("materials/real_labels_jp.jsonl", "materials/real_labels_jp2.jsonl") if os.path.exists(f)))) if os.path.exists("materials/real_labels_jp.jsonl") else ([], [])
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 rows = syn + real_train_rows(gtr, 3, 5, True) + real_train_rows(btr, 6, 6, True, per_table=60) + real_train_rows(b2tr, 6, 7, True, per_table=60) + real_train_rows(jtr, 6, 8, True, per_table=60)
 y = np.array([r[2] for r in rows])
