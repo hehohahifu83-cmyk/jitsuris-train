@@ -52,3 +52,5 @@
 2026-10-17T14:55:10Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED" 
 2026-10-17T14:55:11Z train を依頼：embed hfmodel/Qwen__Qwen3-0.6B
 送ったモデル：1.5G	hfmodel・束の中のモデルのファイル数 30
+2026-10-17T15:15:27Z 空き待ちが 20 分を超えたので止める：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED"
+2026-10-17T15:15:27Z 状態：queue-timeout
