@@ -38,8 +38,8 @@ def embed(texts, bs=None):
                 vec = ((h * m).sum(1) / m.sum(1)).cpu().numpy()
             out.append(vec); i += n
             del enc, h, m, vec
-        except torch.cuda.OutOfMemoryError:
-            if DEV != "cuda" or n <= 1: raise
+        except RuntimeError as e:
+            if DEV != "cuda" or n <= 1 or "out of memory" not in str(e).lower(): raise
             bs = max(1, min(bs // 2, n // 2))
             print(f"GPUメモリ不足のため埋め込みバッチを{bs}に下げて再試行します（位置 {i}）", flush=True)
             import gc
