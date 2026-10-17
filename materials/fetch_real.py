@@ -245,6 +245,8 @@ JP_DIRECT = [  # ChatGPT 提案（20261017-1928）。青森市・山口県の契
     ('令和4年3月31日時点', 'https://www.city.kainan.lg.jp/material/files/group/8/koteisisanndaityou.csv'),
     ('令和3年3月31日時点', 'https://www.city.kainan.lg.jp/material/files/group/8/reiwa2nenndokoteishisandaicho.csv'),
     ('令和2年3月31日時点', 'https://www.city.kainan.lg.jp/material/files/group/8/koteishisandaicho.csv'),
+    # MIT ライセンスの架空の仕訳サンプル。勘定科目・税区分・取引内容を含む。
+    ('技術書典18・架空仕訳サンプル', 'https://raw.githubusercontent.com/Moiterika/teckbookfest18-sample/a8a01977d896d5d491c57fafda4a260748a5b27e/cmd/tbf18/sample_data.csv'),
 ]
 
 
