@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths: [kaggle/kaggle.request]
+  schedule:
+    - cron: '7,37 * * * *'   # 30分ごとに、待っている学習が終わったか確かめて結果を回収する（公開リポジトリなので無料）
 permissions:
   contents: write
 concurrency: { group: kaggle, cancel-in-progress: false }
@@ -16,7 +18,14 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install kaggle
+      - name: 回収する用事があるか（定期実行のとき）
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = schedule ]; then
+            if grep -qE '^(train|fetch)' kaggle/kaggle.request && ! grep -q '^done' kaggle/kaggle.request; then echo "mode=fetch" >> $GITHUB_OUTPUT; else echo "skip=1" >> $GITHUB_OUTPUT; fi
+          fi
       - name: Kaggle
+        if: steps.gate.outputs.skip != '1'
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
@@ -25,7 +34,7 @@ jobs:
           QUEUE_MAX: '20'   # 公開リポジトリは実行時間が無料なので、終わるまで待って結果を持ち帰る
         run: |
           case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
-          bash kaggle/kaggle.sh
+          if [ "${{ steps.gate.outputs.mode }}" = fetch ]; then cp kaggle/kaggle.request /tmp/req && echo fetch > kaggle/kaggle.request && WAIT_MIN=1 bash kaggle/kaggle.sh; else bash kaggle/kaggle.sh; fi
       - uses: actions/upload-artifact@v4
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
       - name: Save

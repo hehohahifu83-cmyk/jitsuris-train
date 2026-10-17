@@ -59,5 +59,5 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && cp -r /tmp/out/out/ft_out /tmp/model/ || true
     echo done > kaggle.request
 else
-  echo fetch > kaggle.request   # まだ終わっていない。fetch を書いて push すると取りに行く
+  echo fetch > kaggle.request   # まだ終わっていない。30分ごとの定期実行が取りに行く
 fi
