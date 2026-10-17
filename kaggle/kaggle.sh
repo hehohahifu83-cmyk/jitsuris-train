@@ -29,7 +29,7 @@ if [ "$mode" = train ]; then
     [ $((i % 6)) = 1 ] && echo "dataset: $s（新しい版を待っている）"; sleep 20
   done
   sed "s#^EXPECT = .*#EXPECT = \"$D\"#" run.py > /tmp/kn/run.py
-  printf '{"id":"%s","title":"jitsuris-train","code_file":"run.py","language":"python","kernel_type":"script","is_private":true,"enable_gpu":true,"enable_internet":true,"dataset_sources":["%s"]}' "$K" "$DS" > /tmp/kn/kernel-metadata.json
+  printf '{"id":"%s","title":"jitsuris-train","code_file":"run.py","language":"python","kernel_type":"script","is_private":true,"enable_gpu":true,"enable_internet":true,"machine_shape":"%s","dataset_sources":["%s"]}' "$K" "${MACHINE:-NvidiaTeslaP100}" "$DS" > /tmp/kn/kernel-metadata.json
   out=$(kaggle kernels push -p /tmp/kn 2>&1 || true); echo "$out"
   echo "$(date -u +%FT%TZ) push の返事：$(echo "$out" | tr '\n' ' ' | cut -c1-300)" >> KAGGLE_LOG.md
   echo "$out" | grep -qiE 'error|fail|invalid|denied|exceed' && { echo "Kaggle が依頼を受け付けなかった"; exit 1; }
@@ -37,10 +37,15 @@ if [ "$mode" = train ]; then
   { echo "$(date -u +%FT%TZ) train を依頼：$(cat args.txt)"; echo "送ったモデル：$(head -1 /tmp/hf.txt 2>/dev/null)・束の中のモデルのファイル数 $(tar -tf /tmp/ds/bundle.tar | grep -c '^hfmodel/')"; } >> KAGGLE_LOG.md
 fi
 # 終わるまで待って（最長 ${WAIT_MIN:-290} 分）、結果を取りに行く
-st=""
+st=""; q=0
 for i in $(seq 1 "${WAIT_MIN:-290}"); do
   sleep 60; st=$(kaggle kernels status "$K" 2>&1 || true)
-  [ $((i % 10)) = 1 ] && echo "$i 分: $st"
+  echo "$st" | grep -qiE 'queued|starting' && q=$((q+1)) || q=0
+  if [ $((i % 10)) = 0 ] && [ -n "${PROGRESS_PUSH:-}" ]; then   # 10分ごとに途中の状態をリポジトリに書く（Claude が読めるように）
+    echo "$(date -u +%FT%TZ) 途中（$i 分）：$st" > PROGRESS.md
+    ( cd .. && git add kaggle/PROGRESS.md && git commit -qm "途中の状態（$i 分）" && git pull -q --rebase && git push -q ) || true
+  fi
+  if [ "$q" -ge "${QUEUE_MAX:-20}" ]; then echo "$(date -u +%FT%TZ) 空き待ちが ${QUEUE_MAX:-20} 分を超えたので止める：$st" >> KAGGLE_LOG.md; st="queue-timeout"; break; fi
   echo "$st" | grep -qiE 'complete|error|cancel' && break
 done
 echo "$(date -u +%FT%TZ) 状態：$st" >> KAGGLE_LOG.md
