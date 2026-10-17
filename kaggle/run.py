@@ -34,6 +34,7 @@ os.environ["HF_HUB_OFFLINE"] = "1"
 env = dict(os.environ)
 for a in list(args):
     if a.startswith("FT_LR="): env["FT_LR"] = a[6:]; args.remove(a)
+    elif a.startswith("FT_AUG="): env["FT_AUG"] = a[7:]; args.remove(a)
 script = "llm_embed_exp.py" if MODE == "embed" else "finetune_exp.py"
 r = subprocess.run([sys.executable, script, *args], env=env)
 os.makedirs("/kaggle/working/out", exist_ok=True)

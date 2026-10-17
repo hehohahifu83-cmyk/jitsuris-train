@@ -22,10 +22,27 @@ model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print("device", DEV, flush=True)
 torch.set_num_threads(os.cpu_count() or 4)
-data = [(text(r, PREFIX), L[r[2]]) for r in rows]
+AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
+def text_aug(r, prefix):
+    h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
+    pick = random.random()
+    if pick < 1 / 3: vs = v[:5]
+    elif pick < 2 / 3: vs = random.sample(v, min(5, len(v)))
+    else:
+        seen, vs = set(), []
+        for x in v:
+            if x not in seen: seen.add(x); vs.append(x)
+        vs = vs[:5]
+    random.shuffle(ctx); ctx = ctx[:random.randint(4, 12)]
+    vals = ", ".join(x[:30] for x in vs); cs = ", ".join(str(x)[:20] for x in ctx)
+    form = random.randrange(3)
+    if form == 0: return f"{prefix}列名: {h} | 値: {vals} | 同じ表の列: {cs}"
+    if form == 1: return f"{prefix}{h}: {vals} （同じ表: {cs}）"
+    return f"{prefix}列「{h}」の値は {vals}。同じ表には {cs} がある。"
+data = [(r, L[r[2]]) for r in rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in rows]
 random.shuffle(data)
 def collate(b):
-    enc = tok([x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
+    enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
     enc["labels"] = torch.tensor([y for _, y in b]); return enc
 dl = DataLoader(data, batch_size=32 if DEV == "cpu" else 64, shuffle=True, collate_fn=collate)
 opt = torch.optim.AdamW(model.parameters(), lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01)
@@ -62,7 +79,7 @@ for tag, w in (("微調整だけ", 1.0), ("今の仕組みだけ", 0.0), ("微�
         pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
         s = score_real(pred, [r[2] for r in te])
         res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}" + (f" その他見送り{s['other_ok']}/{s['other_ok'] + s['other_ng']}" if s['other_ok'] + s['other_ng'] else ""))
-    lines.append(f"| {NAME} 微調整 {EPOCHS}周・{tag} | " + " | ".join(res) + f" | 学習 {time.time() - t0:.0f}秒 |"); print(lines[-1], flush=True)
+    lines.append(f"| {NAME} 微調整 {EPOCHS}周{'・水増し' if AUG else ''}・{tag} | " + " | ".join(res) + f" | 学習 {time.time() - t0:.0f}秒 |"); print(lines[-1], flush=True)
 line = "\n".join(lines)
 os.makedirs("ft_out", exist_ok=True); model.save_pretrained("ft_out"); tok.save_pretrained("ft_out"); json.dump(labels, open("ft_out/labels.json", "w"))
 prev = (open("FINETUNE_RESULTS.md").read() if os.path.exists("FINETUNE_RESULTS.md") else "# 学習済みモデルの微調整（集計）\n") + f"\n### {time.strftime('%Y-%m-%d %H:%M')}（試験：{', '.join(tests)}）\n"
