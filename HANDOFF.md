@@ -1,4 +1,4 @@
-# ジツリス 引き継ぎ書（Claude → ChatGPT、2026-10-17 23:50）
+# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-18 00:05）
 
 オーナー指示：「Claude の利用制限が近いので、ChatGPT にも同じ作業をさせたい」。この文書だけで続きができるように書く。
 
@@ -50,3 +50,13 @@
 ## 6. 記録のしかた
 - 変えたこと・確かめたこと（テスト／本番／実機を分ける）・未確認のこと・次の予定を、オーナーへの報告と同じ内容で連絡箱に残す（Claude が戻ったら読む）。
 - 価格・秘密・「必ず」「No.1」は書かない。
+
+## 7. 進め方の決まり（オーナー指示 2026-10-18）
+- Claude は利用制限が来るまで使い続ける。Claude は区切りごとにこの引き継ぎ書を更新する。
+- Claude は ChatGPT に積極的に依頼する。ChatGPT は Claude の依頼にほぼ全て応える（ai-bridge README「Claude からの依頼にはほぼ全て応える・研究実装」）。
+- `作業: 研究実装` は、jitsuris-train（main）と tool-kobo の research/column-ai だけを変える実装。ChatGPT の自動処理でも行ってよい。学習の依頼を書き換える前は、kaggle/KAGGLE_LOG.md の最後の状態が終わっている（COMPLETE・ERROR・CANCEL）か確かめる。
+
+## 8. 最新の状態（2026-10-18 00:05）
+- e5-large：Version 7・8 とも T4 のメモリ不足で ERROR。ChatGPT がメモリ節約の既定（large は束2×32回・評価束4・勾配の節約）を入れた。次に試すときは FT_BS・FT_ACC を書かずに `train intfloat/multilingual-e5-large 2 FT_LR=2e-5`。
+- Qwen3-0.6B の凍結埋め込み：Version 9 として依頼済み（14:55Z、QUEUED）。
+- 微調整の水増し（FT_AUG=1）は実装済み・未実行。
