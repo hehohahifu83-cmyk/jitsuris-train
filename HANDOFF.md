@@ -56,7 +56,9 @@
 - Claude は ChatGPT に積極的に依頼する。ChatGPT は Claude の依頼にほぼ全て応える（ai-bridge README「Claude からの依頼にはほぼ全て応える・研究実装」）。
 - `作業: 研究実装` は、jitsuris-train（main）と tool-kobo の research/column-ai だけを変える実装。ChatGPT の自動処理でも行ってよい。学習の依頼を書き換える前は、kaggle/KAGGLE_LOG.md の最後の状態が終わっている（COMPLETE・ERROR・CANCEL）か確かめる。
 
-## 8. 最新の状態（2026-10-18 00:05）
-- e5-large：Version 7・8 とも T4 のメモリ不足で ERROR。ChatGPT がメモリ節約の既定（large は束2×32回・評価束4・勾配の節約）を入れた。次に試すときは FT_BS・FT_ACC を書かずに `train intfloat/multilingual-e5-large 2 FT_LR=2e-5`。
-- Qwen3-0.6B の凍結埋め込み：Version 9 として依頼済み（14:55Z、QUEUED）。
-- 微調整の水増し（FT_AUG=1）は実装済み・未実行。
+## 8. 最新の状態（2026-10-18 06:00）
+- Qwen3-0.6B の凍結埋め込み：完了。最良（埋め込み＋今の特徴＋LR）で一般 83.1%・業務 85.3%（重大5）・業務2 82.0%・日本 87.0%。e5-base の微調整に届かないので主役にしない（TEACHING_PLAN.md 末尾）。
+- e5-large：ChatGPT のメモリ節約の既定で再依頼（Version 10、2026-10-17 20:55Z、QUEUED）。
+- 次：e5-large が終わったら、良いほうのモデルで `FT_AUG=1`（水増し）を2回。凍結埋め込みは `train embed llm-jp/llm-jp-3-1.8b` を一度だけ。
+- 日本の会計の架空仕訳（MIT）を jp2 に追加済み（310列、列名ごとのラベル materials/jp2_header_labels.json）。
+- ChatGPT 作：select_next.py（能動学習で次の200列を選ぶ）。本物のデータではまだ動かしていない。
