@@ -61,3 +61,7 @@
     config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/Qwen__Qwen3-0.6B/config.json
     model: hfmodel/Qwen__Qwen3-0.6B exists=True
     cuda: True Tesla T4
+2026-10-17T20:54:46Z push の返事：Kernel version 10 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-17T20:55:16Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED" 
+2026-10-17T20:55:16Z train を依頼：hfmodel/intfloat__multilingual-e5-large 2 FT_LR=2e-5
+送ったモデル：2.2G	hfmodel・束の中のモデルのファイル数 55
