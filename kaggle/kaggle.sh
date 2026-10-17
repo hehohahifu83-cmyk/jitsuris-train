@@ -4,6 +4,23 @@ set -euo pipefail
 cd "$(dirname "$0")"
 U="$KAGGLE_USERNAME"; DS="$U/jitsuris-data"; K="$U/jitsuris-train"
 mode=$(awk '{print $1}' kaggle.request)
+if [ "$mode" = diag ]; then   # 調査：小さい CPU と GPU の実行を別の名前で出して、動き出すまでの時間を比べる（データセットなし）
+  for kind in cpu gpu; do
+    d=/tmp/diag-$kind; rm -rf $d; mkdir -p $d
+    printf 'import subprocess, torch\nprint("cuda", torch.cuda.is_available())\nsubprocess.run("nvidia-smi -L", shell=True)\n' > $d/run.py
+    g=false; [ $kind = gpu ] && g=true
+    printf '{"id":"%s/jitsuris-diag-%s","title":"jitsuris-diag-%s","code_file":"run.py","language":"python","kernel_type":"script","is_private":true,"enable_gpu":%s,"enable_internet":false,"dataset_sources":[]}' "$U" $kind $kind $g > $d/kernel-metadata.json
+    echo "$(date -u +%FT%TZ) 調査 $kind の push：$(kaggle kernels push -p $d 2>&1 | tr '\n' ' ' | cut -c1-200)" >> KAGGLE_LOG.md
+  done
+  for i in $(seq 1 20); do
+    sleep 60; line="$i 分"
+    for kind in cpu gpu; do line="$line ／ $kind: $(kaggle kernels status "$U/jitsuris-diag-$kind" 2>&1 | grep -oE 'KernelWorkerStatus\.[A-Z_]+' )"; done
+    line="$line ／ 本番: $(kaggle kernels status "$K" 2>&1 | grep -oE 'KernelWorkerStatus\.[A-Z_]+')"
+    echo "$(date -u +%FT%TZ) $line" >> KAGGLE_LOG.md
+    echo "$line" | grep -q 'cpu: KernelWorkerStatus.COMPLETE' && echo "$line" | grep -qE 'gpu: KernelWorkerStatus.(COMPLETE|ERROR)' && break
+  done
+  echo done > kaggle.request; exit 0
+fi
 # GitHub の実行時間を使い切らないよう、train は依頼して数分で終わる。結果は fetch で取りに行く（待つのは最長2分）
 WAIT_MIN=${WAIT_MIN:-2}
 if [ "$mode" = train ]; then
@@ -30,7 +47,7 @@ if [ "$mode" = train ]; then
     [ $((i % 6)) = 1 ] && echo "dataset: $s（新しい版を待っている）"; sleep 20
   done
   sed "s#^EXPECT = .*#EXPECT = \"$D\"#" run.py > /tmp/kn/run.py
-  printf '{"id":"%s","title":"jitsuris-train","code_file":"run.py","language":"python","kernel_type":"script","is_private":true,"enable_gpu":true,"enable_internet":true,"machine_shape":"%s","dataset_sources":["%s"]}' "$K" "${MACHINE:-NvidiaTeslaP100}" "$DS" > /tmp/kn/kernel-metadata.json
+  printf '{"id":"%s","title":"jitsuris-train","code_file":"run.py","language":"python","kernel_type":"script","is_private":true,"enable_gpu":true,"enable_internet":true,"machine_shape":"%s","dataset_sources":["%s"]}' "$K" "${MACHINE:-NvidiaTeslaT4}" "$DS" > /tmp/kn/kernel-metadata.json
   out=$(kaggle kernels push -p /tmp/kn 2>&1 || true); echo "$out"
   echo "$(date -u +%FT%TZ) push の返事：$(echo "$out" | tr '\n' ' ' | cut -c1-300)" >> KAGGLE_LOG.md
   echo "$out" | grep -qiE 'error|fail|invalid|denied|exceed' && { echo "Kaggle が依頼を受け付けなかった"; exit 1; }
