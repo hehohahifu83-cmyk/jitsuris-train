@@ -44,26 +44,30 @@ random.shuffle(data)
 def collate(b):
     enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
     enc["labels"] = torch.tensor([y for _, y in b]); return enc
-dl = DataLoader(data, batch_size=32 if DEV == "cpu" else 64, shuffle=True, collate_fn=collate)
+BS = int(os.environ.get("FT_BS", "32" if DEV == "cpu" else "64")); ACC = int(os.environ.get("FT_ACC", "1"))  # 大きいモデルは小さい束×積み上げでメモリを抑える
+if os.environ.get("FT_CKPT") == "1": model.gradient_checkpointing_enable()
+dl = DataLoader(data, batch_size=BS, shuffle=True, collate_fn=collate)
 opt = torch.optim.AdamW(model.parameters(), lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01)
-steps = int(len(dl) * EPOCHS); sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
+steps = int(len(dl) * EPOCHS / ACC); sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
 scaler = torch.amp.GradScaler(enabled=DEV == "cuda")
-t0 = time.time(); model.train(); step = 0
+t0 = time.time(); model.train(); step = 0; micro = 0
 while step < steps:
     for b in dl:
         b = {k: v.to(DEV) for k, v in b.items()}
         with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
-            loss = model(**b).loss
-        scaler.scale(loss).backward(); scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            loss = model(**b).loss / ACC
+        scaler.scale(loss).backward(); micro += 1
+        if micro % ACC: continue
+        scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad(); step += 1
-        if step % 100 == 0: print(f"step {step}/{steps} loss {loss.item():.3f} {time.time() - t0:.0f}s", flush=True)
+        if step % 100 == 0: print(f"step {step}/{steps} loss {loss.item() * ACC:.3f} {time.time() - t0:.0f}s", flush=True)
         if step >= steps: break
 model.eval()
 def probs(rs):
     out = []
     with torch.no_grad():
-        for i in range(0, len(rs), 64):
-            enc = tok([text(r, PREFIX) for r in rs[i:i + 64]], truncation=True, max_length=128, padding=True, return_tensors="pt")
+        for i in range(0, len(rs), 32):
+            enc = tok([text(r, PREFIX) for r in rs[i:i + 32]], truncation=True, max_length=128, padding=True, return_tensors="pt")
             enc = {k: v.to(DEV) for k, v in enc.items()}
             out.append(torch.softmax(model(**enc).logits.float(), -1).cpu().numpy())
     return np.vstack(out)
