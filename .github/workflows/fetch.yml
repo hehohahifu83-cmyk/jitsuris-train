@@ -1,0 +1,25 @@
+name: 公開データを集める
+on:
+  push:
+    branches: [main]
+    paths: [materials/fetch.request]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: cd materials && python fetch_real.py $(cat fetch.request)
+      - name: Save
+        if: always()
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add materials/real_corpus*.jsonl || true
+          git diff --cached --quiet && exit 0
+          git commit -m "公開データを集めた"
+          for i in 1 2 3; do git push && break; git pull --rebase; done
