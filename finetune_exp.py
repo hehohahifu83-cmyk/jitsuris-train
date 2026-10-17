@@ -44,8 +44,14 @@ random.shuffle(data)
 def collate(b):
     enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
     enc["labels"] = torch.tensor([y for _, y in b]); return enc
-BS = int(os.environ.get("FT_BS", "32" if DEV == "cpu" else "64")); ACC = int(os.environ.get("FT_ACC", "1"))  # 大きいモデルは小さい束×積み上げでメモリを抑える
-if os.environ.get("FT_CKPT") == "1": model.gradient_checkpointing_enable()
+IS_LARGE = "large" in NAME.lower()
+DEFAULT_BS = 2 if DEV == "cuda" and IS_LARGE else (64 if DEV == "cuda" else 32)
+DEFAULT_ACC = 32 if DEV == "cuda" and IS_LARGE else 1
+BS = int(os.environ.get("FT_BS", str(DEFAULT_BS)))
+ACC = int(os.environ.get("FT_ACC", str(DEFAULT_ACC)))  # 大型モデルは実効バッチ64を小さい束に分ける
+USE_CKPT = os.environ.get("FT_CKPT", "1" if DEV == "cuda" and IS_LARGE else "0") == "1"
+if USE_CKPT: model.gradient_checkpointing_enable()
+print(f"train batch={BS}, accumulation={ACC}, effective={BS * ACC}, checkpointing={USE_CKPT}", flush=True)
 dl = DataLoader(data, batch_size=BS, shuffle=True, collate_fn=collate)
 opt = torch.optim.AdamW(model.parameters(), lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01)
 steps = int(len(dl) * EPOCHS / ACC); sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
@@ -63,11 +69,12 @@ while step < steps:
         if step % 100 == 0: print(f"step {step}/{steps} loss {loss.item() * ACC:.3f} {time.time() - t0:.0f}s", flush=True)
         if step >= steps: break
 model.eval()
+EVAL_BS = 4 if DEV == "cuda" and IS_LARGE else 32
 def probs(rs):
     out = []
     with torch.no_grad():
-        for i in range(0, len(rs), 32):
-            enc = tok([text(r, PREFIX) for r in rs[i:i + 32]], truncation=True, max_length=128, padding=True, return_tensors="pt")
+        for i in range(0, len(rs), EVAL_BS):
+            enc = tok([text(r, PREFIX) for r in rs[i:i + EVAL_BS]], truncation=True, max_length=128, padding=True, return_tensors="pt")
             enc = {k: v.to(DEV) for k, v in enc.items()}
             out.append(torch.softmax(model(**enc).logits.float(), -1).cpu().numpy())
     return np.vstack(out)
