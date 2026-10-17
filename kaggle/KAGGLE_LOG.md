@@ -30,3 +30,10 @@
 2026-10-17T13:02:47Z 18 分 ／ cpu: KernelWorkerStatus.COMPLETE ／ gpu: KernelWorkerStatus.QUEUED ／ 本番: KernelWorkerStatus.QUEUED
 2026-10-17T13:03:50Z 19 分 ／ cpu: KernelWorkerStatus.COMPLETE ／ gpu: KernelWorkerStatus.QUEUED ／ 本番: KernelWorkerStatus.QUEUED
 2026-10-17T13:04:51Z 20 分 ／ cpu: KernelWorkerStatus.COMPLETE ／ gpu: KernelWorkerStatus.QUEUED ／ 本番: KernelWorkerStatus.QUEUED
+2026-10-17T14:42:19Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.ERROR"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/1_Pooling /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/1_Pooling/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx/config.json
+    model: hfmodel/intfloat__multilingual-e5-large exists=True
+    cuda: True Tesla T4
