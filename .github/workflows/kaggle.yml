@@ -1,0 +1,36 @@
+name: Kaggle の GPU で学習
+on:
+  push:
+    branches: [main]
+    paths: [kaggle/kaggle.request]
+permissions:
+  contents: write
+concurrency: { group: kaggle, cancel-in-progress: false }
+jobs:
+  kaggle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install kaggle
+      - name: Kaggle
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          WAIT_MIN: '280'   # 公開リポジトリは実行時間が無料なので、終わるまで待って結果を持ち帰る
+        run: |
+          case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
+          bash kaggle/kaggle.sh
+      - uses: actions/upload-artifact@v4
+        with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
+      - name: Save
+        if: always()
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          for f in FINETUNE_RESULTS.md kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
+          git diff --cached --quiet && exit 0
+          git commit -m "Kaggle の GPU での学習（状態・集計）"
+          for i in 1 2 3; do git push && break; git pull --rebase; done
