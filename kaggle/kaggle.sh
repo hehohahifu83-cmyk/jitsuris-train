@@ -10,10 +10,11 @@ if [ "$mode" = train ]; then
   cut -d' ' -f2- kaggle.request > args.txt
   rm -rf /tmp/ds /tmp/kn && mkdir -p /tmp/ds /tmp/kn
   # Kaggle 側からインターネットに出られなくても動くように、モデルは GitHub 側で取って一緒に送る
-  M=$(awk '{print $1}' args.txt); D="hfmodel/${M//\//__}"
+  if [ "$(awk '{print $1}' args.txt)" = embed ]; then MI=2; else MI=1; fi
+  M=$(awk -v n=$MI '{print $n}' args.txt); D="hfmodel/${M//\//__}"
   pip install -q huggingface_hub
   ( cd .. && rm -rf hfmodel && python -c "from huggingface_hub import snapshot_download as s; s('$M', local_dir='$D', allow_patterns=['*.json','*.safetensors','*.model','*.txt','sentencepiece*','tokenizer*'])" && du -sh hfmodel && ls -R hfmodel | head -20 ) | tee -a /tmp/hf.txt
-  sed -i "1s#^[^ ]*#$D#" args.txt
+  if [ "$MI" = 2 ]; then sed -i "1s#^embed [^ ]*#embed $D#" args.txt; else sed -i "1s#^[^ ]*#$D#" args.txt; fi
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
       *.py kaggle/args.txt materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
       materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl hfmodel )

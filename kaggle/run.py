@@ -18,6 +18,7 @@ for c in glob.glob("/kaggle/input/**/config.json", recursive=True): diag.write("
 assert not glob.glob("blind_set*"), "未見セットが入っている"
 subprocess.run("nvidia-smi --query-gpu=name,memory.total --format=csv", shell=True)
 args = open("kaggle/args.txt").read().split()
+MODE = args.pop(0) if args and args[0] == "embed" else ""
 if args[0].startswith("hfmodel/") and not os.path.exists(os.path.join(args[0], "config.json")):
     c = [p for p in glob.glob("/kaggle/input/**/config.json", recursive=True) if os.path.basename(args[0]) in p]
     diag.write("model not at " + args[0] + "; found " + str(c) + "\n")
@@ -33,7 +34,8 @@ os.environ["HF_HUB_OFFLINE"] = "1"
 env = dict(os.environ)
 for a in list(args):
     if a.startswith("FT_LR="): env["FT_LR"] = a[6:]; args.remove(a)
-r = subprocess.run([sys.executable, "finetune_exp.py", *args], env=env)
+script = "llm_embed_exp.py" if MODE == "embed" else "finetune_exp.py"
+r = subprocess.run([sys.executable, script, *args], env=env)
 os.makedirs("/kaggle/working/out", exist_ok=True)
 for f in ("FINETUNE_RESULTS.md",):
     if os.path.exists(f): shutil.copy(f, "/kaggle/working/out/" + f)
