@@ -8,15 +8,21 @@ order = []
 for r in rows:
     h = r["header"].strip()
     if h not in order: order.append(h)
-code = {}
-for line in open(f"{TAG}_labels.txt"):
+import os
+if os.path.exists(f"{TAG}_header_labels.json"):  # 列名ごとのラベル（集め直して順番が変わっても崩れない）
+    HL = json.load(open(f"{TAG}_header_labels.json", encoding="utf-8"))
+    order = [h for h in order if h in HL]
+    code = {i: HL[h] for i, h in enumerate(order)}
+else:
+  code = {}
+  for line in open(f"{TAG}_labels.txt"):
     st, *cs = line.split()
     for k, c in enumerate(cs): code[int(st) + k] = c
 assert sorted(code) == list(range(len(order))), (len(code), len(order))
 lab = {h: M[code[i]] for i, h in enumerate(order)}
 out = []
 for r in rows:
-    l = lab[r["header"].strip()]
+    l = lab.get(r["header"].strip())
     vals = [v for v in r["values"] if v.strip() and v.strip() not in ("-", "－")]
     if l is None or not vals: continue
     out.append({**{k: r[k] for k in ("source", "table", "header", "values", "context")}, "label": l, "teacher": f"claude-session-2026-10-17-{TAG}"})
