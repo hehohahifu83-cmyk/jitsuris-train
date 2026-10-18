@@ -65,22 +65,62 @@ def prepare(pool_path: Path, pseudo_path: Path, source_model: str, out_path: Pat
     return receipt
 
 
+def prepare_reviewed(replay_path: Path, source_model: str, out_path: Path) -> dict:
+    """Create an auditable receipt for assistant-reviewed training labels."""
+    rows = _read_jsonl(replay_path)
+    if BLOCKED.search(str(replay_path)):
+        raise ValueError("forbidden evaluation/test/blind data path")
+    if not rows:
+        raise ValueError("reviewed replay is empty")
+    seen, items = set(), []
+    for i, row in enumerate(rows, 1):
+        rid = str(row.get("id", ""))
+        if not rid or rid in seen:
+            raise ValueError(f"row {i}: missing or duplicate material id")
+        seen.add(rid)
+        if row.get("split") != "train" or row.get("verified") is not True or not row.get("reviewer"):
+            raise ValueError(f"row {i}: replay material lacks explicit audit approval")
+        if row.get("privacy_checked") is not True or not row.get("source") or not row.get("license"):
+            raise ValueError(f"row {i}: incomplete source/license/privacy metadata")
+        if not str(row.get("label", "")).strip() or not isinstance(row.get("values"), list) or not row["values"]:
+            raise ValueError(f"row {i}: label or values missing")
+        if any(BLOCKED.search(str(row.get(k, ""))) for k in ("id", "source", "source_url", "dataset", "split")):
+            raise ValueError(f"row {i}: prohibited evaluation source")
+        items.append({"material_id": rid, "label": row["label"], "reviewer": row["reviewer"],
+                      "audit_confidence": row.get("audit_confidence", ""),
+                      "status": "assistant_audited_replay", "training_status": "not_yet_run"})
+    receipt = {
+        "schema": "jitsuris-cpu-material-receipt-v2",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "source_model": source_model, "material_path": str(replay_path),
+        "material_sha256": digest(replay_path), "material_count": len(rows),
+        "pool_count": len(rows), "pseudo_candidate_count": 0,
+        "auditor_type": "assistant_review_requested_by_user",
+        "semantic_learning_claim": "not_assessed_until_probe_comparison",
+        "items": items, "seed_runs": [],
+    }
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return receipt
+
+
 def mark_trained(receipt_path: Path, train_log: Path, seed: int, out_path: Path) -> dict:
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if not train_log.is_file():
         raise ValueError("training log is missing; material inclusion cannot be confirmed")
     log = train_log.read_text(encoding="utf-8", errors="replace")
-    match = re.search(r"CPU lab pseudo replay: (\d+) unverified rows", log)
-    if not match:
-        raise ValueError("training log does not confirm pseudo-material insertion")
-    observed = int(match.group(1))
-    expected = int(receipt["pseudo_candidate_count"])
+    match = re.search(r"CPU lab replay: (\d+) audited rows", log)
+    legacy = re.search(r"CPU lab pseudo replay: (\d+) unverified rows", log)
+    if not match and not legacy:
+        raise ValueError("training log does not confirm material insertion")
+    observed = int((match or legacy).group(1))
+    expected = int(receipt.get("material_count", receipt.get("pseudo_candidate_count", 0)))
     if observed != expected or expected < 1:
         raise ValueError(f"training log says {observed} rows; receipt expects {expected}")
     run = {"seed": seed, "status": "included_in_successful_training_process", "rows_confirmed": observed}
     receipt["seed_runs"] = [x for x in receipt["seed_runs"] if x.get("seed") != seed] + [run]
     for item in receipt["items"]:
-        if item["status"] == "pseudo_label_candidate":
+        if item["status"] in ("pseudo_label_candidate", "assistant_audited_replay"):
             item["training_status"] = "included_in_training"
     receipt["semantic_learning_claim"] = "not_assessed_until_probe_comparison"
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -97,6 +137,11 @@ def main():
     p.add_argument("--source-model", required=True)
     p.add_argument("--out", required=True)
     p.set_defaults(func=lambda a: prepare(Path(a.pool), Path(a.pseudo), a.source_model, Path(a.out)))
+    p = sub.add_parser("prepare-reviewed")
+    p.add_argument("--materials", required=True)
+    p.add_argument("--source-model", required=True)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=lambda a: prepare_reviewed(Path(a.materials), a.source_model, Path(a.out)))
     p = sub.add_parser("mark-trained")
     p.add_argument("--receipt", required=True)
     p.add_argument("--train-log", required=True)
