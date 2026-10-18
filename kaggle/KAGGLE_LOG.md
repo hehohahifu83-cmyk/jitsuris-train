@@ -100,3 +100,12 @@
 2026-10-18T03:01:20Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
 2026-10-18T03:01:21Z train を依頼：hfmodel/intfloat__multilingual-e5-large 2 FT_LR=2e-5 FT_BS=16 FT_ACC=4 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 ++ FT_LR=2e-5 FT_BS=16 FT_ACC=4 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_AUG=1
 送ったモデル：2.2G	hfmodel・束の中のモデルのファイル数 55
+2026-10-18T03:33:44Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/1_Pooling /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/1_Pooling/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx/config.json
+    印: ['nonce-20261018T025855-31389.txt']
+    model: hfmodel/intfloat__multilingual-e5-large exists=True
+    cuda: True devices=2 Tesla T4, 15360 MiB / Tesla T4, 15360 MiB
+    仕事の数: 2 [{'args': ['hfmodel/intfloat__multilingual-e5-large', '2'], 'env': {'FT_LR': '2e-5', 'FT_BS': '16', 'FT_ACC': '4', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1'}}, {'args': ['hfmodel/intfloat__multilingual-e5-large', '2'], 'env': {'FT_LR': '2e-5', 'FT_BS': '16', 'FT_ACC': '4', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_AUG': '1'}}]

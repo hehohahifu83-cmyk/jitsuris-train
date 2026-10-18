@@ -1,29 +1,21 @@
 name, memory.total [MiB]\n
 Tesla T4
 Tesla T4
-Tesla T4
-Tesla T4
+device cuda
+device cuda
 ---
-ime":495.814259665,"data":"| L05_bs16_noc | 52.3 | 3486 | 11.0 | 3.96倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814263707,"data":"| L06_bs8_ckpt_sort | 41.2 | 2749 | 10.5 | 3.12倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814267705,"data":"| L07_bs16_ckpt_sort | 50.7 | 3384 | 10.5 | 3.84倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814286687,"data":"| L08_bs32_ckpt_sort | 49.7 | 3313 | 10.5 | 3.77倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814293103,"data":"| L09_bs8_noc_sort | 52.6 | 3507 | 10.5 | 3.98倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.81429711,"data":"| L10_bs16_noc_sort | 61.7 | 4118 | 10.5 | 4.67倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814301936,"data":"| L11_bs16_ckpt_sort_pad8_fused | 53.3 | 3557 | 9.3 | 4.04倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814307022,"data":"| L12_bs8_noc_sort_pad8_fused | 57.3 | 3821 | 9.8 | 4.34倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814312248,"data":"| L13_bs16_noc_sort_pad8_fused_凍結 | 74.3 | 4952 | 7.6 | 5.63倍 | ok |\n"}
-,{"stream_name":"stdout","time":495.814317357,"data":"\n"}
-,{"stream_name":"stdout","time":495.814321754,"data":"モデル hfmodel/intfloat__multilingual-e5-large／GPU Tesla T4, 15360 MiB / Tesla T4, 15360 MiB／実効バッチ 64／トークン数の分布 {'mean': 68.8, 'median': 66, 'p90': 110, 'p99': 128, 'at_128': 0.041}／attention=sdpa／torch 2.11.0+cu128\n"}
-,{"stream_name":"stdout","time":495.814326742,"data":"\n"}
-,{"stream_name":"stdout","time":495.814330667,"data":"勾配の一致（基準 bs4 そのまま）: bs2_ckpt 一致度0.999999・相対差0.00131・損失差0.00015；bs16_ckpt_sort_pad8 一致度0.999999・相対差0.00134・損失差3e-05；bs8_noc_sort 一致度0.999999・相対差0.00124・損失差0.00012；bs32_ckpt_sort 一致度0.999999・相対差0.00127・損失差0.0\n"}
-,{"stream_name":"stdout","time":495.81433624,"data":"\n"}
-,{"stream_name":"stdout","time":495.81433992,"data":"GPU2枚を同時に使ったとき（L13_bs16_noc_sort_pad8_fused_凍結）: 1枚だけ 74.3 → 2枚それぞれ [73.5, 87.2]（状態 ['ok', 'ok']）\n"}
-,{"stream_name":"stdout","time":495.814344537,"data":"\n"}
-,{"stream_name":"stderr","time":500.008309826,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":500.008344833,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":500.366018757,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":500.366042888,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":501.227085445,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":502.608075643,"data":"[NbConvertApp] Writing 301192 bytes to __results__.html\n"}
+��明4 重大0 | 学習 1722秒・評価 63秒 |\n"}
+,{"stream_name":"stdout","time":1916.892248267,"data":"[仕事1] | hfmodel/intfloat__multilingual-e5-large 微調整 2.0周・今の仕組みだけ | 開発用220 正87.7% 誤19 不明8 重大3 | 本物（一般） 正84.4% 誤14 不明32 重大1 その他見送り78/88 | 本物（業務） 正83.8% 誤32 不明45 重大12 その他見送り14/15 | 本物（業務2） 正83.0% 誤37 不明118 重大11 その他見送り50/63 | 本物（日本の調達） 正95.7% 誤0 不明4 重大0 | 学習 1722秒・評価 63秒 |\n"}
+,{"stream_name":"stdout","time":1917.150365159,"data":"[仕事1] | hfmodel/intfloat__multilingual-e5-large 微調整 2.0周・微調整＋今の仕組み（半々） | 開発用220 正97.3% 誤4 不明2 重大0 | 本物（一般） 正89.8% 誤6 不明24 重大1 その他見送り82/88 | 本物（業務） 正84.6% 誤21 不明52 重大2 その他見送り15/15 | 本物（業務2） 正86.5% 誤13 不明110 重大5 その他見送り61/63 | 本物（日本の調達） 正95.7% 誤0 不明4 重大0 | 学習 1722秒・評価 63秒 |\n"}
+,{"stream_name":"stdout","time":1917.421409728,"data":"[仕事1] | hfmodel/intfloat__multilingual-e5-large 微調整 2.0周・微調整7割＋今の仕組み3割 | 開発用220 正96.8% 誤5 不明2 重大0 | 本物（一般） 正91.5% 誤7 不明18 重大1 その他見送り81/88 | 本物（業務） 正85.9% 誤23 不明44 重大2 その他見送り15/15 | 本物（業務2） 正86.7% 誤20 不明101 重大5 その他見送り61/63 | 本物（日本の調達） 正95.7% 誤0 不明4 重大0 | 学習 1722秒・評価 63秒 |\n"}
+,{"stream_name":"stdout","time":1917.470514526,"data":"[仕事1] \n"}
+,{"stream_name":"stdout","time":1920.15821666,"data":"[仕事1] Writing model shards:   0%|          | 0/1 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1920.15825215,"data":"[仕事1] Writing model shards: 100%|██████████| 1/1 [00:02\u003c00:00,  2.69s/it]\n"}
+,{"stream_name":"stdout","time":1920.158258425,"data":"[仕事1] Writing model shards: 100%|██████████| 1/1 [00:02\u003c00:00,  2.69s/it]\n"}
+,{"stream_name":"stderr","time":1924.893368973,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1924.893447136,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1925.159454285,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1925.159478916,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1925.948095569,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1926.968733786,"data":"[NbConvertApp] Writing 301192 bytes to __results__.html\n"}
 ]
