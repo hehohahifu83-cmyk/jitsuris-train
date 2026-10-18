@@ -25,12 +25,19 @@ jobs:
       source_run_id: ${{ steps.gate.outputs.source_run_id }}
     steps:
       - uses: actions/checkout@v4
-      - name: Confirm E5 run, completed Kaggle kernel, idle queue, and done request
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Kaggle status client
+        run: python -m pip install kaggle
+      - name: Confirm E5 run and QUEUED Kaggle kernel
         id: gate
         env:
           GH_TOKEN: ${{ github.token }}
           EVENT_SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
           MANUAL_SOURCE_RUN_ID: ${{ github.event.inputs.source_run_id }}
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
           python - <<'PY'
           import json, os, re, urllib.request
@@ -49,16 +56,11 @@ jobs:
           if source.get("path") != ".github/workflows/kaggle.yml" or source.get("status") != "completed" or source.get("conclusion") != "success":
               raise SystemExit("Kaggle source run is not successful; refusing to start")
           artifacts = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts").get("artifacts", [])
-          if not any(a.get("name") == "jitsuris-model" and not a.get("expired") for a in artifacts):
-              print("CPU lab held: source run has no classifier artifact")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: no jitsuris-model artifact on this Kaggle run.\n")
-              raise SystemExit(0)
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
-          if request != "done":
-              print("CPU lab held: kaggle.request is not done")
+          if request != "fetch":
+              print("CPU lab held: no fetch/wait cycle is active")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle request has not reached done.\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle request is not in fetch/wait state.\n")
               raise SystemExit(0)
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
           requests = [line for line in log.splitlines() if "train を依頼" in line]
@@ -68,10 +70,16 @@ jobs:
               with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
               with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle request does not match the target E5-base experiment.\n")
               raise SystemExit(0)
-          if not statuses or "KernelWorkerStatus.COMPLETE" not in statuses[-1]:
-              print("CPU lab held: latest Kaggle kernel status is not COMPLETE")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle kernel status is not COMPLETE.\n")
+          import subprocess
+          key = os.environ["KAGGLE_KEY"]
+          if key.startswith("KGAT_"): os.environ["KAGGLE_API_TOKEN"] = key
+          state = subprocess.run(["kaggle", "kernels", "status", "jitsurio/jitsuris-train"], capture_output=True, text=True)
+          combined = state.stdout + state.stderr
+          print("Observed Kaggle status:", combined.strip())
+          if state.returncode != 0 or "KernelWorkerStatus.QUEUED" not in combined:
+              print("CPU lab held: CPU work is allowed only while Kaggle is QUEUED")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle is not QUEUED. CPU lab only runs during the queue window.\\n")
               raise SystemExit(0)
           runs = get(f"https://api.github.com/repos/{repo}/actions/runs?per_page=100").get("workflow_runs", [])
           active = [r for r in runs if r.get("path") == ".github/workflows/kaggle.yml" and r.get("status") == "in_progress"]
@@ -83,26 +91,6 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=true\nsource_run_id={run_id}\n")
           print(f"All gates passed for Kaggle run {run_id}")
           PY
-      - name: Download E5-base classifier artifact
-        if: steps.gate.outputs.proceed == 'true'
-        uses: actions/download-artifact@v4
-        with:
-          name: jitsuris-model
-          run-id: ${{ steps.gate.outputs.source_run_id }}
-          github-token: ${{ github.token }}
-          path: source-models
-      - uses: actions/setup-python@v5
-        if: steps.gate.outputs.proceed == 'true'
-        with:
-          python-version: '3.11'
-      - name: Validate checkpoint directory
-        if: steps.gate.outputs.proceed == 'true'
-        env:
-          MODEL_SUBDIR: ft_out_job1
-        run: |
-          set -euo pipefail
-          test -s "source-models/$MODEL_SUBDIR/config.json"
-          test -s "source-models/$MODEL_SUBDIR/labels.json"
       - name: Download only approved labeled training corpora
         if: steps.gate.outputs.proceed == 'true'
         env:
@@ -168,8 +156,7 @@ jobs:
           set -euo pipefail
           mkdir -p prepared
           python -m unittest discover -s cpu_lab/tests -v
-          python cpu_lab/progress_probe.py score --model source-models/ft_out_job1 --probe cpu_lab/materials/progress_probe.jsonl --out prepared/probe_before.json
-          python cpu_lab/material_receipt.py prepare-reviewed --materials cpu_lab/materials/reviewed_replay.jsonl --source-model "run:$SOURCE_RUN_ID/ft_out_job1" --out prepared/material_receipt.json
+          python cpu_lab/material_receipt.py prepare-reviewed --materials cpu_lab/materials/reviewed_replay.jsonl --source-model "hub:intfloat/multilingual-e5-base" --out prepared/material_receipt.json
       - name: Upload prepared data and baseline evidence
         if: steps.gate.outputs.proceed == 'true'
         uses: actions/upload-artifact@v4
@@ -177,7 +164,6 @@ jobs:
           name: cpu-lab-prepared-${{ github.run_id }}
           path: |
             prepared/material_receipt.json
-            prepared/probe_before.json
             cpu_lab/materials/reviewed_replay.jsonl
             materials/real_labels*.jsonl
           if-no-files-found: error
@@ -204,27 +190,21 @@ jobs:
           mkdir -p materials
           cp prepared/materials/real_labels*.jsonl materials/ 2>/dev/null || cp prepared/real_labels*.jsonl materials/
           cp prepared/cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/reviewed_replay.jsonl
-      - name: Download source classifier checkpoint
-        uses: actions/download-artifact@v4
-        with:
-          name: jitsuris-model
-          run-id: ${{ needs.prepare.outputs.source_run_id }}
-          github-token: ${{ github.token }}
-          path: source-models
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install CPU training dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece kaggle
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Train one matched CPU seed and record material exposure
         env:
           FT_CPU_THREADS: '2'
           FT_CPU_LAB_REPLAY: cpu_lab/materials/reviewed_replay.jsonl
-          FT_INIT_MODEL_PATH: source-models/ft_out_job1
-          FT_LIMIT_PER_LABEL: '400'
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          FT_LIMIT_PER_LABEL: '80'
           FT_SAMPLE_SEED: '20261018'
           FT_BS: '16'
           FT_ACC: '2'
@@ -240,10 +220,34 @@ jobs:
           set -euo pipefail
           mkdir -p "cpu_results/seed-${{ matrix.seed }}"
           cp prepared/prepared/material_receipt.json "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
-          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 1 2>&1 | tee "cpu_results/seed-${{ matrix.seed }}/train.log"
+          set +e
+          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 1 > "cpu_results/seed-${{ matrix.seed }}/train.log" 2>&1 &
+          trainer_pid=$!
+          ( while kill -0 "$trainer_pid" 2>/dev/null; do
+              state=$(kaggle kernels status jitsurio/jitsuris-train 2>&1 || true)
+              printf '%s Kaggle status: %s\n' "$(date -u +%FT%TZ)" "$state" >> "cpu_results/seed-${{ matrix.seed }}/kaggle_guard.log"
+              if ! grep -q 'KernelWorkerStatus.QUEUED' <<< "$state"; then
+                touch /tmp/jitsuris-kaggle-no-longer-queued
+                kill -TERM "$trainer_pid" 2>/dev/null || true
+                break
+              fi
+              sleep 30
+            done ) &
+          guard_pid=$!
+          wait "$trainer_pid"; train_rc=$?
+          kill "$guard_pid" 2>/dev/null || true
+          wait "$guard_pid" 2>/dev/null || true
+          set -e
+          cat "cpu_results/seed-${{ matrix.seed }}/train.log"
+          if [ -e /tmp/jitsuris-kaggle-no-longer-queued ]; then
+            echo "CPU lab yielded immediately because Kaggle left QUEUED; this partial run is not treated as a result."
+            exit 0
+          fi
+          if [ "$train_rc" -ne 0 ]; then exit "$train_rc"; fi
           python cpu_lab/material_receipt.py mark-trained --receipt "cpu_results/seed-${{ matrix.seed }}/material_receipt.json" --train-log "cpu_results/seed-${{ matrix.seed }}/train.log" --seed ${{ matrix.seed }} --out "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
+          state=$(kaggle kernels status jitsurio/jitsuris-train 2>&1 || true)
+          if ! grep -q 'KernelWorkerStatus.QUEUED' <<< "$state"; then echo "Kaggle no longer queued; stop before CPU evaluation."; exit 0; fi
           python cpu_lab/progress_probe.py score --model ft_out --probe cpu_lab/materials/progress_probe.jsonl --out "cpu_results/seed-${{ matrix.seed }}/probe_after.json"
-          python cpu_lab/progress_probe.py compare --before prepared/prepared/probe_before.json --after "cpu_results/seed-${{ matrix.seed }}/probe_after.json" --out "cpu_results/seed-${{ matrix.seed }}/probe_comparison.json"
           cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
           cp cpu_lab/materials/reviewed_replay.jsonl "cpu_results/seed-${{ matrix.seed }}/audited_materials_used.jsonl"
       - name: Upload per-seed training evidence
