@@ -1,13 +1,13 @@
 # 速くする設定の検査（CPU・e5-small・GitHub Actions）
 
-run: 39100545247　commit: 7bb54bdde0c7c1becc3958021d4ebc071fd49eea
+run: 39121404602　commit: 1aaf3233524a960abf58d48daad3090df7d02ff6
 
 | 検査 | 設定 | 学習秒・評価秒 | 最初の損失 |
 |---|---|---|---|
-| A 今までの流し方 | train batch=8, accumulation=8, effective=64, checkpointing=False, sort=False, pad_multiple=1, fused=False, freeze_embeddings=False | ('51', '7') | [2.774895, 2.770448, 2.770817, 2.759631, 2.757056] |
-| B 長さ順の束＋幅8の倍数 | train batch=8, accumulation=8, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False | ('37', '7') | [2.774895, 2.770448, 2.770817, 2.759631, 2.757056] |
-| C 水増し＋長さ順＋幅8 | train batch=8, accumulation=4, effective=32, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False | ('22', '7') | — |
-| D 単語の埋め込みを固定＋長さ順 | train batch=8, accumulation=4, effective=32, checkpointing=False, sort=True, pad_multiple=1, fused=False, freeze_embeddings=True | ('19', '7') | — |
+| A 今までの流し方 | train batch=8, accumulation=8, effective=64, checkpointing=False, sort=False, pad_multiple=1, fused=False, freeze_embeddings=False | ('57', '8') | [2.774895, 2.770448, 2.770817, 2.759631, 2.757056] |
+| B 長さ順の束＋幅8の倍数 | train batch=8, accumulation=8, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False | ('42', '8') | [2.774895, 2.770448, 2.770817, 2.759631, 2.757056] |
+| C 水増し＋長さ順＋幅8 | train batch=8, accumulation=4, effective=32, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False | ('26', '8') | — |
+| D 単語の埋め込みを固定＋長さ順 | train batch=8, accumulation=4, effective=32, checkpointing=False, sort=True, pad_multiple=1, fused=False, freeze_embeddings=True | ('22', '8') | — |
 
 A と B の最初の5ステップの損失の最大の差：0.0（ドロップアウトを切り、同じ種・同じ実効バッチ。基準 2e-3 未満）
 
@@ -20,9 +20,9 @@ CPU（fp32・e5-small・640行）の検査であり、GPU（fp16）での速さ�
 - 語彙削減（残さない片は unk）：圧縮なしとの top-1 一致 100.00%、確率の最大の差 0.001
 - 語彙削減（トークナイザも縮める）：圧縮なしとの top-1 一致 100.00%、確率の最大の差 0.001
 - 語彙削減（トークナイザも縮める）＋INT8の重み（全結合層・埋め込み表を丸める疑似）：圧縮なしとの top-1 一致 100.00%、確率の最大の差 0.001
-- 語彙削減（トークナイザも縮める）＋INT8の動的量子化（全結合層）＋埋め込み表INT8：圧縮なしとの top-1 一致 100.00%、確率の最大の差 0.001
+- 語彙削減（トークナイザも縮める）＋INT8の動的量子化（全結合層）＋埋め込み表INT8：圧縮なしとの top-1 一致 98.33%、確率の最大の差 0.001
 - 語彙削減（トークナイザも縮める）＋fp16（重みを丸める）：圧縮なしとの top-1 一致 100.00%、確率の最大の差 0.001
 - 参考：ここの『圧縮なし（fp32）』と本体の評価（CPU）の top-1 一致 100.00%
-- 圧縮の試験の所要 15秒（数字は保存した微調整済みモデルを縮めて試験に流した結果で、ブラウザの実機の結果ではない）
+- 圧縮の試験の所要 18秒（数字は保存した微調整済みモデルを縮めて試験に流した結果で、ブラウザの実機の結果ではない）
 
-測定プログラム（speed_probe.py）の勾配の一致（CPU・fp32・実効バッチ16）：bs2_ckpt 一致度1.000022・相対差0.0；bs16_ckpt_sort_pad8 一致度1.000022・相対差0.0；bs8_noc_sort 一致度1.000022・相対差0.0；bs32_ckpt_sort 一致度1.000022・相対差0.0
+測定プログラム（speed_probe.py）の勾配の一致（CPU・fp32・実効バッチ16）：bs2_ckpt 一致度1.000026・相対差0.0；bs16_ckpt_sort_pad8 一致度1.000026・相対差0.0；bs8_noc_sort 一致度1.000026・相対差0.0；bs32_ckpt_sort 一致度1.000026・相対差0.0
