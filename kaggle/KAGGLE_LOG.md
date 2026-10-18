@@ -258,3 +258,7 @@
     [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
     [仕事2] peak GPU memory 3.5 GiB; training loop 417s
     [仕事1] peak GPU memory 3.5 GiB; training loop 436s
+2026-10-18T20:21:23Z push の返事：Kernel version 20 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-18T20:21:53Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED" 
+2026-10-18T20:21:54Z train を依頼：hfmodel/intfloat__multilingual-e5-base 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_SEED=1 ++ FT_SEED=2
+送ったモデル：1.1G	hfmodel・束の中のモデルのファイル数 55
