@@ -3,7 +3,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import sys\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom self_learning import _check_pool, approve, load_approved_replay
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from self_learning import _check_pool, approve, load_approved_replay
 
 
 def pool_row(id="public:1"):
