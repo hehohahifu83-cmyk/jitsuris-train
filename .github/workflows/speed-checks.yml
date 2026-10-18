@@ -62,7 +62,7 @@ jobs:
           logs = {k: read(k.lower() + ".log") for k in "ABCD"}
           a, b = losses(logs["A"]), losses(logs["B"])
           diff = max((abs(x - y) for x, y in zip(a[:5], b[:5])), default=None)
-          out = ["# 速くする設定の検査（CPU・e5-small・GitHub Actions）", "", f"run: ${{{{ github.run_id }}}}　commit: ${{{{ github.sha }}}}", ""]
+          out = ["# 速くする設定の検査（CPU・e5-small・GitHub Actions）", "", f"run: ${{ github.run_id }}　commit: ${{ github.sha }}", ""]
           out += ["| 検査 | 設定 | 学習秒・評価秒 | 最初の損失 |", "|---|---|---|---|"]
           for k, name in (("A", "今までの流し方"), ("B", "長さ順の束＋幅8の倍数"), ("C", "水増し＋長さ順＋幅8"), ("D", "単語の埋め込みを固定＋長さ順")):
               out.append(f"| {k} {name} | {cfgline(logs[k])} | {secs(logs[k])} | {losses(logs[k])[:5] or '—'} |")
