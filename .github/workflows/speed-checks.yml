@@ -89,7 +89,8 @@ jobs:
           PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -- FINETUNE_RESULTS.md 2>/dev/null || true   # 通しの検査が追記した分は捨てる（pull --rebase が止まるため）
           git add bench/speed_checks_summary.md
           git diff --cached --quiet && exit 0
           git commit -m "速くする設定の検査の結果（CPU）"
-          for i in 1 2 3; do git push && break; git pull --rebase; done
+          for i in 1 2 3; do git push && break; git pull --rebase --autostash; done
