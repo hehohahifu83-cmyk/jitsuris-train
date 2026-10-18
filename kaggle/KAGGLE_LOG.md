@@ -217,3 +217,5 @@
 2026-10-18T08:10:25Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED" 
 2026-10-18T08:10:26Z train を依頼：hfmodel/intfloat__multilingual-e5-base 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_SEED=1 ++ FT_SEED=2
 送ったモデル：1.1G	hfmodel・束の中のモデルのファイル数 55
+2026-10-18T08:30:41Z 空き待ちが 20 分を超えたので止める：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED"
+2026-10-18T08:30:41Z 状態：queue-timeout
