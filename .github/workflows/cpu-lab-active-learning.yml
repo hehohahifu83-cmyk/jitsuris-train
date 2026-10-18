@@ -1,4 +1,4 @@
-name: CPU lab verified active-learning replay
+name: CPU lab candidate replay
 on:
   workflow_dispatch:
     inputs:
@@ -10,11 +10,19 @@ on:
           - no
           - yes
         default: no
+      replay_mode:
+        description: 人手確認済みか、機械の仮ラベル候補か
+        required: true
+        type: choice
+        options:
+          - automatic_pseudo
+          - human_verified
+        default: automatic_pseudo
       replay_path:
-        description: cpu_lab/materials/verified_replay/ 以下に置いた承認済みJSONL
+        description: 選択したモード用のJSONLファイル
         required: true
         type: string
-        default: cpu_lab/materials/verified_replay/approved.jsonl
+        default: cpu_lab/materials/pseudo_replay/candidate.jsonl
 permissions:
   contents: read
 concurrency:
@@ -41,9 +49,10 @@ jobs:
           REPLAY_PATH: ${{ inputs.replay_path }}
         run: |
           set -euo pipefail
-          case "$REPLAY_PATH" in
-            cpu_lab/materials/verified_replay/*.jsonl) ;;
-            *) echo "replay_path must be under cpu_lab/materials/verified_replay/" >&2; exit 2 ;;
+          case "${{ inputs.replay_mode }}:$REPLAY_PATH" in
+            automatic_pseudo:cpu_lab/materials/pseudo_replay/*.jsonl) ;;
+            human_verified:cpu_lab/materials/verified_replay/*.jsonl) ;;
+            *) echo "replay_path does not match replay_mode" >&2; exit 2 ;;
           esac
           test -s "$REPLAY_PATH"
           python -m unittest discover -s cpu_lab/tests -v
@@ -56,7 +65,8 @@ jobs:
         shell: bash
         env:
           FT_CPU_THREADS: '2'
-          FT_CPU_LAB_REPLAY: ${{ inputs.replay_path }}
+          FT_CPU_LAB_REPLAY: ${{ inputs.replay_mode == 'human_verified' && inputs.replay_path || '' }}
+          FT_CPU_LAB_PSEUDO: ${{ inputs.replay_mode == 'automatic_pseudo' && inputs.replay_path || '' }}
           FT_BS: '32'
           FT_ACC: '2'
           FT_CKPT: '0'
