@@ -62,6 +62,9 @@ def _check_pool(path: Path, rows):
 
 
 def _load_model(model_path: str):
+    repo_root = str(Path(__file__).resolve().parents[1])
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
     try:
         import torch
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
