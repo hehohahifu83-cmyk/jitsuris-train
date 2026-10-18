@@ -58,6 +58,16 @@ class MaterialTrackingTests(unittest.TestCase):
             write(a,set(range(80)))
             self.assertEqual(compare(str(b),str(a),str(o))["result"],"no_difference_under_1_5pp")
 
+    def test_checked_in_probe_is_separate_and_has_only_synthetic_gold(self):
+        root=Path(__file__).resolve().parents[1]/"materials"
+        probe_rows=[json.loads(x) for x in (root/"progress_probe.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
+        pool_rows=[json.loads(x) for x in (root/"pool.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
+        self.assertEqual(len({r["id"] for r in probe_rows}),len(probe_rows))
+        self.assertTrue(all(r["split"]=="progress_probe" and r.get("target") for r in probe_rows))
+        self.assertFalse({r["id"] for r in probe_rows}&{r["id"] for r in pool_rows})
+        self.assertTrue(all(r["source"]=="synthetic:cpu-lab-progress-probe-v1" and r["privacy_checked"] is True for r in probe_rows))
+        self.assertFalse(any("blind_set" in json.dumps(r).lower() or "set7" in json.dumps(r).lower() for r in probe_rows))
+
 
 if __name__ == "__main__":
     unittest.main()
