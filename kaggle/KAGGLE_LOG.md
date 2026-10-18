@@ -206,3 +206,10 @@
 2026-10-18T07:29:11Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED" 
 2026-10-18T07:29:12Z train を依頼：embed hfmodel/llm-jp__llm-jp-3-1.8b
 送ったモデル：3.5G	hfmodel・束の中のモデルのファイル数 27
+2026-10-18T07:58:35Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/llm-jp__llm-jp-3-1.8b /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/llm-jp__llm-jp-3-1.8b/config.json
+    印: ['nonce-20261018T072139-7887.txt']
+    model: hfmodel/llm-jp__llm-jp-3-1.8b exists=True
+    cuda: True devices=2 Tesla T4, 15360 MiB / Tesla T4, 15360 MiB
+    仕事の数: 1 [{'args': ['hfmodel/llm-jp__llm-jp-3-1.8b'], 'env': {}}]
