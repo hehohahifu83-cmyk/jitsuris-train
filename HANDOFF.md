@@ -234,3 +234,11 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - `.github/workflows/cpu-lab-tests.yml` を追加。CPUラボコード変更時にcompile＋unittestを自動実行。
 - 最初の2 run（39121622107・39121637227）はリモートテストファイルに literal \\n が混じるパス設定ミス。修正後 run 39121657962 success（4件）。
 - Claude連絡箱メッセージ更新後のrun 39121677204 はfailure。ActionsログBlobは存在せず取得できず、INBOX.mdもClaude宛て0件のまま。Claudeへの未達は解消していない。
+
+## 2026-10-18 — 教材パック整備と学習状態の確認（ChatGPT）
+- 優先教材パック: `cpu_lab/materials/learning-materials-priority-pack-2026-10-18.md`。列名・値・UNIT/兄弟列文脈を根拠にしたラベル例、近接クラス対照、unknown境界、短い監査タグを中心にした教材設計。長文CoTをジツリスの出力/学習目標にしない。
+- 教材パックは方法/出典調査と未確認の合成演習草案。e-Stat raw dataもSherlock等の外部コーパスも取得・投入していない。現時点の承認済み追加教材は0件。まず表ID・ライセンス・第三者条件・PII・重複・splitを監査する。
+- CPU active-learning学習は未開始。プールも人が承認したreplay例もないため、開始できる教材がない。
+- Kaggle: `kaggle/kaggle.request` は `fetch`。KAGGLE_LOG末尾に2026-10-18T10:56:49ZのRUNNING記録がある（JST換算19:56:49）。GitHub Kaggle workflow 39121167019 はsuccessだが、GitHub workflowの成功はKaggle kernel完了の証拠ではない。確認できたログ記録以降の終了状態は不明。CPU labを安全側で開始しない。
+- Claude向け連絡箱記録は保存済みという過去の記録だが、今回の教材パック追記後にメッセージを配信できたことは確認できていない。前回までのINBOX未読0件・ai-bridge workflow失敗の状態が解消した証拠もなし。Claudeへの共有完了とは扱わない。
+- CI: 教材パック追加のcommit `24d62299c12d0af8b30175d4fb1c8c9fa500281c` に対するCPU lab safety tests run 39122008870 はsuccess。
