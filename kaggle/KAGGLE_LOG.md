@@ -150,3 +150,36 @@
 2026-10-18T04:50:57Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
 2026-10-18T04:50:58Z train を依頼：hfmodel/intfloat__multilingual-e5-small 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_SEED=1 FT_COMPRESS=1 FT_KEEP=1 ++ FT_SEED=2 FT_COMPRESS= FT_KEEP= ++ FT_SEED=3 FT_COMPRESS= FT_KEEP= ++ FT_FREEZE_EMB=1 ++ FT_FREEZE_EMB=1 FT_SEED=2 FT_COMPRESS= FT_KEEP= ++ FT_LR=1e-4 FT_COMPRESS= FT_KEEP= ++ FT_LR=1e-4 FT_FREEZE_EMB=1 FT_COMPRESS= FT_KEEP= ++ FT_COMPRESS_TOPK=60000 FT_KEEP=
 送ったモデル：492M	hfmodel・束の中のモデルのファイル数 55
+2026-10-18T05:19:16Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-small /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-small/1_Pooling /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-small/onnx /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-small/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-small/1_Pooling/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-small/onnx/config.json
+    印: ['nonce-20261018T044955-31328.txt']
+    model: hfmodel/intfloat__multilingual-e5-small exists=True
+    cuda: True devices=2 Tesla T4, 15360 MiB / Tesla T4, 15360 MiB
+    仕事の数: 8 [{'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '1', 'FT_COMPRESS': '1', 'FT_KEEP': '1'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '2'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '3'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '1', 'FT_COMPRESS': '1', 'FT_KEEP': '1', 'FT_FREEZE_EMB': '1'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '2', 'FT_FREEZE_EMB': '1'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '1', 'FT_LR': '1e-4'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '1', 'FT_LR': '1e-4', 'FT_FREEZE_EMB': '1'}}, {'args': ['hfmodel/intfloat__multilingual-e5-small', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_SEED': '1', 'FT_COMPRESS': '1', 'FT_COMPRESS_TOPK': '60000'}}]
+    [仕事2] training rows=55213 seed=2
+    [仕事1] training rows=55213 seed=1
+    [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事1] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事2] peak GPU memory 2.4 GiB; training loop 232s
+    [仕事1] peak GPU memory 2.4 GiB; training loop 236s
+    [仕事3] training rows=55213 seed=3
+    [仕事3] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事4] training rows=55213 seed=1
+    [仕事4] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
+    [仕事3] peak GPU memory 2.4 GiB; training loop 243s
+    [仕事4] peak GPU memory 1.5 GiB; training loop 197s
+    [仕事5] training rows=55213 seed=2
+    [仕事5] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
+    [仕事6] training rows=55213 seed=1
+    [仕事6] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事5] peak GPU memory 1.5 GiB; training loop 220s
+    [仕事7] training rows=55213 seed=1
+    [仕事7] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
+    [仕事6] peak GPU memory 2.4 GiB; training loop 240s
+    [仕事8] training rows=55213 seed=1
+    [仕事8] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事7] peak GPU memory 1.5 GiB; training loop 199s
+    [仕事8] peak GPU memory 2.4 GiB; training loop 241s
