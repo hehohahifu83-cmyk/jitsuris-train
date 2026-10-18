@@ -22,28 +22,39 @@ let webBuild = WEB_BUILDS[0];
 const pageHtml = () => `<!doctype html><meta charset="utf-8"><title>browser model test</title>
 <script type="importmap">${JSON.stringify({ imports: IMPORT_MAP })}</script>
 <script type="module">
-import { env, AutoTokenizer, AutoModelForSequenceClassification } from '/lib/${webBuild}';
+import { env, AutoTokenizer, AutoModelForSequenceClassification, Tensor } from '/lib/${webBuild}';
 env.allowRemoteModels = false; env.allowLocalModels = true; env.localModelPath = '/model_root/'; env.useBrowserCache = false;
 env.backends.onnx.wasm.wasmPaths = '/lib/';
+let tokenizerPromise = null;
+const getTokenizer = () => (tokenizerPromise ??= AutoTokenizer.from_pretrained('model'));
+// Python 側（HF tokenizers の truncation=True, max_length=128）と同じ切り方：長いときは先頭 127 個＋最後の </s>。
+// Transformers.js の truncation は単に切るだけで </s> が落ちるので、切らずに取って自分で切る。
+const capIds = (ids) => (ids.length <= 128 ? ids : ids.slice(0, 127).concat([ids[ids.length - 1]]));
+const encodeIds = (tokenizer, text) => capIds(Array.from(tokenizer(text, { truncation: false }).input_ids.data, Number));
+const toInputs = (ids) => ({ input_ids: new Tensor('int64', BigInt64Array.from(ids, BigInt), [1, ids.length]), attention_mask: new Tensor('int64', new BigInt64Array(ids.length).fill(1n), [1, ids.length]) });
+window.__tokenize = async (texts) => {
+  const tokenizer = await getTokenizer();
+  const t0 = performance.now();
+  const ids = texts.map((t) => encodeIds(tokenizer, t));
+  return { ids, ms: performance.now() - t0 };
+};
 window.__run = async ({ texts, threads, warmup }) => {
   env.backends.onnx.wasm.numThreads = threads;
   const t0 = performance.now();
-  const tokenizer = await AutoTokenizer.from_pretrained('model');
+  const tokenizer = await getTokenizer();
   const tTok = performance.now() - t0;
   const model = await AutoModelForSequenceClassification.from_pretrained('model', { dtype: 'q8', device: 'wasm' });
   const loadMs = performance.now() - t0;
-  const ids = [], logits = [], times = [];
-  const tokMs = [];
+  const ids = [], logits = [], times = [], tokMs = [];
   for (const t of texts) {
     const s0 = performance.now();
-    const enc = tokenizer(t, { truncation: true, max_length: 128 });
+    ids.push(encodeIds(tokenizer, t));
     tokMs.push(performance.now() - s0);
-    ids.push(Array.from(enc.input_ids.data, Number));
   }
   for (let i = 0; i < texts.length; i++) {
-    const enc = tokenizer(texts[i], { truncation: true, max_length: 128 });
+    const inputs = toInputs(ids[i]);
     const s = performance.now();
-    const out = await model(enc);
+    const out = await model(inputs);
     times.push(performance.now() - s);
     logits.push(Array.from(out.logits.data));
   }
@@ -55,7 +66,7 @@ window.__ready = true;
 const served = new Map();   // 配ったファイルと大きさ（初回に取り込む量の目安）
 function send(res, file) {
   if (!file || !fs.existsSync(file) || !fs.statSync(file).isFile()) { res.writeHead(404); res.end('not found'); return; }
-  served.set(path.basename(file), fs.statSync(file).size);
+  served.set(path.basename(file), { size: fs.statSync(file).size, file });
   res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', ...HEADERS });
   fs.createReadStream(file).pipe(res);
 }
@@ -103,6 +114,24 @@ try {
     try { await page.waitForFunction(() => window.__ready === true, null, { timeout: 20000 }); ok = true; result.tried.push({ build: b, ready: true }); await ctx.close(); break; }
     catch (e) { result.tried.push({ build: b, ready: false, error: String(e).slice(0, 200) }); await ctx.close(); }
   }
+  if (ok && ref.tok_texts) {
+    const { ctx, page } = await openPage(1);
+    await page.waitForFunction(() => window.__ready === true, null, { timeout: 60000 });
+    const tk = await page.evaluate((t) => window.__tokenize(t), ref.tok_texts);
+    const edgeFrom = ref.edge_from ?? ref.tok_texts.length;
+    const bad = [];
+    tk.ids.forEach((ids, i) => {
+      const want = ref.tok_ids[i];
+      if (JSON.stringify(ids) === JSON.stringify(want)) return;
+      let k = 0; while (k < Math.min(ids.length, want.length) && ids[k] === want[k]) k++;
+      const lo = Math.max(0, k - 2);
+      bad.push({ i, edge: i >= edgeFrom, firstDiff: k, lenGot: ids.length, lenWant: want.length, got: ids.slice(lo, k + 5).map(piece), want: want.slice(lo, k + 5).map(piece),
+        text: i >= edgeFrom ? ref.tok_texts[i].slice(0, 40) : undefined,
+        codepoints: [...new Set([...ref.tok_texts[i]].filter((c) => c.codePointAt(0) > 127))].slice(0, 10).map((c) => 'U+' + c.codePointAt(0).toString(16).toUpperCase()) });
+    });
+    result.tokParity = { total: ref.tok_texts.length, edge: ref.tok_texts.length - edgeFrom, mismatches: bad.length, mismatchesEdge: bad.filter((b) => b.edge).length, ms: Math.round(tk.ms), first: bad.slice(0, 12) };
+    await ctx.close();
+  }
   if (ok) {
     result.build = webBuild;
     for (const threads of [1, 2, 4]) {
@@ -143,8 +172,17 @@ try {
 } finally {
   await browser.close(); server.close();
 }
-result.served = Object.fromEntries([...served.entries()].sort((a, b) => b[1] - a[1]));
-result.servedTotalMB = +([...served.values()].reduce((a, b) => a + b, 0) / 1e6).toFixed(1);
+const sizes = [...served.entries()].map(([k, v]) => [k, v.size, v.file]).sort((a, b) => b[1] - a[1]);
+result.served = Object.fromEntries(sizes.map(([k, n]) => [k, n]));
+result.servedTotalMB = +(sizes.reduce((a, [, n]) => a + n, 0) / 1e6).toFixed(1);
+// 配信のときに brotli で圧縮して送った場合の目安（品質 6。サーバーの設定しだいで、実際の転送量は変わる）
+try {
+  const zlib = await import('node:zlib');
+  let br = 0;
+  for (const [, n, f] of sizes) br += n < 50000 ? n : zlib.brotliCompressSync(fs.readFileSync(f), { params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 6 } }).length;
+  result.servedBrotliMB = +(br / 1e6).toFixed(1);
+} catch (e) { result.servedBrotliMB = null; }
+result.wasmFiles = Object.fromEntries(LIB_DIRS.flatMap((d) => (fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith('.wasm')).map((f) => [f, +(fs.statSync(path.join(d, f)).size / 1e6).toFixed(1)]) : [])));
 result.dist = LIB_DIRS.map((d) => (fs.existsSync(d) ? fs.readdirSync(d).filter((f) => /\.(m?js|wasm|cjs)$/.test(f)) : null));
 fs.writeFileSync(outPath, JSON.stringify(result, null, 1));
 console.log(JSON.stringify(result));   // 全部（1 行）
@@ -155,6 +193,12 @@ console.log('importMap: ' + cut(JSON.stringify(IMPORT_MAP), 190));
 for (const t of result.tried) console.log('立ち上げ試し: ' + cut(JSON.stringify(t), 190));
 console.log('使えた build: ' + (result.build || 'なし') + '　外への通信を止めた件数: ' + result.blocked.length);
 for (const r of result.runs) console.log('結果: ' + (r.error ? `threads=${r.threads} error ${cut(r.error, 150)}` : `threads=${r.threads}(実際${r.effectiveThreads}・隔離${r.isolated}) 読込${r.loadMs}ms トークン化${r.tokMsMean}ms 番号の不一致${r.idMismatch}/${result.n} 差(INT8/fp32)${r.maxLogitDiffVsOrtInt8}/${r.maxLogitDiffVsOrtFp32} 答え一致${r.argmaxAgreeVsOrtInt8} 1列 平均${r.msPerColumnMean}・中央${r.msPerColumnMedian}・p90 ${r.msPerColumnP90}ms`));
-for (const m of (result.mismatches || []).slice(0, 5)) console.log('番号の不一致: ' + cut(JSON.stringify({ i: m.i, at: m.firstDiff, n: [m.lenGot, m.lenWant], got: m.got, want: m.want, cp: m.codepoints }), 195));
+if (result.tokParity) {
+  const tp = result.tokParity;
+  console.log(`トークナイザの番号の一致（全部の試験文＋変わった文字列）: ${tp.total}文中 不一致${tp.mismatches}（うち変わった文字列 ${tp.mismatchesEdge}／${tp.edge}）・${tp.ms}ms`);
+  for (const m of tp.first.slice(0, 6)) console.log('  不一致: ' + cut(JSON.stringify({ i: m.i, edge: m.edge, at: m.firstDiff, n: [m.lenGot, m.lenWant], got: m.got, want: m.want, t: m.text, cp: m.edge ? undefined : m.codepoints }), 195));
+}
+console.log('配信の目安（brotli）: ' + result.servedBrotliMB + 'MB／wasm の大きさ(MB): ' + cut(JSON.stringify(result.wasmFiles), 150));
+for (const m of (result.mismatches || []).slice(0, 3)) console.log('番号の不一致: ' + cut(JSON.stringify({ i: m.i, at: m.firstDiff, n: [m.lenGot, m.lenWant], got: m.got, want: m.want, cp: m.codepoints }), 195));
 for (const c of result.console.slice(0, 8)) console.log('console: ' + cut(c, 190));
 if (result.fatal) console.log('fatal: ' + cut(result.fatal, 190));

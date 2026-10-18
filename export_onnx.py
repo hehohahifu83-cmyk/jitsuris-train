@@ -111,11 +111,25 @@ def probs_ort(sess, id_lists, pad_id, batch=32, logits_out=False):
     return np.vstack(out)
 
 
-def write_reference(path, texts, id_lists, sess_q, sess_f, labels):
-    """ブラウザの試験の正解データ：文・縮めたトークナイザの番号・onnxruntime（CPU）の logits（INT8 と fp32）。1 列ずつ（バッチ 1）流す。"""
+# トークナイザの一致試験に足す変わった文字列（全角・半角カナ・丸数字・結合文字・ゼロ幅・絵文字・制御文字・長い文など。実際の表に出そうなもの）
+EDGE_TEXTS = [
+    "ＡＢＣ１２３", "ｱｲｳｴｵ ﾊﾟﾋﾟﾌﾟ ｶﾞｷﾞ", "①②③ ⑩ ⑳", "㈱テスト ㈲ ㍿ ㈹", "㎏ ㎡ ㌔ ㌢ ㍉", "〒100-0001 東京都千代田区", "２０２４年１２月３１日", "令和７年４月１日",
+    "￥１，２３４，５６７", "$1,234.56 €99 £10 ¥500", "～〜~ ー－−―‐", "  先頭と末尾の空白  ", "タブ\tと改行\nと復帰\rの混在", "零幅\u200bスペース\ufeffBOM",
+    "絵文字😀🎉👍", "結合文字 が か゛ ぱ は゜", "𠮷野家（つちよし）", "ǅ ﬁ ﬂ ﬃ", "ⅠⅡⅢ ⅳ ⅹ", "\u00a0ノーブレーク\u3000全角空白", "👨‍👩‍👧 family",
+    "Ｆｕｌｌｗｉｄｔｈ Ｌａｔｉｎ ａｂｃ ＸＹＺ", "½ ¼ ¾ ² ³", "™ ® ©", "…‥・･", "「」『』【】〔〕", "α β γ Ω", "مرحبا بالعالم", "한국어 テスト", "中文测试 繁體字",
+    "\x01\x02 control \x7f", "AaBbCc 123 xyz", "a" * 400, "売上高" * 80, "東京都" + "　" * 5 + "渋谷区", "山田太郎 / 鈴木花子 / 佐藤次郎",
+    "invoice_no, order-id, ORD-2024-0001", "03-1234-5678", "info@example.com", "https://example.com/path?q=1&r=2", "1,234,567.89", "-12.5%", "2024/12/31 23:59:59",
+]
+
+
+def write_reference(path, texts, id_lists, sess_q, sess_f, labels, tok_texts=None, tok_ids=None):
+    """ブラウザの試験の正解データ：文・縮めたトークナイザの番号・onnxruntime（CPU）の logits（INT8 と fp32）。1 列ずつ（バッチ 1）流す。
+    tok_texts / tok_ids は、トークナイザの番号だけを全部の試験文＋変わった文字列で比べるためのもの（モデルは流さない）。"""
     def one(sess, ids):
         return sess.run(["logits"], {"input_ids": np.asarray([ids], dtype=np.int64), "attention_mask": np.ones((1, len(ids)), dtype=np.int64)})[0][0].astype(float).tolist()
     ref = {"texts": texts, "ids": id_lists, "logits_q": [one(sess_q, i) for i in id_lists], "logits_f": [one(sess_f, i) for i in id_lists], "labels": labels}
+    if tok_texts is not None:
+        ref["tok_texts"], ref["tok_ids"], ref["edge_from"] = tok_texts, tok_ids, len(tok_texts) - len(EDGE_TEXTS)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(ref, f, ensure_ascii=False, separators=(",", ":"))
 
@@ -251,8 +265,10 @@ def main(argv=None):
         per = max(1, args.reference // max(1, len(test_rows)))
         pick = [(tn, i) for tn in test_rows for i in range(min(per, len(ids[tn])))]
         texts = [text(test_rows[tn][i], prefix) for tn, i in pick]
-        write_reference(os.path.join(out, "reference.json"), texts, [ids[tn][i] for tn, i in pick], ort_session(quant), ort_session(fp32), labels)
-        report.append(f"- ブラウザの試験の正解データ（reference.json）：{len(texts)} 文")
+        tok_texts = [text(r, prefix) for tn in test_rows for r in test_rows[tn]] + [prefix + t for t in EDGE_TEXTS]
+        tok_ids = C.cap_ids([e.ids for e in new_tok.encode_batch(tok_texts)], 128, 2)
+        write_reference(os.path.join(out, "reference.json"), texts, [ids[tn][i] for tn, i in pick], ort_session(quant), ort_session(fp32), labels, tok_texts, tok_ids)
+        report.append(f"- ブラウザの試験の正解データ（reference.json）：モデルを流す文 {len(texts)} 文／トークナイザの番号だけを比べる文 {len(tok_texts)} 文（試験の全列＋変わった文字列 {len(EDGE_TEXTS)} 個）")
     report += ["", "数字は GitHub Actions の CPU の結果で、ブラウザ（WASM）の実機の速さではない。精度は保存したモデルを書き出して試験に流した結果。"]
     open(os.path.join(out, "REPORT.md"), "w", encoding="utf-8").write("\n".join(report) + "\n")
     print("\n".join(report))
