@@ -66,19 +66,25 @@ def analyze(rows: list[dict]) -> str:
     confusions = defaultdict(Counter)
     recurrent = defaultdict(set)
     high_unknown = []
+    cases = []
     for r in rows:
         key = (r["dataset"], r["condition"], r["seed"])
         totals[key]["rows"] += 1
         if r["truth"] == "other":
+            if r["prediction"] not in ("unknown", "other"):
+                totals[key]["other_ng"] += 1
+                cases.append(("other_ng", r))
             continue
         if r["prediction"] == "unknown":
             totals[key]["unknown"] += 1
+            cases.append(("unknown", r))
             if r["confidence"] is not None and r["confidence"] >= 0.90:
                 high_unknown.append(r)
         elif r["prediction"] != r["truth"]:
             totals[key]["wrong"] += 1
             if r["critical"]:
                 totals[key]["critical"] += 1
+            cases.append(("critical" if r["critical"] else "wrong", r))
             confusions[(r["dataset"], r["condition"])][(r["truth"], r["prediction"])] += 1
             normalized = re.sub(r"\s+", " ", r["column"].casefold()).strip()
             recurrent[(r["dataset"], r["condition"], normalized, r["truth"], r["prediction"])].add(r["seed"])
@@ -88,10 +94,10 @@ def analyze(rows: list[dict]) -> str:
              f"使用ファイル数: {len({r['file'] for r in rows})} / 行数: {len(rows)}",
              "対象は dev220 / general / business / business2 / japan_procurement のみ。列名・正解・予測・上位確率だけを集計し、列の値は読み込んでいません。", "",
              "## 観測結果", "",
-             "| 評価セット | 条件 | seed | 行数 | 誤り | 重大誤り | unknown |",
-             "|---|---|---:|---:|---:|---:|---:|"]
+             "| 評価セット | 条件 | seed | 行数 | 誤り | 重大誤り | unknown | other見落とし |",
+             "|---|---|---:|---:|---:|---:|---:|---:|"]
     for (dataset, condition, seed), c in sorted(totals.items()):
-        lines.append(f"| {dataset} | {condition} | {seed} | {c['rows']} | {c['wrong']} | {c['critical']} | {c['unknown']} |")
+        lines.append(f"| {dataset} | {condition} | {seed} | {c['rows']} | {c['wrong']} | {c['critical']} | {c['unknown']} | {c['other_ng']} |")
 
     lines += ["", "### 取り違えの頻度", ""]
     for (dataset, condition), counts in sorted(confusions.items()):
@@ -105,6 +111,14 @@ def analyze(rows: list[dict]) -> str:
             lines.append(f"- {dataset} / {condition}: `{column}`、{truth}→{pred}（{', '.join('seed ' + s for s in sorted(seeds))}）")
     else:
         lines.append("同じ列名・正解・予測の誤りは複数seedで確認されませんでした。")
+
+    lines += ["", "### 全ての誤り・unknown（評価例。学習に転用しない）", "",
+              "| 区分 | セット | 条件 | seed | 列名 | 正解 | 予測 | 上位確率 | 重大 |",
+              "|---|---|---|---:|---|---|---|---:|---:|"]
+    for kind, r in sorted(cases, key=lambda item: (item[1]["dataset"], item[1]["condition"], item[1]["seed"], item[0], item[1]["column"].casefold())):
+        col = r["column"].replace("|", "\\|").replace("`", "'")
+        p = f"{r['confidence']:.4f}" if r["confidence"] is not None else "n/a"
+        lines.append(f"| {kind} | {r['dataset']} | {r['condition']} | {r['seed']} | {col} | {r['truth']} | {r['prediction']} | {p} | {'yes' if r['critical'] else 'no'} |")
 
     lines += ["", "## 原因仮説（断定ではない）", ""]
     numeric_n = sum(n for (a, b), n in sum((c for (d, cond), c in confusions.items()), Counter()).items() if a in NUMERIC and b in NUMERIC)
