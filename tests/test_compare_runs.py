@@ -73,5 +73,40 @@ class CompareRunsTest(unittest.TestCase):
             C.pick(secs, "blind")
 
 
+SEEDS = """
+### Kaggle GPU 仕事1（FT_SEED=1）2026-10-18 04:00（試験：開発用220, 本物（一般））
+| hfmodel/x 微調整 2.0周・微調整だけ | 開発用220 正97.0% 誤5 不明1 重大1 | 本物（一般） 正90.0% 誤7 不明22 重大2 | 学習 600秒・評価 60秒 |
+
+### Kaggle GPU 仕事2（仕事1との違い：FT_SEED=2）2026-10-18 04:10（試験：開発用220, 本物（一般））
+| hfmodel/x 微調整 2.0周・微調整だけ | 開発用220 正98.2% 誤3 不明1 重大0 | 本物（一般） 正91.5% 誤6 不明20 重大1 | 学習 600秒・評価 60秒 |
+
+### Kaggle GPU 仕事3（仕事1との違い：FT_SEED=3）2026-10-18 04:20（試験：開発用220, 本物（一般））
+| hfmodel/x 微調整 2.0周・微調整だけ | 開発用220 正97.7% 誤4 不明1 重大1 | 本物（一般） 正89.2% 誤8 不明23 重大3 | 学習 600秒・評価 60秒 |
+"""
+
+
+class NoiseTableTest(unittest.TestCase):
+    def test_noise_table_reports_mean_min_max_and_range(self):
+        secs = C.parse_sections(SEEDS)
+        table, rng = C.noise_table(secs)
+        self.assertIn("| 微調整だけ | 開発用220 | 97.6% | 97.0% | 98.2% | 1.2 | 1・0・1 | 5・3・4 | 1・1・1 |", table)
+        self.assertIn("| 微調整だけ | 本物（一般） | 90.2% | 89.2% | 91.5% | 2.3 | 2・1・3 |", table)
+        self.assertEqual(rng, 2.3)
+        self.assertIn("最も大きい幅：2.3 ポイント", table)
+
+    def test_noise_needs_two_sections(self):
+        with self.assertRaises(SystemExit):
+            C.noise_table(C.parse_sections(SEEDS)[:1])
+
+    def test_cli_noise_mode_picks_sections_by_heading_text(self):
+        import io, tempfile, contextlib
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d, "r.md"); f.write_text(SEEDS, encoding="utf-8")
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                C.main([str(f), "--noise", "仕事1（", "仕事2（", "仕事3（"])
+            self.assertIn("種だけ違う 3 回のばらつき", buf.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()

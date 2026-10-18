@@ -120,7 +120,8 @@ jobs:
           import os, re
           def emit(path, title, n=3200):
               if not os.path.exists(path): return
-              t = open(path, encoding="utf-8", errors="replace").read()[-n:]
+              ls = open(path, encoding="utf-8", errors="replace").read().splitlines()[-28:]
+              t = "\n".join(l[-200:] for l in ls)[-n:]   # 長い行は後ろ（理由が書いてある所）を残す
               t = t.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::notice title={title}::{t}")
           for p, title in [("a.log", "A"), ("e.log", "E"), ("bench/speed_checks_summary.md", "summary")]:

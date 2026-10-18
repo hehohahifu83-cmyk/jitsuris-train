@@ -24,7 +24,9 @@ class EmbeddingInt8SurgeryTest(unittest.TestCase):
         node = helper.make_node("Gather", ["embeddings.word_embeddings.weight", "input_ids"], ["emb"], name="word_gather", axis=0)
         graph = helper.make_graph([node], "g", [helper.make_tensor_value_info("input_ids", TensorProto.INT64, ["b", "s"])],
                                   [helper.make_tensor_value_info("emb", TensorProto.FLOAT, ["b", "s", hidden])], [init, pos])
-        onnx.save(helper.make_model(graph, opset_imports=[helper.make_opsetid("", 17)]), path)
+        model = helper.make_model(graph, opset_imports=[helper.make_opsetid("", 17)])
+        model.ir_version = 8   # 新しい onnx の既定の IR 版は onnxruntime が読めないことがある
+        onnx.save(model, path)
         return w
 
     def test_gather_becomes_int8_table_with_row_scales_and_output_is_within_half_a_step(self):

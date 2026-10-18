@@ -98,13 +98,52 @@ def compare(a, b):
     return "\n".join(lines), "\n".join(s for s in summary if s), out_of_noise
 
 
+def noise_table(sections):
+    """同じ設定で種だけ違う節（2 つ以上）→ 条件×試験ごとの 平均・最小・最大・幅（ポイント）と、重大の各回。
+    『この設定のばらつき』を測るための表。幅が 1.5 ポイントを超える所は、1 回の差を信じない目安になる。"""
+    if len(sections) < 2:
+        raise SystemExit("ばらつきは 2 つ以上の節がないと出せない")
+    lines = [f"種だけ違う {len(sections)} 回のばらつき", "", "| 条件 | 試験 | 平均 | 最小 | 最大 | 幅(pt) | 重大（各回） | 誤（各回） | 不明（各回） |", "|---|---|---|---|---|---|---|---|---|"]
+    maxrange = 0.0
+    for r0 in sections[0]["rows"]:
+        cond = r0["cond"]
+        rows = []
+        for sec in sections:
+            hit = [r for r in sec["rows"] if r["cond"] == cond]
+            if not hit:
+                rows = None
+                break
+            rows.append(hit[0])
+        if rows is None:
+            lines.append(f"（条件「{cond}」はすべての節にはないので出さない）")
+            continue
+        for name in r0["tests"]:
+            cells = [r["tests"].get(name) for r in rows]
+            if any(c is None for c in cells):
+                continue
+            accs = [c["acc"] for c in cells]
+            rng = round(max(accs) - min(accs), 1)
+            maxrange = max(maxrange, rng)
+            lines.append(f"| {cond} | {name} | {sum(accs) / len(accs):.1f}% | {min(accs):.1f}% | {max(accs):.1f}% | {rng:.1f} | {'・'.join(str(c['crit']) for c in cells)} | {'・'.join(str(c['wrong']) for c in cells)} | {'・'.join(str(c['unk']) for c in cells)} |")
+    lines += ["", f"最も大きい幅：{maxrange:.1f} ポイント（これを超える差は『種のばらつき』では説明しにくい）"]
+    return "\n".join(lines), maxrange
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("file")
-    ap.add_argument("--a", required=True, help="基準の節の見出しに含まれる文字")
-    ap.add_argument("--b", required=True, help="新しい節の見出しに含まれる文字")
+    ap.add_argument("--a", help="基準の節の見出しに含まれる文字")
+    ap.add_argument("--b", help="新しい節の見出しに含まれる文字")
+    ap.add_argument("--noise", nargs="+", help="同じ設定で種だけ違う節の見出しに含まれる文字（2 つ以上）。ばらつきの表を出す")
     args = ap.parse_args(argv)
-    sections = parse_sections(open(args.file, encoding="utf-8").read())
+    with open(args.file, encoding="utf-8") as fh:
+        sections = parse_sections(fh.read())
+    if args.noise:
+        table, _ = noise_table([pick(sections, k) for k in args.noise])
+        print(table)
+        return
+    if not (args.a and args.b):
+        ap.error("--a と --b（または --noise）が要る")
     a, b = pick(sections, args.a), pick(sections, args.b)
     table, summary, _ = compare(a, b)
     print(f"基準：{a['heading'][:100]}\n新　：{b['heading'][:100]}\n{table}\n\n{summary}")
