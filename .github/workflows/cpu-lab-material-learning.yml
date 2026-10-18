@@ -51,36 +51,36 @@ jobs:
           artifacts = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts").get("artifacts", [])
           if not any(a.get("name") == "jitsuris-model" and not a.get("expired") for a in artifacts):
               print("CPU lab held: source run has no classifier artifact")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: no jitsuris-model artifact on this Kaggle run.\\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: no jitsuris-model artifact on this Kaggle run.\n")
               raise SystemExit(0)
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           if request != "done":
               print("CPU lab held: kaggle.request is not done")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle request has not reached done.\\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle request has not reached done.\n")
               raise SystemExit(0)
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
           requests = [line for line in log.splitlines() if "train を依頼" in line]
           statuses = [line for line in log.splitlines() if "KernelWorkerStatus." in line]
           if not requests or "multilingual-e5-base" not in requests[-1] or "FT_FREEZE_EMB=1" not in requests[-1]:
               print("CPU lab held: newest training request is not the target E5-base run")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle request does not match the target E5-base experiment.\\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle request does not match the target E5-base experiment.\n")
               raise SystemExit(0)
           if not statuses or "KernelWorkerStatus.COMPLETE" not in statuses[-1]:
               print("CPU lab held: latest Kaggle kernel status is not COMPLETE")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle kernel status is not COMPLETE.\\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle kernel status is not COMPLETE.\n")
               raise SystemExit(0)
           runs = get(f"https://api.github.com/repos/{repo}/actions/runs?per_page=100").get("workflow_runs", [])
           active = [r for r in runs if r.get("path") == ".github/workflows/kaggle.yml" and r.get("status") == "in_progress"]
           if active:
               print("CPU lab held: another Kaggle workflow is active")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: another Kaggle training workflow is active.\\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: another Kaggle training workflow is active.\n")
               raise SystemExit(0)
-          with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=true\\nsource_run_id={run_id}\\n")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=true\nsource_run_id={run_id}\n")
           print(f"All gates passed for Kaggle run {run_id}")
           PY
       - name: Download E5-base classifier artifact
