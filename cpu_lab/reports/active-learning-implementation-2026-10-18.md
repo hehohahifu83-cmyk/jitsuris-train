@@ -61,3 +61,10 @@ Claude連絡箱: メッセージの更新後にai-bridge workflow run 3912167720
 - 検証: CPU lab safety tests run 39122773344 success（2026-10-18 11:19:39Z）。追加したゲート・上限テストを含め合格。途中runの失敗はcapテストの期待値が誤っていたため修正し、最終runで解消。
 - 未着手: 利用条件と個人情報を確認した未ラベルpool、候補checkpointの取得/所在確認、autolabel実行、CPU候補学習、許可済み固定5試験での比較。よってCPUラボのモデル学習はまだ始まっていない。KaggleのGPU runと重複させない運用状態も継続確認が必要。
 - 残る前提: 3入力一致でも誤ラベルはありうる。改善保証ではなく保守的な候補生成だけを行う。重大誤りの増加/品質悪化は許可済み5試験の比較で候補を棄却する。
+
+
+## 2026-10-18 — 合成未ラベルpool追加
+- `cpu_lab/materials/pool.jsonl` に内部生成の合成例36件を追加。全件JSONL parse成功、ID一意、`split=unlabeled`、`privacy_checked=true`、出典/ライセンス記載あり、label/verifiedフィールドなし。禁止セット由来・参照のパターン検査0件。
+- GitHub Actions CPU lab safety tests run 39123051454 success（2026-10-18T11:23:37Z）。
+- これは人が確認した教材や正解ラベルではない。現時点で候補poolだけが準備済みで、分類器checkpointが見つからずautolabelは未実行、CPU学習も未開始。
+- Kaggle `kaggle/kaggle.request` は `fetch`。最新KAGGLE_LOGは2026-10-18T10:56:49ZのRUNNING行で止まり、より新しい完了状態は取れていない。GitHubの最新Kaggle fetch workflow run 39121167019はsuccessだがartifactなし。これはfetch処理の成功であってKaggle学習の完了証拠ではない。したがってCPU実験を開始せず、GPU学習との重複も避けている。
