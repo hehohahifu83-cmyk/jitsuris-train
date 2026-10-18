@@ -53,6 +53,7 @@ class MaterialTrackingTests(unittest.TestCase):
             b=root/"before.json"; a=root/"after.json"; o=root/"out.json"
             write(b,set(range(80))); write(a,set(range(82)))
             self.assertEqual(compare(str(b),str(a),str(o))["result"],"measurable_improvement")
+            self.assertEqual(compare(str(b),str(a),str(o))["by_target"]["a"]["delta_pp"],2.0)
             write(a,set(range(77)))
             self.assertEqual(compare(str(b),str(a),str(o))["result"],"measurable_regression")
             write(a,set(range(80)))
@@ -65,7 +66,8 @@ class MaterialTrackingTests(unittest.TestCase):
         self.assertEqual(len({r["id"] for r in probe_rows}),len(probe_rows))
         self.assertTrue(all(r["split"]=="progress_probe" and r.get("target") for r in probe_rows))
         self.assertFalse({r["id"] for r in probe_rows}&{r["id"] for r in pool_rows})
-        self.assertTrue(all(r["source"]=="synthetic:cpu-lab-progress-probe-v1" and r["privacy_checked"] is True for r in probe_rows))
+        self.assertEqual(len(probe_rows),110)
+        self.assertTrue(all(r["source"]=="synthetic:cpu-lab-progress-probe-v2" and r["privacy_checked"] is True for r in probe_rows))
         self.assertFalse(any("blind_set" in json.dumps(r).lower() or "set7" in json.dumps(r).lower() for r in probe_rows))
 
     def test_cpu_lab_checkpoint_retention_only_changes_first_e5_base_job(self):
