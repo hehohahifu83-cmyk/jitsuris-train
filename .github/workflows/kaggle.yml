@@ -37,6 +37,8 @@ jobs:
           if [ "${{ steps.gate.outputs.mode }}" = fetch ]; then cp kaggle/kaggle.request /tmp/req && echo fetch > kaggle/kaggle.request && WAIT_MIN=1 bash kaggle/kaggle.sh; else bash kaggle/kaggle.sh; fi
       - uses: actions/upload-artifact@v4
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
+      - uses: actions/upload-artifact@v4
+        with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
       - name: Save
         if: always()
         run: |
@@ -46,3 +48,4 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "Kaggle の GPU での学習（状態・集計）"
           for i in 1 2 3; do git push && break; git pull --rebase; done
+
