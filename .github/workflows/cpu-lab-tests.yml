@@ -22,6 +22,6 @@ jobs:
         with:
           python-version: '3.11'
       - name: Compile trainer and active-learning utility
-        run: python -m py_compile finetune_exp.py cpu_lab/self_learning.py cpu_lab/material_receipt.py cpu_lab/progress_probe.py
+        run: python -m py_compile finetune_exp.py cpu_lab/self_learning.py cpu_lab/material_receipt.py cpu_lab/progress_probe.py jobs.py kaggle/run.py
       - name: Verify leakage and approval guards
         run: python -m unittest discover -s cpu_lab/tests -v
