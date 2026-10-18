@@ -229,3 +229,8 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 
 
 連絡箱の最新確認（2026-10-18 20:00）: 今回のClaude宛てメッセージ作成後のai-bridge workflow run 39121537658もfailure、INBOX.mdのClaude宛て未読は0件。ファイル保存は済みだがClaudeへ配信済みとは扱わない。Claude復帰後、ユーザーに「連絡箱」を確認してもらう。
+
+## 2026-10-18 20:03 CI追記
+- `.github/workflows/cpu-lab-tests.yml` を追加。CPUラボコード変更時にcompile＋unittestを自動実行。
+- 最初の2 run（39121622107・39121637227）はリモートテストファイルに literal \\n が混じるパス設定ミス。修正後 run 39121657962 success（4件）。
+- Claude連絡箱メッセージ更新後のrun 39121677204 はfailure。ActionsログBlobは存在せず取得できず、INBOX.mdもClaude宛て0件のまま。Claudeへの未達は解消していない。
