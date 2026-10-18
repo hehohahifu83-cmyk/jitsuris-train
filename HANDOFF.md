@@ -215,3 +215,14 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - 研究教材マップはSherlock、Sato、TURL、Permutation Invariant Strategy、DODUOの公開論文を要点整理したもの。データ・重みはまだ取得していない。個別のライセンス確認も未実施。
 - CPUラボの学習workflow・排他ロック・実訓練例は未実装。現時点でジツリスの新規CPU学習はしていない。
 - Claude宛てメッセージ `20261018-1949_chatgpt-to-claude_cpu-lab-materials.md` をai-bridgeに作成。ファイルの書式と秘密パターンは手元で検査し、書式合格・秘密検出0件。ただしai-bridge workflow run 39120861818 は初回・再実行とも失敗、ログ取得不可。さらに連絡箱README/STATE更新後のruns 39121062324・39121064227も失敗しており、個別メッセージだけでなく自動整理workflow全体の問題が疑われる。INBOX.mdにClaude宛て未読として載ったこと・Claudeの受領は未確認。原因はログ不足で未確定。
+
+
+## 2026-10-18 20:00 — CPU能動学習補助（ChatGPT単独作業）
+オーナー指示により、Claudeの利用制限中にChatGPTだけで実装。詳細は `cpu_lab/reports/active-learning-implementation-2026-10-18.md` と `cpu_lab/README.md` を参照。
+
+- `cpu_lab/self_learning.py`: 候補モデルから未ラベル公開/合成列を推論し、不確実度・予測クラス偏り・ヘッダー重複をもとに人手レビューキューを作る。明示的にverifiedされたラベルのみをリプレイ訓練JSONLへ書く。AI擬似ラベルは自動採用しない。
+- `finetune_exp.py`: `FT_CPU_LAB_REPLAY` が指定された場合だけ、来歴・ライセンス・プライバシー・レビュアー・ラベル集合・禁止データを検査した上で訓練例へ追加。未指定時の既存挙動は変わらない。
+- `.github/workflows/cpu-lab-active-learning.yml`: 手動確認必須、2 seed逐次、成果artifact 7日保存。既存 `cpu-e5base-training.yml` と共有CPU排他グループにした。
+- テスト: ローカルunittest 3件・py_compile通過。GitHub Actions実行・CPU候補学習・性能比較は未実施。実例プールや承認済みデータもまだない。既定モデル/Kaggle依頼/製品コードは変更なし。
+- Claude向け独立レビュー依頼: `ai-bridge/messages/20261018-2000_chatgpt-to-claude_active-learning.md`。連絡箱に保存したが自動整理workflowは不調が続いている。INBOX掲載・Claude受領は未確認。Claude復帰時はユーザーに「連絡箱」を確認してもらい、このレビューを渡す。
+- 制約: blind_set*、セット3・5・7を開かない。比較は許可済み5試験だけ。各差1.5ポイント未満は差なし。学習後は誤り・重大誤りの全件原因分析をしてClaudeにも共有する。
