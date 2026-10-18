@@ -2,7 +2,8 @@
 
 書き出すもの（out/ の中。Transformers.js が読む形）：
   config.json（縮めた語彙の大きさ・id2label）／tokenizer.json（縮めた語彙の Unigram。Precompiled の正規化は外してある）／charsmap.bin（外した正規化の表）／tokenizer_config.json／special_tokens_map.json
-  onnx/model.onnx（fp32）／onnx/model_emb8.onnx（埋め込み表だけ行ごとの INT8）／onnx/model_quantized.onnx（さらに全結合層を動的 INT8）
+  onnx/model.onnx（fp32）／onnx/model_emb8.onnx（埋め込み表だけ行ごとの INT8）／onnx/model_quantized.onnx（さらに全結合層の重みも出力チャネルごとの INT8。重みだけで計算は fp32。ブラウザで使う）／
+  onnx/model_dyn8.onnx（比較用：全結合層を動的 INT8＝活性化も 8 ビット。速いが正解率が 3〜5 ポイント落ちた）
 入力は input_ids・attention_mask（バッチ・長さは可変）、出力は logits。トークナイズは Transformers.js に任せるが、**正規化だけは自前**（browser_test/charsmap.mjs）：
   Transformers.js は sentencepiece の正規化表（Precompiled）を NFKC で近似しているだけで、半角カナの濁点（ｿﾞ）を合成してしまい、学習時の HF tokenizers と別の片になる。
   そこで書き出す tokenizer.json からは Precompiled を外し、表そのもの（charsmap.bin）を一緒に書き出して、ブラウザで charsmap.mjs が学習時と同じ動きで引く。
@@ -54,6 +55,49 @@ def embedding_to_int8(src, dst, vocab, hidden):
         g.node.insert(idx + k, node)
     onnx.save(m, dst)
     return base
+
+
+def linear_weights_to_int8(src, dst, min_params=4096):
+    """fp32 の ONNX の全結合層（MatMul の定数の右辺＝重み）を『INT8 の表＋出力チャネルごとの倍率＋DequantizeLinear』に書き換える（重みだけの INT8）。
+    計算は fp32 のまま（活性化は 8 ビットにしない）。Kaggle の保存済みモデルでの試験（2026-10-18、e5-small 仕事1）では、動的量子化（活性化も INT8）は
+    正解率が 3〜5 ポイント落ちた（top-1 一致 94.8%）が、重みだけを出力チャネルごとの INT8 に丸めた疑似では −0.4 ポイント以内（一致 98.7%）だった。
+    その丸め方（出力チャネルごとの対称 INT8、倍率 = 最大絶対値/127）と同じ。onnxruntime が読み込み時に DequantizeLinear を定数畳み込みして fp32 の重みに戻すので、
+    配るファイルは INT8（小さい）で、実行時の計算は fp32。小さい行列（min_params 個未満。分類の頭など）は fp32 のまま。
+    戻り値：(書き換えた重みの数, その個数)。"""
+    import onnx
+    from onnx import TensorProto, helper, numpy_helper
+    m = onnx.load(src)
+    g = m.graph
+    opset = max((o.version for o in m.opset_import if o.domain in ("", "ai.onnx")), default=0)
+    if opset < 13:
+        raise RuntimeError(f"opset {opset} では DequantizeLinear の axis が使えない（13 以上が要る）")
+    inits = {i.name: i for i in g.initializer}
+    uses = {}
+    for node in g.node:
+        for k, name in enumerate(node.input):
+            uses.setdefault(name, []).append((node, k))
+    dq_nodes, n_done, n_params = [], 0, 0
+    for name, users in uses.items():
+        init = inits.get(name)
+        if init is None or init.data_type != TensorProto.FLOAT or len(init.dims) != 2 or int(init.dims[0]) * int(init.dims[1]) < min_params:
+            continue
+        if not all(node.op_type == "MatMul" and k == 1 for node, k in users):   # MatMul の右辺（重み）だけで使われているもの
+            continue
+        w = numpy_helper.to_array(init)                                         # [入力, 出力]
+        scale = np.abs(w).max(axis=0, keepdims=True) / 127.0                    # 出力チャネル（列）ごと
+        scale[scale == 0] = 1.0
+        q = np.clip(np.round(w / scale), -127, 127).astype(np.int8)
+        g.initializer.remove(init)
+        g.initializer.extend([numpy_helper.from_array(q, name + "_q8"), numpy_helper.from_array(scale.reshape(-1).astype(np.float32), name + "_scale")])
+        dq_nodes.append(helper.make_node("DequantizeLinear", [name + "_q8", name + "_scale"], [name + "_dq"], axis=1, name=name + "_dequant"))
+        for node, k in users:
+            node.input[k] = name + "_dq"
+        n_done += 1
+        n_params += int(q.size)
+    for k, node in enumerate(dq_nodes):   # 入力が初期値だけなので、グラフの先頭に置けば使う前に定義される
+        g.node.insert(k, node)
+    onnx.save(m, dst)
+    return n_done, n_params
 
 
 def export_fp32(model, path, opset=17):
@@ -208,16 +252,17 @@ def main(argv=None):
     write_tokenizer_files(tok, kept, out)
     new_tok = C.trimmed_tokenizer(tok, kept)
 
-    fp32, emb8, quant = (os.path.join(out, "onnx", n) for n in ("model.onnx", "model_emb8.onnx", "model_quantized.onnx"))
+    fp32, emb8, quant, dyn8 = (os.path.join(out, "onnx", n) for n in ("model.onnx", "model_emb8.onnx", "model_quantized.onnx", "model_dyn8.onnx"))
     export_fp32(trimmed, fp32)
     embedding_to_int8(fp32, emb8, len(kept), hidden)
-    quantize_matmul(emb8, quant, args.per_channel)
+    n_w8, p_w8 = linear_weights_to_int8(emb8, quant)   # 重みだけ INT8（ブラウザで使う。Transformers.js の dtype 'q8' は model_quantized.onnx を読む）
+    quantize_matmul(emb8, dyn8, args.per_channel)       # 比較用：動的量子化（活性化も INT8。正解率が落ちる）
 
     mb = lambda p: os.path.getsize(p) / 1e6
     tok_mb = os.path.getsize(os.path.join(out, "tokenizer.json")) / 1e6
     report = [f"# ブラウザ用に書き出したモデルの試験（{args.model}）", "",
               f"- 残す単語片 {len(kept):,} 個／全体 {vocab_size:,} 個（上位 K={args.top_k}）。per_channel={args.per_channel}",
-              f"- ファイルの大きさ：fp32 {mb(fp32):.1f}MB／埋め込み表だけ INT8 {mb(emb8):.1f}MB／さらに全結合層も INT8（model_quantized.onnx）{mb(quant):.1f}MB／tokenizer.json {tok_mb:.1f}MB", ""]
+              f"- ファイルの大きさ：fp32 {mb(fp32):.1f}MB／埋め込み表だけ INT8 {mb(emb8):.1f}MB／さらに全結合層の重みも INT8＝重みだけ（model_quantized.onnx。{n_w8} 個・{p_w8 / 1e6:.1f}M 個の重み。計算は fp32）{mb(quant):.1f}MB／比較用の動的量子化（model_dyn8.onnx）{mb(dyn8):.1f}MB／tokenizer.json {tok_mb:.1f}MB", ""]
 
     test_rows = {tn: (te[:args.limit] if args.limit else te) for tn, te in tests.items()}
     ids = {tn: C.cap_ids([e.ids for e in new_tok.encode_batch([text(r, prefix) for r in te])], 128, 2) for tn, te in test_rows.items()}
@@ -227,7 +272,7 @@ def main(argv=None):
     n_cols = sum(len(v) for v in ids.values())
     conditions = (("微調整だけ", 1.0), ("微調整7割＋今の仕組み3割", 0.7))
     lines = []
-    for vname, path in (("PyTorch fp32", None), ("ONNX fp32", fp32), ("ONNX 埋め込みINT8", emb8), ("ONNX 埋め込みINT8＋全結合層INT8", quant)):
+    for vname, path in (("PyTorch fp32", None), ("ONNX fp32", fp32), ("ONNX 埋め込みINT8", emb8), ("ONNX 埋め込みINT8＋全結合層INT8（重みだけ）", quant), ("ONNX 埋め込みINT8＋全結合層INT8（動的量子化）", dyn8)):
         if path is None:
             pr, sec = ref, 0.0
         else:
@@ -256,7 +301,7 @@ def main(argv=None):
     report += ["| 版・組み合わせ | " + " | ".join(test_rows) + " | 比較 |", "|---|" + "---|" * (len(test_rows) + 1)] + lines + [""]
 
     all_ids = [x for tn in test_rows for x in ids[tn]]
-    for label, path in (("ONNX fp32", fp32), ("ONNX INT8（model_quantized.onnx）", quant)):
+    for label, path in (("ONNX fp32", fp32), ("ONNX INT8 重みだけ（model_quantized.onnx）", quant), ("ONNX INT8 動的量子化（model_dyn8.onnx）", dyn8)):
         for threads in (1, 2):
             mean_ms, med_ms = time_single(ort_session(path, threads), all_ids, pad_id)
             report.append(f"- 1 列ずつ流した時間（onnxruntime・CPU・{threads}スレッド・{label}）：平均 {mean_ms:.0f}ms・中央値 {med_ms:.0f}ms／列（全 {n_cols} 列の文の平均 {np.mean([len(x) for x in all_ids]):.0f} トークン）")
