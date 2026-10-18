@@ -5,7 +5,7 @@ from pathlib import Path
 
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from self_learning import _check_pool, approve, load_approved_replay
+from self_learning import _check_pool, approve, load_approved_replay, load_pseudo_replay, pseudo_label_decision
 
 
 def pool_row(id="public:1"):
@@ -39,6 +39,35 @@ class ActiveLearningSafetyTests(unittest.TestCase):
             self.assertEqual(result[0][:3], ("amount", ["3", "8"], "amount"))
             with self.assertRaises(ValueError):
                 load_approved_replay(str(p), {"date"})
+
+    def test_three_view_pseudolabel_gate_accepts_only_strong_agreement(self):
+        strong = [[0.999, 0.001], [0.998, 0.002], [0.997, 0.003]]
+        result = pseudo_label_decision(strong, ["amount", "date"])
+        self.assertEqual(result["label"], "amount")
+        self.assertEqual(result["agreement"], 3)
+        self.assertIsNone(pseudo_label_decision([strong[0], strong[1], [0.001, 0.999]], ["amount", "date"]))
+        self.assertIsNone(pseudo_label_decision([[0.8, 0.2]] * 3, ["amount", "date"]))
+
+    def test_machine_pseudo_rows_are_separate_and_capped(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "pseudo.jsonl"
+            row = pool_row()
+            row.update(label="amount", split="train", verified=False)
+            row["pseudo_label"] = {
+                "method": "same-model-three-value-orders-v1", "label": "amount",
+                "confidence_min": 0.997, "margin_min": 0.994, "agreement": 3,
+                "views": ["amount", "amount", "amount"],
+            }
+            p.write_text(json.dumps(row) + "\\n", encoding="utf-8")
+            loaded = load_pseudo_replay(str(p), {"amount", "date"}, base_rows=100)
+            self.assertEqual(len(loaded), 1)
+            self.assertEqual(loaded[0][2], "amount")
+            with self.assertRaises(ValueError):
+                load_pseudo_replay(str(p), {"amount"}, base_rows=10)
+            row["pseudo_label"]["confidence_min"] = 0.9
+            p.write_text(json.dumps(row) + "\\n", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                load_pseudo_replay(str(p), {"amount"}, base_rows=100)
 
     def test_approve_exports_explicit_human_review(self):
         with tempfile.TemporaryDirectory() as d:
