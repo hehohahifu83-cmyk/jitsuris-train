@@ -1,10 +1,7 @@
 name: ブラウザ側（Transformers.js）の調べ
 concurrency: { group: browser-js, cancel-in-progress: false }
 on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-    paths: [browser_test/**, .github/workflows/browser-js.yml]
+  workflow_dispatch:   # 下調べ用。必要なときだけ手で動かす（ブラウザの試験そのものは browser-model.yml）
 permissions:
   contents: read
 jobs:
