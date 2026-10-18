@@ -1,0 +1,22 @@
+name: UNIT 文脈 ablation の単体検査
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - encoder_context.py
+      - encoder_exp.py
+      - tests/test_encoder_context.py
+      - .github/workflows/encoder-context-checks.yml
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: UNIT 文脈の単体テスト
+        run: python -m unittest tests.test_encoder_context -v
