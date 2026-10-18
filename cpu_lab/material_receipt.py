@@ -67,6 +67,8 @@ def prepare(pool_path: Path, pseudo_path: Path, source_model: str, out_path: Pat
 
 def mark_trained(receipt_path: Path, train_log: Path, seed: int, out_path: Path) -> dict:
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if not train_log.is_file():
+        raise ValueError("training log is missing; material inclusion cannot be confirmed")
     log = train_log.read_text(encoding="utf-8", errors="replace")
     match = re.search(r"CPU lab pseudo replay: (\d+) unverified rows", log)
     if not match:
