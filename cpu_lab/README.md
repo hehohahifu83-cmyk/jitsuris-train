@@ -22,10 +22,23 @@
 5. 許可済み固定5試験だけで採否を評価します。blind_set*、セット3・5・7は開かず、教材化・学習・調整に使いません。
 6. 各試験の前後でCPU学習の時間・CPU使用率・メモリを記録し、既存CPU学習への影響が出たらラボ側を止めます。
 
+## 自己学習の補助プログラム
+
+`cpu_lab/self_learning.py` は既存の分類器でラベルなしの公開/合成列を採点し、情報量が高く重複の少ない候補を人手確認キューへ出します。確率上位・不確実度は確認の優先順位であり、正解ラベルとしては扱いません。
+
+1. 許可された訓練候補だけをJSONLへ用意する。各行に `id, header, values, source, license, split, privacy_checked` が必要。splitは `unlabeled` または `train`。個人情報を含めず、利用条件を確認する。
+2. `python cpu_lab/self_learning.py select --model ft_out --pool cpu_lab/materials/pool.jsonl --out cpu_lab/materials/review_queue.jsonl --budget 100`
+3. 人が根拠を確認した行だけ、`review.status=approved`, `review.label`, `review.reviewer`, `review.verified=true` を設定する。未確認・AI擬似ラベルは出力できない。
+4. `python cpu_lab/self_learning.py approve --reviewed cpu_lab/materials/review_queue.jsonl --out cpu_lab/materials/verified_replay/approved.jsonl`
+5. 承認済みJSONLをリポジトリに保存してから、Actions の `CPU lab verified active-learning replay` を `confirm_cpu=yes` で手動起動する。固定済み5試験は結果測定専用で訓練追加行にしない。2 seedを逐次実行し、結果・誤り・ログ・教材版を7日間のartifactへ保存する。
+
+学習への追加は `FT_CPU_LAB_REPLAY` を明示したときだけ有効。人手確認・出典・ライセンス・プライバシー・既存ラベル集合を再検査し、不正な行は学習前に停止します。通常Kaggle依頼や既定モデルには触れず、既定モデルへの昇格も行いません。CPUラボworkflowと既存CPU e5-base workflowは共通の `jitsuris-cpu-training` 排他グループで直列化します。
+
+この仕組みは完全自律の自己改変ではなく、人が確認した教材だけで候補を更新する能動学習ループです。評価データ混入と未確認の誤ラベルを防ぎながら、全件を一律学習する代わりに次に確認すべき例を優先します。
+
 ## 次の作業
 
-- Claude宛ての依頼メッセージを連絡箱リポジトリに作成した。ただし自動整理workflowが2回失敗し、INBOX反映・Claudeの受領は未確認。
-- Claudeの返答を受け取った後、教材の由来・ライセンス・重複・個人情報を点検してから追加。
-- 教材候補を分離した検証可能な訓練例へ変換し、既存学習とCPU資源を共有しない実行設計を確認する。
-- その後、手動起動・排他制御・成果物保存を備えたCPUラボ用ワークフローを実装し、スモークテストする。
-- 初回の学習と比較が終わるまで、ラボの成果は候補扱いとする。
+- まず小さい公開または合成プールを作り、選択・人手確認・承認・再読込を練習する。
+- 学習実行前にKaggleとGitHubの学習状態を確認し、同一/近似実験が走っていないことを確認する。
+- Claudeが復帰したら教材のライセンス/重複/ラベル監査とキュー設計の独立レビューを依頼する。連絡箱の自動整理workflowが失敗中のため、メッセージがINBOXへ反映されたことは別途確認する。
+- 初回学習と比較が終わるまで、候補は採用しない。
