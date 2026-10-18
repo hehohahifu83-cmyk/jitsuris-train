@@ -33,8 +33,11 @@ window.__run = async ({ texts, threads, warmup }) => {
   const model = await AutoModelForSequenceClassification.from_pretrained('model', { dtype: 'q8', device: 'wasm' });
   const loadMs = performance.now() - t0;
   const ids = [], logits = [], times = [];
+  const tokMs = [];
   for (const t of texts) {
+    const s0 = performance.now();
     const enc = tokenizer(t, { truncation: true, max_length: 128 });
+    tokMs.push(performance.now() - s0);
     ids.push(Array.from(enc.input_ids.data, Number));
   }
   for (let i = 0; i < texts.length; i++) {
@@ -44,13 +47,15 @@ window.__run = async ({ texts, threads, warmup }) => {
     times.push(performance.now() - s);
     logits.push(Array.from(out.logits.data));
   }
-  return { tokenizerMs: tTok, loadMs, ids, logits, times: times.slice(warmup), isolated: self.crossOriginIsolated === true, threads: env.backends.onnx.wasm.numThreads };
+  return { tokenizerMs: tTok, loadMs, ids, logits, tokMs, times: times.slice(warmup), isolated: self.crossOriginIsolated === true, threads: env.backends.onnx.wasm.numThreads };
 };
 window.__ready = true;
 </script>`;
 
+const served = new Map();   // 配ったファイルと大きさ（初回に取り込む量の目安）
 function send(res, file) {
   if (!file || !fs.existsSync(file) || !fs.statSync(file).isFile()) { res.writeHead(404); res.end('not found'); return; }
+  served.set(path.basename(file), fs.statSync(file).size);
   res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', ...HEADERS });
   fs.createReadStream(file).pipe(res);
 }
@@ -71,6 +76,8 @@ const base = `http://127.0.0.1:${server.address().port}`;
 
 const ref = JSON.parse(fs.readFileSync(refPath, 'utf-8'));
 const argmax = (a) => a.indexOf(Math.max(...a));
+const pieces = (() => { try { return JSON.parse(fs.readFileSync(path.join(modelDir, 'tokenizer.json'), 'utf-8')).model.vocab.map((v) => v[0]); } catch { return null; } })();
+const piece = (id) => (pieces && pieces[id] !== undefined ? pieces[id] : String(id));
 const result = { builds: WEB_BUILDS, importMap: IMPORT_MAP, n: ref.texts.length, runs: [], blocked: [], console: [], tried: [] };
 const browser = await chromium.launch({ headless: true });
 async function openPage(threads) {
@@ -98,7 +105,7 @@ try {
   }
   if (ok) {
     result.build = webBuild;
-    for (const threads of [1, 2]) {
+    for (const threads of [1, 2, 4]) {
       const { ctx, page } = await openPage(threads);
       await page.waitForFunction(() => window.__ready === true, null, { timeout: 60000 });
       const t0 = Date.now();
@@ -108,13 +115,25 @@ try {
       } catch (e) {
         result.runs.push({ threads, error: String(e).slice(0, 600) }); await ctx.close(); continue;
       }
-      let idMismatch = 0, firstBad = null;
-      r.ids.forEach((ids, i) => { if (JSON.stringify(ids) !== JSON.stringify(ref.ids[i])) { idMismatch++; if (firstBad === null) firstBad = { i, got: ids.slice(0, 40), want: ref.ids[i].slice(0, 40) }; } });
+      let idMismatch = 0;
+      const mism = [];
+      r.ids.forEach((ids, i) => {
+        const want = ref.ids[i];
+        if (JSON.stringify(ids) === JSON.stringify(want)) return;
+        idMismatch++;
+        let k = 0; while (k < Math.min(ids.length, want.length) && ids[k] === want[k]) k++;
+        const lo = Math.max(0, k - 2);
+        mism.push({ i, firstDiff: k, lenGot: ids.length, lenWant: want.length,
+          got: ids.slice(lo, k + 6).map(piece), want: want.slice(lo, k + 6).map(piece),
+          gotIds: ids.slice(lo, k + 6), wantIds: want.slice(lo, k + 6),
+          codepoints: [...new Set([...ref.texts[i]].filter((c) => c.codePointAt(0) > 127))].slice(0, 12).map((c) => 'U+' + c.codePointAt(0).toString(16).toUpperCase()) });
+      });
+      if (threads === 1) result.mismatches = mism;
       let maxQ = 0, maxF = 0, agreeQ = 0;
       r.logits.forEach((lg, i) => { lg.forEach((v, k) => { maxQ = Math.max(maxQ, Math.abs(v - ref.logits_q[i][k])); maxF = Math.max(maxF, Math.abs(v - ref.logits_f[i][k])); }); if (argmax(lg) === argmax(ref.logits_q[i])) agreeQ++; });
       const ts = [...r.times].sort((a, b) => a - b);
-      result.runs.push({ threads, isolated: r.isolated, effectiveThreads: r.threads, tokenizerMs: Math.round(r.tokenizerMs), loadMs: Math.round(r.loadMs),
-        idMismatch, firstBad, maxLogitDiffVsOrtInt8: +maxQ.toFixed(4), maxLogitDiffVsOrtFp32: +maxF.toFixed(4), argmaxAgreeVsOrtInt8: `${agreeQ}/${ref.texts.length}`,
+      result.runs.push({ threads, isolated: r.isolated, effectiveThreads: r.threads, tokenizerLoadMs: Math.round(r.tokenizerMs), loadMs: Math.round(r.loadMs), tokMsMean: +(r.tokMs.reduce((a, b) => a + b, 0) / r.tokMs.length).toFixed(2),
+        idMismatch, maxLogitDiffVsOrtInt8: +maxQ.toFixed(4), maxLogitDiffVsOrtFp32: +maxF.toFixed(4), argmaxAgreeVsOrtInt8: `${agreeQ}/${ref.texts.length}`,
         msPerColumnMean: +(r.times.reduce((a, b) => a + b, 0) / r.times.length).toFixed(1), msPerColumnMedian: +ts[Math.floor(ts.length / 2)].toFixed(1), msPerColumnP90: +ts[Math.floor(ts.length * 0.9)].toFixed(1), wallSeconds: (Date.now() - t0) / 1000 });
       await ctx.close();
     }
@@ -124,16 +143,18 @@ try {
 } finally {
   await browser.close(); server.close();
 }
+result.served = Object.fromEntries([...served.entries()].sort((a, b) => b[1] - a[1]));
+result.servedTotalMB = +([...served.values()].reduce((a, b) => a + b, 0) / 1e6).toFixed(1);
 result.dist = LIB_DIRS.map((d) => (fs.existsSync(d) ? fs.readdirSync(d).filter((f) => /\.(m?js|wasm|cjs)$/.test(f)) : null));
 fs.writeFileSync(outPath, JSON.stringify(result, null, 1));
 console.log(JSON.stringify(result));   // 全部（1 行）
 const cut = (x, n = 170) => String(x).replace(/\s+/g, ' ').slice(0, n);
 console.log('=== 要点（この下が注に出る）===');
-console.log('dist(transformers): ' + cut((result.dist[0] || []).join(' '), 190));
-console.log('dist(ort-web): ' + cut((result.dist[1] || []).join(' '), 190));
+console.log('取り込んだファイル（MB）: 合計 ' + result.servedTotalMB + '　' + cut(Object.entries(result.served).map(([k, v]) => k + ' ' + (v / 1e6).toFixed(1)).join(' / '), 150));
 console.log('importMap: ' + cut(JSON.stringify(IMPORT_MAP), 190));
 for (const t of result.tried) console.log('立ち上げ試し: ' + cut(JSON.stringify(t), 190));
 console.log('使えた build: ' + (result.build || 'なし') + '　外への通信を止めた件数: ' + result.blocked.length);
-for (const r of result.runs) console.log('結果: ' + cut(JSON.stringify(r), 190));
+for (const r of result.runs) console.log('結果: ' + (r.error ? `threads=${r.threads} error ${cut(r.error, 150)}` : `threads=${r.threads}(実際${r.effectiveThreads}・隔離${r.isolated}) 読込${r.loadMs}ms トークン化${r.tokMsMean}ms 番号の不一致${r.idMismatch}/${result.n} 差(INT8/fp32)${r.maxLogitDiffVsOrtInt8}/${r.maxLogitDiffVsOrtFp32} 答え一致${r.argmaxAgreeVsOrtInt8} 1列 平均${r.msPerColumnMean}・中央${r.msPerColumnMedian}・p90 ${r.msPerColumnP90}ms`));
+for (const m of (result.mismatches || []).slice(0, 5)) console.log('番号の不一致: ' + cut(JSON.stringify({ i: m.i, at: m.firstDiff, n: [m.lenGot, m.lenWant], got: m.got, want: m.want, cp: m.codepoints }), 195));
 for (const c of result.console.slice(0, 8)) console.log('console: ' + cut(c, 190));
 if (result.fatal) console.log('fatal: ' + cut(result.fatal, 190));
