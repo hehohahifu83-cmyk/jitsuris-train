@@ -28,10 +28,15 @@ def compare_losses(a: list[float], b: list[float]) -> bool:
 
 def main() -> int:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+    selected = sys.argv[1:]
+    names = {item[0] for item in ORDER}
+    if selected and (len(selected) != 1 or selected[0] not in names):
+        raise SystemExit(f"choose one run from: {', '.join(sorted(names))}")
+    run_order = [item for item in ORDER if not selected or item[0] in selected]
     available = int(subprocess.check_output([sys.executable, "-c", "from cpu_speed import available_cpu_count; print(available_cpu_count())"], cwd=ROOT, text=True).strip())
     thread_counts = {"full": available, "half": max(1, available // 2)}
     results: dict[str, tuple[float, float, list[float]]] = {}
-    for name, cache, thread_key in ORDER:
+    for name, cache, thread_key in run_order:
         env = os.environ.copy()
         env.update({"FT_CPU_CACHE": str(cache), "FT_CPU_THREADS": str(thread_counts[thread_key]),
                     "FT_LIMIT": "1500", "FT_SEED": "1", "FT_EVAL": "dev220", "FT_TRACE_LOSS": "20"})
@@ -51,6 +56,16 @@ def main() -> int:
             raise SystemExit(f"{name} failed with exit code {code}")
         results[name] = parse_run(output)
         print(f"{name}: train={results[name][0]:.1f}s eval={results[name][1]:.1f}s threads={thread_counts[thread_key]}", flush=True)
+
+    if selected:
+        name = selected[0]
+        train_s, eval_s, losses = results[name]
+        report = ["# CPU benchmark continuation", "", f"Run: {name}", f"Available CPUs: {available}; selected threads: {thread_counts[dict((n, t) for n, _, t in ORDER)[name]]}",
+                  f"Training seconds: {train_s:.1f}", f"Evaluation seconds: {eval_s:.1f}",
+                  f"Recorded first training steps: {len(losses)}", "", "First 20 loss values are in the run log artifact."]
+        (ROOT / "bench" / f"cpu_benchmark_{name}.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+        print("\n".join(report))
+        return 0
 
     loss_checks = {"A1/B1": compare_losses(results["A1"][2], results["B1"][2]),
                    "A2/B2": compare_losses(results["A2"][2], results["B2"][2])}
