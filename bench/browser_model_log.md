@@ -1,12 +1,12 @@
 # ブラウザ用の書き出しの検査のログの末尾
 
-run: 39098438676　commit: 9b6e0918af1d6deb259a11ff13a2bdc406461b5c
+run: 39100525878　commit: 9c4fc0f756309a178380475e9c6da0ef666ac069
 
 ## 部品の検査
 ```
-test_gather_becomes_int8_table_with_row_scales_and_output_is_within_half_a_step (tests.test_export_onnx.EmbeddingInt8SurgeryTest.test_gather_becomes_int8_table_with_row_scales_and_output_is_within_half_a_step) ... [0;93m2026-10-18 04:50:30.900996910 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
-[0;93m2026-10-18 04:50:30.906875137 [W:onnxruntime:, graph.cc:5777 CleanUnusedInitializersAndNodeArgs] Removing initializer 'embeddings.position_embeddings.weight'. It is not used by any node and should be removed from the model.[m
-[0;93m2026-10-18 04:50:30.916235926 [W:onnxruntime:, graph.cc:5777 CleanUnusedInitializersAndNodeArgs] Removing initializer 'embeddings.position_embeddings.weight'. It is not used by any node and should be removed from the model.[m
+test_gather_becomes_int8_table_with_row_scales_and_output_is_within_half_a_step (tests.test_export_onnx.EmbeddingInt8SurgeryTest.test_gather_becomes_int8_table_with_row_scales_and_output_is_within_half_a_step) ... [0;93m2026-10-18 05:26:56.071749189 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+[0;93m2026-10-18 05:26:56.079148631 [W:onnxruntime:, graph.cc:5777 CleanUnusedInitializersAndNodeArgs] Removing initializer 'embeddings.position_embeddings.weight'. It is not used by any node and should be removed from the model.[m
+[0;93m2026-10-18 05:26:56.083478617 [W:onnxruntime:, graph.cc:5777 CleanUnusedInitializersAndNodeArgs] Removing initializer 'embeddings.position_embeddings.weight'. It is not used by any node and should be removed from the model.[m
 ok
 test_missing_embedding_table_is_reported (tests.test_export_onnx.EmbeddingInt8SurgeryTest.test_missing_embedding_table_is_reported) ... ok
 test_apply_vocab_unk_chars_and_length_cap (tests.test_compress_eval.PureFunctionsTest.test_apply_vocab_unk_chars_and_length_cap) ... ok
@@ -61,22 +61,13 @@ test_trimmed_model_gives_identical_logits_on_kept_tokens (tests.test_compress_ev
 test_trimmed_tokenizer_matches_full_tokenizer_when_all_pieces_are_kept (tests.test_compress_eval.TorchTest.test_trimmed_tokenizer_matches_full_tokenizer_when_all_pieces_are_kept) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 4.748s
+Ran 22 tests in 4.796s
 
 OK
 ```
 ## 書き出し
 ```
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 3600.76it/s]
-[transformers] [1mBertForSequenceClassification LOAD REPORT[0m from: intfloat/multilingual-e5-small
-Key               | Status  | 
-------------------+---------+-
-classifier.bias   | MISSING | 
-classifier.weight | MISSING | 
-
-Notes:
-- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 3667.07it/s]
 /home/runner/work/jitsuris-train/jitsuris-train/export_onnx.py:75: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter has become the default. Learn more about the new export logic: https://docs.pytorch.org/docs/stable/onnx_export.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html
   torch.onnx.export(Wrap(model), (ids, mask), path, dynamo=False, **kw)
 /opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/transformers/masking_utils.py:208: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
@@ -85,37 +76,37 @@ Notes:
   is_causal = q_length > 1 and attention_mask is None and is_causal
 /opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/torch/onnx/_internal/torchscript_exporter/symbolic_opset11.py:955: UserWarning: Exporting aten::index operator of advanced indexing in opset 17 is achieved by combination of multiple ONNX operators, including Reshape, Transpose, Concat, and Gather. If indices include negative values, the exported graph will produce incorrect results.
   return opset9.index(g, self, index)
-[0;93m2026-10-18 04:50:54.017825177 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+[0;93m2026-10-18 05:27:57.096120606 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
 WARNING:root:Please consider to run pre-processing before quantization. Refer to example: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md 
-| PyTorch fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.025） |
-| PyTorch fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.025） |
-| ONNX fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8＋全結合層INT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 68.90%・確率の最大差 0.003・logits の最大差 0.044（logits の広がり 0.025） |
-| ONNX 埋め込みINT8＋全結合層INT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 68.90%・確率の最大差 0.003・logits の最大差 0.044（logits の広がり 0.025） |
-# ブラウザ用に書き出したモデルの試験（intfloat/multilingual-e5-small）
+| PyTorch fp32・微調整だけ | 開発用220 正80.5% 誤10 不明33 重大2 | 本物（一般） 正84.1% 誤10 不明37 重大2 | 本物（業務） 正89.1% 誤39 不明13 重大8 | 本物（業務2） 正93.6% 誤35 不明23 重大17 | 本物（日本の調達） 正96.7% 誤0 不明3 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 1.941） |
+| PyTorch fp32・微調整7割＋今の仕組み3割 | 開発用220 正82.7% 誤10 不明28 重大2 | 本物（一般） 正84.7% 誤8 不明37 重大2 | 本物（業務） 正89.5% 誤39 不明11 重大9 | 本物（業務2） 正94.0% 誤34 不明21 重大15 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 1.941） |
+| ONNX fp32・微調整だけ | 開発用220 正81.4% 誤7 不明34 重大1 | 本物（一般） 正84.4% 誤12 不明34 重大1 | 本物（業務） 正90.5% 誤34 不明11 重大7 | 本物（業務2） 正93.9% 誤28 不明28 重大9 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | PyTorch fp32 との top-1 一致 96.95%・確率の最大差 0.922・logits の最大差 5.883（logits の広がり 1.941） |
+| ONNX fp32・微調整7割＋今の仕組み3割 | 開発用220 正86.8% 誤6 不明23 重大1 | 本物（一般） 正86.4% 誤11 不明29 重大1 | 本物（業務） 正90.5% 誤36 不明9 重大8 | 本物（業務2） 正94.0% 誤27 不明28 重大10 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | PyTorch fp32 との top-1 一致 96.95%・確率の最大差 0.922・logits の最大差 5.883（logits の広がり 1.941） |
+| ONNX 埋め込みINT8・微調整だけ | 開発用220 正81.4% 誤7 不明34 重大1 | 本物（一般） 正84.4% 誤12 不明34 重大1 | 本物（業務） 正90.3% 誤34 不明12 重大7 | 本物（業務2） 正94.0% 誤28 不明27 重大9 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | PyTorch fp32 との top-1 一致 96.99%・確率の最大差 0.919・logits の最大差 5.881（logits の広がり 1.941） |
+| ONNX 埋め込みINT8・微調整7割＋今の仕組み3割 | 開発用220 正86.8% 誤6 不明23 重大1 | 本物（一般） 正86.4% 誤11 不明29 重大1 | 本物（業務） 正90.5% 誤36 不明9 重大8 | 本物（業務2） 正94.0% 誤27 不明28 重大10 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | PyTorch fp32 との top-1 一致 96.99%・確率の最大差 0.919・logits の最大差 5.881（logits の広がり 1.941） |
+| ONNX 埋め込みINT8＋全結合層INT8・微調整だけ | 開発用220 正80.5% 誤11 不明32 重大1 | 本物（一般） 正84.4% 誤12 不明34 重大1 | 本物（業務） 正90.5% 誤35 不明10 重大6 | 本物（業務2） 正93.8% 誤29 不明28 重大12 | 本物（日本の調達） 正95.7% 誤1 不明3 重大1 | PyTorch fp32 との top-1 一致 96.44%・確率の最大差 0.962・logits の最大差 4.910（logits の広がり 1.941） |
+| ONNX 埋め込みINT8＋全結合層INT8・微調整7割＋今の仕組み3割 | 開発用220 正85.0% 誤8 不明25 重大1 | 本物（一般） 正86.1% 誤12 不明29 重大1 | 本物（業務） 正90.1% 誤34 不明13 重大6 | 本物（業務2） 正94.3% 誤27 不明25 重大12 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | PyTorch fp32 との top-1 一致 96.44%・確率の最大差 0.962・logits の最大差 4.910（logits の広がり 1.941） |
+# ブラウザ用に書き出したモデルの試験（trained/ft_out_job1）
 
 - 残す単語片 21,772 個／全体 250,037 個（上位 K=0）。per_channel=False
 - ファイルの大きさ：fp32 120.3MB／埋め込み表だけ INT8 95.3MB／さらに全結合層も INT8（model_quantized.onnx）31.3MB／tokenizer.json 1.0MB
 
 | 版・組み合わせ | 開発用220 | 本物（一般） | 本物（業務） | 本物（業務2） | 本物（日本の調達） | 比較 |
 |---|---|---|---|---|---|---|
-| PyTorch fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.025） |
-| PyTorch fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.025） |
-| ONNX fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8＋全結合層INT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 68.90%・確率の最大差 0.003・logits の最大差 0.044（logits の広がり 0.025） |
-| ONNX 埋め込みINT8＋全結合層INT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 68.90%・確率の最大差 0.003・logits の最大差 0.044（logits の広がり 0.025） |
+| PyTorch fp32・微調整だけ | 開発用220 正80.5% 誤10 不明33 重大2 | 本物（一般） 正84.1% 誤10 不明37 重大2 | 本物（業務） 正89.1% 誤39 不明13 重大8 | 本物（業務2） 正93.6% 誤35 不明23 重大17 | 本物（日本の調達） 正96.7% 誤0 不明3 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 1.941） |
+| PyTorch fp32・微調整7割＋今の仕組み3割 | 開発用220 正82.7% 誤10 不明28 重大2 | 本物（一般） 正84.7% 誤8 不明37 重大2 | 本物（業務） 正89.5% 誤39 不明11 重大9 | 本物（業務2） 正94.0% 誤34 不明21 重大15 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 1.941） |
+| ONNX fp32・微調整だけ | 開発用220 正81.4% 誤7 不明34 重大1 | 本物（一般） 正84.4% 誤12 不明34 重大1 | 本物（業務） 正90.5% 誤34 不明11 重大7 | 本物（業務2） 正93.9% 誤28 不明28 重大9 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | PyTorch fp32 との top-1 一致 96.95%・確率の最大差 0.922・logits の最大差 5.883（logits の広がり 1.941） |
+| ONNX fp32・微調整7割＋今の仕組み3割 | 開発用220 正86.8% 誤6 不明23 重大1 | 本物（一般） 正86.4% 誤11 不明29 重大1 | 本物（業務） 正90.5% 誤36 不明9 重大8 | 本物（業務2） 正94.0% 誤27 不明28 重大10 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | PyTorch fp32 との top-1 一致 96.95%・確率の最大差 0.922・logits の最大差 5.883（logits の広がり 1.941） |
+| ONNX 埋め込みINT8・微調整だけ | 開発用220 正81.4% 誤7 不明34 重大1 | 本物（一般） 正84.4% 誤12 不明34 重大1 | 本物（業務） 正90.3% 誤34 不明12 重大7 | 本物（業務2） 正94.0% 誤28 不明27 重大9 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | PyTorch fp32 との top-1 一致 96.99%・確率の最大差 0.919・logits の最大差 5.881（logits の広がり 1.941） |
+| ONNX 埋め込みINT8・微調整7割＋今の仕組み3割 | 開発用220 正86.8% 誤6 不明23 重大1 | 本物（一般） 正86.4% 誤11 不明29 重大1 | 本物（業務） 正90.5% 誤36 不明9 重大8 | 本物（業務2） 正94.0% 誤27 不明28 重大10 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | PyTorch fp32 との top-1 一致 96.99%・確率の最大差 0.919・logits の最大差 5.881（logits の広がり 1.941） |
+| ONNX 埋め込みINT8＋全結合層INT8・微調整だけ | 開発用220 正80.5% 誤11 不明32 重大1 | 本物（一般） 正84.4% 誤12 不明34 重大1 | 本物（業務） 正90.5% 誤35 不明10 重大6 | 本物（業務2） 正93.8% 誤29 不明28 重大12 | 本物（日本の調達） 正95.7% 誤1 不明3 重大1 | PyTorch fp32 との top-1 一致 96.44%・確率の最大差 0.962・logits の最大差 4.910（logits の広がり 1.941） |
+| ONNX 埋め込みINT8＋全結合層INT8・微調整7割＋今の仕組み3割 | 開発用220 正85.0% 誤8 不明25 重大1 | 本物（一般） 正86.1% 誤12 不明29 重大1 | 本物（業務） 正90.1% 誤34 不明13 重大6 | 本物（業務2） 正94.3% 誤27 不明25 重大12 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | PyTorch fp32 との top-1 一致 96.44%・確率の最大差 0.962・logits の最大差 4.910（logits の広がり 1.941） |
 
-- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX fp32）：平均 62ms・中央値 62ms／列（全 492 列の文の平均 96 トークン）
-- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX fp32）：平均 34ms・中央値 33ms／列（全 492 列の文の平均 96 トークン）
-- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX INT8（model_quantized.onnx））：平均 40ms・中央値 39ms／列（全 492 列の文の平均 96 トークン）
-- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX INT8（model_quantized.onnx））：平均 23ms・中央値 22ms／列（全 492 列の文の平均 96 トークン）
-- ブラウザの試験の正解データ（reference.json）：40 文
+- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX fp32）：平均 59ms・中央値 58ms／列（全 2161 列の文の平均 89 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX fp32）：平均 33ms・中央値 32ms／列（全 2161 列の文の平均 89 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX INT8（model_quantized.onnx））：平均 38ms・中央値 38ms／列（全 2161 列の文の平均 89 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX INT8（model_quantized.onnx））：平均 22ms・中央値 21ms／列（全 2161 列の文の平均 89 トークン）
+- ブラウザの試験の正解データ（reference.json）：モデルを流す文 40 文／トークナイザの番号だけを比べる文 2204 文（試験の全列＋変わった文字列 43 個）
 
 数字は GitHub Actions の CPU の結果で、ブラウザ（WASM）の実機の速さではない。精度は保存したモデルを書き出して試験に流した結果。
 ```
