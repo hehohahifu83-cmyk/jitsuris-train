@@ -74,6 +74,23 @@ class PureFunctionsTest(unittest.TestCase):
         self.assertEqual(sorted(order), [0, 1, 2, 3])
 
 
+    def test_edit_tokenizer_json_keeps_scores_unk_and_renumbers_special_tokens(self):
+        tj = {"model": {"type": "Unigram", "unk_id": 3, "vocab": [["<s>", 0.0], ["<pad>", 0.0], ["</s>", 0.0], ["<unk>", 0.0], ["\u2581a", -1.0], ["b", -2.0], ["c", -3.0], ["<mask>", 0.0]]},
+              "added_tokens": [{"id": 0, "content": "<s>"}, {"id": 3, "content": "<unk>"}, {"id": 7, "content": "<mask>"}],
+              "post_processor": {"type": "TemplateProcessing", "special_tokens": {"<s>": {"id": "<s>", "ids": [0], "tokens": ["<s>"]}, "</s>": {"id": "</s>", "ids": [2], "tokens": ["</s>"]}}}}
+        out = C.edit_tokenizer_json(tj, [0, 1, 2, 3, 4, 7])
+        self.assertEqual([v[0] for v in out["model"]["vocab"]], ["<s>", "<pad>", "</s>", "<unk>", "\u2581a", "<mask>"])
+        self.assertEqual(out["model"]["vocab"][4][1], -1.0)
+        self.assertEqual(out["model"]["unk_id"], 3)
+        self.assertEqual([a["id"] for a in out["added_tokens"]], [0, 3, 5])   # <mask> は 7 → 5
+        self.assertEqual(out["post_processor"]["special_tokens"]["</s>"]["ids"], [2])
+        with self.assertRaises(ValueError):
+            C.edit_tokenizer_json({"model": {"type": "BPE"}}, [0])
+
+    def test_cap_ids(self):
+        self.assertEqual(C.cap_ids([[0, 5, 6, 2], [0, 5, 6, 7, 8, 2]], 5, 2), [[0, 5, 6, 2], [0, 5, 6, 7, 2]])
+
+
 @unittest.skipUnless(HAS_TORCH, "torch と transformers が要る（CI で実行）")
 class TorchTest(unittest.TestCase):
     @classmethod
@@ -120,6 +137,18 @@ class TorchTest(unittest.TestCase):
                 one = torch.softmax(self.model(input_ids=torch.tensor([s])).logits, -1).numpy()[0]
             self.assertTrue(np.allclose(p[i], one, atol=1e-5))
 
+    def test_round_linear_int8_changes_weights_by_less_than_half_a_step(self):
+        import torch
+        m = C.cpu_copy(self.model)
+        before = {n: mod.weight.detach().clone() for n, mod in m.named_modules() if isinstance(mod, torch.nn.Linear)}
+        C.round_linear_int8(m)
+        self.assertGreater(len(before), 4)
+        for n, mod in m.named_modules():
+            if isinstance(mod, torch.nn.Linear):
+                w0, w1 = before[n], mod.weight.detach()
+                step = w0.abs().amax(dim=1, keepdim=True) / 127.0
+                self.assertTrue(bool((w0 - w1).abs().le(step / 2 + 1e-5).all()), n)
+
     def test_int8_and_fp16_variants_run_and_stay_close(self):
         import torch
         ids = torch.tensor([[0, 10, 11, 20, 2]])
@@ -130,6 +159,26 @@ class TorchTest(unittest.TestCase):
         self.assertTrue(torch.isfinite(q).all())
         self.assertTrue(torch.allclose(ref, h, atol=1e-2))     # fp16 に丸めた重み：ほぼ同じ
         self.assertLess(float((ref - q).abs().max()), 0.5)     # INT8：ランダムな小さなモデルなので緩い基準（動くこと中心）
+
+    @unittest.skipUnless(importlib.util.find_spec("tokenizers"), "tokenizers が要る")
+    def test_trimmed_tokenizer_matches_full_tokenizer_when_all_pieces_are_kept(self):
+        import types
+        from tokenizers import Tokenizer, models, pre_tokenizers, processors
+        vocab = [("<s>", 0.0), ("<pad>", 0.0), ("</s>", 0.0), ("<unk>", 0.0), ("\u2581", -2.0), ("\u2581ab", -3.0), ("a", -4.0), ("b", -4.0), ("c", -4.0),
+                 ("\u2581a", -3.5), ("ab", -3.2), ("<mask>", 0.0)]
+        tk = Tokenizer(models.Unigram(vocab, unk_id=3, byte_fallback=False))
+        tk.pre_tokenizer = pre_tokenizers.Metaspace(replacement="\u2581", prepend_scheme="always")
+        tk.post_processor = processors.TemplateProcessing(single="<s> $A </s>", special_tokens=[("<s>", 0), ("</s>", 2)])
+        kept = [0, 1, 2, 3, 4, 5, 6, 7, 8, 11]   # \u2581a(9) と ab(10) を落とす
+        remap = C.build_remap(kept, len(vocab), 3)
+        trimmed = C.trimmed_tokenizer(types.SimpleNamespace(backend_tokenizer=tk), kept)
+        for text in ["ab", "ab c", "c b"]:
+            full_ids = tk.encode(text).ids
+            self.assertTrue(all(i in kept for i in full_ids), text)
+            self.assertEqual([int(remap[i]) for i in full_ids], trimmed.encode(text).ids, text)
+        self.assertEqual(tk.encode("a").ids, [0, 9, 2])           # 元：\u2581a 1 つ
+        self.assertEqual(trimmed.encode("a").ids, [0, 4, 6, 2])   # 縮めた：\u2581 と a に分かれる
+        self.assertTrue(all(i < len(kept) for i in trimmed.encode("a ab zz").ids))
 
     def test_run_end_to_end_with_a_fake_tokenizer(self):
         import torch
@@ -184,7 +233,7 @@ class TorchTest(unittest.TestCase):
 
         text_fn = lambda r, prefix: f"{prefix}{r[0]} | {', '.join(r[1])}"
         lines, notes = C.run(model, tok, tests, rows, labels, lr_probs, text_fn, "", decide, score_real, "fake", top_k=0, max_len=32)
-        self.assertEqual(len(lines), 10)   # 5 通りの縮め方 × 2 つの組み合わせ
+        self.assertEqual(len(lines), 12)   # 6 通りの縮め方 × 2 つの組み合わせ
         self.assertTrue(all(l.startswith("| fake・圧縮【") and " t1 正" in l for l in lines))
         self.assertTrue(any("圧縮なしとの top-1 一致" in n for n in notes))
         self.assertTrue(notes[0].startswith("- 圧縮の試験（fake）"))

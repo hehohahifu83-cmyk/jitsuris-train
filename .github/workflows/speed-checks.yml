@@ -58,7 +58,7 @@ jobs:
           t = open("FINETUNE_RESULTS.md", encoding="utf-8").read()
           rows = [l for l in t.splitlines() if "・圧縮【" in l]
           print(len(rows), "行"); print("\n".join(t.splitlines()[-12:]))
-          assert len(rows) == 10, "圧縮の行が 10 行ない（5 通り × 2 つの組み合わせ）"
+          assert len(rows) >= 10, "圧縮の行が足りない（6 通り × 2 つの組み合わせ。動的量子化が動かない環境では 10 行）"
           assert "圧縮の試験は失敗" not in t
           PY
       - name: 測定プログラムの通しの検査（CPU・小さく。数字は GPU の結果ではない）

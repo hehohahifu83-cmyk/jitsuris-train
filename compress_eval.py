@@ -4,7 +4,8 @@
 利用者の表に出る単語片はごく一部なので、表を小さくできる。縮め方は次の 4 つ（組み合わせも測る）。
   語彙削減：残す単語片（トークン）だけの表にする。残すのは「学習用の文に出た片」「日本語・英語の 1 文字の片」「特別な記号」「上位 K 個」。
             試験の文で初めて出る片は残さない（新しい表で起きることと同じ）。残さない片は
-              unk ＝ <unk> に置き換える（悲観的な見積り）／ chars ＝ 1 文字の片に分けて残す（ブラウザの実装もこちらにする想定）。
+              unk ＝ <unk> に置き換える（悲観的な見積り）／ retok ＝ 縮めた片の一覧でトークナイザを作り直して分け直す（ブラウザで動かすのと同じ。Transformers.js などが読む tokenizer.json の語彙を減らした形）／
+              chars ＝ 1 文字の片に分ける（retok が作れないときの代わり）。
   INT8   ：全結合層の重みを 8 ビット整数にする（torch の動的量子化。ONNX Runtime の動的量子化に近い）。埋め込み表は行ごとの対称 INT8 に丸めた値で試す。
   fp16   ：重みを 16 ビット小数に丸めた値で試す。
 測るのは判定の質（正解率・重大）と、圧縮なしとの top-1 一致率・確率の最大差。大きさは個数×1 個あたりのバイト数の見積り。
@@ -73,6 +74,38 @@ def check_special_positions(kept, remap, special_ids):
             raise ValueError(f"special id {s} is dropped or moved")
 
 
+def edit_tokenizer_json(tj, kept):
+    """HF の tokenizer.json（Unigram）の語彙を kept（小さい順の番号）だけにした JSON（dict）。特別な記号の番号の付け替えも直す。"""
+    m = tj["model"]
+    if m.get("type") != "Unigram":
+        raise ValueError("Unigram のトークナイザだけ扱う")
+    index = {int(old): new for new, old in enumerate(kept)}
+    m["vocab"] = [m["vocab"][int(i)] for i in kept]
+    if m.get("unk_id") is not None:
+        m["unk_id"] = index[int(m["unk_id"])]
+    for at in tj.get("added_tokens", []):
+        at["id"] = index[int(at["id"])]
+    pp = tj.get("post_processor") or {}
+    if pp.get("type") == "TemplateProcessing":
+        for v in (pp.get("special_tokens") or {}).values():
+            v["ids"] = [index[int(i)] for i in v["ids"]]
+    elif pp.get("type") == "RobertaProcessing":
+        for key in ("sep", "cls"):
+            if key in pp:
+                pp[key] = [pp[key][0], index[int(pp[key][1])]]
+    elif pp:
+        raise ValueError("後処理の形が未対応：" + str(pp.get("type")))
+    return tj
+
+
+def trimmed_tokenizer(tok, kept):
+    """縮めた語彙で分け直すトークナイザ（tokenizers.Tokenizer）。encode(text).ids が縮めた表の番号になる。"""
+    import json
+    from tokenizers import Tokenizer
+    tj = edit_tokenizer_json(json.loads(tok.backend_tokenizer.to_str()), kept)
+    return Tokenizer.from_str(json.dumps(tj, ensure_ascii=False))
+
+
 def apply_vocab(ids_list, kept_set, remap, expand=None, max_len=128, eos_id=2):
     """トークン番号の並びのリスト → 縮めた表の番号の並びのリスト。
     expand(片の番号) が与えられたら、残さない片を 1 文字の片の並びに置き換える（長さが max_len を超えたら末尾を </s> にして切る）。"""
@@ -90,6 +123,11 @@ def apply_vocab(ids_list, kept_set, remap, expand=None, max_len=128, eos_id=2):
                 seq = seq[:max_len - 1] + [eos_id]
         out.append([int(remap[t]) for t in seq])
     return out
+
+
+def cap_ids(ids_list, max_len, eos_new):
+    """長さが max_len を超えたら、末尾を </s> にして切る（元の truncation=True と同じ形）。"""
+    return [ids if len(ids) <= max_len else ids[:max_len - 1] + [eos_new] for ids in ids_list]
 
 
 def coverage(ids_list, kept_set):
@@ -150,6 +188,16 @@ def trimmed_copy(base, kept):
 def int8_linear(m):
     import torch
     return torch.ao.quantization.quantize_dynamic(m, {torch.nn.Linear}, dtype=torch.qint8, inplace=False).eval()
+
+
+def round_linear_int8(m):
+    """全結合層の重みを、出力の行ごとの対称 INT8 に丸めた値にする（重みだけの疑似量子化。GPU でも流せる。実際の動的量子化は活性化も 8 ビットにするぶん少し粗い）。"""
+    import torch
+    for mod in m.modules():
+        if isinstance(mod, torch.nn.Linear):
+            with torch.no_grad():
+                mod.weight.copy_(torch.from_numpy(fake_quant_rows_int8(mod.weight.detach().cpu().numpy())).to(mod.weight.device))
+    return m
 
 
 def round_embedding_int8(m):
@@ -218,6 +266,12 @@ def run(model, tok, tests, rows, labels, lr_probs, text_fn, prefix, decide, scor
             cache[t] = ids or [unk_id]
         return cache[t]
 
+    new_tok, retok_note = None, ""
+    try:
+        new_tok = trimmed_tokenizer(tok, kept)
+    except Exception as exc:  # noqa: BLE001  作れなければ 1 文字に分ける代わりの方法に切り替える
+        retok_note = f"（縮めたトークナイザは作れなかった：{type(exc).__name__}: {str(exc)[:120]}。代わりに 1 文字に分ける方法で測る）"
+    trim_mode = "retok" if new_tok is not None else "chars"
     test_rows = {tn: (te[:limit] if limit else te) for tn, te in tests.items()}
     full_ids = {tn: tok([text_fn(r, prefix) for r in te], truncation=True, max_length=max_len, padding=False)["input_ids"] for tn, te in test_rows.items()}
     lr_use = {tn: (np.asarray(lr_probs[tn])[:limit] if limit else np.asarray(lr_probs[tn])) for tn in tests}
@@ -231,28 +285,42 @@ def run(model, tok, tests, rows, labels, lr_probs, text_fn, prefix, decide, scor
         f"- 圧縮の試験（{name}）：残す単語片 {len(kept):,} 個／全体 {vocab_size:,} 個（上位 K={top_k}、学習の文に出た片＋日本語・英語の 1 文字の片＋特別な記号）。試験の文 {n_cols} 列のうち、残さない片を含む列 {cols} 列（片の {100.0 * drop / max(tot, 1):.2f}%）。",
         f"- 大きさの見積り：全体 {sizes['total_params'] / 1e6:.1f}M 個（埋め込み表 {sizes['embed_params'] / 1e6:.1f}M＋本体 {sizes['body_params'] / 1e6:.1f}M）。圧縮なし fp32 {sizes['full_fp32_mb']:.0f}MB／語彙削減後 fp32 {sizes['trim_fp32_mb']:.0f}MB・fp16 {sizes['trim_fp16_mb']:.0f}MB・INT8 {sizes['trim_int8_mb']:.0f}MB（重みだけの見積り。正規化・バイアスは含まない）。",
     ]
+    if retok_note:
+        notes.append("- " + retok_note)
     conditions = (("微調整だけ", 1.0), ("微調整7割＋今の仕組み3割", 0.7))
     gpu = "cuda" if torch.cuda.is_available() else "cpu"   # fp32 の計算で済む版は GPU があれば GPU で（INT8 の動的量子化は CPU だけ）
+    trim_label = "トークナイザも縮める" if trim_mode == "retok" else "残さない片は 1 文字に分ける"
     variants = [
         ("圧縮なし（fp32）", lambda: copy.deepcopy(base), "full", gpu),
         ("語彙削減（残さない片は unk）", lambda: trimmed_copy(base, kept), "unk", gpu),
-        ("語彙削減（残さない片は 1 文字に分ける）", lambda: trimmed_copy(base, kept), "chars", gpu),
-        ("語彙削減（1 文字）＋INT8（全結合層＋埋め込み表）", lambda: int8_linear(round_embedding_int8(trimmed_copy(base, kept))), "chars", "cpu"),
-        ("語彙削減（1 文字）＋fp16（重みを丸める）", lambda: round_weights_fp16(trimmed_copy(base, kept)), "chars", gpu),
+        (f"語彙削減（{trim_label}）", lambda: trimmed_copy(base, kept), trim_mode, gpu),
+        (f"語彙削減（{trim_label}）＋INT8の重み（全結合層・埋め込み表を丸める疑似）", lambda: round_linear_int8(round_embedding_int8(trimmed_copy(base, kept))), trim_mode, gpu),
+        (f"語彙削減（{trim_label}）＋INT8の動的量子化（全結合層）＋埋め込み表INT8", lambda: int8_linear(round_embedding_int8(trimmed_copy(base, kept))), trim_mode, "cpu"),
+        (f"語彙削減（{trim_label}）＋fp16（重みを丸める）", lambda: round_weights_fp16(trimmed_copy(base, kept)), trim_mode, gpu),
     ]
-    lines, base_p = [], None
+    lines, base_p, retok_ids = [], None, None
     for vname, make, mode, device in variants:
-        m = make().to(device) if device != "cpu" else make()
-        if mode == "full":
-            ids_by_test = full_ids
-        else:
-            ids_by_test = {tn: apply_vocab(ids, kept_set, remap, expand if mode == "chars" else None, max_len, eos_id) for tn, ids in full_ids.items()}
-        t0 = time.time()
-        pr = {tn: probs_dev(m, ids_by_test[tn], pad_id, batch, device=device) for tn in test_rows}
-        sec = time.time() - t0
-        del m
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
+        try:
+            m = make().to(device) if device != "cpu" else make()
+            if mode == "full":
+                ids_by_test = full_ids
+            elif mode == "retok":
+                if retok_ids is None:
+                    retok_ids = {tn: cap_ids([e.ids for e in new_tok.encode_batch([text_fn(r, prefix) for r in te])], max_len, int(remap[eos_id])) for tn, te in test_rows.items()}
+                ids_by_test = retok_ids
+            else:
+                ids_by_test = {tn: apply_vocab(ids, kept_set, remap, expand if mode == "chars" else None, max_len, eos_id) for tn, ids in full_ids.items()}
+            t0 = time.time()
+            pr = {tn: probs_dev(m, ids_by_test[tn], pad_id, batch, device=device) for tn in test_rows}
+            sec = time.time() - t0
+        except Exception as exc:  # noqa: BLE001  1 つの版が動かなくても、ほかの版の結果は残す
+            import traceback; traceback.print_exc()
+            notes.append(f"- {vname}：測れなかった（{type(exc).__name__}: {str(exc)[:160]}）")
+            continue
+        finally:
+            m = None
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         if base_p is None:
             base_p = pr
         agree = float(np.mean(np.concatenate([pr[tn].argmax(1) == base_p[tn].argmax(1) for tn in pr])))
@@ -267,7 +335,7 @@ def run(model, tok, tests, rows, labels, lr_probs, text_fn, prefix, decide, scor
             lines.append(f"| {name}・圧縮【{vname}】・{tag} | " + " | ".join(res) + f" | 圧縮の評価 {sec:.0f}秒（" + (f"CPU {torch.get_num_threads()}スレッド・1列あたり {1000.0 * sec / max(n_cols, 1):.0f}ms" if device == "cpu" else "GPU") + "） |")
             print(lines[-1], flush=True)
         notes.append(f"- {vname}：圧縮なしとの top-1 一致 {100.0 * agree:.2f}%、確率の最大の差 {maxdiff:.3f}")
-    if model_probs is not None:   # 本体の評価（GPU の fp16 かもしれない）と、ここの『圧縮なし』の一致
+    if model_probs is not None and base_p is not None:   # 本体の評価（GPU の fp16 かもしれない）と、ここの『圧縮なし』の一致
         base_cmp = np.concatenate([base_p[tn].argmax(1) == np.asarray(model_probs[tn])[:len(base_p[tn])].argmax(1) for tn in base_p])
         notes.append(f"- 参考：ここの『圧縮なし（fp32）』と本体の評価（{'GPU の fp16 の混合精度' if torch.cuda.is_available() else 'CPU'}）の top-1 一致 {100.0 * float(np.mean(base_cmp)):.2f}%")
     notes.append(f"- 圧縮の試験の所要 {time.time() - t_all:.0f}秒（数字は保存した微調整済みモデルを縮めて試験に流した結果で、ブラウザの実機の結果ではない）")
