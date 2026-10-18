@@ -68,3 +68,12 @@ Claude連絡箱: メッセージの更新後にai-bridge workflow run 3912167720
 - GitHub Actions CPU lab safety tests run 39123051454 success（2026-10-18T11:23:37Z）。
 - これは人が確認した教材や正解ラベルではない。現時点で候補poolだけが準備済みで、分類器checkpointが見つからずautolabelは未実行、CPU学習も未開始。
 - Kaggle `kaggle/kaggle.request` は `fetch`。最新KAGGLE_LOGは2026-10-18T10:56:49ZのRUNNING行で止まり、より新しい完了状態は取れていない。GitHubの最新Kaggle fetch workflow run 39121167019はsuccessだがartifactなし。これはfetch処理の成功であってKaggle学習の完了証拠ではない。したがってCPU実験を開始せず、GPU学習との重複も避けている。
+
+
+## 2026-10-18 — 学習準備と教材追跡をend-to-end化
+- `.github/workflows/cpu-lab-material-learning.yml` を追加。成功済みKaggle runから `jitsuris-model` artifactを取得し、チェックポイントを検証、pool 36件を人手なしで仮ラベル化、0件なら安全に学習をスキップ、1件以上なら2 seedを同一CPU排他グループで逐次学習する。
+- `cpu_lab/material_receipt.py`: poolのSHA、source model、全教材IDの候補化状態、pseudo候補数、訓練ログの追加行数を照合し、IDごとに`included_in_training`を記録する。記録は訓練データフローの証明で、意味的に習得した証明ではない。
+- `cpu_lab/materials/progress_probe.jsonl`: 個人情報を含まない内部合成の正解付き診断probe 12件。訓練poolとID分離し、Kaggleの通常bundleにも含めず、学習前後の同じprobeで差分を計る。
+- `cpu_lab/progress_probe.py`: 予測・正解数・誤り・改善/悪化caseを保存。固定5試験ではなく診断用probeと明記。最終採否は従来どおり許可済み固定5試験の結果で決める。
+- `cpu_lab/tests/test_material_tracking.py` を追加。教材IDの整合、学習ログ確認、probeの差分判定、probe/poolの分離を検査。CI compile対象にもreceipt/probe scriptを追加した。
+- 起動条件は成功済みKaggle e5-base checkpoint artifactが出てから。現時点で確認可能なmodel artifactがないため、まだ実学習は起動していない。人手によるラベル確認は不要。
