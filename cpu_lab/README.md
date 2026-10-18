@@ -48,3 +48,7 @@
 - 学習実行前にKaggleとGitHubの学習状態を確認し、同一/近似実験が走っていないことを確認する。
 - Claudeが復帰したら教材のライセンス/重複/ラベル監査とキュー設計の独立レビューを依頼する。連絡箱の自動整理workflowが失敗中のため、メッセージがINBOXへ反映されたことは別途確認する。
 - 初回学習と比較が終わるまで、候補は採用しない。
+
+
+## e5-base checkpoint連携
+`jobs.py` と `kaggle/run.py` は、複数jobのe5-base学習時だけ先頭jobのcheckpointをCPU lab用artifactに保存します。FT_KEEP=1を保持用に内部設定するだけで、学習条件や重みは変えません。今回すでに提出済みのrunには反映されないため、CPU lab開始にはこの変更を含む今後の成功済みe5-base runのartifactが必要です。
