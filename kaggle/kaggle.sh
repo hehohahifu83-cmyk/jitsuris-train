@@ -85,6 +85,7 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     if [ -n "$f" ]; then tail -n +2 "$f" | sed 's/^### /### Kaggle GPU /' >> ../FINETUNE_RESULTS.md; fi
     { find /tmp/out -name '*.log' -exec grep -aoE 'device [a-z]+|Tesla [A-Z0-9]+|name, memory[^"]*|[A-Za-z ]*GPU[^"]{0,60}' {} \; | head -5; echo ---; find /tmp/out -name '*.log' -exec tail -c 3000 {} \; ; } > last_run_tail.txt 2>/dev/null || true
     mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && cp -r /tmp/out/out/ft_out /tmp/model/ || true
+    for d in /tmp/out/out/ft_out_job*; do [ -d "$d" ] && cp -r "$d" /tmp/model/ || true; done   # FT_KEEP=1 の仕事のモデル
     mkdir -p /tmp/eval_reports
     # 仕事（job1・job2）や report ごとの置き場の名前を頭に付けて、同じ名前のファイルが上書きし合わないようにする
     find /tmp/out -type f \( -name 'errors_*.json' -o -name 'probs_*.json' -o -name 'probe_*.json' \) | while read -r pf; do cp "$pf" "/tmp/eval_reports/$(basename "$(dirname "$pf")")_$(basename "$pf")"; done 2>/dev/null || true

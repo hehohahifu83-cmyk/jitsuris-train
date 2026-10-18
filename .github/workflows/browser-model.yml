@@ -7,11 +7,24 @@ on:
         description: '書き出すモデル（Hugging Face の名前か保存した場所。空なら学習していない e5-small で仕組みだけ確かめる）'
         required: false
         default: ''
+      kaggle_run:
+        description: '学習済みモデルを Kaggle 回収の実行（artifact jitsuris-model）から取る。その実行の番号。空なら上の model を使う'
+        required: false
+        default: ''
+      model_dir:
+        description: 'artifact の中のモデルの置き場（FT_KEEP=1 の仕事は ft_out_job<番号>、仕事が 1 つなら ft_out）'
+        required: false
+        default: 'ft_out_job1'
+      limit:
+        description: '試験ごとの列数の上限（0 なら全部。学習済みモデルの精度を測るときは 0）'
+        required: false
+        default: '100'
   push:
     branches: [main]
     paths: [browser_test/**, export_onnx.py, compress_eval.py, tests/test_export_onnx.py, tests/test_compress_eval.py, .github/workflows/browser-model.yml]
 permissions:
   contents: write
+  actions: read
 jobs:
   export:
     runs-on: ubuntu-latest
@@ -32,18 +45,28 @@ jobs:
         id: bmcache
         with:
           path: browser_model
-          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}-${{ inputs.kaggle_run || 'none' }}-${{ inputs.model_dir || 'x' }}-${{ inputs.limit || '100' }}
+      - name: 学習済みモデルを取ってくる（Kaggle 回収の artifact）
+        if: inputs.kaggle_run != '' && steps.bmcache.outputs.cache-hit != 'true'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        shell: bash
+        run: |
+          gh run download "${{ inputs.kaggle_run }}" -R "$GITHUB_REPOSITORY" -n jitsuris-model -D trained
+          ls -la "trained/${{ inputs.model_dir }}" | head -20
       - name: 書き出しと試験（学習していないモデルなら精度の数字に意味はない。大きさ・動くこと・速さの確認）
         if: steps.bmcache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           MODEL="${{ inputs.model }}"; [ -z "$MODEL" ] && MODEL=intfloat/multilingual-e5-small
-          python export_onnx.py --model "$MODEL" --out browser_model --limit 100 --reference 40 2>&1 | tee export.log | tail -60
+          EXTRA=""
+          if [ -n "${{ inputs.kaggle_run }}" ]; then MODEL="trained/${{ inputs.model_dir }}"; EXTRA="--labels $MODEL/labels.json"; fi
+          LIMIT="${{ inputs.limit }}"; [ -z "$LIMIT" ] && LIMIT=100
+          python export_onnx.py --model "$MODEL" --out browser_model --limit "$LIMIT" --reference 40 $EXTRA 2>&1 | tee export.log | tail -60
       - uses: actions/cache/save@v4
         if: always() && steps.bmcache.outputs.cache-hit != 'true' && hashFiles('browser_model/reference.json') != ''
         with:
           path: browser_model
-          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}-${{ inputs.kaggle_run || 'none' }}-${{ inputs.model_dir || 'x' }}-${{ inputs.limit || '100' }}
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - name: ブラウザで動かす試験（headless Chromium・WASM・外への通信は止める）
@@ -74,8 +97,9 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add bench/browser_model_log.md
           [ -f browser_model/REPORT.md ] || { git commit -q -m "ブラウザ用の書き出しの検査のログ（失敗）" ; for i in 1 2 3; do git push && break; git pull --rebase --autostash; done; echo "REPORT.md がない（書き出しが失敗）"; exit 1; }
-          { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > bench/browser_model_summary.md
-          git add bench/browser_model_summary.md
+          SUMMARY=bench/browser_model_summary.md; [ -n "${{ inputs.kaggle_run }}" ] && SUMMARY=bench/browser_model_trained_summary.md
+          { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}　学習済みモデル: ${{ inputs.kaggle_run }} ${{ inputs.model_dir }}"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > "$SUMMARY"
+          git add "$SUMMARY"
           git diff --cached --quiet && exit 0
           git commit -m "ブラウザ用の書き出しの検査の結果（CPU）"
           for i in 1 2 3; do git push && break; git pull --rebase --autostash; done

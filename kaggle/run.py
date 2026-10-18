@@ -67,6 +67,8 @@ else:   # 仕事ごとの出力は jobN の中。集計は 1 つにまとめ、�
         else:
             agg += "\n### 仕事%d（%s）\n結果なし（終了コード %s）\n" % (i, label, codes[i - 1])
         copy_reports(wd, OUT + "/job%d" % i)
+        if J.keeps_model(spec) and os.path.isdir(os.path.join(wd, "ft_out")):   # FT_KEEP=1 の仕事のモデルだけ持ち帰る（ブラウザ用の書き出しに使う）
+            shutil.move(os.path.join(wd, "ft_out"), OUT + "/ft_out_job%d" % i)
     open(OUT + "/FINETUNE_RESULTS.md", "w", encoding="utf-8").write(agg)
 shutil.rmtree(W, ignore_errors=True)
 sys.exit(max(codes))

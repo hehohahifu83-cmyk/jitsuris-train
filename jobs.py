@@ -113,12 +113,18 @@ def _pump(proc, label):
         sys.stdout.flush()
 
 
+def keeps_model(spec):
+    """FT_KEEP=1 の仕事は、学習済みモデル（ft_out）を消さずに残す（ブラウザ用の書き出しに使うモデルを持ち帰るため）。"""
+    return (spec.get("env") or {}).get("FT_KEEP") == "1"
+
+
 def run_jobs(specs, script, base_env, root, n_gpu):
     """仕事を流して全部の終了を待つ。返すのは仕事ごとの終了コードの並び（依頼の並びの順）。
 
     同時に流すのは GPU の枚数まで（GPU が無ければ 1 つずつ）。枚数を超えた仕事は、空いた GPU から順に流す。
     仕事が 1 つなら root で直接流し、2 つ以上なら root/jobN の中で流す（出力が上書きし合わない）。
     2 つ以上のときは、仕事が終わるたびに学習済みモデル（ft_out）を消す（ディスクを使い切らないため。評価と確率の一覧は残る）。
+    ただし FT_KEEP=1 の仕事のモデルは残す（kaggle/run.py が持ち帰る）。
     1 つの仕事が失敗しても、残りの仕事は流し続ける。
     """
     if len(specs) == 1:
@@ -159,7 +165,7 @@ def run_jobs(specs, script, base_env, root, n_gpu):
                 sys.stdout.write(f"[{label}] 流せなかった：{e!r}\n"); sys.stdout.flush()
                 codes[i] = 1
             finally:
-                if wd:
+                if wd and not keeps_model(specs[i]):
                     shutil.rmtree(os.path.join(wd, "ft_out"), ignore_errors=True)
                 sys.stdout.write(f"[{label}] 終了（終了コード {codes[i]}）\n"); sys.stdout.flush()
 

@@ -169,3 +169,16 @@ class RunJobsTest(unittest.TestCase):
             specs = [{"args": ["m"], "env": {}}, {"args": ["m"], "env": {}}]
             codes = run_jobs(specs, "missing_script.py", dict(os.environ), root, 2)   # python は起動するがスクリプトが無いので 2
             self.assertTrue(all(c != 0 for c in codes))
+
+    def test_ft_keep_keeps_only_that_jobs_model(self):
+        import os, tempfile
+        from jobs import keeps_model, run_jobs
+        with tempfile.TemporaryDirectory() as root:
+            Path(root, "stub.py").write_text("import os\nos.makedirs('ft_out', exist_ok=True)\nopen('ft_out/model.bin', 'w').write('x')\n", encoding="utf-8")
+            specs = split_jobs(["m", "1", "FT_KEEP=1", "++", "FT_KEEP=", "++", "FT_SEED=3"])
+            self.assertEqual([keeps_model(sp) for sp in specs], [True, False, True])   # 3 本目は 1 本目の設定を引き継ぐ
+            specs[2]["env"].pop("FT_KEEP")
+            self.assertEqual(run_jobs(specs, "stub.py", dict(os.environ), root, 2), [0, 0, 0])
+            self.assertTrue(Path(root, "job1", "ft_out", "model.bin").exists())
+            self.assertFalse(Path(root, "job2", "ft_out").exists())
+            self.assertFalse(Path(root, "job3", "ft_out").exists())
