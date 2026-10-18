@@ -227,6 +227,7 @@ def main(argv=None):
         if path is None:
             lg_ref = {tn: C.probs_dev(trimmed, ids[tn], pad_id, logits_out=True) for tn in test_rows}
             lg_diff = 0.0
+            lg_std = float(np.mean([lg_ref[tn].std(axis=1).mean() for tn in lg_ref]))   # 1 列ぶんの logits の広がり（差の大きさを比べる物差し）
         else:
             lg = {tn: probs_ort(sess, ids[tn], pad_id, logits_out=True) for tn in test_rows}
             lg_diff = float(max(np.abs(lg[tn] - lg_ref[tn]).max() for tn in lg))
@@ -237,7 +238,7 @@ def main(argv=None):
                 pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
                 s = score_real(pred, [r[2] for r in te])
                 res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}")
-            lines.append(f"| {vname}・{tag} | " + " | ".join(res) + f" | PyTorch fp32 との top-1 一致 {100 * agree:.2f}%・確率の最大差 {maxdiff:.3f}・logits の最大差 {lg_diff:.3f} |")
+            lines.append(f"| {vname}・{tag} | " + " | ".join(res) + f" | PyTorch fp32 との top-1 一致 {100 * agree:.2f}%・確率の最大差 {maxdiff:.3f}・logits の最大差 {lg_diff:.3f}（logits の広がり {lg_std:.3f}） |")
             print(lines[-1], flush=True)
     report += ["| 版・組み合わせ | " + " | ".join(test_rows) + " | 比較 |", "|---|" + "---|" * (len(test_rows) + 1)] + lines + [""]
 

@@ -28,11 +28,22 @@ jobs:
       - name: 部品の検査
         shell: bash
         run: python -m unittest tests.test_export_onnx tests.test_compress_eval -v 2>&1 | tee unittest.log | tail -40
+      - uses: actions/cache/restore@v4
+        id: bmcache
+        with:
+          path: browser_model
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}
       - name: 書き出しと試験（学習していないモデルなら精度の数字に意味はない。大きさ・動くこと・速さの確認）
+        if: steps.bmcache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           MODEL="${{ inputs.model }}"; [ -z "$MODEL" ] && MODEL=intfloat/multilingual-e5-small
           python export_onnx.py --model "$MODEL" --out browser_model --limit 100 --reference 40 2>&1 | tee export.log | tail -60
+      - uses: actions/cache/save@v4
+        if: always() && steps.bmcache.outputs.cache-hit != 'true' && hashFiles('browser_model/reference.json') != ''
+        with:
+          path: browser_model
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - name: ブラウザで動かす試験（headless Chromium・WASM・外への通信は止める）
