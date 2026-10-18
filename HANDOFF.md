@@ -277,3 +277,15 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - テスト途中の失敗は、1ポイント差を差ありとした誤った期待値と、欠落ログ例外の扱いを修正。最終runで成功を確認。
 - Kaggle `kaggle.request=fetch`、KAGGLE_LOG末尾は2026-10-18T10:56:49Z (JST 19:56:49) RUNNINGのまま。GitHub ActionsにKaggle jobの実行中は見えず、run 39121167019の`jitsuris-model` artifactもなし。Kaggle kernel自体の現在状態は確認できない。
 - 既存CPU benchmark workflow run 39123705509がin_progress。CPU lab学習はまだ開始していない。次回e5-base multi-job runにモデル保持変更が入れば、先頭seedをartifactに残しCPU lab workflowへ渡せる。
+
+
+### オーナー指示：Claude と教材の共同監査（2026-10-18）
+CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Claude が利用可能になったら次の場所を案内する。
+- 投入口: `cpu_lab/materials/inbox/README.md`
+- 1行JSONLのひな形: `cpu_lab/materials/inbox/candidate.template.jsonl`
+- 共同監査・単独監査の手順: `cpu_lab/materials/AUDIT_PROTOCOL.md`
+- 監査済み教材: `cpu_lab/materials/reviewed_replay.jsonl`（inbox の候補を直接学習させない）
+
+2人とも使える場合は、同じ LABEL_GUIDE の版を使い、互いの判定を見ないで独立にラベル付けする。一致した行だけ根拠・確信度とともに採用候補とし、不一致は根拠で解決できなければ除外する。片方しか使えない場合は high 確信かつ根拠が明確な候補だけ「単独監査」と記録し、曖昧な候補は保留/除外する。Claude が戻った後、単独監査分を可能な範囲で再監査する。未見セット blind_set* / 3 / 5 / 7 は絶対に開かない・学習に使わない。
+
+2026-10-18 の接続確認では Claude と Gemini はともに利用不可（ai-review_connection_status: claude=false, gemini=false）。Claude へ直接送信できていないため、この引き継ぎ書を共有記録として先に保存した。利用可能になった際はこの節を Claude に渡し、共同監査を再開する。現状は ChatGPT による単独監査教材28件がある。これは独立した人間/他モデルによる正解確認ではなく、実験用の暫定教材として扱う。
