@@ -133,7 +133,7 @@ def select(args):
 
 
 def pseudo_label_decision(prob_views, labels, min_confidence=0.995, min_margin=0.50, min_views=3):
-    """Accept a pseudo-label only when independent input views agree strongly.
+    """Accept a pseudo-label only when three transformed input views agree strongly.
 
     This is a conservative filter, not proof that a label is correct. The
     caller must preserve pseudo provenance and keep the examples candidate-only.
@@ -220,7 +220,7 @@ def autolabel(args):
     # Avoid repeating the same header and cap the saved set.
     deduped, fingerprints = [], set()
     for row in accepted:
-        fp = re.sub(r"\\W+", " ", str(row["header"]).casefold()).strip()
+        fp = re.sub(r"\W+", " ", str(row["header"]).casefold()).strip()
         if fp in fingerprints:
             continue
         fingerprints.add(fp)
@@ -232,7 +232,7 @@ def autolabel(args):
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         for row in deduped:
-            f.write(json.dumps(row, ensure_ascii=False) + "\\n")
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
     print(f"candidate pseudo-labels: {len(deduped)} / {len(pool)} -> {out}; never human-verified")
 
 
