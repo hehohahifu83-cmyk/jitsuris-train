@@ -68,6 +68,17 @@ class MaterialTrackingTests(unittest.TestCase):
         self.assertTrue(all(r["source"]=="synthetic:cpu-lab-progress-probe-v1" and r["privacy_checked"] is True for r in probe_rows))
         self.assertFalse(any("blind_set" in json.dumps(r).lower() or "set7" in json.dumps(r).lower() for r in probe_rows))
 
+    def test_cpu_lab_checkpoint_retention_only_changes_first_e5_base_job(self):
+        repo_root=Path(__file__).resolve().parents[2]
+        if str(repo_root) not in sys.path: sys.path.insert(0,str(repo_root))
+        from jobs import keep_cpu_lab_checkpoint, split_jobs
+        e5=split_jobs(["intfloat/multilingual-e5-base","2","FT_SEED=1","++","FT_SEED=2"])
+        self.assertEqual(keep_cpu_lab_checkpoint(e5),1)
+        self.assertEqual([x["env"].get("FT_KEEP") for x in e5],["1",None])
+        other=split_jobs(["intfloat/multilingual-e5-large","2","++","FT_SEED=2"])
+        self.assertEqual(keep_cpu_lab_checkpoint(other),0)
+        self.assertEqual([x["env"] for x in other],[{},{"FT_SEED":"2"}])
+
 
 if __name__ == "__main__":
     unittest.main()
