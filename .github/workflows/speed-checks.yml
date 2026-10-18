@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: [batching.py, jobs.py, finetune_exp.py, speed_probe.py, kaggle/run.py, tests/test_batching.py, tests/test_jobs.py, tests/test_sort_equivalence.py, .github/workflows/speed-checks.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -44,8 +44,35 @@ jobs:
       - name: 通しの検査 C（水増し＋長さ順＋fp32、ふだんのドロップアウトあり）
         env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_PAD8: '1', FT_AUG: '1' }
         shell: bash
-        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
+        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee c.log | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
       - name: 通しの検査 D（単語の埋め込みを固定）
         env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_FREEZE_EMB: '1' }
         shell: bash
-        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
+        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee d.log | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
+      - name: 結果を記録する（ログは取りに行けないので、要点をリポジトリに書く）
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re, os
+          def read(p): return open(p, encoding="utf-8").read() if os.path.exists(p) else ""
+          def losses(t): return [float(x) for x in re.findall(r"^step_loss \d+ ([0-9.]+)$", t, re.M)]
+          def secs(t): m = re.findall(r"学習 ([0-9.]+)秒・評価 ([0-9.]+)秒", t); return m[-1] if m else None
+          def cfgline(t): m = re.findall(r"^train batch=.*$", t, re.M); return m[-1] if m else "(記録なし)"
+          logs = {k: read(k.lower() + ".log") for k in "ABCD"}
+          a, b = losses(logs["A"]), losses(logs["B"])
+          diff = max((abs(x - y) for x, y in zip(a[:5], b[:5])), default=None)
+          out = ["# 速くする設定の検査（CPU・e5-small・GitHub Actions）", "", f"run: ${{{{ github.run_id }}}}　commit: ${{{{ github.sha }}}}", ""]
+          out += ["| 検査 | 設定 | 学習秒・評価秒 | 最初の損失 |", "|---|---|---|---|"]
+          for k, name in (("A", "今までの流し方"), ("B", "長さ順の束＋幅8の倍数"), ("C", "水増し＋長さ順＋幅8"), ("D", "単語の埋め込みを固定＋長さ順")):
+              out.append(f"| {k} {name} | {cfgline(logs[k])} | {secs(logs[k])} | {losses(logs[k])[:5] or '—'} |")
+          out += ["", f"A と B の最初の5ステップの損失の最大の差：{diff}（ドロップアウトを切り、同じ種・同じ実効バッチ。基準 2e-3 未満）", "",
+                  "CPU（fp32・e5-small・640行）の検査であり、GPU（fp16）での速さや品質の結果ではない。"]
+          open("bench/speed_checks_summary.md", "w", encoding="utf-8").write("\n".join(out) + "\n")
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add bench/speed_checks_summary.md
+          git diff --cached --quiet && exit 0
+          git commit -m "速くする設定の検査の結果（CPU）"
+          for i in 1 2 3; do git push && break; git pull --rebase; done
