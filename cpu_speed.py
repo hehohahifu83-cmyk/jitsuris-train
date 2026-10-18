@@ -49,14 +49,16 @@ def configure_cpu_threads(
 ) -> tuple[int, int]:
     """Set numeric-library thread limits before importing NumPy/PyTorch.
 
-    FT_CPU_THREADS can lower the default for repeatable benchmarking. Requests
-    above the process CPU allowance are capped to avoid thread oversubscription.
+    The default uses half of the available CPUs, based on the project benchmark.
+    FT_CPU_THREADS can override it; requests above the process allowance are
+    capped to avoid thread oversubscription.
     Returns (available_cores, chosen_threads).
     """
     env = os.environ if environ is None else environ
     available = available_cpu_count(affinity=affinity, cpu_count=cpu_count, cgroup_root=cgroup_root)
+    default_threads = max(1, available // 2)
     try:
-        requested = int(env.get("FT_CPU_THREADS", available))
+        requested = int(env.get("FT_CPU_THREADS", default_threads))
     except (TypeError, ValueError):
         requested = available
     threads = max(1, min(requested, available))
@@ -71,3 +73,4 @@ def configure_cpu_threads(
 if __name__ == "__main__":
     available, threads = configure_cpu_threads()
     print(f"CPU cores available={available}; threads={threads}")
+
