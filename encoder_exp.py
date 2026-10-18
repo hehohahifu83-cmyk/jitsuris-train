@@ -6,29 +6,34 @@ import numpy as np
 from scipy.sparse import csr_matrix, hstack
 from sklearn.linear_model import LogisticRegression
 import gen
-from exp7 import load_real, split, real_train_rows
+from exp7 import load_real, split, perturb
+from encoder_context import attach_unit_context, format_encoder_text, real_train_rows_with_units, unit_context_map
 from llm_baseline import score_real
 from train3 import build_train, mat, split_curriculum, decide
 from dev_eval import rows_of
 
 gen.HARD_NUMERIC = 0.0
 import os
-gtr, gte = split(load_real(("materials/real_labels.jsonl",))); btr, bte = split(load_real(("materials/real_labels_biz.jsonl",)))
-b2tr, b2te = split(load_real(("materials/real_labels_biz2.jsonl", "materials/real_labels_direct.jsonl"))) if os.path.exists("materials/real_labels_biz2.jsonl") else ([], [])
-jtr, jte = split(load_real(tuple(f for f in ("materials/real_labels_jp.jsonl", "materials/real_labels_jp2.jsonl") if os.path.exists(f)))) if os.path.exists("materials/real_labels_jp.jsonl") else ([], [])
+g_all = load_real(("materials/real_labels.jsonl",))
+b_all = load_real(("materials/real_labels_biz.jsonl",))
+b2_all = load_real(("materials/real_labels_biz2.jsonl", "materials/real_labels_direct.jsonl")) if os.path.exists("materials/real_labels_biz2.jsonl") else []
+j_all = load_real(tuple(f for f in ("materials/real_labels_jp.jsonl", "materials/real_labels_jp2.jsonl") if os.path.exists(f))) if os.path.exists("materials/real_labels_jp.jsonl") else []
+gtr, gte = split(g_all); btr, bte = split(b_all); b2tr, b2te = split(b2_all); jtr, jte = split(j_all)
+unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
-rows = syn + real_train_rows(gtr, 3, 5, True) + real_train_rows(btr, 6, 6, True, per_table=60) + real_train_rows(b2tr, 6, 7, True, per_table=60) + real_train_rows(jtr, 6, 8, True, per_table=60)
+rows = syn + real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
 y = np.array([r[2] for r in rows])
-tests = {"開発用220": rows_of(), "本物（一般）": [(h, v, l, c) for h, v, l, c, _ in gte], "本物（業務）": [(h, v, l, c) for h, v, l, c, _ in bte]}
+tests = {"開発用220": rows_of(), "本物（一般）": attach_unit_context(gte, unit_by_table), "本物（業務）": attach_unit_context(bte, unit_by_table)}
 if b2te:
-    tests["本物（業務2）"] = [(h, v, l, c) for h, v, l, c, _ in b2te]
+    tests["本物（業務2）"] = attach_unit_context(b2te, unit_by_table)
 if jte:
-    tests["本物（日本の調達）"] = [(h, v, l, c) for h, v, l, c, _ in jte]
+    tests["本物（日本の調達）"] = attach_unit_context(jte, unit_by_table)
 
+
+CTX_UNIT = os.environ.get("FT_CTX_UNIT") == "1"  # 同じ表の UNIT / Unit / 単位の値を文脈に足す ablation（既定オフ）
 
 def text(r, prefix):
-    h, v = r[0], r[1]; ctx = r[3] if len(r) > 3 and r[3] else []
-    return f"{prefix}列名: {h} | 値: {', '.join(str(x)[:30] for x in v[:5])} | 同じ表の列: {', '.join(str(x)[:20] for x in ctx[:12])}"
+    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT)
 
 
 def run(model_name, prefix, out):
