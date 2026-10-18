@@ -1,4 +1,4 @@
-# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-18 00:05）
+# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-18 14:20）
 
 オーナー指示：「Claude の利用制限が近いので、ChatGPT にも同じ作業をさせたい」。この文書だけで続きができるように書く。
 
@@ -68,7 +68,9 @@
 - **水増し（FT_AUG=1、速い設定の仕事2）**：一般で −2.7（悪い方向）、他は差なし。採用しない（種を変えた再試験は e5-base の実行中の 8 本に入っている）。
 - **見張り（guard）の改良 v9**（2026-10-18、commit eda791d）：微調整モデルは日付の列を確率ほぼ 100% で当てているのに、guard.py が「日付の値に読めない」として「不明」にしていた（年だけ・年度・四半期・月名・時刻、通貨記号つきの金額など）。LABEL_GUIDE の定義に合わせて読み方を広げた。保存した確率から決め直す計算（rescore_guard.py）で、延べ 15,960 列（2 回の学習×4 条件×5 試験）の「不明」1,475 → 535、誤り 515 → 515、重大 105 → 105、その他の見落とし 91 → 91。**固定試験の失敗を見て作った規則なので、見込みの数字**。ブラウザ版 column-ai.js にも同じ規則を入れ、183 例で一致（guard.test.mjs）。年だけ（2000 など）は金額と見分けがつかないので、答えの確率 0.9 以上のときだけ日付と認める。
 - **残る重大な取り違え**（微調整だけ・仕事1。業務2 に 6、業務に 2、一般に 1）：列名が「VALUE」「Monitor」「goal」など曖昧、または表の文脈（UNIT 列の値、兄弟列がすべて金額）を使えていない。ラベルが疑わしいもの（goal=id、VALUE=amount で値が 7.4・4.9 型）もある。詳細は TEACHING_PLAN.md「結果：見張りの読み方を広げた」。
-- 実行中：**e5-base 8 本**（commit 86353fb、速い設定 `FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1`）。①種1 ②種2 ③種3（ばらつき）④水増し・種1 ⑤水増し・種2 ⑥学習率 2e-5 ⑦3 周 ⑧埋め込み固定。2 本ずつ順に流れる。結果は FINETUNE_RESULTS.md に「仕事N（仕事1との違い：…）」で並ぶ。これが終わるまで kaggle.request を書き換えない。
+- **e5-base 8 本の結果**（Kaggle 版 14、03:54〜04:43Z、約 49 分）：種のばらつきは正解率で最大 1.8 ポイント（重大の数は 業務 3〜7・業務2 7〜9 とぶれる）。水増し＝効果なし（採用しない）／学習率 2e-5＝やや悪い（採用しない）／3 周＝差なしで 1.39 倍の時間（採用しない）／**埋め込み固定＝ほぼ差なしで 1.19 倍速く、GPU メモリ 5.4→3.5GiB（候補。small でも確認中）**。表と判断は TEACHING_PLAN.md「結果：e5-base 8 本」。
+- **実行中：e5-small 8 本**（Kaggle 版 15、04:50Z 開始、25〜35 分の見込み。仕事1・4・8 は縮めた版の精度も測り、仕事1・4 は学習済みモデルを持ち帰る）。①種1（縮め測定・モデル持ち帰り）②種2 ③種3 ④埋め込み固定（縮め測定・持ち帰り）⑤埋め込み固定・種2 ⑥学習率 1e-4 ⑦学習率 1e-4＋埋め込み固定 ⑧語彙を多めに残す K=60000（縮め測定）。**KAGGLE_LOG.md の最後が COMPLETE になるまで kaggle.request を書き換えない。**
+- **ブラウザの中で動かす道**：縮めた e5-small（語彙刈り込み＋INT8、31.3MB＋トークナイザ 1.0MB）が headless Chromium で動き、外への通信は 0 件。詳しい数字と、ChatGPT に代行してほしい試験の手順書は **10 章**。
 - ChatGPT へ依頼済み（ai-bridge 20261018-0925 ほか。ChatGPT は未読が溜まっている。オーナーが「連絡箱」と送ったときに読む）：①〜④と、速くする仕組みのコードレビュー。
 - 日本の会計の架空仕訳（MIT）を jp2 に追加済み（350列、23出典名。列名ごとのラベル materials/jp2_header_labels.json）。
 - ChatGPT 作：select_next.py（能動学習で次の200列を選ぶ。テストあり、tests/test_select_next.py）。本物のデータではまだ動かしていない。
@@ -95,9 +97,11 @@
 - 今までどおり：`train intfloat/multilingual-e5-base 2 FT_SEED=1`（FT_ で始まる語は**全部**環境変数として渡る。以前は FT_LR・FT_AUG・FT_BS・FT_ACC・FT_CKPT 以外が無視されていた）。
 - **仕事を並べる**（Kaggle の T4 は 2 枚。2026-10-18 12:20 の改良。**この改良は commit 後の依頼から有効**。先に実行中の2本は古い書き方＝引き継ぎなし）：`train intfloat/multilingual-e5-base 2 FT_LR=2e-5 FT_SORT=1 ++ FT_SEED=1 ++ FT_SEED=2 ++ FT_AUG=1`。「++」で仕事が増える（**8 本まで**）。同時に流すのは GPU の枚数（2）まで、残りは空いた GPU から順に自動で流れる。**2 本目以降は、1 本目の周数と FT_ の設定を引き継ぐ**ので、変えたいものだけ書く（同じ名前は上書き）。引き継ぎたくないものは `FT_名前=`（値なし）で外す。周数を変えるときは数字を 1 つ書く。モデルは変えられない。2 本以上のときは、仕事が終わるたびに学習済みモデルを消す（ディスクを守る）。1 本が失敗しても残りは流れる。結果は FINETUNE_RESULTS.md に「仕事1（設定）」「仕事2（仕事1との違い：…）」と並ぶ。
 - **速さの測定**：`train probe intfloat/multilingual-e5-large`（学習はしない。設定ごとの速さ・メモリ・勾配の一致・GPU 2 枚の同時利用を FINETUNE_RESULTS.md に出す）。
-**速くする設定（既定はオフ＝今までどおり。計算結果は変わらないもの）**：`FT_SORT=1`（実効バッチの中を長さ順にして小さな束に分ける）、`FT_PAD8=1`（幅を 8 の倍数に）、`FT_FUSED=1`（AdamW を GPU でまとめて計算）。束の大きさは `FT_BS`×`FT_ACC`（積を 64 に保つ）。
+**速くする設定（既定はオフ＝今までどおり。dropout を切った検査で勾配が一致するもの。実際の学習は dropout が有効で、束の分け方でマスクの割り当てが変わるため、完全一致は保証されない＝確率的な差。クオリティは固定試験の比べで確かめた）**：`FT_SORT=1`（実効バッチの中を長さ順にして小さな束に分ける）、`FT_PAD8=1`（幅を 8 の倍数に）、`FT_FUSED=1`（AdamW を GPU でまとめて計算）。束の大きさは `FT_BS`×`FT_ACC`（積を 64 に保つ）。
 **計算結果が変わりうる設定（A/B で確かめるまで使わない）**：`FT_FREEZE_EMB=1`（単語の埋め込みを固定）。
 **検査用**：`FT_NO_DROPOUT=1`、`FT_TRACE_LOSS=N`、`FT_LIMIT`、`FT_EVAL=dev220`。
+**縮めた版・モデルの持ち帰り（2026-10-18 追加）**：`FT_COMPRESS=1`（学習のあと、語彙刈り込み・INT8・fp16 の 6 通りの精度を同じ表に足す。`FT_COMPRESS_TOPK=K` で語彙を多めに残す）、`FT_KEEP=1`（その仕事の学習済みモデルだけ消さずに持ち帰る。Kaggle の回収で artifact `jitsuris-model` の `ft_out_job<番号>`に入る。2 本目以降は 1 本目の設定を引き継ぐので、要らない仕事には `FT_KEEP=` `FT_COMPRESS=` を書いて外す）。
+**++ の引き継ぎは『1 本目の FT_ 設定を後ろの仕事が引き継ぐ。同じ名前は上書き、`FT_X=` で外す』が正しい**（ChatGPT のレビュー 12:54 の指摘どおり、古い案内に逆の説明が残っていたら直す）。
 **確かめたこと（CPU・GitHub Actions、bench/speed_checks_summary.md）**：e5-small・640 行・ドロップアウトなしで、今までの流し方と「長さ順＋幅8」の最初の 5 ステップの損失が小数 6 桁まで同じ（差 0.0）。学習時間は 51 秒 → 38 秒（1 回ずつの測定）。torch の単体テストで、束の大きさ 1〜64 のどれでも 64 文の勾配と一致。
 **実機の測定（2026-10-18 02:53、`train probe`、Kaggle T4×2・e5-large・実効バッチ 64、表は FINETUNE_RESULTS.md の同時刻の節）**
 - 1 秒あたりの学習文数：今の既定（束 2・チェックポイントあり）13.2 → 束 16・チェックポイントなし 52.3（3.96 倍）→ それに長さ順を足して 61.7（4.67 倍）。幅 8 の倍数と fused AdamW は、他の行の比べ方から 5〜9% の上乗せ（その 2 つだけを足した行は測っていない）。2 周（110,426 文）の計算は、13.2 文/秒で約 8,370 秒（Version 10・11 の実測 8,477・8,416 秒とほぼ一致）、61.7 文/秒で約 1,790 秒。
@@ -117,3 +121,62 @@
 - `rescore_guard.py eval_reports/latest [条件] [置き場]`：保存した確率から今の guard.py で決め直して採点（学習のやり直しなし。見張りの規則を変えたときの確認用）。保存した答えを旧 guard で 0 件の不一致で再現できることを確認済み。
 - `abstain_eval.py`：Kaggle の回収名（job1_probs_…）に対応。置き場が複数あるのに指定しないと止まる。
 - eval_reports/latest には確率の「微調整だけ」と「7割＋3割」だけを置く（全部は GitHub Actions の artifact に 30 日）。
+
+## 10. ブラウザの中で動かす道（縮めたモデル）と、ChatGPT に代行してほしい試験の手順書（2026-10-18 14:20、Claude）
+オーナー指示（13:49）：「ChatGPT に代行させられるテストはやり方を教えて代わってもいい。Claude の利用制限が近い」。下の T1〜T7 は ChatGPT の自動処理（作業：研究実装）でできるように書いた。**jitsuris-train の main だけで完結する**（tool-kobo の非公開ブランチは要らない。記録は jitsuris-train の bench/ か HANDOFF.md と連絡箱に書く。tool-kobo の正本への写しは Claude が戻ったときにする）。
+
+### 10.1 仕組み（何がどこにあるか）
+- 縮め方と測り方：`compress_eval.py`。ONNX への書き出し：`export_onnx.py`（語彙の刈り込み → 埋め込み表を行ごとに INT8 → 全結合層を INT8。Python 側の正解の番号と logits を `reference.json` に書く）。ブラウザで動かす試験：`browser_test/run.mjs`（headless Chromium・Transformers.js・外への通信は全部止める。ページの `window.__tokenize` は番号だけ、`window.__run` はモデルまで）。CI：`.github/workflows/browser-model.yml`（push で学習していない e5-small を試す／手動 `workflow_dispatch` で学習済みモデルを試す）、`speed-checks.yml`（縮めの部品を小さく試す）。
+- **ログは取りに行けない**（この環境から Actions のログ・artifact は取れない）。結果は ①bot が commit する `bench/browser_model_summary.md`（学習していないモデル）と `bench/browser_model_trained_summary.md`（学習済みモデル）②チェックランの注（annotations）。注の読み方：`JOB=$(gh api repos/hehohahifu83-cmyk/jitsuris-train/actions/runs/<run番号>/jobs --jq '.jobs[0].id'); gh api repos/hehohahifu83-cmyk/jitsuris-train/check-runs/$JOB/annotations --jq '.[] | "## \(.title)\n\(.message)"'`（title は unittest／export／REPORT／browser_js／record）。注は約 4000 字で切れるので、長い結果は bench/ のファイルを読む。
+- 縮めたモデルの形：残す片 21,772／250,037（K=0）、`onnx/model_quantized.onnx` 31.3MB＋`tokenizer.json` 1.0MB。Transformers.js は `dtype:'q8'`・`device:'wasm'`・`env.allowRemoteModels=false`。**切り方は先頭 127 個＋最後の `</s>`**（Python と同じ。Transformers.js の `truncation` は最後の `</s>` が落ちるので使わず、切らずに取って自分で切る＝`capIds`）。
+- 全部の試験は固定試験（開発用220・一般・業務・業務2・日本の調達）。**未見セット（blind_set*、セット3・5・7）は使わない。**
+
+### 10.2 いまの結果（commit 362ca7d・1553fde の CI。**学習していない e5-small**＝精度の数字に意味はない。スマホ実機ではない）
+- 大きさ：fp32 120.3MB → 埋め込み INT8 95.3MB → 全結合層も INT8 **31.3MB**＋tokenizer 1.0MB。onnxruntime（CPU）の 1 列は 40ms（1 スレッド）／23ms（2 スレッド）、平均 96 トークン。
+- Chromium（WASM）：動いた。**外への要求 0 件**。読み込み 約 1 秒、1 列 平均 74〜92ms（1 スレッド）、4 スレッドで中央値 63ms（CI のばらつきが大きい）。logits は onnxruntime と最大 0.007 差、答え 39/40 一致。取り込む量は合計 60.1MB（モデル 31.3＋onnxruntime の wasm 26.9＋tokenizer 1.0＋js）。
+- トークナイザの番号の不一致 3/40 は、どれも 128 語を超える長い文の末尾の切り方（上の `capIds` で直した、d1c9f28）。**全試験文＋変わった文字列 43 個での一致は d1c9f28 の CI で出る**（`bench/browser_model_summary.md` の「トークナイザの番号の一致」）。
+- 詳しい表：TEACHING_PLAN.md（tool-kobo）「結果：縮めたモデルをブラウザで動かす試験」。**学習済みモデルを縮めたときの精度はまだ未測定**（T3・T4）。
+
+### 10.3 代行してほしい試験（順番どおり）
+**T1．Kaggle e5-small 8 本（版 15）の完了確認**
+- `git pull --rebase --autostash origin main` → `tail -3 kaggle/KAGGLE_LOG.md`。最後の「状態：」が COMPLETE なら、FINETUNE_RESULTS.md の末尾に「Kaggle GPU 仕事1」〜「仕事8」の節が足され、確率が `eval_reports/latest/` に入っている。RUNNING なら待つ（30 分ごとに GitHub が取りに行く）。ERROR／CANCEL なら `kaggle/last_run_tail.txt` の末尾を読んで原因を連絡箱に書く（**自分で依頼し直さない**）。
+- 仕事の中身：①種1（FT_COMPRESS=1・FT_KEEP=1）②種2 ③種3 ④FT_FREEZE_EMB=1（種1。FT_COMPRESS=1・FT_KEEP=1 を引き継ぐ）⑤種2＋FT_FREEZE_EMB=1 ⑥FT_LR=1e-4 ⑦FT_LR=1e-4＋FT_FREEZE_EMB=1 ⑧FT_COMPRESS_TOPK=60000（FT_COMPRESS=1）。全部 e5-small・2 周・`FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1`。
+**T2．比べる（compare_runs.py。1.5 ポイント未満は差なし）**
+```
+K1="仕事1（FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_SEED=1 FT_COMPRESS=1"
+K2="仕事2（仕事1との違い：FT_SEED=2 FT_COMPRESS="
+K3="仕事3（仕事1との違い：FT_SEED=3 FT_COMPRESS="
+K4="仕事4（仕事1との違い：FT_FREEZE_EMB=1）"
+K5="仕事5（仕事1との違い：FT_SEED=2 FT_FREEZE_EMB=1 FT_COMPRESS="
+K6="仕事6（仕事1との違い：FT_LR=1e-4 FT_COMPRESS="
+K7="仕事7（仕事1との違い：FT_LR=1e-4 FT_FREEZE_EMB=1 FT_COMPRESS="
+python compare_runs.py FINETUNE_RESULTS.md --noise "$K1" "$K2" "$K3"      # 種のばらつき
+python compare_runs.py FINETUNE_RESULTS.md --a "$K1" --b "$K4"             # 埋め込み固定（種1）
+python compare_runs.py FINETUNE_RESULTS.md --a "$K2" --b "$K5"             # 埋め込み固定（種2）
+python compare_runs.py FINETUNE_RESULTS.md --a "$K1" --b "$K6"             # 学習率 1e-4
+python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋め込み固定のうえで学習率 1e-4
+```
+- 見るもの：small が base（TEACHING_PLAN.md「結果：e5-base 8 本」）と large（4 章）にどれだけ届くか（微調整だけと 7割＋3割、5 試験の正解率・重大・不明）、埋め込み固定が small でも差なしか、学習秒（small の埋め込み表は全体の 82% なので固定の効きが大きいはず）。重大の数は 1 回では当てにならない（base で業務 3〜7、業務2 7〜9 とぶれた）ので、種のばらつきの幅と並べて書く。
+- 記録：`bench/e5small_8jobs.md` に表と判断を書き、連絡箱で報告。
+**T3．縮めた版の精度を読む（仕事1・4・8 の節）**
+- 各節に「…微調整 2.0周・圧縮【…】・微調整だけ／7割＋3割」の行が 6 通り×2 条件（圧縮なし fp32・語彙削減・トークナイザも縮める・＋INT8 の疑似・＋INT8 の動的量子化＋埋め込み INT8・＋fp16）と、「圧縮の試験」のメモ（残す片の数・残さない片を含む列の割合・大きさの見積り・top-1 一致）が付く。同じ節の「微調整だけ」行（圧縮なし）と比べる。
+- 目安：**『INT8 の動的量子化＋埋め込み INT8』が圧縮なしと正解率で −1.0 ポイント以内、重大が増えない**。超えたら仕事8（K=60000＝語彙を多く残す）の同じ行と比べて、語彙を増やす効果を見る。劣化の原因は 残さない片が unk になる影響（57% の列に 1 つ以上含まれる）か、INT8 かを、行の差から切り分ける。
+**T4．学習済みの縮めたモデルをブラウザで動かす（手動 workflow。T1 が COMPLETE の後）**
+- Kaggle の回収物（artifact `jitsuris-model`。仕事1・4 のモデルが `ft_out_job1`・`ft_out_job4`）を作った実行の番号：`gh api repos/hehohahifu83-cmyk/jitsuris-train/actions/artifacts --jq '.artifacts[] | select(.name=="jitsuris-model") | "\(.workflow_run.id) \(.created_at) \(.size_in_bytes)"' | head`（**e5-small の COMPLETE を回収した実行**＝created_at が 05:20Z 以降のもの。大きさが数百 MB）。
+- 実行（約 15〜25 分）：`gh workflow run browser-model.yml -R hehohahifu83-cmyk/jitsuris-train -f kaggle_run=<番号> -f model_dir=ft_out_job1 -f limit=0`、続けて `-f model_dir=ft_out_job4`（concurrency で順番に流れる）。
+- 結果：`git pull` して `bench/browser_model_trained_summary.md`（後に流した方で上書きされるので、1 本目が終わったら中身を別名で控える）と注。見るもの：①表の「PyTorch fp32／ONNX fp32／ONNX 埋め込み INT8／ONNX 埋め込み INT8＋全結合層 INT8」×「微調整だけ／7割＋3割」の 5 試験の正解率・重大・不明（目安：INT8 版が PyTorch fp32 と −1.0 ポイント以内、top-1 一致 99% 以上、重大が増えない）②トークナイザの番号の一致（試験の全列で 0 件のはず）③Chromium の 1 列の時間と取り込む量。
+- 失敗したら `bench/browser_model_log.md` にログの末尾が入る。`gh run view <run> -R … --log-failed` は取れないので注を読む。
+**T5．トークナイザの変わった文字列での不一致（研究実装）**
+- `bench/browser_model_summary.md` の「トークナイザの番号の一致」と `first`（不一致の最初の 12 件。片とコードポイント付き）を読む。試験の文で 0 件、変わった文字列だけ不一致なら、Transformers.js と HF tokenizers の正規化（NFKC・空白・制御文字）の差。**製品側（column-ai.js）の前処理で寄せる案**を連絡箱に書く（column-ai.js は tool-kobo の非公開ブランチにあるので、案とテスト用の文字列を渡す。Claude が戻ったら入れる）。
+**T6．取り込む量を軽くする研究（研究実装。任意）**
+- 今は合計 60.1MB のうち onnxruntime の wasm が 26.9MB（`ort-wasm-simd-threaded.asyncify.wasm`）。`bench/browser_model_summary.md` の「wasm の大きさ」に onnxruntime-web の他の wasm（`ort-wasm-simd-threaded.wasm` など）の大きさが出る。WASM 専用の build（`ort.wasm.min.mjs`）を onnxruntime-web で直接使い、トークナイザは自作の Unigram（tokenizer.json の vocab と score、unk、正規化は NFKC 近似＋空白処理。正解は reference.json の `tok_texts`／`tok_ids`）にして、Transformers.js を外せるか。判定：番号が全試験文・変わった文字列で一致、logits 差が今と同程度、取り込む量。`browser_test/run.mjs` を複製して `run_light.mjs` に。
+**T7．UNIT 文脈の小さな ablation（ChatGPT が 13:01 に提案した案を採用。研究実装）**
+- 実装：`encoder_exp.py` の `text()`（`列名: … | 値: … | 同じ表の列: …`）に、同じ表の UNIT／Unit／単位の列の値の例を足す `FT_CTX_UNIT=1`（**既定オフ**。tests に「オフなら今までの文と同じ」を入れる）。
+- Kaggle（T1 が COMPLETE になってから）：`train intfloat/multilingual-e5-base 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_SEED=1 FT_CTX_UNIT=1 ++ FT_SEED=2`。比べ先は e5-base 8 本の仕事1（種1）・仕事2（種2）。判定：重大の数（業務2 の VALUE/UNIT 型 1〜2 件が直るか）と、他の試験が悪化しないこと。
+- その次の候補（ChatGPT 案）：第一段で同じ表の列を分類し、第二段に兄弟列の上位候補の確率（硬いラベルだけにしない）を渡す。出典単位の holdout で、誤りの増減と「不明」の変化を分けて測る。
+
+### 10.4 守ること（T1〜T7 共通）
+- Kaggle が RUNNING の間は `kaggle/kaggle.request` を書き換えない。依頼の前に、ジョブ数×所要時間の見積り（small は 1 本 5〜10 分、base は 約 10 分、large は 約 30 分、2 本ずつ）を連絡箱に書く。
+- 結果の数字は元のファイル（FINETUNE_RESULTS.md、bench/ の md、注）と突き合わせて書く。検査（テスト）・本番・実機を分ける。CI の速さはスマホの速さではない。
+- 見張りは v9 のまま（セット7を測る前に固定）。見張りを直すときは Claude に連絡箱で相談（Python と column-ai.js の両方を同時に直す必要がある）。
+- 秘密・価格・「必ず」「No.1」は書かない。未見セットは開かない。本番・公開サイト・Cloudflare は触らない。
