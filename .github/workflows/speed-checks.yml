@@ -94,7 +94,7 @@ jobs:
           out += ["", f"A と B の最初の5ステップの損失の最大の差：{diff}（ドロップアウトを切り、同じ種・同じ実効バッチ。基準 2e-3 未満）", "",
                   "CPU（fp32・e5-small・640行）の検査であり、GPU（fp16）での速さや品質の結果ではない。"]
           t_all = read("FINETUNE_RESULTS.md")
-          sec = t_all.split("\n### ")[-1] if "\n### " in t_all else ""
+          sec = next((x for x in reversed(t_all.split("\n### ")) if "圧縮の試験" in x), "")   # 測定プログラムも節を足すので、最後の節ではなく『圧縮の試験』を含む最後の節
           cnotes = [l for l in sec.splitlines() if l.startswith("- ")]
           if any("圧縮の試験" in l for l in cnotes):
               out += ["", "縮めた版の試験（検査 E。CPU・e5-small・学習は 320 行だけの出来の悪いモデルなので、語彙の残り方・大きさ・動くことの確認用。判定の質の結果ではない）："] + cnotes

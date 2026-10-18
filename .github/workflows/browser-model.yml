@@ -1,0 +1,57 @@
+name: ブラウザ用の書き出しの検査
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: '書き出すモデル（Hugging Face の名前か保存した場所。空なら学習していない e5-small で仕組みだけ確かめる）'
+        required: false
+        default: ''
+  push:
+    branches: [main]
+    paths: [export_onnx.py, compress_eval.py, tests/test_export_onnx.py, tests/test_compress_eval.py, .github/workflows/browser-model.yml]
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: 依存を入れる（CPU 版）
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece tokenizers onnx onnxruntime onnxscript
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: 部品の検査
+        shell: bash
+        run: python -m unittest tests.test_export_onnx tests.test_compress_eval -v 2>&1 | tee unittest.log | tail -40
+      - name: 書き出しと試験（学習していないモデルなら精度の数字に意味はない。大きさ・動くこと・速さの確認）
+        shell: bash
+        run: |
+          MODEL="${{ inputs.model }}"; [ -z "$MODEL" ] && MODEL=intfloat/multilingual-e5-small
+          python export_onnx.py --model "$MODEL" --out browser_model --limit 100 2>&1 | tee export.log | tail -60
+      - name: 書き出したものを置く（軽いものだけ）
+        if: always()
+        run: |
+          mkdir -p keep && cp browser_model/REPORT.md keep/ 2>/dev/null || true
+          cp -r browser_model/onnx/model_quantized.onnx browser_model/tokenizer.json browser_model/tokenizer_config.json browser_model/config.json keep/ 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: browser-model-check, path: keep, retention-days: 14, if-no-files-found: ignore }
+      - name: 結果を記録する
+        if: always()
+        shell: bash
+        run: |
+          # ログは取りに行けないので、失敗のときも要点（ログの末尾）をリポジトリに書く
+          { echo "# ブラウザ用の書き出しの検査のログの末尾"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; echo '## 部品の検査'; echo '```'; tail -60 unittest.log 2>/dev/null; echo '```'; echo '## 書き出し'; echo '```'; tail -80 export.log 2>/dev/null; echo '```'; } > bench/browser_model_log.md
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add bench/browser_model_log.md
+          [ -f browser_model/REPORT.md ] || { git commit -q -m "ブラウザ用の書き出しの検査のログ（失敗）" ; for i in 1 2 3; do git push && break; git pull --rebase --autostash; done; echo "REPORT.md がない（書き出しが失敗）"; exit 1; }
+          { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; cat browser_model/REPORT.md; } > bench/browser_model_summary.md
+          git add bench/browser_model_summary.md
+          git diff --cached --quiet && exit 0
+          git commit -m "ブラウザ用の書き出しの検査の結果（CPU）"
+          for i in 1 2 3; do git push && break; git pull --rebase --autostash; done

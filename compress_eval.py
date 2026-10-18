@@ -139,12 +139,19 @@ def coverage(ids_list, kept_set):
     return total, dropped, cols
 
 
-def fake_quant_rows_int8(w):
-    """行ごとの対称 INT8 に丸めて戻した値（保存形式が INT8 のときモデルが見る値）。"""
+def quantize_rows_int8(w):
+    """行ごとの対称 INT8：(int8 の表, 行ごとの倍率 float32 の (行数, 1))。復元は q * scale。"""
     w = np.asarray(w, dtype=np.float32)
     scale = np.abs(w).max(axis=1, keepdims=True) / 127.0
     scale[scale == 0] = 1.0
-    return (np.clip(np.round(w / scale), -127, 127) * scale).astype(np.float32)
+    q = np.clip(np.round(w / scale), -127, 127).astype(np.int8)
+    return q, scale.astype(np.float32)
+
+
+def fake_quant_rows_int8(w):
+    """行ごとの対称 INT8 に丸めて戻した値（保存形式が INT8 のときモデルが見る値）。"""
+    q, scale = quantize_rows_int8(w)
+    return (q.astype(np.float32) * scale).astype(np.float32)
 
 
 def size_report(n_total, n_embed_full, hidden, n_kept):

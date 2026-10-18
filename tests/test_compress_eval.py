@@ -60,6 +60,16 @@ class PureFunctionsTest(unittest.TestCase):
         self.assertTrue(np.all(q[2] == 0))
         self.assertTrue(np.allclose(C.fake_quant_rows_int8(q), q, atol=1e-6))   # 2 回丸めても変わらない
 
+    def test_quantize_rows_int8_roundtrip_and_ranges(self):
+        rng = np.random.default_rng(1)
+        w = rng.normal(size=(6, 12)).astype(np.float32) * np.array([[0.01], [0.1], [1.0], [5.0], [0.5], [0.0]], dtype=np.float32)
+        q, scale = C.quantize_rows_int8(w)
+        self.assertEqual((q.dtype, scale.dtype, q.shape, scale.shape), (np.int8, np.float32, (6, 12), (6, 1)))
+        self.assertLessEqual(int(np.abs(q.astype(np.int32)).max()), 127)
+        self.assertTrue(np.allclose(q.astype(np.float32) * scale, C.fake_quant_rows_int8(w)))
+        self.assertTrue(np.all(q[5] == 0))
+        self.assertTrue(np.all(np.abs(q.astype(np.float32) * scale - w) <= scale / 2 + 1e-6))
+
     def test_size_report(self):
         s = C.size_report(n_total=1000, n_embed_full=600, hidden=10, n_kept=20)
         self.assertEqual((s["body_params"], s["kept_embed_params"]), (400, 200))
