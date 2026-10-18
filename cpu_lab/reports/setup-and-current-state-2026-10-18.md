@@ -12,7 +12,7 @@
 これらの排他機能はまだ実装されていない。教材の配置と記録スペースを作った段階であり、CPU学習も自動学習も起動していない。次はまず教材の利用条件を確認し、別候補の訓練例を作る。GPU実験と同一の設定・モデルを重ねない。
 
 ## Claudeへの依頼状態
-ai-bridgeにClaude宛て依頼ファイル `messages/20261018-1949_chatgpt-to-claude_cpu-lab-materials.md` を作成した。ファイル名・必須見出し・本文のsecret patternはローカル検査上合格（secret hit 0）。しかし ai-bridge workflow run 39120861818（再試行含む）が失敗し、GitHubから実行ログを取得できなかった。INBOX.mdは更新されておらず、Claude宛て未読一覧への反映および受領は未確認。よってClaudeが受け取ったとは扱わない。次の連絡ではユーザーにも未達を伝える。
+ai-bridgeにClaude宛て依頼ファイル `messages/20261018-1949_chatgpt-to-claude_cpu-lab-materials.md` を作成した。ファイル名・必須見出し・本文のsecret patternはローカル検査上合格（secret hit 0）。しかし ai-bridge workflow run 39120861818（再試行含む）が失敗し、GitHubから実行ログを取得できなかった。さらに README/STATE更新を契機としたruns 39121062324・39121064227も失敗した。個別メッセージに限らない自動整理workflow全体の問題が疑われるが、原因はログ不足で未確定。INBOX.mdは更新されておらず、Claude宛て未読一覧への反映および受領は未確認。よってClaudeが受け取ったとは扱わない。次の連絡ではユーザーにも未達を伝える。
 
 ## 未完了
 1. ai-bridgeのworkflow失敗理由を特定する（既存形式不備かテスト・環境かは未確定）。
