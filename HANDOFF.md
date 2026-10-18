@@ -214,4 +214,4 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - 作成：`cpu_lab/README.md`、`cpu_lab/materials/README.md`、`cpu_lab/materials/column-type-research-map.md`、`cpu_lab/experiments/README.md`、`cpu_lab/reports/README.md`。
 - 研究教材マップはSherlock、Sato、TURL、Permutation Invariant Strategy、DODUOの公開論文を要点整理したもの。データ・重みはまだ取得していない。個別のライセンス確認も未実施。
 - CPUラボの学習workflow・排他ロック・実訓練例は未実装。現時点でジツリスの新規CPU学習はしていない。
-- Claude宛てメッセージ `20261018-1949_chatgpt-to-claude_cpu-lab-materials.md` をai-bridgeに作成。ファイルの書式と秘密パターンは手元で検査し、書式合格・秘密検出0件。ただしai-bridge workflow run 39120861818 は初回・再実行とも失敗、ログ取得不可。INBOX.mdにClaude宛て未読として載ったこと・Claudeの受領は未確認。原因不明。
+- Claude宛てメッセージ `20261018-1949_chatgpt-to-claude_cpu-lab-materials.md` をai-bridgeに作成。ファイルの書式と秘密パターンは手元で検査し、書式合格・秘密検出0件。ただしai-bridge workflow run 39120861818 は初回・再実行とも失敗、ログ取得不可。さらに連絡箱README/STATE更新後のruns 39121062324・39121064227も失敗しており、個別メッセージだけでなく自動整理workflow全体の問題が疑われる。INBOX.mdにClaude宛て未読として載ったこと・Claudeの受領は未確認。原因はログ不足で未確定。
