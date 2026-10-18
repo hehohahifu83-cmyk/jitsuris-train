@@ -1,0 +1,27 @@
+name: CPU lab safety tests
+on:
+  push:
+    paths:
+      - 'cpu_lab/**'
+      - 'finetune_exp.py'
+      - '.github/workflows/cpu-lab-tests.yml'
+  pull_request:
+    paths:
+      - 'cpu_lab/**'
+      - 'finetune_exp.py'
+      - '.github/workflows/cpu-lab-tests.yml'
+permissions:
+  contents: read
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile trainer and active-learning utility
+        run: python -m py_compile finetune_exp.py cpu_lab/self_learning.py
+      - name: Verify leakage and approval guards
+        run: python -m unittest discover -s cpu_lab/tests -v
