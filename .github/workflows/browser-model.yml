@@ -9,7 +9,7 @@ on:
         default: ''
   push:
     branches: [main]
-    paths: [export_onnx.py, compress_eval.py, tests/test_export_onnx.py, tests/test_compress_eval.py, .github/workflows/browser-model.yml]
+    paths: [browser_test/**, export_onnx.py, compress_eval.py, tests/test_export_onnx.py, tests/test_compress_eval.py, .github/workflows/browser-model.yml]
 permissions:
   contents: write
 jobs:
@@ -32,7 +32,16 @@ jobs:
         shell: bash
         run: |
           MODEL="${{ inputs.model }}"; [ -z "$MODEL" ] && MODEL=intfloat/multilingual-e5-small
-          python export_onnx.py --model "$MODEL" --out browser_model --limit 100 2>&1 | tee export.log | tail -60
+          python export_onnx.py --model "$MODEL" --out browser_model --limit 100 --reference 40 2>&1 | tee export.log | tail -60
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: ブラウザで動かす試験（headless Chromium・WASM・外への通信は止める）
+        shell: bash
+        run: |
+          mkdir -p /tmp/js && cp browser_test/run.mjs /tmp/js/ && cd /tmp/js && npm init -y >/dev/null
+          npm i @huggingface/transformers playwright 2>&1 | tail -2
+          npx playwright install --with-deps chromium 2>&1 | tail -2
+          node run.mjs "$GITHUB_WORKSPACE/browser_model" "$GITHUB_WORKSPACE/browser_model/reference.json" "$GITHUB_WORKSPACE/browser_result.json" 2>&1 | tee "$GITHUB_WORKSPACE/browser_js.log" | tail -80
       - name: 書き出したものを置く（軽いものだけ）
         if: always()
         run: |
@@ -54,7 +63,7 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add bench/browser_model_log.md
           [ -f browser_model/REPORT.md ] || { git commit -q -m "ブラウザ用の書き出しの検査のログ（失敗）" ; for i in 1 2 3; do git push && break; git pull --rebase --autostash; done; echo "REPORT.md がない（書き出しが失敗）"; exit 1; }
-          { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; cat browser_model/REPORT.md; } > bench/browser_model_summary.md
+          { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > bench/browser_model_summary.md
           git add bench/browser_model_summary.md
           git diff --cached --quiet && exit 0
           git commit -m "ブラウザ用の書き出しの検査の結果（CPU）"
@@ -71,6 +80,6 @@ jobs:
               t = "\n".join(l[-200:] for l in ls)[-n:]   # 長い行は後ろ（理由が書いてある所）を残す
               t = t.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::notice title={title}::{t}")
-          for p, title in [("unittest.log", "unittest"), ("export.log", "export"), ("browser_model/REPORT.md", "REPORT"), ("record.log", "record")]:
+          for p, title in [("unittest.log", "unittest"), ("export.log", "export"), ("browser_model/REPORT.md", "REPORT"), ("browser_js.log", "browser_js"), ("record.log", "record")]:
               emit(p, title)
           PY

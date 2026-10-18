@@ -91,7 +91,8 @@ def ort_session(path, threads=0):
     return ort.InferenceSession(path, so, providers=["CPUExecutionProvider"])
 
 
-def probs_ort(sess, id_lists, pad_id, batch=32):
+def probs_ort(sess, id_lists, pad_id, batch=32, logits_out=False):
+    """onnxruntime で確率（logits_out なら softmax 前の値）を出す。長さ順に束ねて元の順に戻す。"""
     from batching import pad_batch
     out = [None] * len(id_lists)
     order = C.order_by_length(id_lists)
@@ -99,12 +100,24 @@ def probs_ort(sess, id_lists, pad_id, batch=32):
         idx = order[s:s + batch]
         pids, pmask = pad_batch([id_lists[i] for i in idx], pad_id, 1)
         logits = sess.run(["logits"], {"input_ids": np.asarray(pids, dtype=np.int64), "attention_mask": np.asarray(pmask, dtype=np.int64)})[0].astype(np.float64)
-        logits -= logits.max(axis=1, keepdims=True)
-        p = np.exp(logits)
-        p /= p.sum(axis=1, keepdims=True)
+        if logits_out:
+            p = logits
+        else:
+            z = logits - logits.max(axis=1, keepdims=True)
+            p = np.exp(z)
+            p /= p.sum(axis=1, keepdims=True)
         for k, i in enumerate(idx):
             out[i] = p[k]
     return np.vstack(out)
+
+
+def write_reference(path, texts, id_lists, sess_q, sess_f, labels):
+    """ブラウザの試験の正解データ：文・縮めたトークナイザの番号・onnxruntime（CPU）の logits（INT8 と fp32）。1 列ずつ（バッチ 1）流す。"""
+    def one(sess, ids):
+        return sess.run(["logits"], {"input_ids": np.asarray([ids], dtype=np.int64), "attention_mask": np.ones((1, len(ids)), dtype=np.int64)})[0][0].astype(float).tolist()
+    ref = {"texts": texts, "ids": id_lists, "logits_q": [one(sess_q, i) for i in id_lists], "logits_f": [one(sess_f, i) for i in id_lists], "labels": labels}
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(ref, f, ensure_ascii=False, separators=(",", ":"))
 
 
 def time_single(sess, id_lists, pad_id, n=60):
@@ -147,6 +160,7 @@ def main(argv=None):
     ap.add_argument("--limit", type=int, default=0, help="試験ごとの列数の上限（検査用。0 なら全部）")
     ap.add_argument("--per-channel", action="store_true")
     ap.add_argument("--labels", default="")
+    ap.add_argument("--reference", type=int, default=0, help="ブラウザの試験の正解データに使う文の数（試験ごとの先頭から均等に）。0 なら作らない")
     args = ap.parse_args(argv)
 
     import torch
@@ -210,6 +224,12 @@ def main(argv=None):
             sec = time.time() - t0
         agree = float(np.mean(np.concatenate([pr[tn].argmax(1) == ref[tn].argmax(1) for tn in pr])))
         maxdiff = float(max(np.abs(pr[tn] - ref[tn]).max() for tn in pr))
+        if path is None:
+            lg_ref = {tn: C.probs_dev(trimmed, ids[tn], pad_id, logits_out=True) for tn in test_rows}
+            lg_diff = 0.0
+        else:
+            lg = {tn: probs_ort(sess, ids[tn], pad_id, logits_out=True) for tn in test_rows}
+            lg_diff = float(max(np.abs(lg[tn] - lg_ref[tn]).max() for tn in lg))
         for tag, w in conditions:
             res = []
             for tn, te in test_rows.items():
@@ -217,7 +237,7 @@ def main(argv=None):
                 pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
                 s = score_real(pred, [r[2] for r in te])
                 res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}")
-            lines.append(f"| {vname}・{tag} | " + " | ".join(res) + f" | PyTorch fp32 との top-1 一致 {100 * agree:.2f}%・確率の最大差 {maxdiff:.3f} |")
+            lines.append(f"| {vname}・{tag} | " + " | ".join(res) + f" | PyTorch fp32 との top-1 一致 {100 * agree:.2f}%・確率の最大差 {maxdiff:.3f}・logits の最大差 {lg_diff:.3f} |")
             print(lines[-1], flush=True)
     report += ["| 版・組み合わせ | " + " | ".join(test_rows) + " | 比較 |", "|---|" + "---|" * (len(test_rows) + 1)] + lines + [""]
 
@@ -226,6 +246,12 @@ def main(argv=None):
         for threads in (1, 2):
             mean_ms, med_ms = time_single(ort_session(path, threads), all_ids, pad_id)
             report.append(f"- 1 列ずつ流した時間（onnxruntime・CPU・{threads}スレッド・{label}）：平均 {mean_ms:.0f}ms・中央値 {med_ms:.0f}ms／列（全 {n_cols} 列の文の平均 {np.mean([len(x) for x in all_ids]):.0f} トークン）")
+    if args.reference:
+        per = max(1, args.reference // max(1, len(test_rows)))
+        pick = [(tn, i) for tn in test_rows for i in range(min(per, len(ids[tn])))]
+        texts = [text(test_rows[tn][i], prefix) for tn, i in pick]
+        write_reference(os.path.join(out, "reference.json"), texts, [ids[tn][i] for tn, i in pick], ort_session(quant), ort_session(fp32), labels)
+        report.append(f"- ブラウザの試験の正解データ（reference.json）：{len(texts)} 文")
     report += ["", "数字は GitHub Actions の CPU の結果で、ブラウザ（WASM）の実機の速さではない。精度は保存したモデルを書き出して試験に流した結果。"]
     open(os.path.join(out, "REPORT.md"), "w", encoding="utf-8").write("\n".join(report) + "\n")
     print("\n".join(report))

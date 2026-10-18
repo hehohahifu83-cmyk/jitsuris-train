@@ -223,8 +223,8 @@ def round_weights_fp16(m):
     return m
 
 
-def probs_dev(model, id_lists, pad_id, batch=32, pad_multiple=1, device="cpu"):
-    """確率を出す（device は "cpu" か "cuda"。モデルはすでにその装置にある）。長さ順に束ねて詰め物を減らし、元の順に戻して返す。"""
+def probs_dev(model, id_lists, pad_id, batch=32, pad_multiple=1, device="cpu", logits_out=False):
+    """確率（logits_out なら softmax 前の値）を出す（device は "cpu" か "cuda"。モデルはすでにその装置にある）。長さ順に束ねて詰め物を減らし、元の順に戻して返す。"""
     import torch
     from batching import pad_batch
     out = [None] * len(id_lists)
@@ -234,7 +234,7 @@ def probs_dev(model, id_lists, pad_id, batch=32, pad_multiple=1, device="cpu"):
             idx = order[s:s + batch]
             pids, pmask = pad_batch([id_lists[i] for i in idx], pad_id, pad_multiple)
             logits = model(input_ids=torch.tensor(pids, device=device), attention_mask=torch.tensor(pmask, device=device)).logits.float()
-            p = torch.softmax(logits, -1).cpu().numpy()
+            p = (logits if logits_out else torch.softmax(logits, -1)).cpu().numpy()
             for k, i in enumerate(idx):
                 out[i] = p[k]
     return np.vstack(out)
