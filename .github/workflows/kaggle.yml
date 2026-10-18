@@ -38,6 +38,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: model_artifact
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
+      - name: Evidence-first error analysis
+        if: always() && steps.gate.outputs.skip != '1'
+        run: |
+          mkdir -p /tmp/eval_reports
+          python cpu_lab/error_analysis.py /tmp/eval_reports --out /tmp/eval_reports/ERROR_ANALYSIS.md
+          cat /tmp/eval_reports/ERROR_ANALYSIS.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         id: eval_artifact
         with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
@@ -97,6 +103,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           for f in FINETUNE_RESULTS.md kaggle/PROGRESS.md kaggle/STATUS.md kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
+          if [ -s /tmp/eval_reports/ERROR_ANALYSIS.md ]; then mkdir -p cpu_lab/reports; cp /tmp/eval_reports/ERROR_ANALYSIS.md "cpu_lab/reports/error-analysis-run-${GITHUB_RUN_ID}.md"; git add "cpu_lab/reports/error-analysis-run-${GITHUB_RUN_ID}.md"; fi
           # 確率（列名・正解・予測・上位3つの確率だけ。列の値は入らない）のうち『微調整だけ』と『7割＋3割』を、読めるようにリポジトリにも置く（最新の1回分。全部は artifact に30日）。誤りの一覧は確率から作れる
           if ls /tmp/eval_reports/*.json >/dev/null 2>&1; then rm -rf eval_reports/latest; mkdir -p eval_reports/latest; cp /tmp/eval_reports/*_probs_*_ft.json /tmp/eval_reports/*_probs_*_blend70.json eval_reports/latest/ 2>/dev/null || true; git add eval_reports; fi
           git diff --cached --quiet && exit 0
