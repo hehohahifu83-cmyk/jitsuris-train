@@ -26,7 +26,7 @@ labels = sorted(set(r[2] for r in rows)); L = {c: i for i, c in enumerate(labels
 tok = AutoTokenizer.from_pretrained(NAME)
 model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels))
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
-print("device", DEV, flush=True)
+print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
 def text_aug(r, prefix):
     h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
