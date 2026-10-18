@@ -219,3 +219,4 @@
 送ったモデル：1.1G	hfmodel・束の中のモデルのファイル数 55
 2026-10-18T08:30:41Z 空き待ちが 20 分を超えたので止める：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED"
 2026-10-18T08:30:41Z 状態：queue-timeout
+2026-10-18T10:56:49Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING"
