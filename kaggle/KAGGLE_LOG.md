@@ -96,3 +96,7 @@
     model: hfmodel/intfloat__multilingual-e5-large exists=True
     cuda: True devices=2 Tesla T4, 15360 MiB / Tesla T4, 15360 MiB
     仕事の数: 1 [{'args': ['hfmodel/intfloat__multilingual-e5-large'], 'env': {}}]
+2026-10-18T03:00:50Z push の返事：Kernel version 13 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-18T03:01:20Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-18T03:01:21Z train を依頼：hfmodel/intfloat__multilingual-e5-large 2 FT_LR=2e-5 FT_BS=16 FT_ACC=4 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 ++ FT_LR=2e-5 FT_BS=16 FT_ACC=4 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_AUG=1
+送ったモデル：2.2G	hfmodel・束の中のモデルのファイル数 55
