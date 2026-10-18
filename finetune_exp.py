@@ -1,7 +1,7 @@
 """学習済みの多言語モデル（multilingual-e5-small、MIT）を、列の種類の判定に合わせて微調整する（PyTorch・CPU、GitHub Actions）。
 入力の文は encoder_exp.py と同じ。試験は Claude 側の試験（表ごとに分けた試験側・開発用）。集計だけを FINETUNE_RESULTS.md に出す。
 学習したモデルは ONNX に書き出し、artifacts として保存（ブラウザで Transformers.js から使う準備）。"""
-import json, os, random, sys, time
+import json, os, random, re, sys, time, unicodedata
 from cpu_speed import configure_cpu_threads
 
 CPU_AVAILABLE, CPU_THREADS = configure_cpu_threads()
@@ -9,7 +9,10 @@ CPU_AVAILABLE, CPU_THREADS = configure_cpu_threads()
 import numpy as np
 import torch
 torch.set_num_threads(CPU_THREADS)
-torch.set_num_interop_threads(1)
+try:
+    torch.set_num_interop_threads(1)
+except RuntimeError as exc:
+    print(f"could not set torch inter-op threads; continuing: {exc}", flush=True)
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
 import gen, features
@@ -18,7 +21,13 @@ from encoder_exp import rows, tests, text
 from llm_baseline import score_real
 from train3 import decide
 
-torch.manual_seed(0); random.seed(0)
+seed_text = os.environ.get("FT_SEED")
+if seed_text is None:
+    torch.manual_seed(0); random.seed(0)
+else:
+    seed = int(seed_text)
+    torch.manual_seed(seed); random.seed(seed); np.random.seed(seed)
+    if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
 NAME = sys.argv[1] if len(sys.argv) > 1 else "intfloat/multilingual-e5-small"
 EPOCHS = float(sys.argv[2]) if len(sys.argv) > 2 else 2
 PREFIX = "query: " if "e5" in NAME else ""
@@ -44,7 +53,15 @@ def text_aug(r, prefix):
     if form == 0: return f"{prefix}列名: {h} | 値: {vals} | 同じ表の列: {cs}"
     if form == 1: return f"{prefix}{h}: {vals} （同じ表: {cs}）"
     return f"{prefix}列「{h}」の値は {vals}。同じ表には {cs} がある。"
-data = [(r, L[r[2]]) for r in rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in rows]
+train_setup_start = time.time()
+train_rows = rows
+limit_text = os.environ.get("FT_LIMIT")
+if limit_text:
+    limit = int(limit_text)
+    if limit < 1: raise ValueError("FT_LIMIT must be a positive integer")
+    train_rows = rows[:limit]
+data = [(r, L[r[2]]) for r in train_rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in train_rows]
+print(f"training rows={len(train_rows)} seed={seed_text or 'default'}", flush=True)
 random.shuffle(data)
 CPU_TOKEN_CACHE = DEV == "cpu" and not AUG and os.environ.get("FT_CPU_CACHE", "1") == "1"
 if CPU_TOKEN_CACHE:
@@ -81,8 +98,11 @@ while step < steps:
         if micro % ACC: continue
         scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad(); step += 1
+        trace_n = int(os.environ.get("FT_TRACE_LOSS", "0"))
+        if step <= trace_n: print(f"step_loss {step} {loss.item() * ACC:.6f}", flush=True)
         if step % 100 == 0: print(f"step {step}/{steps} loss {loss.item() * ACC:.3f} {time.time() - t0:.0f}s", flush=True)
         if step >= steps: break
+train_seconds = time.time() - train_setup_start
 model.eval()
 EVAL_BS = 4 if DEV == "cuda" and IS_LARGE else 32
 def probs(rs):
@@ -97,16 +117,50 @@ from sklearn.linear_model import LogisticRegression
 from train3 import mat
 lr = LogisticRegression(C=8, max_iter=3000).fit(mat(rows), np.array([r[2] for r in rows]))
 assert list(lr.classes_) == labels
+if os.environ.get("FT_EVAL") == "dev220":
+    tests = {k: v for k, v in tests.items() if k == "開発用220"}
+if any("blind" in k.lower() for k in tests):
+    raise RuntimeError("blind test sets must not be evaluated or saved")
+eval_start = time.time()
+model_probs = {tn: probs(te) for tn, te in tests.items()}
+lr_probs = {tn: lr.predict_proba(mat(te)) for tn, te in tests.items()}
+conditions = (("微調整だけ", 1.0), ("今の仕組みだけ", 0.0), ("微調整＋今の仕組み（半々）", 0.5), ("微調整7割＋今の仕組み3割", 0.7))
+condition_names = {"微調整だけ": "ft", "今の仕組みだけ": "sparse", "微調整＋今の仕組み（半々）": "blend50", "微調整7割＋今の仕組み3割": "blend70"}
+critical_labels = {"date", "amount", "quantity", "rate", "id"}
+
+def normalized_header(value):
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(value)).strip()).casefold()
+
+def safe_test_name(name):
+    names = {"開発用220": "dev220", "本物（一般）": "general", "本物（業務）": "business", "本物（業務2）": "business2", "本物（日本の調達）": "japan_procurement"}
+    return names.get(name, "test")
+
 lines = []
-for tag, w in (("微調整だけ", 1.0), ("今の仕組みだけ", 0.0), ("微調整＋今の仕組み（半々）", 0.5), ("微調整7割＋今の仕組み3割", 0.7)):
+for tag, w in conditions:
     res = []
+    error_rows = []
     for tn, te in tests.items():
-        P = w * probs(te) + (1 - w) * lr.predict_proba(mat(te)) if w < 1 else probs(te)
+        P = w * model_probs[tn] + (1 - w) * lr_probs[tn]
         pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
         s = score_real(pred, [r[2] for r in te])
         res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}" + (f" その他見送り{s['other_ok']}/{s['other_ok'] + s['other_ng']}" if s['other_ok'] + s['other_ng'] else ""))
-    lines.append(f"| {NAME} 微調整 {EPOCHS}周{'・水増し' if AUG else ''}・{tag} | " + " | ".join(res) + f" | 学習 {time.time() - t0:.0f}秒 |"); print(lines[-1], flush=True)
+        top = np.argsort(P, axis=1)[:, ::-1][:, :3]
+        prob_rows = []
+        for i, (row, truth, chosen) in enumerate(zip(te, [r[2] for r in te], pred)):
+            top3 = [{"label": labels[int(j)], "probability": round(float(P[i, j]), 6)} for j in top[i]]
+            critical = truth in critical_labels and chosen in critical_labels and chosen != truth
+            item = {"index": i, "column": normalized_header(row[0]), "truth": truth, "prediction": chosen, "critical": critical, "top3": top3}
+            prob_rows.append(item)
+            if chosen != truth and not (truth == "other" and chosen == "unknown"):
+                error_rows.append(item)
+        suffix = f"{safe_test_name(tn)}_{condition_names[tag]}"
+        with open(f"probs_{suffix}.json", "w", encoding="utf-8") as f:
+            json.dump({"test": tn, "condition": tag, "rows": prob_rows}, f, ensure_ascii=False, separators=(",", ":"))
+        with open(f"errors_{suffix}.json", "w", encoding="utf-8") as f:
+            json.dump({"test": tn, "condition": tag, "errors": error_rows}, f, ensure_ascii=False, separators=(",", ":"))
+    lines.append(f"| {NAME} 微調整 {EPOCHS}周{'・水増し' if AUG else ''}・{tag} | " + " | ".join(res) + f" | 学習 {train_seconds:.0f}秒・評価 {time.time() - eval_start:.0f}秒 |"); print(lines[-1], flush=True)
 line = "\n".join(lines)
 os.makedirs("ft_out", exist_ok=True); model.save_pretrained("ft_out"); tok.save_pretrained("ft_out"); json.dump(labels, open("ft_out/labels.json", "w"))
 prev = (open("FINETUNE_RESULTS.md").read() if os.path.exists("FINETUNE_RESULTS.md") else "# 学習済みモデルの微調整（集計）\n") + f"\n### {time.strftime('%Y-%m-%d %H:%M')}（試験：{', '.join(tests)}）\n"
 open("FINETUNE_RESULTS.md", "w").write(prev + line + "\n")
+
