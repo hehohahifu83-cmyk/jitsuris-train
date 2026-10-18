@@ -112,7 +112,10 @@ class LinearWeightInt8Test(unittest.TestCase):
             self.assertIn("w2", names)
             self.assertEqual([x.op_type for x in m.graph.node][:1], ["DequantizeLinear"])
             x = np.random.default_rng(1).normal(size=(2, 7, w1.shape[0])).astype(np.float32)
-            got = ort.InferenceSession(dst, providers=["CPUExecutionProvider"]).run(["logits"], {"x": x})[0]
+            # DQLinear + MatMul を動的 INT8 に融合すると活性化まで丸めるため、ここでは ONNX グラフ本来の fp32 計算を検査する。
+            so = ort.SessionOptions()
+            so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_DISABLE_ALL
+            got = ort.InferenceSession(dst, so, providers=["CPUExecutionProvider"]).run(["logits"], {"x": x})[0]
             # 評価で使った疑似（出力チャネルごとの対称 INT8 に丸めた重みで、fp32 で計算）と同じ答えになる
             w1_round = C.fake_quant_rows_int8(w1.T).T
             want = ((x @ w1_round) + b1) @ w2
