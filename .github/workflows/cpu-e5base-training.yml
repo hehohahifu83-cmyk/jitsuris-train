@@ -25,7 +25,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: pip
+      - name: Cache e5-base model files
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface/hub
+          key: hf-e5-base-${{ runner.os }}-v1
       - name: Install CPU dependencies
         run: |
           python -m pip install --upgrade pip
