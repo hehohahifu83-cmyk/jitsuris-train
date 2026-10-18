@@ -21,7 +21,7 @@ Kaggle GPU待機中もCPU学習に教材選びの準備を進められるよう�
   - 運用方法と安全性テストを記録。
 
 ## 検証
-- ローカルのPython 3で unittest 3件成功。
+- ローカルのPython 3で unittest 4件成功。
 - `self_learning.py` の py_compile 成功。
 - GitHub Actions の実行・学習、候補データ作成、性能差の測定は未実施。
 - 学習プールと承認済み教材はまだ存在しない。候補生成、確認、承認を行わないままworkflowを起動しても学習を始めない。
@@ -34,3 +34,7 @@ Kaggle GPU待機中もCPU学習に教材選びの準備を進められるよう�
 
 ## Claudeへの依頼
 `ai-bridge/messages/20261018-2000_chatgpt-to-claude_active-learning.md` に独立レビュー依頼を作成。Claude復帰後、ユーザーに連絡箱を読んでもらう必要がある。特に人手確認ゲート、試験漏洩/クラス集合検査、候補の偏りと近重複抑制をレビューする。
+
+
+## 連絡箱の状態（2026-10-18 20:00確認）
+ai-bridgeへClaude宛てレビュー依頼を保存した後、自動整理workflow run 39121537658 が失敗。INBOX.md はClaude宛て未読0件のままで、今回メッセージの掲載・Claude受領は未確認。
