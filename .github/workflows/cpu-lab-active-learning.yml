@@ -1,0 +1,87 @@
+name: CPU lab verified active-learning replay
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_cpu:
+        description: CPUで検証済み教材を使って学習する場合だけ yes
+        required: true
+        type: choice
+        options:
+          - no
+          - yes
+        default: no
+      replay_path:
+        description: cpu_lab/materials/verified_replay/ 以下に置いた承認済みJSONL
+        required: true
+        type: string
+        default: cpu_lab/materials/verified_replay/approved.jsonl
+permissions:
+  contents: read
+concurrency:
+  group: jitsuris-cpu-training
+  cancel-in-progress: false
+jobs:
+  train:
+    if: ${{ inputs.confirm_cpu == 'yes' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        seed: [1, 2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate replay path and run safety tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ inputs.replay_path }}" in
+            cpu_lab/materials/verified_replay/*.jsonl) ;;
+            *) echo "replay_path must be under cpu_lab/materials/verified_replay/" >&2; exit 2 ;;
+          esac
+          test -s "${{ inputs.replay_path }}"
+          python -m unittest discover -s cpu_lab/tests -v
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Train candidate with verified replay
+        shell: bash
+        env:
+          FT_CPU_THREADS: '2'
+          FT_CPU_LAB_REPLAY: ${{ inputs.replay_path }}
+          FT_BS: '32'
+          FT_ACC: '2'
+          FT_CKPT: '0'
+          FT_SORT: '1'
+          FT_PAD8: '1'
+          FT_FUSED: '0'
+          FT_CTX_UNIT: '1'
+          FT_FREEZE_EMB: '1'
+          FT_SEED: ${{ matrix.seed }}
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          set -euo pipefail
+          mkdir -p "cpu_results/seed-${{ matrix.seed }}"
+          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 2 \
+            2>&1 | tee "cpu_results/seed-${{ matrix.seed }}/train.log"
+          cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
+          cp "${{ inputs.replay_path }}" "cpu_results/seed-${{ matrix.seed }}/replay-used.jsonl"
+          find . -maxdepth 1 -type f \
+            \( -name 'probs_*.json' -o -name 'errors_*.json' \) \
+            -exec cp {} "cpu_results/seed-${{ matrix.seed }}/" \;
+          rm -rf ft_out
+      - name: Upload metrics, errors, logs, and replay provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpu-lab-e5base-replay-seed-${{ matrix.seed }}-${{ github.run_id }}
+          path: cpu_results/
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
