@@ -60,38 +60,46 @@ jobs:
           from pathlib import Path
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
-          states = [line for line in log.splitlines() if "KernelWorkerStatus." in line]
-          latest = states[-1] if states else "Kaggle kernel status: no status recorded"
+          import re
+          state_lines = [line for line in log.splitlines() if "KernelWorkerStatus." in line]
+          latest = state_lines[-1] if state_lines else "Kaggle kernel status: no status recorded"
+          match = re.search(r"KernelWorkerStatus\.([A-Z_]+)", latest)
+          raw_state = match.group(1) if match else "UNKNOWN"
+          state_times = [re.match(r"^(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ)", line) for line in state_lines]
+          observed_at = next((m.group(1) for m in reversed(state_times) if m), "時刻記録なし")
           changed = subprocess.run(["git", "diff", "--quiet", "--", "FINETUNE_RESULTS.md"]).returncode != 0
           report_count = sum(1 for p in Path("/tmp/eval_reports").glob("*") if p.is_file())
           model_id = os.environ.get("MODEL_ARTIFACT_ID", "").strip()
           eval_id = os.environ.get("EVAL_ARTIFACT_ID", "").strip()
-          if "KernelWorkerStatus.COMPLETE" in latest:
-              training = "完了"
-          elif "KernelWorkerStatus.ERROR" in latest:
-              training = "失敗"
-          elif "KernelWorkerStatus.CANCEL" in latest:
-              training = "キャンセル"
-          elif request in {"train", "fetch"} or request.startswith(("train ", "fetch ")):
-              training = "待機または実行中（Kaggleログの最新状態を参照）"
-          else:
-              training = "未依頼"
+          training_map = {
+              "QUEUED": "待機中（Kaggle GPU の割当待ち）",
+              "RUNNING": "実行中（Kaggle が RUNNING を返答）",
+              "COMPLETE": "学習完了（Kaggle が COMPLETE を返答）",
+              "ERROR": "失敗（Kaggle が ERROR を返答）",
+              "CANCELED": "キャンセル（Kaggle が CANCELED を返答）",
+              "CANCELLED": "キャンセル（Kaggle が CANCELLED を返答）",
+          }
+          training = training_map.get(raw_state, "未確認（Kaggle の状態を取得できていない）")
+          if raw_state == "UNKNOWN" and request == "done":
+              training = "最新の Kaggle 状態記録なし（done だけでは完了と判定しない）"
           results = "今回の実行で FINETUNE_RESULTS.md を更新" if changed else "今回の更新なし（過去結果とは区別）"
-          checkpoint = f"GitHub artifact ID {model_id}" if model_id else "未アップロード／存在未確認"
-          eval_artifact = f"GitHub artifact ID {eval_id}（{report_count}ファイル）" if eval_id else f"未アップロード（検出JSON {report_count}件）"
+          checkpoint = f"回収 artifact ID {model_id}" if model_id else "artifact 未確認／未作成"
+          eval_artifact = f"回収 artifact ID {eval_id}（{report_count}ファイル）" if eval_id else f"artifact 未確認／未作成（今回の検出JSON {report_count}件）"
           body = textwrap.dedent(f"""
           # 最新の学習・結果回収状況
           
           - GitHub Actions run: [{os.environ['ACTION_RUN_ID']}]({os.environ['ACTION_RUN_URL']})
           - 確認更新時刻 (UTC): {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(timespec='seconds')}
           - 依頼ファイル: `{request}`
-          - Kaggle学習: {training}
-          - Kaggle最新状態ログ: `{latest}`
-          - 評価結果: {results}
+          - Kaggle学習状態: {training}
+          - Kaggle状態の最終観測時刻 (UTC): {observed_at}
+          - Kaggle状態の根拠ログ: `{latest}`
+          - 評価結果回収: {results}
           - 評価レポートartifact: {eval_artifact}
-          - 学習済みモデルartifact: {checkpoint}
+          - 学習済みモデル回収: {checkpoint}
+          - 判定手順: [STATUS_GUIDE.md](STATUS_GUIDE.md)
           
-          学習完了はKaggleのCOMPLETE、評価結果の回収は今回のFINETUNE_RESULTS.md更新、モデル回収はjitsuris-model artifactのIDで別々に確認する。`kaggle.request=done`だけではモデルcheckpointが保存されたことを意味しない。
+          学習の開始はKaggleのRUNNING、学習完了はCOMPLETEで確認する。評価結果とモデルは別々に回収確認する。`kaggle.request=done`だけではモデルcheckpointが保存されたことを意味しない。
           """).lstrip()
           Path("kaggle/STATUS.md").write_text(body, encoding="utf-8")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
