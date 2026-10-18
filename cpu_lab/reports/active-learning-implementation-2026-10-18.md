@@ -38,3 +38,8 @@ Kaggle GPU待機中もCPU学習に教材選びの準備を進められるよう�
 
 ## 連絡箱の状態（2026-10-18 20:00確認）
 ai-bridgeへClaude宛てレビュー依頼を保存した後、自動整理workflow run 39121537658 が失敗。INBOX.md はClaude宛て未読0件のままで、今回メッセージの掲載・Claude受領は未確認。
+
+## CIの最終確認（2026-10-18）
+CPU lab safety tests run 39121622107・39121637227 はテストモジュールへのsys.path設定がリテラル\\nのまま入っていたため失敗。テストファイルを修正し、run 39121657962 はsuccess（コンパイルと4テスト）。同じテストが変更ごとに走る `.github/workflows/cpu-lab-tests.yml` も追加済み。
+
+Claude連絡箱: メッセージの更新後にai-bridge workflow run 39121677204 がfailure。ログ取得APIはBlobNotFound、INBOXのClaude宛て未読は依然0件。ファイルには保存されているが、INBOX掲載・Claude受領は未確認。
