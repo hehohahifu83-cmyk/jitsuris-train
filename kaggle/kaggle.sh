@@ -32,21 +32,29 @@ if [ "$mode" = train ]; then
   pip install -q huggingface_hub
   ( cd .. && rm -rf hfmodel && python -c "from huggingface_hub import snapshot_download as s; s('$M', local_dir='$D', allow_patterns=['*.json','*.safetensors','*.model','*.txt','sentencepiece*','tokenizer*'])" && du -sh hfmodel && ls -R hfmodel | head -20 ) | tee -a /tmp/hf.txt
   if [ "$MI" = 2 ]; then sed -i -E "1s#^(embed|probe) [^ ]*#\1 $D#" args.txt; else sed -i "1s#^[^ ]*#$D#" args.txt; fi
+  # 今回だけの印。ファイル名に入れておき、Kaggle 側の一覧にこの名前が出るまで待つ（同じモデルの前回の版を、今回の版と取り違えないため）
+  NONCE="$(date -u +%Y%m%dT%H%M%S)-$RANDOM"
+  ( cd .. && rm -f kaggle/nonce-*.txt && : > "kaggle/nonce-$NONCE.txt" )
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
-      *.py kaggle/args.txt materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
+      *.py kaggle/args.txt "kaggle/nonce-$NONCE.txt" materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
       materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
   printf '{"title":"jitsuris-data","id":"%s","licenses":[{"name":"other"}]}' "$DS" > /tmp/ds/dataset-metadata.json
   if kaggle datasets status "$DS" >/dev/null 2>&1; then kaggle datasets version -p /tmp/ds -m "update $(date -u +%FT%TZ)"
   else kaggle datasets create -p /tmp/ds; fi
   # 新しい版の中身（今回のモデルと args）が Kaggle 側で使えるようになるまで待つ。古い版のまま学習しないため
+  ds_ready=0
   for i in $(seq 1 90); do
     s=$(kaggle datasets status "$DS" 2>&1 || true)
     f=$(kaggle datasets files "$DS" --page-size 200 2>&1 || true)
-    echo "$f" | grep -q "${D#hfmodel/}" && [ "$s" = ready ] && { echo "dataset ready with $D"; break; }
+    echo "$f" | grep -q "nonce-$NONCE" && echo "$f" | grep -q "${D#hfmodel/}" && [ "$s" = ready ] && { echo "dataset ready with $D (nonce $NONCE)"; ds_ready=1; break; }
     [ $((i % 6)) = 1 ] && echo "dataset: $s（新しい版を待っている）"; sleep 20
   done
-  sed "s#^EXPECT = .*#EXPECT = \"$D\"#" run.py > /tmp/kn/run.py
+  if [ "$ds_ready" != 1 ]; then   # 古い版のまま学習を始めない（同じモデルの前回の結果を、今回の結果と取り違える）
+    echo "$(date -u +%FT%TZ) 新しい版のデータセットが 30 分待っても使えるようにならなかったので、学習を頼まずに止める（印 $NONCE）" >> KAGGLE_LOG.md
+    echo done > kaggle.request; exit 1
+  fi
+  sed -e "s#^EXPECT = .*#EXPECT = \"$D\"#" -e "s#^EXPECT_NONCE = .*#EXPECT_NONCE = \"$NONCE\"#" run.py > /tmp/kn/run.py
   printf '{"id":"%s","title":"jitsuris-train","code_file":"run.py","language":"python","kernel_type":"script","is_private":true,"enable_gpu":true,"enable_internet":true,"machine_shape":"%s","dataset_sources":["%s"]}' "$K" "${MACHINE:-NvidiaTeslaT4}" "$DS" > /tmp/kn/kernel-metadata.json
   out=$(kaggle kernels push -p /tmp/kn 2>&1 || true); echo "$out"
   echo "$(date -u +%FT%TZ) push の返事：$(echo "$out" | tr '\n' ' ' | cut -c1-300)" >> KAGGLE_LOG.md

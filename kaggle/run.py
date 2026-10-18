@@ -3,6 +3,7 @@
 import glob, os, shutil, subprocess, sys, tarfile
 W = "/kaggle/working/src"
 EXPECT = ""  # GitHub 側が今回のモデルの置き場所を書き込む
+EXPECT_NONCE = ""  # GitHub 側が今回だけの印を書き込む（同じモデルの前回の版を今回の版と取り違えないため）
 hit = glob.glob("/kaggle/input/**/finetune_exp.py", recursive=True)
 if hit:
     shutil.copytree(os.path.dirname(hit[0]), W, dirs_exist_ok=True)
@@ -17,6 +18,10 @@ diag.write("input: " + " ".join(sorted(set(os.path.dirname(p) for p in glob.glob
 for c in glob.glob("/kaggle/input/**/config.json", recursive=True): diag.write("config: " + c + "\n")
 assert not glob.glob("blind_set*"), "未見セットが入っている"
 subprocess.run("nvidia-smi --query-gpu=name,memory.total --format=csv", shell=True)
+got_nonce = [os.path.basename(p) for p in glob.glob("kaggle/nonce-*.txt")]
+if EXPECT_NONCE and ("nonce-%s.txt" % EXPECT_NONCE) not in got_nonce:
+    diag.write("古い版のデータセット（印が違う）：今回 %s／中身 %s\n" % (EXPECT_NONCE, got_nonce)); diag.close(); sys.exit(3)
+diag.write("印: %s\n" % got_nonce)
 args = open("kaggle/args.txt").read().split()
 MODE = args.pop(0) if args and args[0] in ("embed", "probe") else ""
 if args[0].startswith("hfmodel/") and not os.path.exists(os.path.join(args[0], "config.json")):
