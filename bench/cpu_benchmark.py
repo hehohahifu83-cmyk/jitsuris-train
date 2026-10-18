@@ -62,7 +62,14 @@ def main() -> int:
     base = means["A cache off/full threads"]
     cache_gain = base - means["B cache on/full threads"]
     cache_pct = 100 * cache_gain / base if base else 0
-    decision = "速くなった" if cache_pct >= 10 and cache_gain > noise and all(loss_checks.values()) else "差なし／判定保留"
+    cache_decision = "速くなった" if cache_pct >= 10 and cache_gain > noise and all(loss_checks.values()) else "差なし／判定保留"
+    full_mean = means["B cache on/full threads"]
+    half_mean = means["C cache on/half threads"]
+    thread_gain = full_mean - half_mean
+    thread_pct = 100 * thread_gain / full_mean if full_mean else 0
+    thread_noise = max(max(groups["B cache on/full threads"]) - min(groups["B cache on/full threads"]),
+                       max(groups["C cache on/half threads"]) - min(groups["C cache on/half threads"]))
+    thread_decision = "速くなった" if thread_pct >= 10 and thread_gain > thread_noise else "差なし／判定保留"
     lines = ["# CPU training benchmark", "", f"Runner CPUs: {available}; threads full={thread_counts['full']}, half={thread_counts['half']}",
              "Settings: e5-small, 1 epoch, first 1500 training rows, FT_SEED=1, dev220 evaluation only.",
              "Timings exclude model loading; training and evaluation are reported separately.", "",
@@ -73,7 +80,9 @@ def main() -> int:
     lines += ["", "## First 20 loss checks", "", "| Pair | Same to 3 decimals |", "|---|---|"]
     lines += [f"| {pair} | {'yes' if same else 'no'} |" for pair, same in loss_checks.items()]
     lines += ["", "## Cache comparison", "", f"A mean: {base:.1f}s; B mean: {means['B cache on/full threads']:.1f}s; measured gain: {cache_pct:.1f}%.",
-              f"Largest two-run spread among groups: {noise:.1f}s. Decision: **{decision}**.",
+              f"Largest two-run spread among groups: {noise:.1f}s. Cache decision: **{cache_decision}**.",
+              "", "## Thread-count comparison", "", f"B full-thread mean: {full_mean:.1f}s; C half-thread mean: {half_mean:.1f}s; measured gain: {thread_pct:.1f}%.",
+              f"Largest B/C repeat spread: {thread_noise:.1f}s. Thread decision: **{thread_decision}**.",
               "", "Evaluation time is shown separately and is not included in the training comparison."]
     (ROOT / "bench" / "cpu_benchmark_summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
