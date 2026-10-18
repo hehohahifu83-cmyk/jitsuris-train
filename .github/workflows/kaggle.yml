@@ -55,7 +55,7 @@ jobs:
         if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
       - name: Evidence-first error analysis
-        if: always() && steps.gate.outputs.skip != '1'
+        if: always() && steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         run: |
           mkdir -p /tmp/eval_reports
           python cpu_lab/error_analysis.py /tmp/eval_reports --out /tmp/eval_reports/ERROR_ANALYSIS.md
