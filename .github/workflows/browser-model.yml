@@ -8,7 +8,7 @@ on:
         required: false
         default: ''
       kaggle_run:
-        description: '学習済みモデルを Kaggle 回収の実行（artifact jitsuris-model）から取る。その実行の番号。空なら上の model を使う'
+        description: '学習済みモデルを Kaggle 回収の実行（artifact jitsuris-model）から取る。その実行の番号、または latest（いちばん新しい回収）。空なら上の model を使う'
         required: false
         default: ''
       model_dir:
@@ -21,7 +21,8 @@ on:
         default: '100'
   push:
     branches: [main]
-    paths: [browser_test/**, export_onnx.py, compress_eval.py, tests/test_export_onnx.py, tests/test_compress_eval.py, .github/workflows/browser-model.yml]
+    # browser_test/run.request：Actions を直接起動できない側（ChatGPT など）が、この 1 行ファイルを書き換えて起動する（下の「実行の条件を決める」）
+    paths: ['browser_test/*.mjs', 'browser_test/run.request', 'export_onnx.py', 'compress_eval.py', 'edge_texts.py', 'tests/test_export_onnx.py', 'tests/test_compress_eval.py', '.github/workflows/browser-model.yml']
 permissions:
   contents: write
   actions: read
@@ -31,6 +32,35 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 50 }
+      - name: 実行の条件を決める（手動の入力、または browser_test/run.request）
+        id: cfg
+        env: { GH_TOKEN: '${{ github.token }}' }
+        shell: bash
+        run: |
+          MODEL="${{ inputs.model }}"; KRUN="${{ inputs.kaggle_run }}"; MDIR="${{ inputs.model_dir }}"; LIMIT="${{ inputs.limit }}"
+          # 依頼ファイル：1 行に「キー=値」を空白で区切って書く（例：kaggle_run=latest model_dir=ft_out_job1 limit=0）。# で始まる行は読まない。
+          # この push で変わったときだけ読む（ほかのファイルの push で、前の依頼がまた走らないように）。
+          if [ "${{ github.event_name }}" = push ] && [ -f browser_test/run.request ] && git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" 2>/dev/null | grep -qx 'browser_test/run.request'; then
+            for kv in $(grep -v '^#' browser_test/run.request | head -1); do
+              echo "$kv" | grep -qE '^[a-z_]+=[A-Za-z0-9._/:@-]*$' || { echo "読めない指定は飛ばす: $kv"; continue; }
+              case "$kv" in
+                model=*) MODEL="${kv#model=}";;
+                kaggle_run=*) KRUN="${kv#kaggle_run=}";;
+                model_dir=*) MDIR="${kv#model_dir=}";;
+                limit=*) LIMIT="${kv#limit=}";;
+              esac
+            done
+            echo "依頼ファイルから: model=$MODEL kaggle_run=$KRUN model_dir=$MDIR limit=$LIMIT"
+          fi
+          if [ "$KRUN" = latest ]; then
+            KRUN=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=jitsuris-model&per_page=20" --jq '[.artifacts[] | select(.expired | not)] | sort_by(.created_at) | last | .workflow_run.id // empty')
+            [ -n "$KRUN" ] || { echo "jitsuris-model の artifact が見つからない（期限切れか、まだ回収されていない）"; exit 1; }
+            echo "いちばん新しい jitsuris-model の回収: $KRUN"
+          fi
+          [ -z "$MDIR" ] && MDIR=ft_out_job1
+          [ -z "$LIMIT" ] && LIMIT=100
+          { echo "model=$MODEL"; echo "kaggle_run=$KRUN"; echo "model_dir=$MDIR"; echo "limit=$LIMIT"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - name: 依存を入れる（CPU 版）
@@ -40,39 +70,41 @@ jobs:
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: 部品の検査
         shell: bash
-        run: python -m unittest tests.test_export_onnx tests.test_compress_eval -v 2>&1 | tee unittest.log | tail -40
+        run: python -m unittest tests.test_export_onnx tests.test_compress_eval tests.test_tokenizer_fixtures -v 2>&1 | tee unittest.log | tail -40
       - uses: actions/cache/restore@v4
         id: bmcache
         with:
           path: browser_model
-          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}-${{ inputs.kaggle_run || 'none' }}-${{ inputs.model_dir || 'x' }}-${{ inputs.limit || '100' }}
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py', 'edge_texts.py') }}-${{ steps.cfg.outputs.model || 'default' }}-${{ steps.cfg.outputs.kaggle_run || 'none' }}-${{ steps.cfg.outputs.model_dir }}-${{ steps.cfg.outputs.limit }}
       - name: 学習済みモデルを取ってくる（Kaggle 回収の artifact）
-        if: inputs.kaggle_run != '' && steps.bmcache.outputs.cache-hit != 'true'
+        if: steps.cfg.outputs.kaggle_run != '' && steps.bmcache.outputs.cache-hit != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
         shell: bash
         run: |
-          gh run download "${{ inputs.kaggle_run }}" -R "$GITHUB_REPOSITORY" -n jitsuris-model -D trained
-          ls -la "trained/${{ inputs.model_dir }}" | head -20
+          gh run download "${{ steps.cfg.outputs.kaggle_run }}" -R "$GITHUB_REPOSITORY" -n jitsuris-model -D trained
+          ls -la "trained/${{ steps.cfg.outputs.model_dir }}" | head -20
       - name: 書き出しと試験（学習していないモデルなら精度の数字に意味はない。大きさ・動くこと・速さの確認）
         if: steps.bmcache.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          MODEL="${{ inputs.model }}"; [ -z "$MODEL" ] && MODEL=intfloat/multilingual-e5-small
+          MODEL="${{ steps.cfg.outputs.model }}"; [ -z "$MODEL" ] && MODEL=intfloat/multilingual-e5-small
           EXTRA=""
-          if [ -n "${{ inputs.kaggle_run }}" ]; then MODEL="trained/${{ inputs.model_dir }}"; EXTRA="--labels $MODEL/labels.json"; fi
-          LIMIT="${{ inputs.limit }}"; [ -z "$LIMIT" ] && LIMIT=100
-          python export_onnx.py --model "$MODEL" --out browser_model --limit "$LIMIT" --reference 40 $EXTRA 2>&1 | tee export.log | tail -60
+          if [ -n "${{ steps.cfg.outputs.kaggle_run }}" ]; then MODEL="trained/${{ steps.cfg.outputs.model_dir }}"; EXTRA="--labels $MODEL/labels.json"; fi
+          python export_onnx.py --model "$MODEL" --out browser_model --limit "${{ steps.cfg.outputs.limit }}" --reference 40 $EXTRA 2>&1 | tee export.log | tail -60
       - uses: actions/cache/save@v4
         if: always() && steps.bmcache.outputs.cache-hit != 'true' && hashFiles('browser_model/reference.json') != ''
         with:
           path: browser_model
-          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py') }}-${{ inputs.model || 'default' }}-${{ inputs.kaggle_run || 'none' }}-${{ inputs.model_dir || 'x' }}-${{ inputs.limit || '100' }}
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py', 'edge_texts.py') }}-${{ steps.cfg.outputs.model || 'default' }}-${{ steps.cfg.outputs.kaggle_run || 'none' }}-${{ steps.cfg.outputs.model_dir }}-${{ steps.cfg.outputs.limit }}
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
+      - name: 正規化の単体試験（Node。自作の小さな表で、書記素・最初に見つかった規則などの動きを確かめる）
+        shell: bash
+        run: node --test browser_test/charsmap.unit.test.mjs 2>&1 | tee charsmap_unit.log | grep -E '^(# (tests|pass|fail)|not ok)'
       - name: ブラウザで動かす試験（headless Chromium・WASM・外への通信は止める）
         shell: bash
         run: |
-          mkdir -p /tmp/js && cp browser_test/run.mjs /tmp/js/ && cd /tmp/js && npm init -y >/dev/null
+          mkdir -p /tmp/js && cp browser_test/run.mjs browser_test/charsmap.mjs /tmp/js/ && cd /tmp/js && npm init -y >/dev/null
           npm i @huggingface/transformers playwright 2>&1 | tail -2
           npx playwright install --with-deps chromium 2>&1 | tail -2
           node run.mjs "$GITHUB_WORKSPACE/browser_model" "$GITHUB_WORKSPACE/browser_model/reference.json" "$GITHUB_WORKSPACE/browser_result.json" 2>&1 | tee "$GITHUB_WORKSPACE/browser_js.log" | tail -80
@@ -80,7 +112,7 @@ jobs:
         if: always()
         run: |
           mkdir -p keep && cp browser_model/REPORT.md keep/ 2>/dev/null || true
-          cp -r browser_model/onnx/model_quantized.onnx browser_model/tokenizer.json browser_model/tokenizer_config.json browser_model/config.json keep/ 2>/dev/null || true
+          cp -r browser_model/onnx/model_quantized.onnx browser_model/tokenizer.json browser_model/tokenizer_config.json browser_model/config.json browser_model/charsmap.bin keep/ 2>/dev/null || true
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: browser-model-check, path: keep, retention-days: 14, if-no-files-found: ignore }
@@ -91,18 +123,29 @@ jobs:
         run: |
           exec > >(tee record.log) 2>&1
           set -x
-          # ログは取りに行けないので、失敗のときも要点（ログの末尾）をリポジトリに書く
-          { echo "# ブラウザ用の書き出しの検査のログの末尾"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; echo '## 部品の検査'; echo '```'; tail -60 unittest.log 2>/dev/null; echo '```'; echo '## 書き出し'; echo '```'; tail -80 export.log 2>/dev/null; echo '```'; } > bench/browser_model_log.md
+          KRUN="${{ steps.cfg.outputs.kaggle_run }}"; MDIR="${{ steps.cfg.outputs.model_dir }}"
+          # ログは取りに行けないので、失敗のときも要点（ログの末尾）をリポジトリに書く。
+          # 先に別の場所に作っておき、最新の main に重ねて commit する（先に流れた別の実行の記録と競合しないように。競合したら自分の結果を優先する）
+          T=$(mktemp -d)
+          { echo "# ブラウザ用の書き出しの検査のログの末尾"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo; echo '## 部品の検査'; echo '```'; tail -60 unittest.log 2>/dev/null; echo '```'; echo '## 書き出し'; echo '```'; tail -80 export.log 2>/dev/null; echo '```'; } > "$T/browser_model_log.md"
+          OK=0; [ -f browser_model/REPORT.md ] && OK=1
+          SUMMARY=browser_model_summary.md; [ -n "$KRUN" ] && SUMMARY=browser_model_trained_summary.md
+          if [ "$OK" = 1 ]; then
+            { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}　学習済みモデル: $KRUN $MDIR"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > "$T/$SUMMARY"
+          fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add bench/browser_model_log.md
-          [ -f browser_model/REPORT.md ] || { git commit -q -m "ブラウザ用の書き出しの検査のログ（失敗）" ; for i in 1 2 3; do git push && break; git pull --rebase --autostash; done; echo "REPORT.md がない（書き出しが失敗）"; exit 1; }
-          SUMMARY=bench/browser_model_summary.md; [ -n "${{ inputs.kaggle_run }}" ] && SUMMARY=bench/browser_model_trained_summary.md
-          { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}　学習済みモデル: ${{ inputs.kaggle_run }} ${{ inputs.model_dir }}"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > "$SUMMARY"
-          git add "$SUMMARY"
-          git diff --cached --quiet && exit 0
-          git commit -m "ブラウザ用の書き出しの検査の結果（CPU）"
-          for i in 1 2 3; do git push && break; git pull --rebase --autostash; done
+          for i in 1 2 3 4; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp "$T/browser_model_log.md" bench/
+            git add bench/browser_model_log.md
+            if [ "$OK" = 1 ]; then cp "$T/$SUMMARY" "bench/$SUMMARY"; git add "bench/$SUMMARY"; fi
+            git diff --cached --quiet && break
+            git commit -q -m "$([ "$OK" = 1 ] && echo 'ブラウザ用の書き出しの検査の結果（CPU）' || echo 'ブラウザ用の書き出しの検査のログ（失敗）')"
+            git push -q && break
+            sleep 3
+          done
+          [ "$OK" = 1 ] || { echo "REPORT.md がない（書き出しが失敗）"; exit 1; }
       - name: 要点を注（アノテーション）に出す（ログは取りに行けないが、注は API で読める）
         if: always()
         shell: bash
@@ -115,6 +158,6 @@ jobs:
               t = "\n".join(l[-200:] for l in ls)[-n:]   # 長い行は後ろ（理由が書いてある所）を残す
               t = t.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::notice title={title}::{t}")
-          for p, title in [("unittest.log", "unittest"), ("export.log", "export"), ("browser_model/REPORT.md", "REPORT"), ("browser_js.log", "browser_js"), ("record.log", "record")]:
+          for p, title in [("unittest.log", "unittest"), ("charsmap_unit.log", "charsmap_unit"), ("export.log", "export"), ("browser_model/REPORT.md", "REPORT"), ("browser_js.log", "browser_js"), ("record.log", "record")]:
               emit(p, title)
           PY

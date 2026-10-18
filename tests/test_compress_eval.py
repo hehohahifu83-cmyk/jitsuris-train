@@ -100,6 +100,33 @@ class PureFunctionsTest(unittest.TestCase):
     def test_cap_ids(self):
         self.assertEqual(C.cap_ids([[0, 5, 6, 2], [0, 5, 6, 7, 8, 2]], 5, 2), [[0, 5, 6, 2], [0, 5, 6, 7, 2]])
 
+    def test_pop_precompiled_removes_only_the_leading_precompiled_normalizer_and_returns_its_table(self):
+        import base64
+        blob = bytes(range(256)) * 3
+        b64 = base64.b64encode(blob).decode()
+        replace = {"type": "Replace", "pattern": {"Regex": " {2,}"}, "content": " "}
+        # Sequence［Precompiled, Replace］ → Replace だけが残る
+        tj = {"normalizer": {"type": "Sequence", "normalizers": [{"type": "Precompiled", "precompiled_charsmap": b64}, dict(replace)]}}
+        self.assertEqual(C.pop_precompiled(tj), blob)
+        self.assertEqual(tj["normalizer"], replace)
+        # 3 つ以上なら Sequence のまま、Precompiled だけが消える
+        lower = {"type": "Lowercase"}
+        tj = {"normalizer": {"type": "Sequence", "normalizers": [{"type": "Precompiled", "precompiled_charsmap": b64}, dict(replace), lower]}}
+        self.assertEqual(C.pop_precompiled(tj), blob)
+        self.assertEqual(tj["normalizer"], {"type": "Sequence", "normalizers": [replace, lower]})
+        # 単独の Precompiled → 正規化なし
+        tj = {"normalizer": {"type": "Precompiled", "precompiled_charsmap": b64}}
+        self.assertEqual(C.pop_precompiled(tj), blob)
+        self.assertIsNone(tj["normalizer"])
+        # Precompiled がない・正規化がない → 何もしない
+        for tj in ({"normalizer": None}, {}, {"normalizer": dict(replace)}):
+            before = repr(tj)
+            self.assertIsNone(C.pop_precompiled(tj))
+            self.assertEqual(repr(tj), before)
+        # 先頭でない Precompiled は、順番が変わると意味が変わるので止まる
+        with self.assertRaises(ValueError):
+            C.pop_precompiled({"normalizer": {"type": "Sequence", "normalizers": [dict(replace), {"type": "Precompiled", "precompiled_charsmap": b64}]}})
+
 
 @unittest.skipUnless(HAS_TORCH, "torch と transformers が要る（CI で実行）")
 class TorchTest(unittest.TestCase):

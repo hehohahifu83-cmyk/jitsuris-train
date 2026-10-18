@@ -1,9 +1,11 @@
 """微調整した e5 系モデルを、ブラウザ（Transformers.js ＋ onnxruntime-web）で動かす形に書き出して試験する（2026-10-18）。GitHub Actions で動かす（torch・onnx が要る）。
 
 書き出すもの（out/ の中。Transformers.js が読む形）：
-  config.json（縮めた語彙の大きさ・id2label）／tokenizer.json（縮めた語彙の Unigram）／tokenizer_config.json／special_tokens_map.json
+  config.json（縮めた語彙の大きさ・id2label）／tokenizer.json（縮めた語彙の Unigram。Precompiled の正規化は外してある）／charsmap.bin（外した正規化の表）／tokenizer_config.json／special_tokens_map.json
   onnx/model.onnx（fp32）／onnx/model_emb8.onnx（埋め込み表だけ行ごとの INT8）／onnx/model_quantized.onnx（さらに全結合層を動的 INT8）
-入力は input_ids・attention_mask（バッチ・長さは可変）、出力は logits。トークナイズは Transformers.js に任せるので、ブラウザ側に自作の部品は要らない。
+入力は input_ids・attention_mask（バッチ・長さは可変）、出力は logits。トークナイズは Transformers.js に任せるが、**正規化だけは自前**（browser_test/charsmap.mjs）：
+  Transformers.js は sentencepiece の正規化表（Precompiled）を NFKC で近似しているだけで、半角カナの濁点（ｿﾞ）を合成してしまい、学習時の HF tokenizers と別の片になる。
+  そこで書き出す tokenizer.json からは Precompiled を外し、表そのもの（charsmap.bin）を一緒に書き出して、ブラウザで charsmap.mjs が学習時と同じ動きで引く。
 試験：onnxruntime（CPU）で試験を流し、PyTorch の fp32 と比べた一致率・正解率・重大、ファイルの大きさ、1 列あたりの時間を REPORT.md に出す。
 未見セット（blind）は扱わない。学習はしない。数字はブラウザの実機の結果ではない。
 
@@ -111,15 +113,8 @@ def probs_ort(sess, id_lists, pad_id, batch=32, logits_out=False):
     return np.vstack(out)
 
 
-# トークナイザの一致試験に足す変わった文字列（全角・半角カナ・丸数字・結合文字・ゼロ幅・絵文字・制御文字・長い文など。実際の表に出そうなもの）
-EDGE_TEXTS = [
-    "ＡＢＣ１２３", "ｱｲｳｴｵ ﾊﾟﾋﾟﾌﾟ ｶﾞｷﾞ", "①②③ ⑩ ⑳", "㈱テスト ㈲ ㍿ ㈹", "㎏ ㎡ ㌔ ㌢ ㍉", "〒100-0001 東京都千代田区", "２０２４年１２月３１日", "令和７年４月１日",
-    "￥１，２３４，５６７", "$1,234.56 €99 £10 ¥500", "～〜~ ー－−―‐", "  先頭と末尾の空白  ", "タブ\tと改行\nと復帰\rの混在", "零幅\u200bスペース\ufeffBOM",
-    "絵文字😀🎉👍", "結合文字 が か゛ ぱ は゜", "𠮷野家（つちよし）", "ǅ ﬁ ﬂ ﬃ", "ⅠⅡⅢ ⅳ ⅹ", "\u00a0ノーブレーク\u3000全角空白", "👨‍👩‍👧 family",
-    "Ｆｕｌｌｗｉｄｔｈ Ｌａｔｉｎ ａｂｃ ＸＹＺ", "½ ¼ ¾ ² ³", "™ ® ©", "…‥・･", "「」『』【】〔〕", "α β γ Ω", "مرحبا بالعالم", "한국어 テスト", "中文测试 繁體字",
-    "\x01\x02 control \x7f", "AaBbCc 123 xyz", "a" * 400, "売上高" * 80, "東京都" + "　" * 5 + "渋谷区", "山田太郎 / 鈴木花子 / 佐藤次郎",
-    "invoice_no, order-id, ORD-2024-0001", "03-1234-5678", "info@example.com", "https://example.com/path?q=1&r=2", "1,234,567.89", "-12.5%", "2024/12/31 23:59:59",
-]
+# トークナイザの一致試験に足す変わった文字列は edge_texts.py（tokenizer_fixtures.py と共通）
+from edge_texts import EDGE_TEXTS  # noqa: E402
 
 
 def write_reference(path, texts, id_lists, sess_q, sess_f, labels, tok_texts=None, tok_ids=None):
@@ -150,6 +145,10 @@ def write_tokenizer_files(tok, kept, out_dir):
     """縮めた tokenizer.json と、Transformers.js が読む tokenizer_config.json・special_tokens_map.json を書く。"""
     tok.save_pretrained(out_dir)
     tj = C.edit_tokenizer_json(json.loads(tok.backend_tokenizer.to_str()), kept)
+    charsmap = C.pop_precompiled(tj)   # Transformers.js の NFKC による近似は使わない。表は charsmap.bin に出し、ブラウザの charsmap.mjs で引く
+    if charsmap is not None:
+        with open(os.path.join(out_dir, "charsmap.bin"), "wb") as f:
+            f.write(charsmap)
     with open(os.path.join(out_dir, "tokenizer.json"), "w", encoding="utf-8") as f:
         json.dump(tj, f, ensure_ascii=False, separators=(",", ":"))
     cfg_path = os.path.join(out_dir, "tokenizer_config.json")

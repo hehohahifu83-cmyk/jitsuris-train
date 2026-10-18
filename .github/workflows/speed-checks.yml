@@ -111,7 +111,7 @@ jobs:
           git add bench/speed_checks_summary.md
           git diff --cached --quiet && exit 0
           git commit -m "速くする設定の検査の結果（CPU）"
-          for i in 1 2 3; do git push && break; git pull --rebase --autostash; done
+          for i in 1 2 3; do git push && break; git pull --rebase --autostash -X theirs; done   # 競合したら自分の結果を優先（先に流れた別の実行の記録と同じファイルを書くため）
       - name: 要点を注（アノテーション）に出す（ログは取りに行けないが、注は API で読める）
         if: always()
         shell: bash

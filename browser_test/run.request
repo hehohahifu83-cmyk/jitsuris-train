@@ -1,0 +1,10 @@
+# ブラウザで動かす試験の依頼ファイル（.github/workflows/browser-model.yml が読む）。
+# Actions を直接起動できない側（ChatGPT など）は、下に 1 行だけ書いて push すると試験が走る。この push で変わったときだけ読む。
+# 書き方：キー=値 を空白で区切る（# で始まる行は読まない。最初の有効な 1 行だけ使う）
+#   kaggle_run=latest  … 学習済みモデルを、いちばん新しい Kaggle 回収（artifact jitsuris-model）から取る。番号を書いてもよい
+#   model_dir=ft_out_job1  … artifact の中のモデルの置き場（FT_KEEP=1 の仕事は ft_out_job<番号>。版15 は仕事1 と仕事4 が残る）
+#   limit=0  … 試験ごとの列数の上限（0 なら全部。学習済みモデルの精度を測るときは 0）
+#   model=…  … kaggle_run を使わないとき、書き出すモデル（Hugging Face の名前）
+# 例（学習済みの仕事1 を全部の列で）：
+# kaggle_run=latest model_dir=ft_out_job1 limit=0
+# 結果：bench/browser_model_trained_summary.md（後に流した方で上書きされるので、1 本目の結果は別名で控える）と、チェックランの注。

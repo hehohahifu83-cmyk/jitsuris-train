@@ -98,6 +98,29 @@ def edit_tokenizer_json(tj, kept):
     return tj
 
 
+def pop_precompiled(tj):
+    """tokenizer.json（dict）の正規化から Precompiled（sentencepiece の表引き）を取り除き、その表（バイト列）を返す。なければ None。
+    Transformers.js は Precompiled を NFKC で近似するだけで、半角カナの濁点（ｿﾞ）を合成してしまう。ブラウザでは取り除いたうえで、
+    表そのもの（charsmap.bin）を browser_test/charsmap.mjs で引く。先頭の正規化が Precompiled のときだけ扱う（順番が変わると意味が変わるため）。"""
+    import base64
+    norm = tj.get("normalizer")
+    if not norm:
+        return None
+    if norm.get("type") == "Precompiled":
+        tj["normalizer"] = None
+        return base64.b64decode(norm["precompiled_charsmap"])
+    if norm.get("type") == "Sequence":
+        items = norm.get("normalizers") or []
+        if any(n.get("type") == "Precompiled" for n in items[1:]):
+            raise ValueError("Precompiled が先頭でない正規化は未対応")
+        if items and items[0].get("type") == "Precompiled":
+            blob = base64.b64decode(items[0]["precompiled_charsmap"])
+            rest = items[1:]
+            tj["normalizer"] = None if not rest else (rest[0] if len(rest) == 1 else {**norm, "normalizers": rest})
+            return blob
+    return None
+
+
 def trimmed_tokenizer(tok, kept):
     """縮めた語彙で分け直すトークナイザ（tokenizers.Tokenizer）。encode(text).ids が縮めた表の番号になる。"""
     import json

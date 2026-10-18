@@ -5,7 +5,10 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
 
 const [modelDir, refPath, outPath, nodeModules = 'node_modules'] = process.argv.slice(2);
 const LIB_DIRS = [`${nodeModules}/@huggingface/transformers/dist`, `${nodeModules}/onnxruntime-web/dist`];
@@ -23,6 +26,7 @@ const pageHtml = () => `<!doctype html><meta charset="utf-8"><title>browser mode
 <script type="importmap">${JSON.stringify({ imports: IMPORT_MAP })}</script>
 <script type="module">
 import { env, AutoTokenizer, AutoModelForSequenceClassification, Tensor } from '/lib/${webBuild}';
+import { makeNormalizer } from '/charsmap.mjs';
 env.allowRemoteModels = false; env.allowLocalModels = true; env.localModelPath = '/model_root/'; env.useBrowserCache = false;
 env.backends.onnx.wasm.wasmPaths = '/lib/';
 let tokenizerPromise = null;
@@ -30,25 +34,31 @@ const getTokenizer = () => (tokenizerPromise ??= AutoTokenizer.from_pretrained('
 // Python 側（HF tokenizers の truncation=True, max_length=128）と同じ切り方：長いときは先頭 127 個＋最後の </s>。
 // Transformers.js の truncation は単に切るだけで </s> が落ちるので、切らずに取って自分で切る。
 const capIds = (ids) => (ids.length <= 128 ? ids : ids.slice(0, 127).concat([ids[ids.length - 1]]));
-const encodeIds = (tokenizer, text) => capIds(Array.from(tokenizer(text, { truncation: false }).input_ids.data, Number));
+// 正規化は自前（charsmap.mjs。学習時の HF tokenizers と同じ動き）。Transformers.js の NFKC による近似だと、半角カナの濁点（ｿﾞ）が合成されて別の片になる。
+// charsmap.bin がない（古い書き出し）ときは何もしない＝tokenizer.json に残っている正規化に任せる。
+let normalizerPromise = null;
+const getNormalizer = () => (normalizerPromise ??= fetch('/model_root/model/charsmap.bin').then((r) => (r.ok ? r.arrayBuffer() : null)).then((b) => (b ? makeNormalizer(new Uint8Array(b)) : (t) => t)));
+const encodeIds = (tokenizer, normalize, text) => capIds(Array.from(tokenizer(normalize(text), { truncation: false }).input_ids.data, Number));
 const toInputs = (ids) => ({ input_ids: new Tensor('int64', BigInt64Array.from(ids, BigInt), [1, ids.length]), attention_mask: new Tensor('int64', new BigInt64Array(ids.length).fill(1n), [1, ids.length]) });
 window.__tokenize = async (texts) => {
   const tokenizer = await getTokenizer();
+  const normalize = await getNormalizer();
   const t0 = performance.now();
-  const ids = texts.map((t) => encodeIds(tokenizer, t));
+  const ids = texts.map((t) => encodeIds(tokenizer, normalize, t));
   return { ids, ms: performance.now() - t0 };
 };
 window.__run = async ({ texts, threads, warmup }) => {
   env.backends.onnx.wasm.numThreads = threads;
   const t0 = performance.now();
   const tokenizer = await getTokenizer();
+  const normalize = await getNormalizer();
   const tTok = performance.now() - t0;
   const model = await AutoModelForSequenceClassification.from_pretrained('model', { dtype: 'q8', device: 'wasm' });
   const loadMs = performance.now() - t0;
   const ids = [], logits = [], times = [], tokMs = [];
   for (const t of texts) {
     const s0 = performance.now();
-    ids.push(encodeIds(tokenizer, t));
+    ids.push(encodeIds(tokenizer, normalize, t));
     tokMs.push(performance.now() - s0);
   }
   for (let i = 0; i < texts.length; i++) {
@@ -74,6 +84,7 @@ function send(res, file) {
 const server = http.createServer((req, res) => {
   const url = decodeURIComponent(req.url.split('?')[0]);
   if (url === '/') { res.writeHead(200, { 'Content-Type': 'text/html', ...HEADERS }); res.end(pageHtml()); return; }
+  if (url === '/charsmap.mjs') { send(res, path.join(here, 'charsmap.mjs')); return; }
   if (url.startsWith('/lib/')) { const name = path.basename(url); send(res, LIB_DIRS.map((d) => path.join(d, name)).find((f) => fs.existsSync(f))); return; }
   if (url.startsWith('/model_root/model/')) {
     const rel = path.normalize(url.slice('/model_root/model/'.length));
@@ -89,7 +100,8 @@ const ref = JSON.parse(fs.readFileSync(refPath, 'utf-8'));
 const argmax = (a) => a.indexOf(Math.max(...a));
 const pieces = (() => { try { return JSON.parse(fs.readFileSync(path.join(modelDir, 'tokenizer.json'), 'utf-8')).model.vocab.map((v) => v[0]); } catch { return null; } })();
 const piece = (id) => (pieces && pieces[id] !== undefined ? pieces[id] : String(id));
-const result = { builds: WEB_BUILDS, importMap: IMPORT_MAP, n: ref.texts.length, runs: [], blocked: [], console: [], tried: [] };
+const result = { builds: WEB_BUILDS, importMap: IMPORT_MAP, n: ref.texts.length, runs: [], blocked: [], console: [], tried: [],
+  normalizer: fs.existsSync(path.join(modelDir, 'charsmap.bin')) ? `charsmap.mjs（表 ${fs.statSync(path.join(modelDir, 'charsmap.bin')).size} バイト）` : 'なし（Transformers.js の既定の正規化）' };
 const browser = await chromium.launch({ headless: true });
 async function openPage(threads) {
   const ctx = await browser.newContext({ serviceWorkers: 'block' });
@@ -190,6 +202,7 @@ const cut = (x, n = 170) => String(x).replace(/\s+/g, ' ').slice(0, n);
 console.log('=== 要点（この下が注に出る）===');
 console.log('取り込んだファイル（MB）: 合計 ' + result.servedTotalMB + '　' + cut(Object.entries(result.served).map(([k, v]) => k + ' ' + (v / 1e6).toFixed(1)).join(' / '), 150));
 console.log('importMap: ' + cut(JSON.stringify(IMPORT_MAP), 190));
+console.log('正規化: ' + result.normalizer);
 for (const t of result.tried) console.log('立ち上げ試し: ' + cut(JSON.stringify(t), 190));
 console.log('使えた build: ' + (result.build || 'なし') + '　外への通信を止めた件数: ' + result.blocked.length);
 for (const r of result.runs) console.log('結果: ' + (r.error ? `threads=${r.threads} error ${cut(r.error, 150)}` : `threads=${r.threads}(実際${r.effectiveThreads}・隔離${r.isolated}) 読込${r.loadMs}ms トークン化${r.tokMsMean}ms 番号の不一致${r.idMismatch}/${result.n} 差(INT8/fp32)${r.maxLogitDiffVsOrtInt8}/${r.maxLogitDiffVsOrtFp32} 答え一致${r.argmaxAgreeVsOrtInt8} 1列 平均${r.msPerColumnMean}・中央${r.msPerColumnMedian}・p90 ${r.msPerColumnP90}ms`));
