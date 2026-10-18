@@ -8,6 +8,12 @@ from cpu_speed import available_cpu_count, configure_cpu_threads
 
 
 class CpuSpeedTest(unittest.TestCase):
+    def test_defaults_to_half_available_cores(self):
+        env = {}
+        available, threads = configure_cpu_threads(env, affinity={0, 1, 2, 3}, cgroup_root="/missing")
+        self.assertEqual((available, threads), (4, 2))
+        self.assertEqual(env["FT_CPU_THREADS"], "2")
+
     def test_respects_affinity_and_cgroup_quota(self):
         with tempfile.TemporaryDirectory() as tmp:
             Path(tmp, "cpu.max").write_text("150000 100000\n", encoding="ascii")
@@ -23,3 +29,4 @@ class CpuSpeedTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
