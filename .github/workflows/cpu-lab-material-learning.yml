@@ -1,0 +1,166 @@
+name: CPU lab material learning
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_cpu:
+        description: Start the two-seed CPU candidate experiment
+        required: true
+        type: choice
+        options: [no, yes]
+        default: no
+      source_run_id:
+        description: Successful Kaggle Actions run that contains the trained classifier checkpoint
+        required: true
+        type: string
+      model_subdir:
+        description: Model directory inside the jitsuris-model artifact
+        required: true
+        type: choice
+        options: [ft_out, ft_out_job1, ft_out_job2, ft_out_job3]
+        default: ft_out_job1
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: jitsuris-cpu-training
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: ${{ inputs.confirm_cpu == 'yes' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    outputs:
+      has_candidates: ${{ steps.count.outputs.has_candidates }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source Kaggle run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, re, urllib.request
+          run_id = os.environ["SOURCE_RUN_ID"]
+          if not re.fullmatch(r"[0-9]{5,20}", run_id):
+              raise SystemExit("source_run_id must be a numeric GitHub Actions run ID")
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{run_id}",
+              headers={"Authorization": f"Bearer {os.environ['GH_TOKEN']}", "Accept": "application/vnd.github+json"})
+          with urllib.request.urlopen(req) as response:
+              run = json.load(response)
+          if run.get("path") != ".github/workflows/kaggle.yml" or run.get("status") != "completed" or run.get("conclusion") != "success":
+              raise SystemExit("source must be a completed successful Kaggle workflow run")
+          print(f"validated Kaggle source run {run_id}: {run.get('html_url')}")
+          PY
+      - name: Download trained classifier artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: jitsuris-model
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ github.token }}
+          path: source-models
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU inference dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Validate checkpoint and score pre-learning probe
+        env:
+          MODEL_SUBDIR: ${{ inputs.model_subdir }}
+        run: |
+          set -euo pipefail
+          MODEL="source-models/$MODEL_SUBDIR"
+          test -s "$MODEL/config.json"
+          test -s "$MODEL/labels.json"
+          python cpu_lab/progress_probe.py score --model "$MODEL" --probe cpu_lab/materials/progress_probe.jsonl --out probe_before.json
+      - name: Generate conservative pseudo-label candidates and receipt
+        env:
+          MODEL_SUBDIR: ${{ inputs.model_subdir }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          FT_CPU_THREADS: '2'
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          set -euo pipefail
+          MODEL="source-models/$MODEL_SUBDIR"
+          python cpu_lab/self_learning.py autolabel --model "$MODEL" --pool cpu_lab/materials/pool.jsonl --out candidate.jsonl --budget 36 --batch-size 12
+          python cpu_lab/material_receipt.py prepare --pool cpu_lab/materials/pool.jsonl --pseudo candidate.jsonl --source-model "run:$SOURCE_RUN_ID/$MODEL_SUBDIR" --out material_receipt.json
+      - name: Count accepted candidates
+        id: count
+        run: |
+          n=$(wc -l < candidate.jsonl)
+          if [ "$n" -gt 0 ]; then echo "has_candidates=true" >> "$GITHUB_OUTPUT"; else echo "has_candidates=false" >> "$GITHUB_OUTPUT"; fi
+          echo "Accepted pseudo-label candidates: $n / 36"
+          if [ "$n" -eq 0 ]; then echo "No examples passed the strict confidence gate; no training will run." >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpu-lab-prepared-${{ github.run_id }}
+          path: |
+            candidate.jsonl
+            material_receipt.json
+            probe_before.json
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+  train:
+    needs: prepare
+    if: needs.prepare.outputs.has_candidates == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        seed: [1, 2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: cpu-lab-prepared-${{ github.run_id }}
+          path: prepared
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run safety tests
+        run: python -m unittest discover -s cpu_lab/tests -v
+      - name: Install CPU training dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Train and track material exposure
+        env:
+          FT_CPU_THREADS: '2'
+          FT_CPU_LAB_PSEUDO: prepared/candidate.jsonl
+          FT_BS: '32'
+          FT_ACC: '2'
+          FT_CKPT: '0'
+          FT_SORT: '1'
+          FT_PAD8: '1'
+          FT_FUSED: '0'
+          FT_CTX_UNIT: '1'
+          FT_FREEZE_EMB: '1'
+          FT_SEED: ${{ matrix.seed }}
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          set -euo pipefail
+          mkdir -p "cpu_results/seed-${{ matrix.seed }}"
+          cp prepared/material_receipt.json "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
+          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 2             2>&1 | tee "cpu_results/seed-${{ matrix.seed }}/train.log"
+          python cpu_lab/material_receipt.py mark-trained             --receipt "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"             --train-log "cpu_results/seed-${{ matrix.seed }}/train.log"             --seed ${{ matrix.seed }}             --out "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
+          python cpu_lab/progress_probe.py score --model ft_out             --probe cpu_lab/materials/progress_probe.jsonl             --out "cpu_results/seed-${{ matrix.seed }}/probe_after.json"
+          python cpu_lab/progress_probe.py compare             --before prepared/probe_before.json             --after "cpu_results/seed-${{ matrix.seed }}/probe_after.json"             --out "cpu_results/seed-${{ matrix.seed }}/probe_comparison.json"
+          cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
+          cp prepared/candidate.jsonl "cpu_results/seed-${{ matrix.seed }}/pseudo_materials_used.jsonl"
+          find . -maxdepth 1 -type f \( -name 'probs_*.json' -o -name 'errors_*.json' \) -exec cp {} "cpu_results/seed-${{ matrix.seed }}/" \;
+      - name: Upload per-seed model-learning evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpu-lab-material-learning-seed-${{ matrix.seed }}-${{ github.run_id }}
+          path: cpu_results/seed-${{ matrix.seed }}/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 0
