@@ -15,16 +15,20 @@ class ErrorAnalysisTests(unittest.TestCase):
             root = Path(tmp)
             row = {"column": "Total invoices paid", "truth": "quantity", "prediction": "amount",
                    "critical": True, "top3": [{"label": "amount", "probability": 0.99}]}
-            self.write(root, "job1_probs_business_ft.json", [row])
-            self.write(root, "job2_probs_business_ft.json", [row])
+            other_error = {"column": "unclassified field", "truth": "other", "prediction": "address",
+                           "critical": False, "top3": [{"label": "address", "probability": 0.75}]}
+            self.write(root, "job1_probs_business_ft.json", [row, other_error])
+            self.write(root, "job2_probs_business_ft.json", [row, other_error])
             # A prohibited/unrecognized report is deliberately not opened.
             (root / "blind_set7_probs_business_ft.json").write_text("not json", encoding="utf-8")
             rows = load_reports(root)
             report = analyze(rows)
-            self.assertEqual(len(rows), 2)
+            self.assertEqual(len(rows), 4)
             self.assertIn("quantity→amount", report)
             self.assertIn("total invoices paid", report)
             self.assertIn("seed 1, seed 2", report)
+            self.assertIn("other見落とし", report)
+            self.assertIn("unclassified field", report)
 
     def test_forbidden_root_is_rejected(self):
         with self.assertRaises(ValueError):
