@@ -80,6 +80,8 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     rm -rf /tmp/out && mkdir -p /tmp/out && kaggle kernels output "$K" -p /tmp/out || true
     f=$(find /tmp/out -name FINETUNE_RESULTS.md | head -1)
     d=$(find /tmp/out -name diag.txt | head -1); [ -n "$d" ] && sed 's/^/    /' "$d" >> KAGGLE_LOG.md
+    # 学習ログから要点（束の大きさ・GPU メモリの最大・学習行数）だけを残す（仕事ごと）
+    find /tmp/out -name '*.log' -exec grep -aoE '(\[仕事[0-9]+\] )?(peak GPU memory[^"\\]*|train batch=[^"\\]*|training rows=[^"\\]*)' {} \; 2>/dev/null | sed 's/^/    /' >> KAGGLE_LOG.md || true
     if [ -n "$f" ]; then tail -n +2 "$f" | sed 's/^### /### Kaggle GPU /' >> ../FINETUNE_RESULTS.md; fi
     { find /tmp/out -name '*.log' -exec grep -aoE 'device [a-z]+|Tesla [A-Z0-9]+|name, memory[^"]*|[A-Za-z ]*GPU[^"]{0,60}' {} \; | head -5; echo ---; find /tmp/out -name '*.log' -exec tail -c 3000 {} \; ; } > last_run_tail.txt 2>/dev/null || true
     mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && cp -r /tmp/out/out/ft_out /tmp/model/ || true

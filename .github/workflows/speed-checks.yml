@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [batching.py, jobs.py, finetune_exp.py, speed_probe.py, kaggle/run.py, tests/test_batching.py, tests/test_jobs.py, tests/test_sort_equivalence.py, .github/workflows/speed-checks.yml]
+    paths: [batching.py, jobs.py, finetune_exp.py, speed_probe.py, kaggle/run.py, guard.py, rescore_guard.py, compare_runs.py, abstain_eval.py, analyze_errors.py, tests/test_guard.py, tests/test_jobs.py, tests/test_batching.py, tests/test_jobs.py, tests/test_sort_equivalence.py, .github/workflows/speed-checks.yml]
 permissions:
   contents: write
 jobs:
@@ -20,7 +20,7 @@ jobs:
           python -m pip install numpy scipy scikit-learn transformers sentencepiece
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: 部品の検査（束の分け方・仕事の分け方・勾配の一致）
-        run: python -m unittest tests.test_batching tests.test_jobs tests.test_sort_equivalence -v
+        run: python -m unittest tests.test_batching tests.test_jobs tests.test_sort_equivalence tests.test_guard tests.test_compare_runs tests.test_abstain_eval tests.test_analyze_errors tests.test_rescore_guard -v
       - name: 通しの検査 A（今までの流し方、ドロップアウトなし）
         env: { FT_NO_DROPOUT: '1', FT_LIMIT: '640', FT_SEED: '1', FT_EVAL: dev220, FT_TRACE_LOSS: '5', FT_BS: '8', FT_ACC: '8', FT_SORT: '0' }
         shell: bash
