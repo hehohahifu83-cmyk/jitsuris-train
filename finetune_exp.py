@@ -34,6 +34,7 @@ EPOCHS = float(sys.argv[2]) if len(sys.argv) > 2 else 2
 PREFIX = "query: " if "e5" in NAME else ""
 labels = sorted(set(r[2] for r in rows)); L = {c: i for i, c in enumerate(labels)}
 base_train_rows = list(rows)  # Keep the sparse baseline free of machine pseudo-labels
+replay_rows = []
 replay_path = os.environ.get("FT_CPU_LAB_REPLAY")
 pseudo_path = os.environ.get("FT_CPU_LAB_PSEUDO")
 if replay_path and pseudo_path:
@@ -42,7 +43,7 @@ if replay_path:
     from cpu_lab.self_learning import load_approved_replay
     replay_rows = load_approved_replay(replay_path, set(labels))
     rows = rows + replay_rows
-    print(f"CPU lab replay: {len(replay_rows)} human-verified rows from {replay_path}", flush=True)
+    print(f"CPU lab replay: {len(replay_rows)} audited rows from {replay_path}", flush=True)
 if pseudo_path:
     from cpu_lab.self_learning import load_pseudo_replay
     base_rows = len(base_train_rows)
@@ -50,7 +51,18 @@ if pseudo_path:
     rows = rows + pseudo_rows
     print(f"CPU lab pseudo replay: {len(pseudo_rows)} unverified rows (capped at 1% of {base_rows}) from {pseudo_path}", flush=True)
 tok = AutoTokenizer.from_pretrained(NAME)
-model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **({"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0} if os.environ.get("FT_NO_DROPOUT") == "1" else {}))  # FT_NO_DROPOUT は検査用（束の分け方を変えても損失が同じになるかを比べる）
+dropout_args = {"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0} if os.environ.get("FT_NO_DROPOUT") == "1" else {}
+init_model_path = os.environ.get("FT_INIT_MODEL_PATH")
+if init_model_path:
+    init_labels_path = os.path.join(init_model_path, "labels.json")
+    if not os.path.isfile(init_labels_path) or json.load(open(init_labels_path, encoding="utf-8")) != labels:
+        raise ValueError("FT_INIT_MODEL_PATH label map does not exactly match current training labels")
+    model = AutoModelForSequenceClassification.from_pretrained(init_model_path, **dropout_args)
+    if model.config.num_labels != len(labels):
+        raise ValueError("FT_INIT_MODEL_PATH classifier dimension does not match current labels")
+    print(f"initialized from audited source checkpoint: {init_model_path}", flush=True)
+else:
+    model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **dropout_args)
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
@@ -72,8 +84,26 @@ def text_aug(r, prefix):
     return f"{prefix}列「{h}」の値は {vals}。同じ表には {cs} がある。"
 train_setup_start = time.time()
 train_rows = rows
+per_label_limit = os.environ.get("FT_LIMIT_PER_LABEL")
 limit_text = os.environ.get("FT_LIMIT")
-if limit_text:
+if per_label_limit and limit_text:
+    raise ValueError("choose either FT_LIMIT or FT_LIMIT_PER_LABEL")
+if per_label_limit:
+    cap = int(per_label_limit)
+    if cap < 1: raise ValueError("FT_LIMIT_PER_LABEL must be a positive integer")
+    sample_rng = random.Random(int(os.environ.get("FT_SAMPLE_SEED", "0")))
+    buckets = {}
+    for row in base_train_rows:
+        buckets.setdefault(row[2], []).append(row)
+    sampled = []
+    for label in sorted(buckets):
+        bucket = list(buckets[label])
+        sample_rng.shuffle(bucket)
+        sampled.extend(bucket[:cap])
+    # Always retain every independently audited CPU-lab row.
+    train_rows = sampled + replay_rows
+    print(f"stratified base sample: cap={cap}/label; fixed sample seed={os.environ.get('FT_SAMPLE_SEED', '0')}; replay={len(replay_rows)}", flush=True)
+elif limit_text:
     limit = int(limit_text)
     if limit < 1: raise ValueError("FT_LIMIT must be a positive integer")
     train_rows = rows[:limit]
