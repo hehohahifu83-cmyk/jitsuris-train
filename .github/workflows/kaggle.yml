@@ -42,7 +42,7 @@ jobs:
         id: eval_artifact
         with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
       - name: Record separate training and recovery states
-        if: always()
+        if: always() && steps.gate.outputs.skip != '1'
         env:
           MODEL_ARTIFACT_ID: ${{ steps.model_artifact.outputs['artifact-id'] }}
           EVAL_ARTIFACT_ID: ${{ steps.eval_artifact.outputs['artifact-id'] }}
