@@ -53,7 +53,7 @@ class MaterialTrackingTests(unittest.TestCase):
             b=root/"before.json"; a=root/"after.json"; o=root/"out.json"
             write(b,set(range(80))); write(a,set(range(82)))
             self.assertEqual(compare(str(b),str(a),str(o))["result"],"measurable_improvement")
-            write(a,set(range(79)))
+            write(a,set(range(77)))
             self.assertEqual(compare(str(b),str(a),str(o))["result"],"measurable_regression")
             write(a,set(range(80)))
             self.assertEqual(compare(str(b),str(a),str(o))["result"],"no_difference_under_1_5pp")
