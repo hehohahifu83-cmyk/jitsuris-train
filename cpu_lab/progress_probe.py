@@ -47,12 +47,27 @@ def compare(before_path: str, after_path: str, out_path: str) -> dict:
     after_rows = {x["id"]: x for x in after["predictions"]}
     if before_rows.keys() != after_rows.keys():
         raise ValueError("probe IDs changed")
+    if any(before_rows[i]["target"] != after_rows[i]["target"] for i in before_rows):
+        raise ValueError("probe gold labels changed")
     n = len(before_rows)
     delta = after["accuracy"] - before["accuracy"]
+    improved = [i for i in before_rows if not before_rows[i]["correct"] and after_rows[i]["correct"]]
+    regressed = [i for i in before_rows if before_rows[i]["correct"] and not after_rows[i]["correct"]]
+    by_target = {}
+    for target in sorted({x["target"] for x in before_rows.values()}):
+        ids = [i for i, x in before_rows.items() if x["target"] == target]
+        before_ok = sum(int(before_rows[i]["correct"]) for i in ids)
+        after_ok = sum(int(after_rows[i]["correct"]) for i in ids)
+        by_target[target] = {
+            "count": len(ids), "before_correct": before_ok, "after_correct": after_ok,
+            "before_accuracy": before_ok / len(ids), "after_accuracy": after_ok / len(ids),
+            "delta_pp": (after_ok - before_ok) / len(ids) * 100,
+            "improved_cases": [i for i in ids if not before_rows[i]["correct"] and after_rows[i]["correct"]],
+            "regressed_cases": [i for i in ids if before_rows[i]["correct"] and not after_rows[i]["correct"]],
+        }
     result = {"probe_count": n, "before_accuracy": before["accuracy"], "after_accuracy": after["accuracy"],
               "delta_pp": delta * 100, "errors_before": before["errors"], "errors_after": after["errors"],
-              "improved_cases": [i for i in before_rows if not before_rows[i]["correct"] and after_rows[i]["correct"]],
-              "regressed_cases": [i for i in before_rows if before_rows[i]["correct"] and not after_rows[i]["correct"]],
+              "improved_cases": improved, "regressed_cases": regressed, "by_target": by_target,
               "threshold_pp": 1.5,
               "result": "measurable_improvement" if delta * 100 >= 1.5 else
                         "measurable_regression" if delta * 100 <= -1.5 else "no_difference_under_1_5pp"}
