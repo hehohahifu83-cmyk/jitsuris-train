@@ -223,6 +223,9 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - `cpu_lab/self_learning.py`: 候補モデルから未ラベル公開/合成列を推論し、不確実度・予測クラス偏り・ヘッダー重複をもとに人手レビューキューを作る。明示的にverifiedされたラベルのみをリプレイ訓練JSONLへ書く。AI擬似ラベルは自動採用しない。
 - `finetune_exp.py`: `FT_CPU_LAB_REPLAY` が指定された場合だけ、来歴・ライセンス・プライバシー・レビュアー・ラベル集合・禁止データを検査した上で訓練例へ追加。未指定時の既存挙動は変わらない。
 - `.github/workflows/cpu-lab-active-learning.yml`: 手動確認必須、2 seed逐次、成果artifact 7日保存。既存 `cpu-e5base-training.yml` と共有CPU排他グループにした。
-- テスト: ローカルunittest 3件・py_compile通過。GitHub Actions実行・CPU候補学習・性能比較は未実施。実例プールや承認済みデータもまだない。既定モデル/Kaggle依頼/製品コードは変更なし。
+- テスト: ローカルunittest 4件・py_compile通過。GitHub Actions実行・CPU候補学習・性能比較は未実施。実例プールや承認済みデータもまだない。既定モデル/Kaggle依頼/製品コードは変更なし。
 - Claude向け独立レビュー依頼: `ai-bridge/messages/20261018-2000_chatgpt-to-claude_active-learning.md`。連絡箱に保存したが自動整理workflowは不調が続いている。INBOX掲載・Claude受領は未確認。Claude復帰時はユーザーに「連絡箱」を確認してもらい、このレビューを渡す。
 - 制約: blind_set*、セット3・5・7を開かない。比較は許可済み5試験だけ。各差1.5ポイント未満は差なし。学習後は誤り・重大誤りの全件原因分析をしてClaudeにも共有する。
+
+
+連絡箱の最新確認（2026-10-18 20:00）: 今回のClaude宛てメッセージ作成後のai-bridge workflow run 39121537658もfailure、INBOX.mdのClaude宛て未読は0件。ファイル保存は済みだがClaudeへ配信済みとは扱わない。Claude復帰後、ユーザーに「連絡箱」を確認してもらう。
