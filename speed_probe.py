@@ -11,7 +11,8 @@
 import gc, json, os, random, statistics, subprocess, sys, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-EFF = 64  # 実効バッチ（今の学習と同じ）
+EFF = int(os.environ.get("FT_PROBE_EFF", "64"))  # 実効バッチ（今の学習と同じ 64。検査用に小さくできる）
+N_BATCHES = int(os.environ.get("FT_PROBE_BATCHES", "5"))  # 最初の 1 回は捨てて残りを測る
 
 
 def cfg(bs, ckpt=False, sort=False, pad8=False, fused=False, freeze=False):
@@ -79,32 +80,35 @@ def child_run(name, name_model):
     from transformers import AutoTokenizer, AutoModelForSequenceClassification
     c = ALL[name]; texts, ys, nl = load_data()
     tok = AutoTokenizer.from_pretrained(name_model)
-    out = {"name": name, **c, "torch": torch.__version__, "gpu": torch.cuda.get_device_name(0), "visible": os.environ.get("CUDA_VISIBLE_DEVICES", "all")}
+    dev = "cuda" if torch.cuda.is_available() else "cpu"   # cpu は検査用（GitHub Actions で測定プログラム自体の通しを確かめる）
+    sync = torch.cuda.synchronize if dev == "cuda" else (lambda: None)
+    out = {"name": name, **c, "torch": torch.__version__, "gpu": torch.cuda.get_device_name(0) if dev == "cuda" else "cpu", "visible": os.environ.get("CUDA_VISIBLE_DEVICES", "all")}
     try:
-        model = AutoModelForSequenceClassification.from_pretrained(name_model, num_labels=nl).cuda()
+        model = AutoModelForSequenceClassification.from_pretrained(name_model, num_labels=nl).to(dev)
         out["attn"] = str(getattr(model.config, "_attn_implementation", "?"))
         if c["ckpt"]: model.gradient_checkpointing_enable()
         if c["freeze"]: model.get_input_embeddings().weight.requires_grad_(False)
-        opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=1e-5, weight_decay=0.01, **({"fused": True} if c["fused"] else {}))
-        scaler = torch.amp.GradScaler(); model.train()
+        opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=1e-5, weight_decay=0.01, **({"fused": True} if c["fused"] and dev == "cuda" else {}))
+        scaler = torch.amp.GradScaler(enabled=dev == "cuda"); model.train()
         rng = random.Random(0); order = list(range(len(texts))); rng.shuffle(order)
-        batches = [order[i:i + EFF] for i in range(0, len(order) - EFF + 1, EFF)][:5]   # 1 回捨てて 4 回測る
-        torch.cuda.reset_peak_memory_stats(); times, reals = [], []
+        batches = [order[i:i + EFF] for i in range(0, len(order) - EFF + 1, EFF)][:N_BATCHES]   # 1 回捨てて残りを測る
+        if dev == "cuda": torch.cuda.reset_peak_memory_stats()
+        times, reals = [], []
         for bi in batches:
-            torch.cuda.synchronize(); t = time.time()
+            sync(); t = time.time()
             micros, real = build_micros(tok, [texts[i] for i in bi], [ys[i] for i in bi], c, torch)
             for m in micros:
-                m = {k: v.cuda() for k, v in m.items()}
-                with torch.autocast("cuda", dtype=torch.float16):
+                m = {k: v.to(dev) for k, v in m.items()}
+                with torch.autocast(dev, dtype=torch.float16, enabled=dev == "cuda"):
                     loss = model(**m).loss * (m["labels"].shape[0] / len(bi))
                 scaler.scale(loss).backward()
             scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             scaler.step(opt); scaler.update(); opt.zero_grad()
-            torch.cuda.synchronize(); times.append(time.time() - t); reals.append(real)
+            sync(); times.append(time.time() - t); reals.append(real)
         t_med = statistics.median(times[1:]); r_med = statistics.median(reals[1:])
-        out.update(status="ok", sps=round(EFF / t_med, 1), step_s=round(t_med, 2), tokens_per_s=round(r_med / t_med), peak_gib=round(torch.cuda.max_memory_allocated() / 2**30, 1))
+        out.update(status="ok", sps=round(EFF / t_med, 1), step_s=round(t_med, 2), tokens_per_s=round(r_med / t_med), peak_gib=round(torch.cuda.max_memory_allocated() / 2**30, 1) if dev == "cuda" else 0)
     except torch.cuda.OutOfMemoryError:
-        out.update(status="OOM", peak_gib=round(torch.cuda.max_memory_allocated() / 2**30, 1))
+        out.update(status="OOM", peak_gib=round(torch.cuda.max_memory_allocated() / 2**30, 1))   # GPU のときだけ起きる
     except Exception as e:   # 1 つの設定の失敗で全体を止めない
         out.update(status="error: " + repr(e)[:200])
     print("PROBE_RESULT " + json.dumps(out, ensure_ascii=False), flush=True)
@@ -114,8 +118,9 @@ def child_run(name, name_model):
 def child_equiv(name_model):
     import torch
     from transformers import AutoTokenizer, AutoModelForSequenceClassification
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
     texts, ys, nl = load_data(); tok = AutoTokenizer.from_pretrained(name_model)
-    model = AutoModelForSequenceClassification.from_pretrained(name_model, num_labels=nl, hidden_dropout_prob=0.0, attention_probs_dropout_prob=0.0).cuda()
+    model = AutoModelForSequenceClassification.from_pretrained(name_model, num_labels=nl, hidden_dropout_prob=0.0, attention_probs_dropout_prob=0.0).to(dev)
     model.train(); n_layers = model.config.num_hidden_layers
     keep = ("classifier", ".layer.0.", f".layer.{n_layers - 1}.")
     names = [n for n, p in model.named_parameters() if any(k in n for k in keep)]
@@ -130,8 +135,8 @@ def child_equiv(name_model):
         micros, _ = build_micros(tok, [texts[i] for i in bi], [ys[i] for i in bi], c, torch)
         total = 0.0
         for m in micros:
-            m = {k: v.cuda() for k, v in m.items()}
-            with torch.autocast("cuda", dtype=torch.float16):
+            m = {k: v.to(dev) for k, v in m.items()}
+            with torch.autocast(dev, dtype=torch.float16, enabled=dev == "cuda"):
                 loss = model(**m).loss * (m["labels"].shape[0] / EFF)
             (loss * S).backward(); total += loss.item()
         vec = torch.cat([params[n].grad.detach().float().flatten() / S for n in names])

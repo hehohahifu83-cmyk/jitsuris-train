@@ -49,6 +49,19 @@ jobs:
         env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_FREEZE_EMB: '1' }
         shell: bash
         run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee d.log | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
+      - name: 測定プログラムの通しの検査（CPU・小さく。数字は GPU の結果ではない）
+        shell: bash
+        env: { FT_PROBE_EFF: '16', FT_PROBE_BATCHES: '3', FT_PROBE_CONFIGS: 'B01,B04', FT_PROBE_NO_DUAL: '1' }
+        run: |
+          python speed_probe.py intfloat/multilingual-e5-small 2>&1 | tee p.log | grep -E "→|トークン数の分布|Traceback|Error" | cut -c1-400
+          python - <<'PY'
+          import json
+          r = json.load(open("probe_results.json"))
+          assert r["results"] and all(x["status"] == "ok" for x in r["results"]), r["results"]
+          eq = r["equiv"]
+          assert eq and all(t["status"] == "ok" and t["cos"] > 0.99999 for t in eq["tests"]), eq
+          print("測定プログラムの検査 ok", [(t["name"], t["cos"], t["rel_err"]) for t in eq["tests"]])
+          PY
       - name: 結果を記録する（ログは取りに行けないので、要点をリポジトリに書く）
         if: always()
         shell: bash
@@ -68,6 +81,10 @@ jobs:
               out.append(f"| {k} {name} | {cfgline(logs[k])} | {secs(logs[k])} | {losses(logs[k])[:5] or '—'} |")
           out += ["", f"A と B の最初の5ステップの損失の最大の差：{diff}（ドロップアウトを切り、同じ種・同じ実効バッチ。基準 2e-3 未満）", "",
                   "CPU（fp32・e5-small・640行）の検査であり、GPU（fp16）での速さや品質の結果ではない。"]
+          import json
+          pr = json.load(open("probe_results.json")) if os.path.exists("probe_results.json") else None
+          if pr and pr.get("equiv"):
+              out += ["", "測定プログラム（speed_probe.py）の勾配の一致（CPU・fp32・実効バッチ16）：" + "；".join(f"{t['name']} 一致度{t.get('cos')}・相対差{t.get('rel_err')}" for t in pr["equiv"]["tests"] if t.get("status") == "ok")]
           open("bench/speed_checks_summary.md", "w", encoding="utf-8").write("\n".join(out) + "\n")
           PY
           git config user.name github-actions[bot]
