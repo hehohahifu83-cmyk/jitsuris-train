@@ -1,0 +1,64 @@
+name: CPUでe5-baseを学習（補助）
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_cpu:
+        description: CPUでe5-baseを2種学習する場合だけ yes を選ぶ（既定 no は何もしない）
+        required: true
+        type: choice
+        options:
+          - no
+          - yes
+        default: no
+permissions:
+  contents: read
+concurrency:
+  group: cpu-e5base-training
+  cancel-in-progress: false
+jobs:
+  train:
+    if: ${{ inputs.confirm_cpu == 'yes' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Train matched e5-base pair on CPU
+        shell: bash
+        env:
+          FT_CPU_THREADS: '2'
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          set -euo pipefail
+          mkdir -p cpu_results
+          for seed in 1 2; do
+            rm -rf ft_out
+            echo "Starting e5-base CPU training, seed=$seed"
+            env FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 \
+              FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_SEED="$seed" \
+              python finetune_exp.py intfloat/multilingual-e5-base 2 \
+              2>&1 | tee "cpu_results/seed-${seed}.log"
+            mkdir -p "cpu_results/seed-${seed}"
+            cp FINETUNE_RESULTS.md "cpu_results/seed-${seed}/"
+            find . -maxdepth 1 -type f \
+              \( -name 'probs_*.json' -o -name 'errors_*.json' \) \
+              -exec cp {} "cpu_results/seed-${seed}/" \;
+            mv ft_out "cpu_results/seed-${seed}/model"
+          done
+      - name: Upload metrics, errors, logs, and trained models
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpu-e5base-unit-freeze-seeds-${{ github.run_id }}
+          path: cpu_results/
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
