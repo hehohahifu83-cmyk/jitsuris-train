@@ -22,21 +22,37 @@ jobs:
         id: gate
         run: |
           if [ "${{ github.event_name }}" = schedule ]; then
-            if grep -qE '^(train|fetch)' kaggle/kaggle.request && ! grep -q '^done' kaggle/kaggle.request; then echo "mode=fetch" >> $GITHUB_OUTPUT; else echo "skip=1" >> $GITHUB_OUTPUT; fi
+            if grep -qE '^(train|fetch)' kaggle/kaggle.request && ! grep -q '^done' kaggle/kaggle.request; then
+              echo "mode=fetch" >> $GITHUB_OUTPUT
+            elif grep -qx 'done' kaggle/kaggle.request; then
+              echo "mode=status" >> $GITHUB_OUTPUT
+              echo "status_only=1" >> $GITHUB_OUTPUT
+            else
+              echo "skip=1" >> $GITHUB_OUTPUT
+            fi
           fi
       - name: Kaggle
         if: steps.gate.outputs.skip != '1'
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          STATUS_ONLY: ${{ steps.gate.outputs.status_only }}
           WAIT_MIN: '280'
           PROGRESS_PUSH: '1'
-          QUEUE_MAX: '20'   # 公開リポジトリは実行時間が無料なので、終わるまで待って結果を持ち帰る
+          QUEUE_MAX: '20'   # Kaggle の GPU 割当待ちは別の定期チェックで続ける
         run: |
           case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
-          if [ "${{ steps.gate.outputs.mode }}" = fetch ]; then cp kaggle/kaggle.request /tmp/req && echo fetch > kaggle/kaggle.request && WAIT_MIN=1 bash kaggle/kaggle.sh; else bash kaggle/kaggle.sh; fi
+          if [ "${{ steps.gate.outputs.mode }}" = fetch ]; then
+            cp kaggle/kaggle.request /tmp/req && echo fetch > kaggle/kaggle.request && WAIT_MIN=1 bash kaggle/kaggle.sh
+          elif [ "${{ steps.gate.outputs.mode }}" = status ]; then
+            st=$(kaggle kernels status "$KAGGLE_USERNAME/jitsuris-train" 2>&1 || true)
+            echo "$(date -u +%FT%TZ) 状態確認（定期）：$st" >> kaggle/KAGGLE_LOG.md
+          else
+            bash kaggle/kaggle.sh
+          fi
       - uses: actions/upload-artifact@v4
         id: model_artifact
+        if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
       - name: Evidence-first error analysis
         if: always() && steps.gate.outputs.skip != '1'
@@ -46,6 +62,7 @@ jobs:
           cat /tmp/eval_reports/ERROR_ANALYSIS.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         id: eval_artifact
+        if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
       - name: Record separate training and recovery states
         if: always() && steps.gate.outputs.skip != '1'
@@ -71,6 +88,13 @@ jobs:
           report_count = sum(1 for p in Path("/tmp/eval_reports").glob("*") if p.is_file())
           model_id = os.environ.get("MODEL_ARTIFACT_ID", "").strip()
           eval_id = os.environ.get("EVAL_ARTIFACT_ID", "").strip()
+          previous_status = Path("kaggle/STATUS.md").read_text(encoding="utf-8") if Path("kaggle/STATUS.md").exists() else ""
+          def previous_value(prefixes):
+              for line in previous_status.splitlines():
+                  for prefix in prefixes:
+                      if line.startswith(prefix):
+                          return line.split(":", 1)[1].strip()
+              return ""
           training_map = {
               "QUEUED": "待機中（Kaggle GPU の割当待ち）",
               "RUNNING": "実行中（Kaggle が RUNNING を返答）",
@@ -85,6 +109,10 @@ jobs:
           results = "今回の実行で FINETUNE_RESULTS.md を更新" if changed else "今回の更新なし（過去結果とは区別）"
           checkpoint = f"回収 artifact ID {model_id}" if model_id else "artifact 未確認／未作成"
           eval_artifact = f"回収 artifact ID {eval_id}（{report_count}ファイル）" if eval_id else f"artifact 未確認／未作成（今回の検出JSON {report_count}件）"
+          if os.environ.get("STATUS_ONLY") == "1":
+              results = previous_value(["- 評価結果回収:", "- 評価結果:"]) or results
+              checkpoint = previous_value(["- 学習済みモデル回収:", "- 学習済みモデルartifact:"]) or checkpoint
+              eval_artifact = previous_value(["- 評価レポートartifact:"]) or eval_artifact
           body = textwrap.dedent(f"""
           # 最新の学習・結果回収状況
           
