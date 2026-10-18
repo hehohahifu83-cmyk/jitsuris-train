@@ -35,13 +35,21 @@ def main() -> int:
         env = os.environ.copy()
         env.update({"FT_CPU_CACHE": str(cache), "FT_CPU_THREADS": str(thread_counts[thread_key]),
                     "FT_LIMIT": "1500", "FT_SEED": "1", "FT_EVAL": "dev220", "FT_TRACE_LOSS": "20"})
-        proc = subprocess.run([sys.executable, "finetune_exp.py", "intfloat/multilingual-e5-small", "1"], cwd=ROOT,
-                              env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        (LOG_DIR / f"{name}.log").write_text(proc.stdout, encoding="utf-8")
-        if proc.returncode:
-            print(proc.stdout[-5000:])
-            raise SystemExit(f"{name} failed with exit code {proc.returncode}")
-        results[name] = parse_run(proc.stdout)
+        print(f"Starting {name}: cache={cache}, threads={thread_counts[thread_key]}", flush=True)
+        log_path = LOG_DIR / f"{name}.log"
+        with log_path.open("w", encoding="utf-8") as log:
+            proc = subprocess.Popen([sys.executable, "finetune_exp.py", "intfloat/multilingual-e5-small", "1"], cwd=ROOT,
+                                    env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+            output_lines = []
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                print(f"[{name}] {line}", end="", flush=True)
+                log.write(line); log.flush(); output_lines.append(line)
+            code = proc.wait()
+        output = "".join(output_lines)
+        if code:
+            raise SystemExit(f"{name} failed with exit code {code}")
+        results[name] = parse_run(output)
         print(f"{name}: train={results[name][0]:.1f}s eval={results[name][1]:.1f}s threads={thread_counts[thread_key]}", flush=True)
 
     loss_checks = {"A1/B1": compare_losses(results["A1"][2], results["B1"][2]),
