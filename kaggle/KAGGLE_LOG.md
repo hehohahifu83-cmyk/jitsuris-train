@@ -83,3 +83,7 @@
     config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-large/onnx/config.json
     model: hfmodel/intfloat__multilingual-e5-large exists=True
     cuda: True Tesla T4
+2026-10-18T02:30:00Z push の返事：Kernel version 12 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-18T02:30:30Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-18T02:30:31Z train を依頼：probe hfmodel/intfloat__multilingual-e5-large
+送ったモデル：2.2G	hfmodel・束の中のモデルのファイル数 55
