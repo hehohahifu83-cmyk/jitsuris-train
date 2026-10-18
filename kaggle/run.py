@@ -18,7 +18,7 @@ for c in glob.glob("/kaggle/input/**/config.json", recursive=True): diag.write("
 assert not glob.glob("blind_set*"), "未見セットが入っている"
 subprocess.run("nvidia-smi --query-gpu=name,memory.total --format=csv", shell=True)
 args = open("kaggle/args.txt").read().split()
-MODE = args.pop(0) if args and args[0] == "embed" else ""
+MODE = args.pop(0) if args and args[0] in ("embed", "probe") else ""
 if args[0].startswith("hfmodel/") and not os.path.exists(os.path.join(args[0], "config.json")):
     c = [p for p in glob.glob("/kaggle/input/**/config.json", recursive=True) if os.path.basename(args[0]) in p]
     diag.write("model not at " + args[0] + "; found " + str(c) + "\n")
@@ -26,20 +26,42 @@ if args[0].startswith("hfmodel/") and not os.path.exists(os.path.join(args[0], "
 if EXPECT and args[0] != EXPECT:
     diag.write("古い版のデータセット：" + args[0] + " ≠ " + EXPECT + "\n"); diag.close(); sys.exit(3)
 diag.write("model: " + args[0] + " exists=" + str(os.path.exists(os.path.join(args[0], "config.json"))) + "\n")
+n_gpu = 0
 try:
-    import torch; diag.write("cuda: " + str(torch.cuda.is_available()) + " " + (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "") + "\n")
+    import torch; n_gpu = torch.cuda.device_count()   # 名前の取得（get_device_name）は親の側に GPU の場所を取ってしまうので使わない
+    names = subprocess.run("nvidia-smi --query-gpu=name,memory.total --format=csv,noheader", shell=True, capture_output=True, text=True).stdout.strip().replace("\n", " / ")
+    diag.write("cuda: " + str(torch.cuda.is_available()) + " devices=" + str(n_gpu) + " " + names + "\n")
 except Exception as e: diag.write("torch error " + repr(e) + "\n")
 diag.flush()
 os.environ["HF_HUB_OFFLINE"] = "1"
-env = dict(os.environ)
-for a in list(args):
-    if a.startswith("FT_LR="): env["FT_LR"] = a[6:]; args.remove(a)
-    elif a.split("=")[0] in ("FT_AUG", "FT_BS", "FT_ACC", "FT_CKPT"): k, v = a.split("=", 1); env[k] = v; args.remove(a)
-script = "llm_embed_exp.py" if MODE == "embed" else "finetune_exp.py"
-r = subprocess.run([sys.executable, script, *args], env=env)
-os.makedirs("/kaggle/working/out", exist_ok=True)
-for f in ("FINETUNE_RESULTS.md",):
-    if os.path.exists(f): shutil.copy(f, "/kaggle/working/out/" + f)
-if os.path.isdir("ft_out"): shutil.move("ft_out", "/kaggle/working/out/ft_out")
+sys.path.insert(0, W)
+import jobs as J   # 「++」で区切ると GPU 1 枚につき 1 つの仕事を同時に流す。FT_ で始まる語はすべて環境変数として渡す
+specs = J.split_jobs(args, max_jobs=max(1, n_gpu))
+diag.write("仕事の数: " + str(len(specs)) + " " + str(specs) + "\n"); diag.flush()
+script = {"embed": "llm_embed_exp.py", "probe": "speed_probe.py"}.get(MODE, "finetune_exp.py")
+codes = J.run_jobs(specs, script, dict(os.environ), W, n_gpu)
+OUT = "/kaggle/working/out"
+os.makedirs(OUT, exist_ok=True)
+def copy_reports(src, dst):
+    os.makedirs(dst, exist_ok=True)
+    for pat in ("errors_*.json", "probs_*.json", "probe_*.json"):
+        for f in glob.glob(os.path.join(src, pat)): shutil.copy(f, dst)
+if len(specs) == 1:
+    if os.path.exists("FINETUNE_RESULTS.md"): shutil.copy("FINETUNE_RESULTS.md", OUT + "/FINETUNE_RESULTS.md")
+    copy_reports(".", OUT + "/report")
+    if os.path.isdir("ft_out"): shutil.move("ft_out", OUT + "/ft_out")
+else:   # 仕事ごとの出力は jobN の中。集計は 1 つにまとめ、確率と誤りの一覧は jobN ごとに残す（重いモデルの保存は省く）
+    agg = "# 学習済みモデルの微調整（集計）\n"
+    for i, spec in enumerate(specs, 1):
+        wd = os.path.join(W, "job%d" % i)
+        f = os.path.join(wd, "FINETUNE_RESULTS.md")
+        label = " ".join("%s=%s" % kv for kv in spec["env"].items()) or "（設定なし）"
+        if os.path.exists(f):
+            body = open(f, encoding="utf-8").read().split("\n", 1)[1]
+            agg += body.replace("### ", "### 仕事%d（%s）" % (i, label), 1)
+        else:
+            agg += "\n### 仕事%d（%s）\n結果なし（終了コード %s）\n" % (i, label, codes[i - 1])
+        copy_reports(wd, OUT + "/job%d" % i)
+    open(OUT + "/FINETUNE_RESULTS.md", "w", encoding="utf-8").write(agg)
 shutil.rmtree(W, ignore_errors=True)
-sys.exit(r.returncode)
+sys.exit(max(codes))

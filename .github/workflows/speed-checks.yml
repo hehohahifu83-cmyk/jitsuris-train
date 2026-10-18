@@ -1,0 +1,51 @@
+name: 速くする設定の検査
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [batching.py, jobs.py, finetune_exp.py, speed_probe.py, kaggle/run.py, tests/test_batching.py, tests/test_jobs.py, tests/test_sort_equivalence.py, .github/workflows/speed-checks.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: 依存を入れる（CPU 版）
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: 部品の検査（束の分け方・仕事の分け方・勾配の一致）
+        run: python -m unittest tests.test_batching tests.test_jobs tests.test_sort_equivalence -v
+      - name: 通しの検査 A（今までの流し方、ドロップアウトなし）
+        env: { FT_NO_DROPOUT: '1', FT_LIMIT: '640', FT_SEED: '1', FT_EVAL: dev220, FT_TRACE_LOSS: '5', FT_BS: '8', FT_ACC: '8', FT_SORT: '0' }
+        shell: bash
+        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee a.log | grep -E "step_loss|train batch|学習 [0-9]+秒" | cut -c1-260
+      - name: 通しの検査 B（長さ順の束＋幅8の倍数、ドロップアウトなし）
+        env: { FT_NO_DROPOUT: '1', FT_LIMIT: '640', FT_SEED: '1', FT_EVAL: dev220, FT_TRACE_LOSS: '5', FT_BS: '8', FT_ACC: '8', FT_SORT: '1', FT_PAD8: '1' }
+        shell: bash
+        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee b.log | grep -E "step_loss|train batch|学習 [0-9]+秒" | cut -c1-260
+      - name: A と B の最初の損失が同じか
+        run: |
+          python - <<'PY'
+          import re
+          def losses(p): return [float(x) for x in re.findall(r"^step_loss \d+ ([0-9.]+)$", open(p, encoding="utf-8").read(), re.M)]
+          a, b = losses("a.log"), losses("b.log")
+          print("A", a); print("B", b)
+          assert len(a) >= 5 and len(b) >= 5, "損失の記録が足りない"
+          diff = max(abs(x - y) for x, y in zip(a[:5], b[:5]))
+          print("最大の差", diff)
+          assert diff < 2e-3, "束の分け方で損失が変わった"
+          PY
+      - name: 通しの検査 C（水増し＋長さ順＋fp32、ふだんのドロップアウトあり）
+        env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_PAD8: '1', FT_AUG: '1' }
+        shell: bash
+        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
+      - name: 通しの検査 D（単語の埋め込みを固定）
+        env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_FREEZE_EMB: '1' }
+        shell: bash
+        run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260

@@ -16,6 +16,7 @@ except RuntimeError as exc:
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
 import gen, features
+from batching import plan_micro_batches, pad_batch
 features.USE_NUM2 = True  # 今の仕組み側は v8 と同じ（数字の値特徴あり）
 from encoder_exp import rows, tests, text
 from llm_baseline import score_real
@@ -33,7 +34,7 @@ EPOCHS = float(sys.argv[2]) if len(sys.argv) > 2 else 2
 PREFIX = "query: " if "e5" in NAME else ""
 labels = sorted(set(r[2] for r in rows)); L = {c: i for i, c in enumerate(labels)}
 tok = AutoTokenizer.from_pretrained(NAME)
-model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels))
+model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **({"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0} if os.environ.get("FT_NO_DROPOUT") == "1" else {}))  # FT_NO_DROPOUT は検査用（束の分け方を変えても損失が同じになるかを比べる）
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
@@ -82,26 +83,69 @@ DEFAULT_ACC = 32 if DEV == "cuda" and IS_LARGE else 1
 BS = int(os.environ.get("FT_BS", str(DEFAULT_BS)))
 ACC = int(os.environ.get("FT_ACC", str(DEFAULT_ACC)))  # 大型モデルは実効バッチ64を小さい束に分ける
 USE_CKPT = os.environ.get("FT_CKPT", "1" if DEV == "cuda" and IS_LARGE else "0") == "1"
+# --- 速くする設定（どれも学習の計算結果は変えない。既定は今までどおり＝オフ）---
+SORT = os.environ.get("FT_SORT", "0") == "1"          # 実効バッチ（BS×ACC 文）の中を長さ順に並べて小さな束に分け、詰め物の無駄を減らす
+PAD_MULT = 8 if os.environ.get("FT_PAD8", "0") == "1" else 1  # 幅を8の倍数にする（fp16 の計算が速い形）
+FUSED = os.environ.get("FT_FUSED", "0") == "1" and DEV == "cuda"  # AdamW を GPU 上でまとめて計算する
+# --- 計算結果が変わりうる設定（A/B で確かめるまで使わない）---
+FREEZE_EMB = os.environ.get("FT_FREEZE_EMB", "0") == "1"  # 単語の埋め込み表（約2.6億個）を固定する
 if USE_CKPT: model.gradient_checkpointing_enable()
-print(f"train batch={BS}, accumulation={ACC}, effective={BS * ACC}, checkpointing={USE_CKPT}", flush=True)
-dl = DataLoader(data, batch_size=BS, shuffle=True, collate_fn=collate)
-opt = torch.optim.AdamW(model.parameters(), lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01)
-steps = int(len(dl) * EPOCHS / ACC); sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
+if FREEZE_EMB:
+    model.get_input_embeddings().weight.requires_grad_(False)
+print(f"train batch={BS}, accumulation={ACC}, effective={BS * ACC}, checkpointing={USE_CKPT}, sort={SORT}, pad_multiple={PAD_MULT}, fused={FUSED}, freeze_embeddings={FREEZE_EMB}", flush=True)
+
+def collate_eff(b):
+    """実効バッチ全体を一度にトークン化 → 長さ順に小さな束へ分ける。損失の重みのため全体の文数も返す。"""
+    if CPU_TOKEN_CACHE: ids = [x["input_ids"] for x, _ in b]
+    else:
+        texts = [text_aug(x, PREFIX) if AUG else x for x, _ in b]
+        ids = tok(texts, truncation=True, max_length=128, padding=False)["input_ids"]
+    ys = [y for _, y in b]; micros = []
+    for idx in plan_micro_batches([len(s) for s in ids], BS):
+        pids, pmask = pad_batch([ids[i] for i in idx], tok.pad_token_id, PAD_MULT)
+        micros.append({"input_ids": torch.tensor(pids), "attention_mask": torch.tensor(pmask), "labels": torch.tensor([ys[i] for i in idx])})
+    return micros, len(b)
+
+if SORT:
+    dl = DataLoader(data, batch_size=BS * ACC, shuffle=True, collate_fn=collate_eff)
+    steps = int(len(dl) * EPOCHS)
+else:
+    dl = DataLoader(data, batch_size=BS, shuffle=True, collate_fn=collate)
+    steps = int(len(dl) * EPOCHS / ACC)
+opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01, **({"fused": True} if FUSED else {}))
+sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
 scaler = torch.amp.GradScaler(enabled=DEV == "cuda")
+trace_n = int(os.environ.get("FT_TRACE_LOSS", "0"))
+if DEV == "cuda": torch.cuda.reset_peak_memory_stats()
 t0 = time.time(); model.train(); step = 0; micro = 0
+def finish_step(eff_loss):
+    global step
+    scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+    scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad(); step += 1
+    if step <= trace_n: print(f"step_loss {step} {eff_loss.item():.6f}", flush=True)
+    if step % 100 == 0: print(f"step {step}/{steps} loss {eff_loss.item():.3f} {time.time() - t0:.0f}s", flush=True)
 while step < steps:
-    for b in dl:
-        b = {k: v.to(DEV) for k, v in b.items()}
-        with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
-            loss = model(**b).loss / ACC
-        scaler.scale(loss).backward(); micro += 1
-        if micro % ACC: continue
-        scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad(); step += 1
-        trace_n = int(os.environ.get("FT_TRACE_LOSS", "0"))
-        if step <= trace_n: print(f"step_loss {step} {loss.item() * ACC:.6f}", flush=True)
-        if step % 100 == 0: print(f"step {step}/{steps} loss {loss.item() * ACC:.3f} {time.time() - t0:.0f}s", flush=True)
-        if step >= steps: break
+    if SORT:
+        for micros, n in dl:
+            eff_loss = torch.zeros((), device=DEV)
+            for m in micros:
+                m = {k: v.to(DEV) for k, v in m.items()}
+                with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
+                    loss = model(**m).loss * (m["labels"].shape[0] / n)  # 束の文数/実効バッチの文数で重みを付ける＝64文を一度に流したのと同じ勾配
+                scaler.scale(loss).backward(); eff_loss += loss.detach()
+            finish_step(eff_loss)
+            if step >= steps: break
+    else:
+        eff_loss = torch.zeros((), device=DEV)
+        for b in dl:
+            b = {k: v.to(DEV) for k, v in b.items()}
+            with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
+                loss = model(**b).loss / ACC
+            scaler.scale(loss).backward(); micro += 1; eff_loss += loss.detach()
+            if micro % ACC: continue
+            finish_step(eff_loss); eff_loss = torch.zeros((), device=DEV)
+            if step >= steps: break
+if DEV == "cuda": print(f"peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB; training loop {time.time() - t0:.0f}s", flush=True)
 train_seconds = time.time() - train_setup_start
 model.eval()
 EVAL_BS = 4 if DEV == "cuda" and IS_LARGE else 32

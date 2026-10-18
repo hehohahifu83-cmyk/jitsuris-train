@@ -27,11 +27,11 @@ if [ "$mode" = train ]; then
   cut -d' ' -f2- kaggle.request > args.txt
   rm -rf /tmp/ds /tmp/kn && mkdir -p /tmp/ds /tmp/kn
   # Kaggle 側からインターネットに出られなくても動くように、モデルは GitHub 側で取って一緒に送る
-  if [ "$(awk '{print $1}' args.txt)" = embed ]; then MI=2; else MI=1; fi
+  case "$(awk '{print $1}' args.txt)" in embed|probe) MI=2;; *) MI=1;; esac   # embed と probe は 1 語目が種類、2 語目がモデル
   M=$(awk -v n=$MI '{print $n}' args.txt); D="hfmodel/${M//\//__}"
   pip install -q huggingface_hub
   ( cd .. && rm -rf hfmodel && python -c "from huggingface_hub import snapshot_download as s; s('$M', local_dir='$D', allow_patterns=['*.json','*.safetensors','*.model','*.txt','sentencepiece*','tokenizer*'])" && du -sh hfmodel && ls -R hfmodel | head -20 ) | tee -a /tmp/hf.txt
-  if [ "$MI" = 2 ]; then sed -i "1s#^embed [^ ]*#embed $D#" args.txt; else sed -i "1s#^[^ ]*#$D#" args.txt; fi
+  if [ "$MI" = 2 ]; then sed -i -E "1s#^(embed|probe) [^ ]*#\1 $D#" args.txt; else sed -i "1s#^[^ ]*#$D#" args.txt; fi
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
       *.py kaggle/args.txt materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
       materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl hfmodel )
@@ -76,7 +76,8 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     { find /tmp/out -name '*.log' -exec grep -aoE 'device [a-z]+|Tesla [A-Z0-9]+|name, memory[^"]*|[A-Za-z ]*GPU[^"]{0,60}' {} \; | head -5; echo ---; find /tmp/out -name '*.log' -exec tail -c 3000 {} \; ; } > last_run_tail.txt 2>/dev/null || true
     mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && cp -r /tmp/out/out/ft_out /tmp/model/ || true
     mkdir -p /tmp/eval_reports
-    find /tmp/out -type f \( -name 'errors_*.json' -o -name 'probs_*.json' \) -exec cp {} /tmp/eval_reports/ \; 2>/dev/null || true
+    # 仕事（job1・job2）や report ごとの置き場の名前を頭に付けて、同じ名前のファイルが上書きし合わないようにする
+    find /tmp/out -type f \( -name 'errors_*.json' -o -name 'probs_*.json' -o -name 'probe_*.json' \) | while read -r pf; do cp "$pf" "/tmp/eval_reports/$(basename "$(dirname "$pf")")_$(basename "$pf")"; done 2>/dev/null || true
     echo done > kaggle.request
 else
   echo fetch > kaggle.request   # まだ終わっていない。30分ごとの定期実行が取りに行く
