@@ -77,3 +77,5 @@ Claude連絡箱: メッセージの更新後にai-bridge workflow run 3912167720
 - `cpu_lab/progress_probe.py`: 予測・正解数・誤り・改善/悪化caseを保存。固定5試験ではなく診断用probeと明記。最終採否は従来どおり許可済み固定5試験の結果で決める。
 - `cpu_lab/tests/test_material_tracking.py` を追加。教材IDの整合、学習ログ確認、probeの差分判定、probe/poolの分離を検査。CI compile対象にもreceipt/probe scriptを追加した。
 - 起動条件は成功済みKaggle e5-base checkpoint artifactが出てから。現時点で確認可能なmodel artifactがないため、まだ実学習は起動していない。人手によるラベル確認は不要。
+
+- 追加の開始条件対応: `jobs.py`/`kaggle/run.py` で、今後の複数job e5-base runの先頭seed checkpointだけをartifact化する。これはFT_KEEP出力保持だけで、最適化や学習設定は変更しない。既提出の実験は古いbundleを使うため遡及しない。
