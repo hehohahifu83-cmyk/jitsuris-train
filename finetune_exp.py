@@ -2,8 +2,14 @@
 入力の文は encoder_exp.py と同じ。試験は Claude 側の試験（表ごとに分けた試験側・開発用）。集計だけを FINETUNE_RESULTS.md に出す。
 学習したモデルは ONNX に書き出し、artifacts として保存（ブラウザで Transformers.js から使う準備）。"""
 import json, os, random, sys, time
+from cpu_speed import configure_cpu_threads
+
+CPU_AVAILABLE, CPU_THREADS = configure_cpu_threads()
+
 import numpy as np
 import torch
+torch.set_num_threads(CPU_THREADS)
+torch.set_num_interop_threads(1)
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
 import gen, features
@@ -21,7 +27,6 @@ tok = AutoTokenizer.from_pretrained(NAME)
 model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels))
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print("device", DEV, flush=True)
-torch.set_num_threads(os.cpu_count() or 4)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
 def text_aug(r, prefix):
     h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
@@ -41,8 +46,18 @@ def text_aug(r, prefix):
     return f"{prefix}列「{h}」の値は {vals}。同じ表には {cs} がある。"
 data = [(r, L[r[2]]) for r in rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in rows]
 random.shuffle(data)
+CPU_TOKEN_CACHE = DEV == "cpu" and not AUG and os.environ.get("FT_CPU_CACHE", "1") == "1"
+if CPU_TOKEN_CACHE:
+    token_texts = [x for x, _ in data]
+    token_rows = tok(token_texts, truncation=True, max_length=128, padding=False)
+    data = [({k: token_rows[k][i] for k in token_rows.keys()}, y) for i, (_, y) in enumerate(data)]
+    print(f"CPU token cache: {len(data)} rows tokenized once", flush=True)
+
 def collate(b):
-    enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
+    if CPU_TOKEN_CACHE:
+        enc = tok.pad([x for x, _ in b], padding=True, return_tensors="pt")
+    else:
+        enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
     enc["labels"] = torch.tensor([y for _, y in b]); return enc
 IS_LARGE = "large" in NAME.lower()
 DEFAULT_BS = 2 if DEV == "cuda" and IS_LARGE else (64 if DEV == "cuda" else 32)
