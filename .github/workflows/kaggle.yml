@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths: [kaggle/kaggle.request]
   schedule:
-    - cron: '7,37 * * * *'   # 30分ごとに、待っている学習が終わったか確かめて結果を回収する（公開リポジトリなので無料）
+    - cron: '*/10 * * * *'   # 10分ごとに状態と結果回収を確認
 permissions:
   contents: write
 concurrency: { group: kaggle, cancel-in-progress: false }
@@ -36,15 +36,66 @@ jobs:
           case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
           if [ "${{ steps.gate.outputs.mode }}" = fetch ]; then cp kaggle/kaggle.request /tmp/req && echo fetch > kaggle/kaggle.request && WAIT_MIN=1 bash kaggle/kaggle.sh; else bash kaggle/kaggle.sh; fi
       - uses: actions/upload-artifact@v4
+        id: model_artifact
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
       - uses: actions/upload-artifact@v4
+        id: eval_artifact
         with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
+      - name: Record separate training and recovery states
+        if: always()
+        env:
+          MODEL_ARTIFACT_ID: ${{ steps.model_artifact.outputs['artifact-id'] }}
+          EVAL_ARTIFACT_ID: ${{ steps.eval_artifact.outputs['artifact-id'] }}
+          ACTION_RUN_ID: ${{ github.run_id }}
+          ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          from pathlib import Path
+          request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
+          log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
+          states = [line for line in log.splitlines() if "KernelWorkerStatus." in line]
+          latest = states[-1] if states else "Kaggle kernel status: no status recorded"
+          changed = subprocess.run(["git", "diff", "--quiet", "--", "FINETUNE_RESULTS.md"]).returncode != 0
+          report_count = sum(1 for p in Path("/tmp/eval_reports").glob("*") if p.is_file())
+          model_id = os.environ.get("MODEL_ARTIFACT_ID", "").strip()
+          eval_id = os.environ.get("EVAL_ARTIFACT_ID", "").strip()
+          if "KernelWorkerStatus.COMPLETE" in latest:
+              training = "完了"
+          elif "KernelWorkerStatus.ERROR" in latest:
+              training = "失敗"
+          elif "KernelWorkerStatus.CANCEL" in latest:
+              training = "キャンセル"
+          elif request in {"train", "fetch"} or request.startswith(("train ", "fetch ")):
+              training = "待機または実行中（Kaggleログの最新状態を参照）"
+          else:
+              training = "未依頼"
+          results = "今回の実行で FINETUNE_RESULTS.md を更新" if changed else "今回の更新なし（過去結果とは区別）"
+          checkpoint = f"GitHub artifact ID {model_id}" if model_id else "未アップロード／存在未確認"
+          eval_artifact = f"GitHub artifact ID {eval_id}（{report_count}ファイル）" if eval_id else f"未アップロード（検出JSON {report_count}件）"
+          body = f"""# 最新の学習・結果回収状況
+          
+          - GitHub Actions run: [{os.environ['ACTION_RUN_ID']}]({os.environ['ACTION_RUN_URL']})
+          - 確認更新時刻 (UTC): {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(timespec='seconds')}
+          - 依頼ファイル: `{request}`
+          - Kaggle学習: {training}
+          - Kaggle最新状態ログ: `{latest}`
+          - 評価結果: {results}
+          - 評価レポートartifact: {eval_artifact}
+          - 学習済みモデルartifact: {checkpoint}
+          
+          学習完了はKaggleのCOMPLETE、評価結果の回収は今回のFINETUNE_RESULTS.md更新、モデル回収はjitsuris-model artifactのIDで別々に確認する。`kaggle.request=done`だけではモデルcheckpointが保存されたことを意味しない。
+          """
+          Path("kaggle/STATUS.md").write_text(body, encoding="utf-8")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write(body + "\n")
+          PY
       - name: Save
         if: always()
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          for f in FINETUNE_RESULTS.md kaggle/PROGRESS.md kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
+          for f in FINETUNE_RESULTS.md kaggle/PROGRESS.md kaggle/STATUS.md kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
           # 確率（列名・正解・予測・上位3つの確率だけ。列の値は入らない）のうち『微調整だけ』と『7割＋3割』を、読めるようにリポジトリにも置く（最新の1回分。全部は artifact に30日）。誤りの一覧は確率から作れる
           if ls /tmp/eval_reports/*.json >/dev/null 2>&1; then rm -rf eval_reports/latest; mkdir -p eval_reports/latest; cp /tmp/eval_reports/*_probs_*_ft.json /tmp/eval_reports/*_probs_*_blend70.json eval_reports/latest/ 2>/dev/null || true; git add eval_reports; fi
           git diff --cached --quiet && exit 0
