@@ -61,3 +61,22 @@ Measure the five fixed sets separately: accuracy, wrong/critical errors, unknown
 ## Missing evidence
 
 These reports do not contain raw values, same-table context, source-level duplicates, preprocessing traces, or a retained trained checkpoint. Root causes beyond observed confusion patterns remain unverified.
+
+
+## Follow-up correction (2026-10-19)
+
+The previous generic recommendation to test `FT_AUG=1` was stale: the paired e5-base, UNIT, frozen-embedding augmentation run had already completed before this audit was generated. Its two-seed results were compared with the matching no-augmentation baseline:
+
+| Set | Baseline seed1/2 | FT_AUG seed1/2 | Mean delta |
+|---|---:|---:|---:|
+| dev220 | 95.9% / 97.3% | 95.9% / 96.8% | -0.25 pp |
+| general | 92.5% / 91.5% | 90.8% / 93.6% | +0.20 pp |
+| business | 92.4% / 91.8% | 91.4% / 92.4% | -0.20 pp |
+| business2 | 95.3% / 95.5% | 95.1% / 95.5% | -0.10 pp |
+| japan_procurement | 98.9% / 98.9% | 98.9% / 98.9% | 0.00 pp |
+
+All average accuracy differences are under the predeclared 1.5-point threshold. Total wrong counts were 134 in both conditions; critical errors 20 vs 21; unknowns 89 vs 93. Do not repeat the same augmentation test or call it an accuracy gain.
+
+A prior e5-base `FT_LR=2e-5` run covered seed 1 without frozen embeddings and was weaker on general/business. The next experiment tests whether the lower learning rate behaves differently with the selected frozen-embedding + UNIT setup: change only `FT_LR`, run seeds 1/2, and compare with the latest matched frozen baseline. This is an interaction check, not evidence that a gain is expected. Plan: [next-experiment-plan-2026-10-19.md](next-experiment-plan-2026-10-19.md).
+
+The hard-coded `FT_AUG` suggestion in the report generator has been removed. New audits now direct reviewers to check the completed experiment ledger before naming another condition.
