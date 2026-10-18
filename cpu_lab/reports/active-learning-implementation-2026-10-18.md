@@ -43,3 +43,11 @@ ai-bridgeへClaude宛てレビュー依頼を保存した後、自動整理workf
 CPU lab safety tests run 39121622107・39121637227 はテストモジュールへのsys.path設定がリテラル\\nのまま入っていたため失敗。テストファイルを修正し、run 39121657962 はsuccess（コンパイルと4テスト）。同じテストが変更ごとに走る `.github/workflows/cpu-lab-tests.yml` も追加済み。
 
 Claude連絡箱: メッセージの更新後にai-bridge workflow run 39121677204 がfailure。ログ取得APIはBlobNotFound、INBOXのClaude宛て未読は依然0件。ファイルには保存されているが、INBOX掲載・Claude受領は未確認。
+
+## 専用教材の調査・整備（2026-10-18）
+- `cpu_lab/materials/learning-materials-priority-pack-2026-10-18.md` を追加。Jitsurisの列タイプ分類に必要な教材の優先順位、unknown境界例、unit/context対照、誤りやすい近接クラスの合成演習草案、外部資料の権利確認状況を記録。
+- 長いchain-of-thoughtを学習目標にする方針は採らず、見出し・値・単位/表文脈・判断規則・棄却理由を短い監査用タグとして残す設計を推奨。実装特徴の採否は一要因ずつ試験する。
+- e-Statは集計表の候補だが、具体表の注記・第三者権利確認とAPI登録/app IDが必要。データ取得はまだ行っていない。SherlockはREADME記載のライセンスを確認したが、個人情報リスク/由来/重複を解決するまで取り込まない。SOTAB/Sato/GitTablesは現状、方法参考のみ。
+- 教材READMEとCPU Lab READMEを、調査済みパックと未取得/未検証の訓練データの区別が明確になるよう更新。
+- 現在も訓練可能な承認済み教材はなく、能動学習CPU候補ジョブは未開始。合成例は草案であり訓練データではない。
+- Kaggleの記録末尾には2026-10-18T10:56:49Z（JST 19:56:49）のRUNNINGが残る。GitHub上のKaggle workflow run 39121167019はsuccessだが、これはKaggle kernelの完了を保証しない。依頼ファイルは`fetch`。今回取得できた現在のKaggle状態APIはなく、RUNNINGの記録以降の完了は未確認。CPU候補学習はKaggleの重複/資源干渉を避けるため開始していない。
