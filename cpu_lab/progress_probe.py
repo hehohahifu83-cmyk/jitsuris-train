@@ -18,7 +18,7 @@ def score(model_path: str, probe_path: str, out_path: str) -> dict:
     if missing:
         raise ValueError(f"probe labels are absent from model label map: {missing}")
     texts = [format_text((r["header"], r["values"], "other", r.get("context", []), r.get("unit_context", "")),
-                         prefix="query: " if "e5" in model_path.lower() else "",
+                         prefix="query: ",
                          ctx_unit=bool(r.get("unit_context"))) for r in rows]
     predictions = []
     with torch.inference_mode():
