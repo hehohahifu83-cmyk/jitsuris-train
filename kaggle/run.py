@@ -41,7 +41,9 @@ diag.flush()
 os.environ["HF_HUB_OFFLINE"] = "1"
 sys.path.insert(0, W)
 import jobs as J   # 「++」で区切ると GPU 1 枚につき 1 つの仕事を同時に流す。FT_ で始まる語はすべて環境変数として渡す
-specs = J.split_jobs(args)   # J.MAX_JOBS 個まで。同時に流すのは GPU の枚数まで、残りは空いた順に
+specs = J.split_jobs(args)
+kept = J.keep_cpu_lab_checkpoint(specs)
+if kept: diag.write("CPU lab checkpoint export: retained first e5-base job only; training settings unchanged\n")   # J.MAX_JOBS 個まで。同時に流すのは GPU の枚数まで、残りは空いた順に
 diag.write("仕事の数: " + str(len(specs)) + " " + str(specs) + "\n"); diag.flush()
 script = {"embed": "llm_embed_exp.py", "probe": "speed_probe.py"}.get(MODE, "finetune_exp.py")
 codes = J.run_jobs(specs, script, dict(os.environ), W, n_gpu)
