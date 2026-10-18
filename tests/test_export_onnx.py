@@ -42,11 +42,19 @@ class EmbeddingInt8SurgeryTest(unittest.TestCase):
             step = np.abs(w).max(axis=1) / 127.0
             self.assertTrue(np.allclose(a, w[ids]))
             self.assertTrue(np.all(np.abs(a - b) <= step[ids][..., None] / 2 + 1e-6))
-            self.assertLess(os.path.getsize(dst), os.path.getsize(src))   # 表が 1/4 になる（倍率の分を足しても小さい）
             import onnx
             names = {i.name: i for i in onnx.load(dst).graph.initializer}
             self.assertEqual(names["embeddings.word_embeddings.weight_q8"].data_type, onnx.TensorProto.INT8)
             self.assertNotIn("embeddings.word_embeddings.weight", names)
+
+    def test_file_gets_about_four_times_smaller_for_a_realistic_table(self):
+        import export_onnx as E
+        with tempfile.TemporaryDirectory() as d:
+            src, dst = os.path.join(d, "a.onnx"), os.path.join(d, "b.onnx")
+            self._tiny_graph(src, vocab=2000, hidden=64)
+            E.embedding_to_int8(src, dst, 2000, 64)
+            ratio = os.path.getsize(dst) / os.path.getsize(src)
+            self.assertLess(ratio, 0.35, ratio)   # int8 の表は 1/4、行ごとの倍率（fp32 の 1 列）を足しても 0.35 未満
 
     def test_missing_embedding_table_is_reported(self):
         import export_onnx as E
