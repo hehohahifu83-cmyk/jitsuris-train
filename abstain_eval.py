@@ -5,7 +5,7 @@
 方針：重大な取り違えは「数字の種類（date・amount・quantity・rate・id）どうしの取り違え」。
       数字の種類を答えようとしたとき、1位の確率が T_num 未満なら「不明」にする（数字の種類だけに厳しい基準）。
       T_num は一部の試験で決め、決めなかった試験で確かめる（試験ごとに 1 つ外して決める＝leave-one-test-out）。同じ試験で決めて同じ試験で測ると甘くなるため。
-使い方：python abstain_eval.py eval_reports/latest [条件名（ft・sparse・blend50・blend70。既定 blend70）]
+使い方：python abstain_eval.py eval_reports/latest [条件名（ft・sparse・blend50・blend70。既定 blend70）] [置き場（job1・job2・report。省略で全部）]
 """
 import glob, json, os, sys
 
@@ -13,12 +13,31 @@ NUMERIC = {"date", "amount", "quantity", "rate", "id"}
 THRESHOLDS = [round(0.5 + 0.01 * i, 2) for i in range(0, 50)]  # 0.50 〜 0.99
 
 
-def load(dir_, cond):
+def runs(dir_, cond):
+    """置き場の名前の一覧。Kaggle の回収は『<置き場>_probs_<試験>_<条件>.json』（置き場は job1・job2・report など）。
+    置き場の付かない名前（probs_…）は空の名前 ""。"""
+    found = set()
+    for path in glob.glob(os.path.join(dir_, f"*probs_*_{cond}.json")):
+        base = os.path.basename(path)
+        i = base.find("probs_")
+        found.add(base[:i].rstrip("_") if i > 0 else "")
+    return sorted(found)
+
+
+def load(dir_, cond, run=None):
+    """run=None で置き場が 1 つだけならそれを読む。複数あるときは取り違えを防ぐため止まる（run を指定する）。"""
+    found = runs(dir_, cond)
+    if run is None:
+        if len(found) > 1:
+            raise ValueError(f"置き場が複数ある {found}。どれかを指定する")
+        run = found[0] if found else ""
+    pattern = f"{run}_probs_*_{cond}.json" if run else f"probs_*_{cond}.json"
     tests = {}
-    for path in sorted(glob.glob(os.path.join(dir_, f"probs_*_{cond}.json"))):
+    for path in sorted(glob.glob(os.path.join(dir_, pattern))):
         if "blind" in os.path.basename(path).lower():
             raise RuntimeError("blind test sets must not be evaluated")
-        d = json.load(open(path, encoding="utf-8"))
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
         tests[d["test"]] = d["rows"]
     return tests
 
@@ -53,8 +72,8 @@ def smallest_safe_threshold(tests, names):
     return None
 
 
-def report(dir_, cond="blend70"):
-    tests = load(dir_, cond)
+def report(dir_, cond="blend70", run=None):
+    tests = load(dir_, cond, run)
     if not tests:
         return f"{dir_} に probs_*_{cond}.json がない"
     lines = [f"条件 {cond}／試験 {', '.join(tests)}", "", "| 試験 | 今のまま（重大・正解率・答えた割合） | T_num=0.9 | T_num=0.95 | 重大0になる最小の T_num（その試験だけで） |", "|---|---|---|---|---|"]
@@ -74,4 +93,10 @@ def report(dir_, cond="blend70"):
 
 
 if __name__ == "__main__":
-    print(report(sys.argv[1] if len(sys.argv) > 1 else "eval_reports/latest", sys.argv[2] if len(sys.argv) > 2 else "blend70"))
+    d_ = sys.argv[1] if len(sys.argv) > 1 else "eval_reports/latest"
+    c_ = sys.argv[2] if len(sys.argv) > 2 else "blend70"
+    r_ = sys.argv[3] if len(sys.argv) > 3 else None
+    for run_ in ([r_] if r_ is not None else (runs(d_, c_) or [""])):
+        print(f"## 置き場：{run_ or '（なし）'}\n")
+        print(report(d_, c_, run_))
+        print()

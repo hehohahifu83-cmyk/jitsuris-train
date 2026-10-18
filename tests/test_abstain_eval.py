@@ -43,6 +43,25 @@ class AbstainTest(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 ab.load(d, "blend70")
 
+    def test_kaggle_prefixed_names_and_multiple_runs(self):
+        with tempfile.TemporaryDirectory() as d:
+            for run, thr_row in (("job1", row("id", "amount", 0.8)), ("job2", row("id", "amount", 0.6))):
+                json.dump({"test": "t", "condition": "x", "rows": [thr_row, row("id", "id", 0.99)]}, open(Path(d, f"{run}_probs_t_blend70.json"), "w"))
+            json.dump({"test": "t", "condition": "x", "rows": []}, open(Path(d, "job1_errors_t_blend70.json"), "w"))  # errors は読まない
+            self.assertEqual(ab.runs(d, "blend70"), ["job1", "job2"])
+            with self.assertRaises(ValueError):   # 置き場が複数あるのに指定しない → 取り違えを防いで止まる
+                ab.load(d, "blend70")
+            self.assertEqual(ab.smallest_safe_threshold(ab.load(d, "blend70", "job1"), ["t"]), 0.81)
+            self.assertEqual(ab.smallest_safe_threshold(ab.load(d, "blend70", "job2"), ["t"]), 0.61)
+            self.assertIn("0.61", ab.report(d, "blend70", "job2"))
+
+    def test_single_prefixed_run_is_found_without_naming_it(self):
+        with tempfile.TemporaryDirectory() as d:
+            json.dump({"test": "t", "condition": "x", "rows": [row("id", "id", 0.99)]}, open(Path(d, "report_probs_t_ft.json"), "w"))
+            self.assertEqual(ab.runs(d, "ft"), ["report"])
+            self.assertEqual(list(ab.load(d, "ft")), ["t"])
+            self.assertEqual(ab.runs(d, "blend70"), [])
+
 
 if __name__ == "__main__":
     unittest.main()
