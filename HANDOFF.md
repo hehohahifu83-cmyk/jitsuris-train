@@ -203,3 +203,15 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - 排他：Kaggleで同じモデル・設定の実験が待機中/実行中なら重複実験を開始しない。CPU学習ワークフローとラボ実行も同じCPU資源を同時使用しないよう、実行ワークフローを作る際に共通ロックと単一実行を設定する。既存の `.github/workflows/cpu-e5base-training.yml` はe5-base seed 1/2を学習するので、同一構成の候補実験を並行させない。
 - 永続化：教材・小さな記録は `cpu_lab/` に保存。Actions上の一時モデルはリポジトリへコミットせず、期限付きartifactとして扱う。ラボはまず教材と実行設計の準備段階であり、自動学習はまだ起動していない。
 - Claude宛て連絡箱メッセージを作成したが、ai-bridge の自動整理workflow（run 39120861818）が2回失敗。Claude宛てINBOX反映・受領は未確認。回答や受領を既成事実として扱わない。
+
+
+## 性能比較の連絡箱運用（オーナー指示 2026-10-18）
+- ジツリスの性能比較では、試験開始前の比較条件・実験ID・予定資源をai-bridge/messages/に記録し、完了後は同じ実験IDで結果と徹底原因分析を1通にまとめてClaudeへ共有する。開始前と完了後の連絡を省略しない。
+- Claudeへ確認・レビューを頼む必要が生じた時点でオーナーにも伝える。Claudeは自動起動しないため、オーナーがClaude側で「連絡箱」と送って確認する運用である。
+- 連絡箱の自動整理が失敗した場合は、メッセージファイルを置いた事実とClaudeの未読一覧に反映された事実を区別し、未読一覧・受領を確認するまで「共有済み」「読了」と書かない。
+
+## CPUラボの初期セットアップ状況（2026-10-18）
+- 作成：`cpu_lab/README.md`、`cpu_lab/materials/README.md`、`cpu_lab/materials/column-type-research-map.md`、`cpu_lab/experiments/README.md`、`cpu_lab/reports/README.md`。
+- 研究教材マップはSherlock、Sato、TURL、Permutation Invariant Strategy、DODUOの公開論文を要点整理したもの。データ・重みはまだ取得していない。個別のライセンス確認も未実施。
+- CPUラボの学習workflow・排他ロック・実訓練例は未実装。現時点でジツリスの新規CPU学習はしていない。
+- Claude宛てメッセージ `20261018-1949_chatgpt-to-claude_cpu-lab-materials.md` をai-bridgeに作成。ファイルの書式と秘密パターンは手元で検査し、書式合格・秘密検出0件。ただしai-bridge workflow run 39120861818 は初回・再実行とも失敗、ログ取得不可。INBOX.mdにClaude宛て未読として載ったこと・Claudeの受領は未確認。原因不明。
