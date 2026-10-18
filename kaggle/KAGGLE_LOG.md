@@ -202,3 +202,7 @@
     [仕事1] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
     [仕事2] peak GPU memory 5.5 GiB; training loop 546s
     [仕事1] peak GPU memory 5.5 GiB; training loop 552s
+2026-10-18T07:28:41Z push の返事：Kernel version 17 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-18T07:29:11Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED" 
+2026-10-18T07:29:12Z train を依頼：embed hfmodel/llm-jp__llm-jp-3-1.8b
+送ったモデル：3.5G	hfmodel・束の中のモデルのファイル数 27
