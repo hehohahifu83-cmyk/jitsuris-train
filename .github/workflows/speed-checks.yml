@@ -1,4 +1,5 @@
 name: 速くする設定の検査
+concurrency: { group: speed-checks, cancel-in-progress: false }
 on:
   workflow_dispatch:
   push:
@@ -111,3 +112,17 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "速くする設定の検査の結果（CPU）"
           for i in 1 2 3; do git push && break; git pull --rebase --autostash; done
+      - name: 要点を注（アノテーション）に出す（ログは取りに行けないが、注は API で読める）
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, re
+          def emit(path, title, n=3200):
+              if not os.path.exists(path): return
+              t = open(path, encoding="utf-8", errors="replace").read()[-n:]
+              t = t.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::notice title={title}::{t}")
+          for p, title in [("a.log", "A"), ("e.log", "E"), ("bench/speed_checks_summary.md", "summary")]:
+              emit(p, title)
+          PY
