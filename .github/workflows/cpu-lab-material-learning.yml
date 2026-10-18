@@ -1,23 +1,14 @@
-name: CPU lab material screening
+name: CPU lab audited replay
 on:
+  workflow_run:
+    workflows: ["Kaggle の GPU で学習"]
+    types: [completed]
   workflow_dispatch:
     inputs:
-      confirm_cpu:
-        description: Run CPU model diagnostics and create an uncertainty review queue
-        required: true
-        type: choice
-        options: [no, yes]
-        default: no
       source_run_id:
-        description: Completed successful Kaggle run containing the trained classifier artifact
+        description: Successful Kaggle run that uploaded the E5-base model artifact
         required: true
         type: string
-      model_subdir:
-        description: Model directory inside the jitsuris-model artifact
-        required: true
-        type: choice
-        options: [ft_out, ft_out_job1, ft_out_job2, ft_out_job3]
-        default: ft_out_job1
 permissions:
   contents: read
   actions: read
@@ -25,76 +16,213 @@ concurrency:
   group: jitsuris-cpu-training
   cancel-in-progress: false
 jobs:
-  screen:
-    if: ${{ inputs.confirm_cpu == 'yes' }}
+  prepare:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    outputs:
+      proceed: ${{ steps.gate.outputs.proceed }}
+      source_run_id: ${{ steps.gate.outputs.source_run_id }}
     steps:
       - uses: actions/checkout@v4
-      - name: Validate source Kaggle run
+      - name: Confirm E5 run, completed Kaggle kernel, idle queue, and done request
+        id: gate
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          EVENT_SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          MANUAL_SOURCE_RUN_ID: ${{ github.event.inputs.source_run_id }}
         run: |
           python - <<'PY'
           import json, os, re, urllib.request
-          run_id = os.environ["SOURCE_RUN_ID"]
+          from pathlib import Path
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          run_id = os.environ.get("EVENT_SOURCE_RUN_ID") or os.environ.get("MANUAL_SOURCE_RUN_ID", "")
           if not re.fullmatch(r"[0-9]{5,20}", run_id):
-              raise SystemExit("source_run_id must be a numeric GitHub Actions run ID")
-          req = urllib.request.Request(
-              f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{run_id}",
-              headers={"Authorization": f"Bearer {os.environ['GH_TOKEN']}", "Accept": "application/vnd.github+json"})
-          with urllib.request.urlopen(req) as response:
-              run = json.load(response)
-          if run.get("path") != ".github/workflows/kaggle.yml" or run.get("status") != "completed" or run.get("conclusion") != "success":
-              raise SystemExit("source must be a completed successful Kaggle workflow run")
-          print(f"validated Kaggle source run {run_id}: {run.get('html_url')}")
+              raise SystemExit("No valid Kaggle source run ID; refusing to start")
+          headers = {"Authorization": f"Bearer {os.environ['GH_TOKEN']}", "Accept": "application/vnd.github+json"}
+          def get(url):
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req) as response:
+                  return json.load(response)
+          source = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}")
+          if source.get("path") != ".github/workflows/kaggle.yml" or source.get("status") != "completed" or source.get("conclusion") != "success":
+              raise SystemExit("Kaggle source run is not successful; refusing to start")
+          request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
+          if request != "done":
+              print("CPU lab held: kaggle.request is not done")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle request has not reached done.\\n")
+              raise SystemExit(0)
+          log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
+          requests = [line for line in log.splitlines() if "train を依頼" in line]
+          statuses = [line for line in log.splitlines() if "KernelWorkerStatus." in line]
+          if not requests or "multilingual-e5-base" not in requests[-1] or "FT_FREEZE_EMB=1" not in requests[-1]:
+              print("CPU lab held: newest training request is not the target E5-base run")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle request does not match the target E5-base experiment.\\n")
+              raise SystemExit(0)
+          if not statuses or not statuses[-1].endswith("KernelWorkerStatus.COMPLETE"):
+              print("CPU lab held: latest Kaggle kernel status is not COMPLETE")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle kernel status is not COMPLETE.\\n")
+              raise SystemExit(0)
+          runs = get(f"https://api.github.com/repos/{repo}/actions/runs?per_page=100").get("workflow_runs", [])
+          active = [r for r in runs if r.get("path") == ".github/workflows/kaggle.yml" and r.get("status") == "in_progress"]
+          if active:
+              print("CPU lab held: another Kaggle workflow is active")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: another Kaggle training workflow is active.\\n")
+              raise SystemExit(0)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=true\\nsource_run_id={run_id}\\n")
+          print(f"All gates passed for Kaggle run {run_id}")
           PY
-      - name: Download trained classifier artifact
+      - name: Download E5-base classifier artifact
+        if: steps.gate.outputs.proceed == 'true'
         uses: actions/download-artifact@v4
         with:
           name: jitsuris-model
-          run-id: ${{ inputs.source_run_id }}
+          run-id: ${{ steps.gate.outputs.source_run_id }}
+          github-token: ${{ github.token }}
+          path: source-models
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.proceed == 'true'
+        with:
+          python-version: '3.11'
+      - name: Validate checkpoint directory
+        if: steps.gate.outputs.proceed == 'true'
+        env:
+          MODEL_SUBDIR: ft_out_job1
+        run: |
+          set -euo pipefail
+          test -s "source-models/$MODEL_SUBDIR/config.json"
+          test -s "source-models/$MODEL_SUBDIR/labels.json"
+      - name: Download only approved labeled training corpora
+        if: steps.gate.outputs.proceed == 'true'
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip kaggle
+          case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
+          mkdir -p /tmp/jitsuris-data
+          kaggle datasets download -d jitsurio/jitsuris-data -p /tmp/jitsuris-data --unzip
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+          root = Path("/tmp/jitsuris-data")
+          names = (
+              "real_labels.jsonl", "real_labels_biz.jsonl", "real_labels_biz2.jsonl",
+              "real_labels_direct.jsonl", "real_labels_jp.jsonl", "real_labels_jp2.jsonl",
+          )
+          copied = []
+          for name in names:
+              matches = list(root.glob(f"**/materials/{name}"))
+              if matches:
+                  source = matches[0]
+                  dest = Path("materials") / name
+                  dest.parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copyfile(source, dest)
+                  copied.append(name)
+          if not copied:
+              raise SystemExit("No allowlisted real_labels*.jsonl training corpora were found")
+          print("Copied allowlisted training corpora:", ", ".join(copied))
+          PY
+      - name: Score baseline probe and prepare material receipt
+        if: steps.gate.outputs.proceed == 'true'
+        env:
+          SOURCE_RUN_ID: ${{ steps.gate.outputs.source_run_id }}
+          FT_CPU_THREADS: '2'
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          set -euo pipefail
+          mkdir -p prepared
+          python -m unittest discover -s cpu_lab/tests -v
+          python cpu_lab/progress_probe.py score --model source-models/ft_out_job1 --probe cpu_lab/materials/progress_probe.jsonl --out prepared/probe_before.json
+          python cpu_lab/material_receipt.py prepare-reviewed --materials cpu_lab/materials/reviewed_replay.jsonl --source-model "run:$SOURCE_RUN_ID/ft_out_job1" --out prepared/material_receipt.json
+      - name: Upload prepared data and baseline evidence
+        if: steps.gate.outputs.proceed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpu-lab-prepared-${{ github.run_id }}
+          path: |
+            prepared/material_receipt.json
+            prepared/probe_before.json
+            cpu_lab/materials/reviewed_replay.jsonl
+            materials/real_labels*.jsonl
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+  train:
+    needs: prepare
+    if: needs.prepare.outputs.proceed == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        seed: [1, 2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: cpu-lab-prepared-${{ github.event.workflow_run.id || github.event.inputs.source_run_id }}
+          path: prepared
+      - name: Restore allowlisted training corpora
+        run: |
+          mkdir -p materials
+          cp prepared/materials/real_labels*.jsonl materials/ 2>/dev/null || cp prepared/real_labels*.jsonl materials/
+          cp prepared/cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/reviewed_replay.jsonl
+      - name: Download source classifier checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: jitsuris-model
+          run-id: ${{ needs.prepare.outputs.source_run_id }}
           github-token: ${{ github.token }}
           path: source-models
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install CPU inference dependencies
+      - name: Install CPU training dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install numpy scipy scikit-learn transformers sentencepiece
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: Validate checkpoint and score the diagnostic probe
+      - name: Train one matched CPU seed and record material exposure
         env:
-          MODEL_SUBDIR: ${{ inputs.model_subdir }}
-        run: |
-          set -euo pipefail
-          MODEL="source-models/$MODEL_SUBDIR"
-          test -s "$MODEL/config.json"
-          test -s "$MODEL/labels.json"
-          python cpu_lab/progress_probe.py score --model "$MODEL" --probe cpu_lab/materials/progress_probe.jsonl --out probe_before.json
-      - name: Rank uncertain materials for independent labeling
-        env:
-          MODEL_SUBDIR: ${{ inputs.model_subdir }}
           FT_CPU_THREADS: '2'
+          FT_CPU_LAB_REPLAY: cpu_lab/materials/reviewed_replay.jsonl
+          FT_INIT_MODEL_PATH: source-models/ft_out_job1
+          FT_LIMIT_PER_LABEL: '400'
+          FT_SAMPLE_SEED: '20261018'
+          FT_BS: '16'
+          FT_ACC: '2'
+          FT_CKPT: '0'
+          FT_SORT: '1'
+          FT_PAD8: '0'
+          FT_FUSED: '0'
+          FT_CTX_UNIT: '1'
+          FT_FREEZE_EMB: '1'
+          FT_SEED: ${{ matrix.seed }}
           TOKENIZERS_PARALLELISM: 'false'
         run: |
           set -euo pipefail
-          MODEL="source-models/$MODEL_SUBDIR"
-          python cpu_lab/self_learning.py select --model "$MODEL" --pool cpu_lab/materials/pool.jsonl --out review_queue.jsonl --budget 36 --batch-size 12
-      - name: Upload screening evidence
+          mkdir -p "cpu_results/seed-${{ matrix.seed }}"
+          cp prepared/prepared/material_receipt.json "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
+          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 1 2>&1 | tee "cpu_results/seed-${{ matrix.seed }}/train.log"
+          python cpu_lab/material_receipt.py mark-trained --receipt "cpu_results/seed-${{ matrix.seed }}/material_receipt.json" --train-log "cpu_results/seed-${{ matrix.seed }}/train.log" --seed ${{ matrix.seed }} --out "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
+          python cpu_lab/progress_probe.py score --model ft_out --probe cpu_lab/materials/progress_probe.jsonl --out "cpu_results/seed-${{ matrix.seed }}/probe_after.json"
+          python cpu_lab/progress_probe.py compare --before prepared/prepared/probe_before.json --after "cpu_results/seed-${{ matrix.seed }}/probe_after.json" --out "cpu_results/seed-${{ matrix.seed }}/probe_comparison.json"
+          cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
+          cp cpu_lab/materials/reviewed_replay.jsonl "cpu_results/seed-${{ matrix.seed }}/audited_materials_used.jsonl"
+      - name: Upload per-seed training evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cpu-lab-screening-${{ github.run_id }}
-          path: |
-            review_queue.jsonl
-            probe_before.json
-          if-no-files-found: error
+          name: cpu-lab-audited-replay-seed-${{ matrix.seed }}-${{ github.run_id }}
+          path: cpu_results/seed-${{ matrix.seed }}/
+          if-no-files-found: warn
           retention-days: 30
           compression-level: 0
-      - name: Explain result limits
-        run: |
-          echo "This run screens candidate material and scores a synthetic diagnostic probe only." >> "$GITHUB_STEP_SUMMARY"
-          echo "No training is performed: model-generated labels are not independent ground truth." >> "$GITHUB_STEP_SUMMARY"
-          echo "Training requires independently verified labels; the probe is never used for training." >> "$GITHUB_STEP_SUMMARY"
