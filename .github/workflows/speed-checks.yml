@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [batching.py, jobs.py, finetune_exp.py, speed_probe.py, kaggle/run.py, guard.py, rescore_guard.py, compare_runs.py, abstain_eval.py, analyze_errors.py, tests/test_guard.py, tests/test_jobs.py, tests/test_batching.py, tests/test_jobs.py, tests/test_sort_equivalence.py, .github/workflows/speed-checks.yml]
+    paths: [batching.py, jobs.py, finetune_exp.py, compress_eval.py, tests/test_compress_eval.py, speed_probe.py, kaggle/run.py, guard.py, rescore_guard.py, compare_runs.py, abstain_eval.py, analyze_errors.py, tests/test_guard.py, tests/test_jobs.py, tests/test_batching.py, tests/test_jobs.py, tests/test_sort_equivalence.py, .github/workflows/speed-checks.yml]
 permissions:
   contents: write
 jobs:
@@ -20,7 +20,7 @@ jobs:
           python -m pip install numpy scipy scikit-learn transformers sentencepiece
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: 部品の検査（束の分け方・仕事の分け方・勾配の一致）
-        run: python -m unittest tests.test_batching tests.test_jobs tests.test_sort_equivalence tests.test_guard tests.test_compare_runs tests.test_abstain_eval tests.test_analyze_errors tests.test_rescore_guard -v
+        run: python -m unittest tests.test_batching tests.test_jobs tests.test_sort_equivalence tests.test_guard tests.test_compare_runs tests.test_abstain_eval tests.test_analyze_errors tests.test_rescore_guard tests.test_compress_eval -v
       - name: 通しの検査 A（今までの流し方、ドロップアウトなし）
         env: { FT_NO_DROPOUT: '1', FT_LIMIT: '640', FT_SEED: '1', FT_EVAL: dev220, FT_TRACE_LOSS: '5', FT_BS: '8', FT_ACC: '8', FT_SORT: '0' }
         shell: bash
@@ -49,6 +49,18 @@ jobs:
         env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_FREEZE_EMB: '1' }
         shell: bash
         run: python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee d.log | grep -E "Traceback|Error|train batch|学習 [0-9]+秒" | cut -c1-260
+      - name: 通しの検査 E（縮めた版の試験：語彙削減・INT8・fp16。小さく）
+        env: { FT_LIMIT: '320', FT_SEED: '2', FT_EVAL: dev220, FT_BS: '8', FT_ACC: '4', FT_SORT: '1', FT_COMPRESS: '1', FT_COMPRESS_LIMIT: '60' }
+        shell: bash
+        run: |
+          python finetune_exp.py intfloat/multilingual-e5-small 1 2>&1 | tee e.log | grep -E "Traceback|Error|圧縮|train batch" | cut -c1-300
+          python - <<'PY'
+          t = open("FINETUNE_RESULTS.md", encoding="utf-8").read()
+          rows = [l for l in t.splitlines() if "・圧縮【" in l]
+          print(len(rows), "行"); print("\n".join(t.splitlines()[-12:]))
+          assert len(rows) == 12, "圧縮の行が 12 行ない（6 通り × 2 つの組み合わせ）"
+          assert "圧縮の試験は失敗" not in t
+          PY
       - name: 測定プログラムの通しの検査（CPU・小さく。数字は GPU の結果ではない）
         shell: bash
         env: { FT_PROBE_EFF: '16', FT_PROBE_BATCHES: '3', FT_PROBE_CONFIGS: 'B01,B04', FT_PROBE_NO_DUAL: '1' }
@@ -81,6 +93,11 @@ jobs:
               out.append(f"| {k} {name} | {cfgline(logs[k])} | {secs(logs[k])} | {losses(logs[k])[:5] or '—'} |")
           out += ["", f"A と B の最初の5ステップの損失の最大の差：{diff}（ドロップアウトを切り、同じ種・同じ実効バッチ。基準 2e-3 未満）", "",
                   "CPU（fp32・e5-small・640行）の検査であり、GPU（fp16）での速さや品質の結果ではない。"]
+          t_all = read("FINETUNE_RESULTS.md")
+          sec = t_all.split("\n### ")[-1] if "\n### " in t_all else ""
+          cnotes = [l for l in sec.splitlines() if l.startswith("- ")]
+          if any("圧縮の試験" in l for l in cnotes):
+              out += ["", "縮めた版の試験（検査 E。CPU・e5-small・学習は 320 行だけの出来の悪いモデルなので、語彙の残り方・大きさ・動くことの確認用。判定の質の結果ではない）："] + cnotes
           import json
           pr = json.load(open("probe_results.json")) if os.path.exists("probe_results.json") else None
           if pr and pr.get("equiv"):

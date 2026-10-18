@@ -1,6 +1,6 @@
 """学習済みの多言語モデル（multilingual-e5-small、MIT）を、列の種類の判定に合わせて微調整する（PyTorch・CPU、GitHub Actions）。
 入力の文は encoder_exp.py と同じ。試験は Claude 側の試験（表ごとに分けた試験側・開発用）。集計だけを FINETUNE_RESULTS.md に出す。
-学習したモデルは ONNX に書き出し、artifacts として保存（ブラウザで Transformers.js から使う準備）。"""
+学習したモデルは ft_out に保存する（ONNX への書き出しは未実装）。FT_COMPRESS=1 なら、学習のあと縮めた版（語彙削減・INT8・fp16）の質も測って同じ表に足す（compress_eval.py）。"""
 import json, os, random, re, sys, time, unicodedata
 from cpu_speed import configure_cpu_threads
 
@@ -203,8 +203,18 @@ for tag, w in conditions:
         with open(f"errors_{suffix}.json", "w", encoding="utf-8") as f:
             json.dump({"test": tn, "condition": tag, "errors": error_rows}, f, ensure_ascii=False, separators=(",", ":"))
     lines.append(f"| {NAME} 微調整 {EPOCHS}周{'・水増し' if AUG else ''}・{tag} | " + " | ".join(res) + f" | 学習 {train_seconds:.0f}秒・評価 {time.time() - eval_start:.0f}秒 |"); print(lines[-1], flush=True)
+notes = []
+if os.environ.get("FT_COMPRESS") == "1":   # 縮めた版（語彙削減・INT8・fp16）の質。失敗しても本体の結果は残す
+    try:
+        import compress_eval
+        extra, notes = compress_eval.run(model, tok, tests, rows, labels, lr_probs, text, PREFIX, decide, score_real, f"{NAME} 微調整 {EPOCHS}周",
+                                         top_k=int(os.environ.get("FT_COMPRESS_TOPK", "0")), limit=int(os.environ["FT_COMPRESS_LIMIT"]) if os.environ.get("FT_COMPRESS_LIMIT") else None, model_probs=model_probs)
+        lines += extra
+    except Exception as exc:  # noqa: BLE001
+        import traceback; traceback.print_exc()
+        notes = [f"- 圧縮の試験は失敗した：{type(exc).__name__}: {str(exc)[:200]}"]
 line = "\n".join(lines)
 os.makedirs("ft_out", exist_ok=True); model.save_pretrained("ft_out"); tok.save_pretrained("ft_out"); json.dump(labels, open("ft_out/labels.json", "w"))
 prev = (open("FINETUNE_RESULTS.md").read() if os.path.exists("FINETUNE_RESULTS.md") else "# 学習済みモデルの微調整（集計）\n") + f"\n### {time.strftime('%Y-%m-%d %H:%M')}（試験：{', '.join(tests)}）\n"
-open("FINETUNE_RESULTS.md", "w").write(prev + line + "\n")
+open("FINETUNE_RESULTS.md", "w").write(prev + line + "\n" + ("\n" + "\n".join(notes) + "\n" if notes else ""))
 
