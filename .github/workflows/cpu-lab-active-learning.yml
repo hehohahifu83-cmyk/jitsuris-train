@@ -32,19 +32,21 @@ jobs:
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
-      - name: Validate replay path and run safety tests
-        shell: bash
-        run: |
-          set -euo pipefail
-          case "${{ inputs.replay_path }}" in
-            cpu_lab/materials/verified_replay/*.jsonl) ;;
-            *) echo "replay_path must be under cpu_lab/materials/verified_replay/" >&2; exit 2 ;;
-          esac
-          test -s "${{ inputs.replay_path }}"
-          python -m unittest discover -s cpu_lab/tests -v
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Validate replay path and run safety tests
+        shell: bash
+        env:
+          REPLAY_PATH: ${{ inputs.replay_path }}
+        run: |
+          set -euo pipefail
+          case "$REPLAY_PATH" in
+            cpu_lab/materials/verified_replay/*.jsonl) ;;
+            *) echo "replay_path must be under cpu_lab/materials/verified_replay/" >&2; exit 2 ;;
+          esac
+          test -s "$REPLAY_PATH"
+          python -m unittest discover -s cpu_lab/tests -v
       - name: Install CPU dependencies
         run: |
           python -m pip install --upgrade pip
@@ -71,7 +73,7 @@ jobs:
           /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 2 \
             2>&1 | tee "cpu_results/seed-${{ matrix.seed }}/train.log"
           cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
-          cp "${{ inputs.replay_path }}" "cpu_results/seed-${{ matrix.seed }}/replay-used.jsonl"
+          cp "$FT_CPU_LAB_REPLAY" "cpu_results/seed-${{ matrix.seed }}/replay-used.jsonl"
           find . -maxdepth 1 -type f \
             \( -name 'probs_*.json' -o -name 'errors_*.json' \) \
             -exec cp {} "cpu_results/seed-${{ matrix.seed }}/" \;
