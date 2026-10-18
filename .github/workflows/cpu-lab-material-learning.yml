@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: Successful Kaggle run that uploaded the E5-base model artifact
+        description: Successful Kaggle wait-cycle run; CPU proceeds only if the kernel remains queued
         required: true
         type: string
 permissions:
@@ -55,7 +55,6 @@ jobs:
           source = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}")
           if source.get("path") != ".github/workflows/kaggle.yml" or source.get("status") != "completed" or source.get("conclusion") != "success":
               raise SystemExit("Kaggle source run is not successful; refusing to start")
-          artifacts = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts").get("artifacts", [])
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           if request != "fetch":
               print("CPU lab held: no fetch/wait cycle is active")
@@ -218,17 +217,23 @@ jobs:
           TOKENIZERS_PARALLELISM: 'false'
         run: |
           set -euo pipefail
+          case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
           mkdir -p "cpu_results/seed-${{ matrix.seed }}"
           cp prepared/prepared/material_receipt.json "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
+          state=$(kaggle kernels status jitsurio/jitsuris-train 2>&1 || true)
+          if ! grep -q 'KernelWorkerStatus.QUEUED' <<< "$state"; then
+            echo "CPU lab held before launch because Kaggle is no longer queued: $state"
+            exit 0
+          fi
           set +e
-          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 1 > "cpu_results/seed-${{ matrix.seed }}/train.log" 2>&1 &
+          setsid /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 1 > "cpu_results/seed-${{ matrix.seed }}/train.log" 2>&1 &
           trainer_pid=$!
           ( while kill -0 "$trainer_pid" 2>/dev/null; do
               state=$(kaggle kernels status jitsurio/jitsuris-train 2>&1 || true)
               printf '%s Kaggle status: %s\n' "$(date -u +%FT%TZ)" "$state" >> "cpu_results/seed-${{ matrix.seed }}/kaggle_guard.log"
               if ! grep -q 'KernelWorkerStatus.QUEUED' <<< "$state"; then
                 touch /tmp/jitsuris-kaggle-no-longer-queued
-                kill -TERM "$trainer_pid" 2>/dev/null || true
+                kill -TERM -- "-$trainer_pid" 2>/dev/null || kill -TERM "$trainer_pid" 2>/dev/null || true
                 break
               fi
               sleep 30
@@ -247,7 +252,6 @@ jobs:
           python cpu_lab/material_receipt.py mark-trained --receipt "cpu_results/seed-${{ matrix.seed }}/material_receipt.json" --train-log "cpu_results/seed-${{ matrix.seed }}/train.log" --seed ${{ matrix.seed }} --out "cpu_results/seed-${{ matrix.seed }}/material_receipt.json"
           state=$(kaggle kernels status jitsurio/jitsuris-train 2>&1 || true)
           if ! grep -q 'KernelWorkerStatus.QUEUED' <<< "$state"; then echo "Kaggle no longer queued; stop before CPU evaluation."; exit 0; fi
-          python cpu_lab/progress_probe.py score --model ft_out --probe cpu_lab/materials/progress_probe.jsonl --out "cpu_results/seed-${{ matrix.seed }}/probe_after.json"
           cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
           cp cpu_lab/materials/reviewed_replay.jsonl "cpu_results/seed-${{ matrix.seed }}/audited_materials_used.jsonl"
       - name: Upload per-seed training evidence
