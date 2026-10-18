@@ -3,7 +3,15 @@ on:
   workflow_dispatch:
     inputs:
       confirm_cpu:
-        description: CPUでe5-baseを2種学習する場合だけ yes を選ぶ（既定 no は何もしない）
+        description: CPUでe5-baseを学習する場合だけ yes を選ぶ（既定 no は何もしない）
+        required: true
+        type: choice
+        options:
+          - no
+          - yes
+        default: no
+      save_model:
+        description: 2つの学習済みモデル（各約1.1GB）も成果物に残す
         required: true
         type: choice
         options:
@@ -18,6 +26,11 @@ concurrency:
 jobs:
   train:
     if: ${{ inputs.confirm_cpu == 'yes' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        seed: [1, 2]
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
@@ -29,13 +42,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface/hub
-          key: hf-e5-base-${{ runner.os }}-v1
+          key: hf-e5-base-${{ runner.os }}-v1-seed-${{ matrix.seed }}
       - name: Install CPU dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install numpy scipy scikit-learn transformers sentencepiece
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: Train matched e5-base pair on CPU
+      - name: Train matched e5-base seed
         shell: bash
         env:
           FT_CPU_THREADS: '2'
@@ -43,25 +56,27 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p cpu_results
-          for seed in 1 2; do
+          rm -rf ft_out
+          echo "Starting e5-base CPU training, seed=${{ matrix.seed }}"
+          env FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 \
+            FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_SEED="${{ matrix.seed }}" \
+            python finetune_exp.py intfloat/multilingual-e5-base 2 \
+            2>&1 | tee "cpu_results/seed-${{ matrix.seed }}.log"
+          mkdir -p "cpu_results/seed-${{ matrix.seed }}"
+          cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
+          find . -maxdepth 1 -type f \
+            \( -name 'probs_*.json' -o -name 'errors_*.json' \) \
+            -exec cp {} "cpu_results/seed-${{ matrix.seed }}/" \;
+          if [ "${{ inputs.save_model }}" = "yes" ]; then
+            mv ft_out "cpu_results/seed-${{ matrix.seed }}/model"
+          else
             rm -rf ft_out
-            echo "Starting e5-base CPU training, seed=$seed"
-            env FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 \
-              FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_SEED="$seed" \
-              python finetune_exp.py intfloat/multilingual-e5-base 2 \
-              2>&1 | tee "cpu_results/seed-${seed}.log"
-            mkdir -p "cpu_results/seed-${seed}"
-            cp FINETUNE_RESULTS.md "cpu_results/seed-${seed}/"
-            find . -maxdepth 1 -type f \
-              \( -name 'probs_*.json' -o -name 'errors_*.json' \) \
-              -exec cp {} "cpu_results/seed-${seed}/" \;
-            mv ft_out "cpu_results/seed-${seed}/model"
-          done
-      - name: Upload metrics, errors, logs, and trained models
+          fi
+      - name: Upload metrics, errors, logs, and optional model
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cpu-e5base-unit-freeze-seeds-${{ github.run_id }}
+          name: cpu-e5base-unit-freeze-seed-${{ matrix.seed }}-${{ github.run_id }}
           path: cpu_results/
           if-no-files-found: warn
           retention-days: 7
