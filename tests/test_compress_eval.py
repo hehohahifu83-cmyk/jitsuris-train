@@ -113,7 +113,7 @@ class TorchTest(unittest.TestCase):
     def test_probs_cpu_restores_the_original_order_across_batches(self):
         import torch
         ids = [[0, 10, 11, 20, 2], [0, 30, 2], [0, 59, 12, 10, 11, 2], [0, 5, 2], [0, 6, 7, 8, 9, 10, 2]]
-        p = C.probs_cpu(self.model, ids, pad_id=1, batch=2)
+        p = C.probs_dev(self.model, ids, pad_id=1, batch=2)
         self.assertEqual(p.shape, (5, 3))
         for i, s in enumerate(ids):
             with torch.no_grad():
@@ -184,7 +184,7 @@ class TorchTest(unittest.TestCase):
 
         text_fn = lambda r, prefix: f"{prefix}{r[0]} | {', '.join(r[1])}"
         lines, notes = C.run(model, tok, tests, rows, labels, lr_probs, text_fn, "", decide, score_real, "fake", top_k=0, max_len=32)
-        self.assertEqual(len(lines), 12)   # 6 通りの縮め方 × 2 つの組み合わせ
+        self.assertEqual(len(lines), 10)   # 5 通りの縮め方 × 2 つの組み合わせ
         self.assertTrue(all(l.startswith("| fake・圧縮【") and " t1 正" in l for l in lines))
         self.assertTrue(any("圧縮なしとの top-1 一致" in n for n in notes))
         self.assertTrue(notes[0].startswith("- 圧縮の試験（fake）"))

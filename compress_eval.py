@@ -168,8 +168,8 @@ def round_weights_fp16(m):
     return m
 
 
-def probs_cpu(model, id_lists, pad_id, batch=32, pad_multiple=1):
-    """CPU で確率を出す。長さ順に束ねて詰め物を減らし、元の順に戻して返す。"""
+def probs_dev(model, id_lists, pad_id, batch=32, pad_multiple=1, device="cpu"):
+    """確率を出す（device は "cpu" か "cuda"。モデルはすでにその装置にある）。長さ順に束ねて詰め物を減らし、元の順に戻して返す。"""
     import torch
     from batching import pad_batch
     out = [None] * len(id_lists)
@@ -178,11 +178,14 @@ def probs_cpu(model, id_lists, pad_id, batch=32, pad_multiple=1):
         for s in range(0, len(order), batch):
             idx = order[s:s + batch]
             pids, pmask = pad_batch([id_lists[i] for i in idx], pad_id, pad_multiple)
-            logits = model(input_ids=torch.tensor(pids), attention_mask=torch.tensor(pmask)).logits.float()
-            p = torch.softmax(logits, -1).numpy()
+            logits = model(input_ids=torch.tensor(pids, device=device), attention_mask=torch.tensor(pmask, device=device)).logits.float()
+            p = torch.softmax(logits, -1).cpu().numpy()
             for k, i in enumerate(idx):
                 out[i] = p[k]
     return np.vstack(out)
+
+
+probs_cpu = probs_dev   # 古い名前（検査で使っていた）
 
 
 def run(model, tok, tests, rows, labels, lr_probs, text_fn, prefix, decide, score_real, name, top_k=0, limit=None, max_len=128, model_probs=None, batch=32):
@@ -229,25 +232,27 @@ def run(model, tok, tests, rows, labels, lr_probs, text_fn, prefix, decide, scor
         f"- 大きさの見積り：全体 {sizes['total_params'] / 1e6:.1f}M 個（埋め込み表 {sizes['embed_params'] / 1e6:.1f}M＋本体 {sizes['body_params'] / 1e6:.1f}M）。圧縮なし fp32 {sizes['full_fp32_mb']:.0f}MB／語彙削減後 fp32 {sizes['trim_fp32_mb']:.0f}MB・fp16 {sizes['trim_fp16_mb']:.0f}MB・INT8 {sizes['trim_int8_mb']:.0f}MB（重みだけの見積り。正規化・バイアスは含まない）。",
     ]
     conditions = (("微調整だけ", 1.0), ("微調整7割＋今の仕組み3割", 0.7))
+    gpu = "cuda" if torch.cuda.is_available() else "cpu"   # fp32 の計算で済む版は GPU があれば GPU で（INT8 の動的量子化は CPU だけ）
     variants = [
-        ("圧縮なし（CPU・fp32）", lambda: base, "full"),
-        ("語彙削減（残さない片は unk）", lambda: trimmed_copy(base, kept), "unk"),
-        ("語彙削減（残さない片は 1 文字に分ける）", lambda: trimmed_copy(base, kept), "chars"),
-        ("INT8（全結合層のみ・語彙は元のまま）", lambda: int8_linear(base), "full"),
-        ("語彙削減（1 文字）＋INT8（全結合層＋埋め込み表）", lambda: int8_linear(round_embedding_int8(trimmed_copy(base, kept))), "chars"),
-        ("語彙削減（1 文字）＋fp16（重みを丸める）", lambda: round_weights_fp16(trimmed_copy(base, kept)), "chars"),
+        ("圧縮なし（fp32）", lambda: copy.deepcopy(base), "full", gpu),
+        ("語彙削減（残さない片は unk）", lambda: trimmed_copy(base, kept), "unk", gpu),
+        ("語彙削減（残さない片は 1 文字に分ける）", lambda: trimmed_copy(base, kept), "chars", gpu),
+        ("語彙削減（1 文字）＋INT8（全結合層＋埋め込み表）", lambda: int8_linear(round_embedding_int8(trimmed_copy(base, kept))), "chars", "cpu"),
+        ("語彙削減（1 文字）＋fp16（重みを丸める）", lambda: round_weights_fp16(trimmed_copy(base, kept)), "chars", gpu),
     ]
     lines, base_p = [], None
-    for vname, make, mode in variants:
-        m = make()
+    for vname, make, mode, device in variants:
+        m = make().to(device) if device != "cpu" else make()
         if mode == "full":
             ids_by_test = full_ids
         else:
             ids_by_test = {tn: apply_vocab(ids, kept_set, remap, expand if mode == "chars" else None, max_len, eos_id) for tn, ids in full_ids.items()}
         t0 = time.time()
-        pr = {tn: probs_cpu(m, ids_by_test[tn], pad_id, batch) for tn in test_rows}
+        pr = {tn: probs_dev(m, ids_by_test[tn], pad_id, batch, device=device) for tn in test_rows}
         sec = time.time() - t0
         del m
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         if base_p is None:
             base_p = pr
         agree = float(np.mean(np.concatenate([pr[tn].argmax(1) == base_p[tn].argmax(1) for tn in pr])))
@@ -259,11 +264,11 @@ def run(model, tok, tests, rows, labels, lr_probs, text_fn, prefix, decide, scor
                 pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
                 s = score_real(pred, [r[2] for r in te])
                 res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}" + (f" その他見送り{s['other_ok']}/{s['other_ok'] + s['other_ng']}" if s['other_ok'] + s['other_ng'] else ""))
-            lines.append(f"| {name}・圧縮【{vname}】・{tag} | " + " | ".join(res) + f" | 圧縮の評価 {sec:.0f}秒（CPU {torch.get_num_threads()}スレッド・1列あたり {1000.0 * sec / max(n_cols, 1):.0f}ms） |")
+            lines.append(f"| {name}・圧縮【{vname}】・{tag} | " + " | ".join(res) + f" | 圧縮の評価 {sec:.0f}秒（" + (f"CPU {torch.get_num_threads()}スレッド・1列あたり {1000.0 * sec / max(n_cols, 1):.0f}ms" if device == "cpu" else "GPU") + "） |")
             print(lines[-1], flush=True)
         notes.append(f"- {vname}：圧縮なしとの top-1 一致 {100.0 * agree:.2f}%、確率の最大の差 {maxdiff:.3f}")
     if model_probs is not None:   # 本体の評価（GPU の fp16 かもしれない）と、ここの『圧縮なし』の一致
         base_cmp = np.concatenate([base_p[tn].argmax(1) == np.asarray(model_probs[tn])[:len(base_p[tn])].argmax(1) for tn in base_p])
-        notes.append(f"- 参考：ここの『圧縮なし（CPU・fp32）』と本体の評価（{'GPU の fp16 の混合精度' if torch.cuda.is_available() else 'CPU'}）の top-1 一致 {100.0 * float(np.mean(base_cmp)):.2f}%")
+        notes.append(f"- 参考：ここの『圧縮なし（fp32）』と本体の評価（{'GPU の fp16 の混合精度' if torch.cuda.is_available() else 'CPU'}）の top-1 一致 {100.0 * float(np.mean(base_cmp)):.2f}%")
     notes.append(f"- 圧縮の試験の所要 {time.time() - t_all:.0f}秒（数字は保存した微調整済みモデルを縮めて試験に流した結果で、ブラウザの実機の結果ではない）")
     return lines, notes
