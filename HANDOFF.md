@@ -264,7 +264,7 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 ## 2026-10-18 20:30 — CPUラボ開始準備と教材習得追跡
 - `.github/workflows/cpu-lab-material-learning.yml` に完結型のCPU lab workflowを追加。入力は成功済みKaggle e5-base Actions run ID、checkpoint directory、CPU実行yes/no。モデルartifact取得→モデル/probe検証→pool仮ラベル→0件ならskip→2 seed逐次学習の流れ。
 - 人手ラベル確認は不要。strict 3-view gate（各confidence≥0.995、margin≥0.50）通過例だけ、教師あり訓練行の最大1%まで追加。誤ラベルは残る可能性があり、候補の自動採用は禁止。
-- `cpu_lab/material_receipt.py` はpool/pseudoのSHAと全IDの状態を記録し、学習ログが追加数と一致したらseedごとの教材投入を確認する。`cpu_lab/progress_probe.py` は合成正解付きprobe 12件の学習前後差分を計る。これはデータ投入と行動変化の証拠であり、ニューラルネット内部での理解/習得そのものの証明ではない。
+- `cpu_lab/material_receipt.py` はpool/pseudoのSHAと全IDの状態を記録し、学習ログが追加数と一致したらseedごとの教材投入を確認する。`cpu_lab/progress_probe.py` は合成正解付きprobe 110件の学習前後差分を計る。これはデータ投入と行動変化の証拠であり、ニューラルネット内部での理解/習得そのものの証明ではない。
 - Probe IDは訓練poolと分離し、Kaggle bundleに入らない。固定5試験だけを最終性能判定に使う。blind_set*、セット3・5・7は触れない。
 - 追加テスト: candidate/pool ID整合、学習ログなしの誤認防止、probe差分判定、probe/pool分離。Actions CIで実行確認が必要。
 - **現在は開始待ち**: 完了済みKaggle e5-base runの`jitsuris-model` artifactを取得できていない。最新見えるrequestは`fetch`でKAGGLE_LOG末尾は古いRUNNING記録。適切なcheckpointが出たら、run idとft_out_job1/ft_out_job2などを指定し、manual workflowを起動する。今はCPU学習を走らせていない。
