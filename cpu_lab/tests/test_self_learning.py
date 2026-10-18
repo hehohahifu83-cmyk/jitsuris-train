@@ -62,8 +62,11 @@ class ActiveLearningSafetyTests(unittest.TestCase):
             loaded = load_pseudo_replay(str(p), {"amount", "date"}, base_rows=100)
             self.assertEqual(len(loaded), 1)
             self.assertEqual(loaded[0][2], "amount")
+            second = dict(row)
+            second["id"] = "public:2"
+            p.write_text(json.dumps(row) + "\n" + json.dumps(second) + "\n", encoding="utf-8")
             with self.assertRaises(ValueError):
-                load_pseudo_replay(str(p), {"amount"}, base_rows=10)
+                load_pseudo_replay(str(p), {"amount"}, base_rows=100)
             row["pseudo_label"]["confidence_min"] = 0.9
             p.write_text(json.dumps(row) + "\n", encoding="utf-8")
             with self.assertRaises(ValueError):
