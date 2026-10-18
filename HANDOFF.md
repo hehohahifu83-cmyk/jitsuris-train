@@ -21,7 +21,8 @@
 
 ## 3. Kaggle で学習させる手順（jitsuris-train）
 1. kaggle/kaggle.request を書き換えて main に push すると、.github/workflows/kaggle.yml が動く。
-   - 微調整：`train <HFモデル名> <周回数> [FT_LR=2e-5] [FT_BS=16 FT_ACC=4 FT_CKPT=1] [FT_AUG=1]`
+   - 微調整：`train <HFモデル名> <周回数> [FT_LR=2e-5] [FT_BS=16 FT_ACC=4 FT_CKPT=0] [FT_SORT=1 FT_PAD8=1 FT_FUSED=1] [FT_AUG=1]`（`FT_` で始まる語は全部渡る。2つ同時は `++` で区切る。9を見る）
+   - 速さの測定：`train probe <HFモデル名>`（学習はしない）
    - 凍結埋め込み：`train embed <HFモデル名>`（llm_embed_exp.py）
    - 結果だけ回収：`fetch <任意の文字>`（終わるまで最大280分待って回収）
    - 原因調べ：`diag`（小さい CPU・GPU の実行で順番待ちを切り分け）
@@ -58,9 +59,10 @@
 - Claude は ChatGPT に積極的に依頼する。ChatGPT は Claude の依頼にほぼ全て応える（ai-bridge README「Claude からの依頼にはほぼ全て応える・研究実装」）。
 - `作業: 研究実装` は、jitsuris-train（main）と tool-kobo の research/column-ai だけを変える実装。ChatGPT の自動処理でも行ってよい。学習の依頼を書き換える前は、kaggle/KAGGLE_LOG.md の最後の状態が終わっている（COMPLETE・ERROR・CANCEL）か確かめる。
 
-## 8. 最新の状態（2026-10-18 09:30）
+## 8. 最新の状態（2026-10-18 12:00）
 - e5-large（2周、FT_AUG なし）：完了（2026-10-17 23:34Z）。上の表のとおり。e5-base と比べて「大きいほど良い」とは言い切れない（教材が違う）。重大な誤りは業務で 6、業務2 で 4〜5 が残る。結果は TEACHING_PLAN.md 「結果：e5-large 微調整」。
-- 実行中：Kaggle Version 11 = `train intfloat/multilingual-e5-large 2 FT_AUG=1`（23:45Z 依頼、00:06Z 時点 RUNNING、見込み完了 02:20〜02:50Z＝日本時間 11:20〜11:50）。GitHub の待ちは最大 280 分。
+- **Version 11（`FT_AUG=1` の依頼）は無効**：Kaggle が前回（Version 10）の版のデータで流し、全数字が Version 10 と同じで「水増し」の表示もなかった（学習 8,416 秒）。水増しの結果として使わない。対策は 9 の「印」。
+- 実行中：速い設定の2本（commit cd52631、02:58Z 依頼。Kaggle の版番号は kaggle/KAGGLE_LOG.md）。①`FT_LR=2e-5 FT_BS=16 FT_ACC=4 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1`（Version 10 と同じ条件で、クオリティが下がっていないかの確認）②同じ設定＋`FT_AUG=1`。見込み完了 03:35〜03:45Z（日本時間 12:35〜12:45）。進み具合は kaggle/PROGRESS.md。これが終わるまで kaggle.request を書き換えない。
 - ChatGPT へ依頼済み（ai-bridge 20261018-0925）：①間違えた列の一覧（errors_*.json）②全試験列の確率の保存（probs_*.json、保留の測定用）③e5-base を今の教材で種を変えて2回（公平な比較）④`train embed llm-jp/llm-jp-3-1.8b` を一度だけ。
 - Claude の次：abstain_eval.py（しきい値を下げたとき重大0にできるか・答える割合）。まずは今の仕組み（疎なLR）の確率で作って動かし、微調整の probs が届いたら当てる。
 - 日本の会計の架空仕訳（MIT）を jp2 に追加済み（350列、23出典名。列名ごとのラベル materials/jp2_header_labels.json）。
@@ -93,6 +95,14 @@
 **計算結果が変わりうる設定（A/B で確かめるまで使わない）**：`FT_FREEZE_EMB=1`（単語の埋め込みを固定）。
 **検査用**：`FT_NO_DROPOUT=1`、`FT_TRACE_LOSS=N`、`FT_LIMIT`、`FT_EVAL=dev220`。
 **確かめたこと（CPU・GitHub Actions、bench/speed_checks_summary.md）**：e5-small・640 行・ドロップアウトなしで、今までの流し方と「長さ順＋幅8」の最初の 5 ステップの損失が小数 6 桁まで同じ（差 0.0）。学習時間は 51 秒 → 38 秒（1 回ずつの測定）。torch の単体テストで、束の大きさ 1〜64 のどれでも 64 文の勾配と一致。
-**まだ確かめていないこと**：GPU（fp16）での速さと勾配の一致、GPU 2 枚の同時利用の効果、large の最適な束の大きさ（`train probe` で測る）。
-**順番**：Version 11（水増しの e5-large）が終わる → `train probe intfloat/multilingual-e5-large` → 結果で既定を決める → 速い設定で FT_AUG の e5-large を 2 つ同時（種を変える）に流し、Version 11 と固定試験で比べる（差 1.5 ポイント未満なら差なし＝クオリティは落ちていない）→ e5-base の公平な比較を `++` で 1 回に。
+**実機の測定（2026-10-18 02:53、`train probe`、Kaggle T4×2・e5-large・実効バッチ 64、表は FINETUNE_RESULTS.md の同時刻の節）**
+- 1 秒あたりの学習文数：今の既定（束 2・チェックポイントあり）13.2 → 束 16・チェックポイントなし 52.3（3.96 倍）→ それに長さ順を足して 61.7（4.67 倍）。幅 8 の倍数と fused AdamW は、他の行の比べ方から 5〜9% の上乗せ（その 2 つだけを足した行は測っていない）。2 周（110,426 文）の計算は、13.2 文/秒で約 8,370 秒（Version 10・11 の実測 8,477・8,416 秒とほぼ一致）、61.7 文/秒で約 1,790 秒。
+- 勾配の一致（fp16・ドロップアウトなし・基準は束 4）：束 2（今の既定）／束 16＋長さ順＋幅 8／束 8＋チェックポイントなし＋長さ順／束 32＋長さ順 のどれも、一致度 0.999999・相対差 0.0012〜0.0013。**今の既定の束 2 自体が同じ大きさの差**なので、速い設定でクオリティが下がる根拠は見つからなかった（実際の学習の結果での確認は、実行中の 2 本の①）。
+- GPU 2 枚：別々の学習を同時に流すと、それぞれほぼ全速（1 枚だけ 74.3 → 2 枚で 73.5 と 87.2）。実験の本数が約 2 倍になる。
+- 単語の埋め込みの固定（`FT_FREEZE_EMB=1`）：74.3（5.63 倍）、メモリ 7.6 GiB。ただし他の設定と一緒に測ったので単独の効果は不明、クオリティへの影響も未確認なので採らない（base で A/B してから）。
+- 採用した large の設定：`FT_BS=16 FT_ACC=4 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1`（積は 64。この組み合わせそのものは測っていないが、近い行のメモリ最大は 11.0 GiB 以下で、T4 の 15 GiB に収まる見込み）。
+**「印」の仕組み（古い版で流れる事故の対策。commit 18da1a9）**：kaggle.sh が依頼ごとに印（`nonce-<日時>-<乱数>.txt`）を束に入れる → データセットの一覧でその印とモデルが見えるまで待つ（90×20 秒まで。見えなければ学習を押さず、kaggle.request を `done` に戻して終了）→ run.py が印を確かめ、無ければ終了コード 3 で止まる。**まだ確かめていないこと**：印の待ちが実機で期待どおり動くか（実行中の 2 本が最初の実機試験。KAGGLE_LOG.md に印のファイル名が出る）。
+**`++` の注意**：2 つ目以降の仕事は、モデルと周数は引き継ぐが、`FT_` の設定は**引き継がない**。2 つ目にも同じ設定を書く（実行中の 2 本もそう書いてある）。
+**まだ確かめていないこと**：①実際の学習の結果が今までと同じか（実行中の①）②水増しの効果（実行中の②）③e5-base の公平な比較（種を変えて 2 本。`FT_SEED=1 ++ FT_SEED=2`）④`FT_FREEZE_EMB` のクオリティへの影響。
+**順番**：実行中の 2 本が終わる → 結果を固定試験で Version 10 と比べる（差 1.5 ポイント未満なら差なし＝クオリティは落ちていない。学習秒も 8,477 秒と比べる）→ e5-base の公平な比較を `++` で 1 回（速い設定、種を変える）→ `train embed llm-jp/llm-jp-3-1.8b` を一度 → 必要なら `FT_FREEZE_EMB` の A/B。
 **その他**：`abstain_eval.py`（eval_reports/latest の probs を読み、「わからない」の基準で重大 0 にできるかを、試験を 1 つ外して測る）。kaggle.yml の Save が errors/probs を eval_reports/latest にも置く（次の Kaggle 実行から）。
