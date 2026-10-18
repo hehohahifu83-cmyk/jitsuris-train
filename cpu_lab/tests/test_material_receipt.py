@@ -34,11 +34,11 @@ class MaterialReceiptTests(unittest.TestCase):
             receipt_before = root / "receipt-before.json"
             receipt_after = root / "receipt-after.json"
             log = root / "train.log"
-            materials.write_text(json.dumps(reviewed_row(), ensure_ascii=False) + "\\n", encoding="utf-8")
+            materials.write_text(json.dumps(reviewed_row(), ensure_ascii=False) + "\n", encoding="utf-8")
             receipt = prepare_reviewed(materials, "run:123/ft_out_job1", receipt_before)
             self.assertEqual(receipt["material_count"], 1)
             self.assertEqual(receipt["items"][0]["training_status"], "not_yet_run")
-            log.write_text("CPU lab replay: 1 audited rows from materials.jsonl\\n", encoding="utf-8")
+            log.write_text("CPU lab replay: 1 audited rows from materials.jsonl\n", encoding="utf-8")
             result = mark_trained(receipt_before, log, 1, receipt_after)
             self.assertEqual(result["seed_runs"][0]["rows_confirmed"], 1)
             self.assertEqual(result["items"][0]["training_status"], "included_in_training")
@@ -49,7 +49,7 @@ class MaterialReceiptTests(unittest.TestCase):
             materials = root / "materials.jsonl"
             row = reviewed_row()
             row["verified"] = False
-            materials.write_text(json.dumps(row, ensure_ascii=False) + "\\n", encoding="utf-8")
+            materials.write_text(json.dumps(row, ensure_ascii=False) + "\n", encoding="utf-8")
             with self.assertRaises(ValueError):
                 prepare_reviewed(materials, "run:123/ft_out_job1", root / "receipt.json")
 
