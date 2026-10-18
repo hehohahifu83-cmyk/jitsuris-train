@@ -242,3 +242,19 @@
 2026-10-18T15:36:33Z 空き待ちが 20 分を超えたので止める：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED"
 2026-10-18T15:36:33Z 状態：queue-timeout
 2026-10-18T17:36:42Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.QUEUED"
+2026-10-18T19:40:15Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-base /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-base/1_Pooling /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-base/onnx /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-base/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-base/1_Pooling/config.json
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/intfloat__multilingual-e5-base/onnx/config.json
+    印: ['nonce-20261018T151132-11698.txt']
+    model: hfmodel/intfloat__multilingual-e5-base exists=True
+    cuda: True devices=2 Tesla T4, 15360 MiB / Tesla T4, 15360 MiB
+    CPU lab checkpoint export: retained first e5-base job only; training settings unchanged
+    仕事の数: 2 [{'args': ['hfmodel/intfloat__multilingual-e5-base', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_CTX_UNIT': '1', 'FT_FREEZE_EMB': '1', 'FT_AUG': '1', 'FT_SEED': '1', 'FT_KEEP': '1'}}, {'args': ['hfmodel/intfloat__multilingual-e5-base', '2'], 'env': {'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_CTX_UNIT': '1', 'FT_FREEZE_EMB': '1', 'FT_AUG': '1', 'FT_SEED': '2'}}]
+    [仕事1] training rows=55213 seed=1
+    [仕事2] training rows=55213 seed=2
+    [仕事1] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
+    [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
+    [仕事2] peak GPU memory 3.5 GiB; training loop 417s
+    [仕事1] peak GPU memory 3.5 GiB; training loop 436s
