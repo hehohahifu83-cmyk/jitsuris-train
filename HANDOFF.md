@@ -252,3 +252,10 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - CPU lab safety tests run 39122773344 success（2026-10-18T11:19:39Z）。追加ゲート・capテストを含め通過。修正前の失敗はcapテスト期待値の誤りで、最終テストは成功。
 - **まだ学習は開始していない**。未ラベルpoolと分類器checkpointがないため、仮ラベル生成ができない。e-Statデータも未取得。次は利用条件が確認できる個人情報なしpoolを作ること。候補checkpointを得る方法を確かめてからautolabelを実行する。
 - Kaggleログの状態は2026-10-18T10:56:49Z RUNNINGが最新記録。現行状態は直接未確認であり、GPU学習完了とは断定しない。
+
+
+## 2026-10-18 20:25 — CPUラボ教材poolの進捗
+- `cpu_lab/materials/pool.jsonl` に内部生成の未ラベル合成例36件を追加。JSONL parse、ID一意、unlabeled split、privacy/source/license、labelなしを確認。禁止セット由来/参照のパターン検査0件。CPU lab safety tests run 39123051454 success。
+- READMEの教材状況を更新。人の確認は不要な仮ラベル方式を用意済みだが、分類器checkpointが未取得なのでautolabel・CPU候補学習とも未開始。実行済みと誤記しない。
+- Kaggle requestは`fetch`。KAGGLE_LOGの最後は2026-10-18T10:56:49Z RUNNING、GitHub fetch run 39121167019 success・artifactなし。後続のKaggle完了記録やmodel artifactは確認できず、CPU側はGPUとの重複を避けて待機。
+- Claudeへの連絡箱配信は過去記録どおり未確認。ファイルを置いたことを受領とは扱わない。
