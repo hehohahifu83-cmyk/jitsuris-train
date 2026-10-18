@@ -268,3 +268,5 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - Probe IDは訓練poolと分離し、Kaggle bundleに入らない。固定5試験だけを最終性能判定に使う。blind_set*、セット3・5・7は触れない。
 - 追加テスト: candidate/pool ID整合、学習ログなしの誤認防止、probe差分判定、probe/pool分離。Actions CIで実行確認が必要。
 - **現在は開始待ち**: 完了済みKaggle e5-base runの`jitsuris-model` artifactを取得できていない。最新見えるrequestは`fetch`でKAGGLE_LOG末尾は古いRUNNING記録。適切なcheckpointが出たら、run idとft_out_job1/ft_out_job2などを指定し、manual workflowを起動する。今はCPU学習を走らせていない。
+
+- e5-baseの複数job GPU実験でモデルが破棄されCPU labの前提を満たせない問題を確認。`jobs.py` に `keep_cpu_lab_checkpoint()` を追加し、`kaggle/run.py` から呼び出す。複数jobの先頭e5-base seedだけ `FT_KEEP=1` とし、run.pyが`ft_out_job1`として回収できる。これはartifact保持のみで学習計算/評価は変えない。既に提出済みのrunへは反映されないので、次の成功済みe5-base runが要る。
