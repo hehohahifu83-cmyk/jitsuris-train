@@ -39,6 +39,7 @@ jobs:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
+          case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
           python - <<'PY'
           import json, os, re, urllib.request
           from pathlib import Path
@@ -77,8 +78,8 @@ jobs:
           print("Observed Kaggle status:", combined.strip())
           if state.returncode != 0 or "KernelWorkerStatus.QUEUED" not in combined:
               print("CPU lab held: CPU work is allowed only while Kaggle is QUEUED")
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle is not QUEUED. CPU lab only runs during the queue window.\\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\nsource_run_id={run_id}\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: Kaggle is not QUEUED. CPU lab only runs during the queue window.\n")
               raise SystemExit(0)
           runs = get(f"https://api.github.com/repos/{repo}/actions/runs?per_page=100").get("workflow_runs", [])
           active = [r for r in runs if r.get("path") == ".github/workflows/kaggle.yml" and r.get("status") == "in_progress"]
@@ -233,6 +234,7 @@ jobs:
               printf '%s Kaggle status: %s\n' "$(date -u +%FT%TZ)" "$state" >> "cpu_results/seed-${{ matrix.seed }}/kaggle_guard.log"
               if ! grep -q 'KernelWorkerStatus.QUEUED' <<< "$state"; then
                 touch /tmp/jitsuris-kaggle-no-longer-queued
+                pkill -TERM -P "$trainer_pid" 2>/dev/null || true
                 kill -TERM -- "-$trainer_pid" 2>/dev/null || kill -TERM "$trainer_pid" 2>/dev/null || true
                 break
               fi
