@@ -48,6 +48,12 @@ jobs:
           source = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}")
           if source.get("path") != ".github/workflows/kaggle.yml" or source.get("status") != "completed" or source.get("conclusion") != "success":
               raise SystemExit("Kaggle source run is not successful; refusing to start")
+          artifacts = get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts").get("artifacts", [])
+          if not any(a.get("name") == "jitsuris-model" and not a.get("expired") for a in artifacts):
+              print("CPU lab held: source run has no classifier artifact")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: no jitsuris-model artifact on this Kaggle run.\\n")
+              raise SystemExit(0)
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           if request != "done":
               print("CPU lab held: kaggle.request is not done")
@@ -62,7 +68,7 @@ jobs:
               with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
               with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle request does not match the target E5-base experiment.\\n")
               raise SystemExit(0)
-          if not statuses or not statuses[-1].endswith("KernelWorkerStatus.COMPLETE"):
+          if not statuses or "KernelWorkerStatus.COMPLETE" not in statuses[-1]:
               print("CPU lab held: latest Kaggle kernel status is not COMPLETE")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=false\\nsource_run_id={run_id}\\n")
               with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary: summary.write("Held: latest Kaggle kernel status is not COMPLETE.\\n")
@@ -168,7 +174,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: cpu-lab-prepared-${{ github.event.workflow_run.id || github.event.inputs.source_run_id }}
+          name: cpu-lab-prepared-${{ github.run_id }}
           path: prepared
       - name: Restore allowlisted training corpora
         run: |
