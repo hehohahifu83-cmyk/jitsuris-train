@@ -113,6 +113,14 @@ def _pump(proc, label):
         sys.stdout.flush()
 
 
+def keep_cpu_lab_checkpoint(specs):
+    """Retain job 1 from multi-job e5-base runs for CPU-lab reuse; never changes training math."""
+    if len(specs) > 1 and specs and "multilingual-e5-base" in str((specs[0].get("args") or [""])[0]).lower():
+        specs[0].setdefault("env", {})["FT_KEEP"] = "1"
+        return 1
+    return 0
+
+
 def keeps_model(spec):
     """FT_KEEP=1 の仕事は、学習済みモデル（ft_out）を消さずに残す（ブラウザ用の書き出しに使うモデルを持ち帰るため）。"""
     return (spec.get("env") or {}).get("FT_KEEP") == "1"
