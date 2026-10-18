@@ -59,5 +59,15 @@ add("date", [], 0.9, ("org", 0.01))
 add("amount", ["", " ", ""], 0.9, ("org", 0.01))
 add("id", ["A1", "B2"], 0.9, ("text", 0.01))
 add("text", ["hello", "world"], 0.9, ("category", 0.05))
+# v9.1 の境界（ChatGPT のレビュー 13:01。乱数を使わない固定の例なので、上の例は変わらない）
+BOUNDARY_DATE = [["fy2024xyz"] * 3, ["2020-99", "2021-13", "2020-00"], ["may 5 items", "march of the penguins 2005", "may day 1"], ["2017/2018_Apr", "2012/2013_Q3", "2024/2025_May"],
+                 ["2016 Mar 01 12:00:00 AM", "2017 Jan 19 12:00:00 AM"], ["\ufeff2024-01-05", "\x1c2024-02-05", "2024-03-05\x1f"], ["Tue, 05 May 2017", "Wed, 06 May 2017"],
+                 ["FY2024", "FY2023-24", "FY20Q3"], ["2023-24", "1999/00", "2012/2013"], ["2020-12", "2021-01", "2019/7"]]
+BOUNDARY_NUM = [["1,,2", "1..2", "3,,4"], ["1 2 3", "4 5 6"], ["12,34,567", "1,23,456"], ["1.234,56", "2.345,67"], ["1 234", "5 678"], ["1,234,56", "2,345,67"], ["a" * 63 + "😀" + "1", "1" * 62 + "😀😀"]]
+for vals in BOUNDARY_DATE:
+    add("date", vals, 0.99, ("org", 0.004))
+for vals in BOUNDARY_NUM:
+    for pred in ("amount", "quantity", "rate"):
+        add(pred, vals, 0.99, ("text", 0.004))
 if __name__ == "__main__":
     print(json.dumps(CASES, ensure_ascii=False, indent=0))

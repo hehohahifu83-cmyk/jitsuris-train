@@ -95,5 +95,47 @@ class GuardOtherTest(unittest.TestCase):
         self.assertLess(time.time() - t0, 1.0)
 
 
+class GuardBoundaryTest(unittest.TestCase):
+    """ChatGPT のレビュー（2026-10-18 13:01）で挙がった境界。v9.1 で締めた所（誤りを増やさず『不明』が増える方向）。"""
+
+    def test_fy_needs_the_whole_form(self):
+        self.assertEqual(g("date", ["fy2024xyz"] * 3), "unknown")
+        for ok in ("FY2024", "FY2023-24", "FY20Q3", "FY'20"):
+            self.assertEqual(g("date", [ok] * 3), "date", ok)
+
+    def test_year_month_and_year_range(self):
+        for bad in ("2020-99", "2021-13", "2020-00", "2020-45", "2010-2099", "2020/2021_zzz"):
+            self.assertEqual(g("date", [bad] * 3), "unknown", bad)
+        for ok in ("2020-12", "2020/7", "2023-24", "1999/00", "2012/2013", "2017/2018_Apr", "2012/2013_Q3", "07-2015"):
+            self.assertEqual(g("date", [ok] * 3), "date", ok)
+
+    def test_month_names_need_a_date_shape(self):
+        for bad in ("may 5 items", "march of the penguins 2005", "5 May 2017 (rev)"):
+            self.assertEqual(g("date", [bad] * 3), "unknown", bad)
+        for ok in ("Tue, 05 May 2017", "2016 Mar 01 12:00:00 AM", "5 May 2017", "31st March", "March 2020", "05-May-17"):
+            self.assertEqual(g("date", [ok] * 3), "date", ok)
+
+    def test_number_separators_need_a_number_shape(self):
+        for pred in ("amount", "quantity", "rate"):
+            for bad in (["1,,2", "1..2", "3,,4"], ["1 2 3", "4 5 6"], ["1,234,56", "2,345,67"]):
+                self.assertEqual(g(pred, bad, second=("text", 0.004)), "unknown", (pred, bad))
+            for ok in (["1,234.50", "10,000"], ["12,34,567", "1,23,456"], ["1.234,56", "2.345,67"], ["1 234", "5 678"], ["12.5", "0,5"]):
+                self.assertEqual(g(pred, ok, second=("text", 0.004)), pred, (pred, ok))
+
+    def test_whitespace_sets_match_the_js_side(self):
+        # Python の strip は \x1c〜\x1f・\x85 を落とし \ufeff を落とさない／JS の trim は逆。どちらでも同じ集合で落とす
+        self.assertEqual(G._clean(["\ufeff 2024-01-05 \x1c"]), ["2024-01-05"])
+        self.assertEqual(G._clean(["\x852024-01-05\x1f", "\u00a0x\u3000", "\u1680y\u2003"]), ["2024-01-05", "x", "y"])
+        self.assertEqual(G.guard("date", [("date", 0.99), ("org", 0.004)], ["\ufeff2024-01-05", "\x1c2024-02-05", "2024-03-05\x1f"]), "date")
+
+    def test_the_64_char_cut_counts_code_points(self):
+        v = "a" * 63 + "\U0001F600" + "b"
+        self.assertEqual(G._clean([v]), ["a" * 63 + "\U0001F600"])   # JS では Array.from で数える
+
+    def test_none_is_empty_in_both_places(self):
+        self.assertEqual(G._clean([None, "x", ""]), ["x"])
+        self.assertFalse(G.bad_ymd8([None, "20240101", "20240102"]))   # None は空の値として数えない（JS の ?? '' と同じ）
+
+
 if __name__ == "__main__":
     unittest.main()
