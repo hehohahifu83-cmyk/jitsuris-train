@@ -1,0 +1,39 @@
+name: ブラウザ側（Transformers.js）の調べ
+concurrency: { group: browser-js, cancel-in-progress: false }
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [browser_test/**, .github/workflows/browser-js.yml]
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: 入れて中身を調べる
+        shell: bash
+        run: |
+          mkdir -p /tmp/js && cd /tmp/js && npm init -y >/dev/null
+          npm i @huggingface/transformers playwright 2>&1 | tail -3
+          { echo "versions:"; node -e "for (const p of ['@huggingface/transformers','onnxruntime-web','onnxruntime-common','playwright']) { try { console.log(p, require(p+'/package.json').version) } catch(e) { console.log(p, 'no', e.code) } }";
+            echo "--- transformers/dist"; ls -la node_modules/@huggingface/transformers/dist | head -40;
+            echo "--- onnxruntime-web/dist"; ls -la node_modules/onnxruntime-web/dist 2>/dev/null | head -50;
+            echo "--- transformers package.json (exports/main)"; node -e "const p=require('@huggingface/transformers/package.json'); console.log(JSON.stringify({main:p.main,module:p.module,exports:p.exports,browser:p.browser,type:p.type},null,0).slice(0,1500))"; } 2>&1 | tee /tmp/js/discover.log
+      - name: 要点を注に出す
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          p = "/tmp/js/discover.log"
+          if os.path.exists(p):
+              ls = open(p, encoding="utf-8", errors="replace").read().splitlines()
+              for i in range(0, len(ls), 30):
+                  t = "\n".join(l[-160:] for l in ls[i:i+30]).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print(f"::notice title=discover {i//30}::{t}")
+          PY
