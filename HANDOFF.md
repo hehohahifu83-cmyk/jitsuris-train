@@ -321,3 +321,14 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - Updated Kaggle workflow to check the pending status every 10 minutes, record a GitHub Step Summary, and expose the uploaded artifact IDs. Future summaries must not use `kaggle.request=done` alone as proof of checkpoint retention.
 - Ability improvement is a separate experimental conclusion from training completion. On the five permitted fixed sets, compare matched seeds to the UNIT-only baseline; treat accuracy changes under 1.5 percentage points as no difference, and report errors, critical errors, unknowns, time, and peak GPU memory. Current frozen-embedding run has no consistent quality gain; its demonstrated gain is lower runtime and memory. Do not inspect blind sets or sets 3, 5, or 7.
 - No new Kaggle training request was submitted in this update. The e5-base two-seed checkpoint-retention code now in the repository applies to future runs; it cannot recover the missing Version 18 checkpoint.
+
+
+## 2026-10-19 ChatGPT: 失敗分析ループと次回学習の準備
+
+- 直近のe5-base UNIT context + frozen embeddings の job1/job2 確率レポートだけを使用し、固定5試験を監査。blind_set* とセット3・5・7は開いていない。
+- 再発観測：dev220 の `purchase order by customer` (id→quantity)、business の `total invoices paid` (quantity→amount)・`australian sourced goods` / `overseas sourced goods` (amount→quantity)、business2 の `total invoices paid`・`fine`・`sales-goods-svcs_ventes-biens-srvs`・`miscellaneous_divers` がseed 1/2で再発。businessではcategory→quantityが10/12件。列の値と同表contextをレポートに含まないので、これは再発パターンの事実であって原因確定ではない。
+- 詳細: [cpu_lab/reports/error-audit-e5base-freeze-2026-10-18.md](cpu_lab/reports/error-audit-e5base-freeze-2026-10-18.md)。現行集計 `analyze_errors.py` を置き換えず、証拠/仮説を分けた `cpu_lab/error_analysis.py` を新設。評価ワークフローは各実行後に報告をStep Summary、artifact、run別Markdownへ保存。許可セット名をallowlistし、モデルの予測結果からラベル変更や学習データ化はしない。ユニットテスト3件成功。
+- 次のGPU比較は、凍結UNITの既知条件を保ち `FT_AUG=1` だけ加え、seed 1/2。固定5試験のaccuracy/errors/critical errors/unknowns、時間、最大GPUメモリを比較し、1.5ポイント未満は差なし。augmentationが当たるという保証はなく、単要因の仮説検証として扱う。
+- 学習中に限り、CPU Labは既存 `cpu-lab-material-learning.yml` のゲート（Kaggle request=fetch、kernel QUEUED、成功した元run、他Kaggle workflow非実行）を全て満たす場合だけ監査済みreplay候補を学習。KaggleがQUEUEDを離れたらCPUを停止する。今回はCPU Labを手動で並走させず、既存ゲートに任せる。
+- 研究の方法参考（課題が異なるので結果をそのまま移さない）：Confident Learning https://arxiv.org/abs/1911.00068 （誤ラベル候補を確率から優先確認する発想、ラベル訂正は別監査）；Robust Learning with Multi-source Noise Simulation and Hard Example Mining https://arxiv.org/abs/2107.07113 （拡張・hard exampleを比較試験する発想）。
+- 未回収/未確認：現行学習済みcheckpointはGitHub artifactに存在しない。CPU Labの以前の準備runはKaggle終了後に到達しスキップ。今回は新しいqueue待ちでCPU gateが機能するかをrun単位で確認する。
