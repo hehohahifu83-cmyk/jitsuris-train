@@ -270,3 +270,10 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - **現在は開始待ち**: 完了済みKaggle e5-base runの`jitsuris-model` artifactを取得できていない。最新見えるrequestは`fetch`でKAGGLE_LOG末尾は古いRUNNING記録。適切なcheckpointが出たら、run idとft_out_job1/ft_out_job2などを指定し、manual workflowを起動する。今はCPU学習を走らせていない。
 
 - e5-baseの複数job GPU実験でモデルが破棄されCPU labの前提を満たせない問題を確認。`jobs.py` に `keep_cpu_lab_checkpoint()` を追加し、`kaggle/run.py` から呼び出す。複数jobの先頭e5-base seedだけ `FT_KEEP=1` とし、run.pyが`ft_out_job1`として回収できる。これはartifact保持のみで学習計算/評価は変えない。既に提出済みのrunへは反映されないので、次の成功済みe5-base runが要る。
+
+
+## 2026-10-18 20:35 最終検証
+- CPU lab safety tests run 39123727978 success（commit 2e5ea07）。receipt/probe/job-retention testsとPython compileを通過。
+- テスト途中の失敗は、1ポイント差を差ありとした誤った期待値と、欠落ログ例外の扱いを修正。最終runで成功を確認。
+- Kaggle `kaggle.request=fetch`、KAGGLE_LOG末尾は2026-10-18T10:56:49Z (JST 19:56:49) RUNNINGのまま。GitHub ActionsにKaggle jobの実行中は見えず、run 39121167019の`jitsuris-model` artifactもなし。Kaggle kernel自体の現在状態は確認できない。
+- 既存CPU benchmark workflow run 39123705509がin_progress。CPU lab学習はまだ開始していない。次回e5-base multi-job runにモデル保持変更が入れば、先頭seedをartifactに残しCPU lab workflowへ渡せる。
