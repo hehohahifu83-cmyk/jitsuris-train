@@ -242,3 +242,13 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - Kaggle: `kaggle/kaggle.request` は `fetch`。KAGGLE_LOG末尾に2026-10-18T10:56:49ZのRUNNING記録がある（JST換算19:56:49）。GitHub Kaggle workflow 39121167019 はsuccessだが、GitHub workflowの成功はKaggle kernel完了の証拠ではない。確認できたログ記録以降の終了状態は不明。CPU labを安全側で開始しない。
 - Claude向け連絡箱記録は保存済みという過去の記録だが、今回の教材パック追記後にメッセージを配信できたことは確認できていない。前回までのINBOX未読0件・ai-bridge workflow失敗の状態が解消した証拠もなし。Claudeへの共有完了とは扱わない。
 - CI: 教材パック追加のcommit `24d62299c12d0af8b30175d4fb1c8c9fa500281c` に対するCPU lab safety tests run 39122008870 はsuccess。
+
+
+## 2026-10-18 20:17 — 人手確認なしのCPUラボへ変更
+- オーナー指示: 人のラベル確認は不可能。したがって人手確認を開始条件としない。
+- 実装: `cpu_lab/self_learning.py` に機械仮ラベル経路を追加。同じJitsurisモデルで値の並びを3通り変え、予測一致・確信度0.995以上・top1-top2 margin 0.50以上の候補だけ出力する。データ上は `verified=false` のまま、正解ラベルと区別する。
+- `finetune_exp.py` の `FT_CPU_LAB_PSEUDO` オプトインでのみ読み込む。出典/ライセンス/プライバシー/クラス集合/重複/閾値/一致条件を確認し、追加は元訓練行の最大1%。疎特徴ベースラインには仮ラベルを混ぜない。
+- CPU Lab workflowに `automatic_pseudo` と `human_verified` を選ぶ候補モードを追加。手動確認・2 seed逐次。自動昇格しない。
+- CPU lab safety tests run 39122773344 success（2026-10-18T11:19:39Z）。追加ゲート・capテストを含め通過。修正前の失敗はcapテスト期待値の誤りで、最終テストは成功。
+- **まだ学習は開始していない**。未ラベルpoolと分類器checkpointがないため、仮ラベル生成ができない。e-Statデータも未取得。次は利用条件が確認できる個人情報なしpoolを作ること。候補checkpointを得る方法を確かめてからautolabelを実行する。
+- Kaggleログの状態は2026-10-18T10:56:49Z RUNNINGが最新記録。現行状態は直接未確認であり、GPU学習完了とは断定しない。
