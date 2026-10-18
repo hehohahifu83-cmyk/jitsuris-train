@@ -50,7 +50,7 @@ jobs:
           ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           python - <<'PY'
-          import os, subprocess
+          import os, subprocess, textwrap
           from pathlib import Path
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
@@ -73,7 +73,8 @@ jobs:
           results = "今回の実行で FINETUNE_RESULTS.md を更新" if changed else "今回の更新なし（過去結果とは区別）"
           checkpoint = f"GitHub artifact ID {model_id}" if model_id else "未アップロード／存在未確認"
           eval_artifact = f"GitHub artifact ID {eval_id}（{report_count}ファイル）" if eval_id else f"未アップロード（検出JSON {report_count}件）"
-          body = f"""# 最新の学習・結果回収状況
+          body = textwrap.dedent(f"""
+          # 最新の学習・結果回収状況
           
           - GitHub Actions run: [{os.environ['ACTION_RUN_ID']}]({os.environ['ACTION_RUN_URL']})
           - 確認更新時刻 (UTC): {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(timespec='seconds')}
@@ -85,7 +86,7 @@ jobs:
           - 学習済みモデルartifact: {checkpoint}
           
           学習完了はKaggleのCOMPLETE、評価結果の回収は今回のFINETUNE_RESULTS.md更新、モデル回収はjitsuris-model artifactのIDで別々に確認する。`kaggle.request=done`だけではモデルcheckpointが保存されたことを意味しない。
-          """
+          """).lstrip()
           Path("kaggle/STATUS.md").write_text(body, encoding="utf-8")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
               f.write(body + "\n")
