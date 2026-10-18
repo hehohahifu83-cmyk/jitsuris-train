@@ -146,7 +146,7 @@ jobs:
               raise SystemExit("Allowlisted corpus files downloaded but none were extracted")
           print("Copied allowlisted training corpora:", ", ".join(sorted(set(copied))))
           PY
-      - name: Score baseline probe and prepare material receipt
+      - name: Validate the lab and prepare material receipt
         if: steps.gate.outputs.proceed == 'true'
         env:
           SOURCE_RUN_ID: ${{ steps.gate.outputs.source_run_id }}
@@ -157,7 +157,7 @@ jobs:
           mkdir -p prepared
           python -m unittest discover -s cpu_lab/tests -v
           python cpu_lab/material_receipt.py prepare-reviewed --materials cpu_lab/materials/reviewed_replay.jsonl --source-model "hub:intfloat/multilingual-e5-base" --out prepared/material_receipt.json
-      - name: Upload prepared data and baseline evidence
+      - name: Upload reviewed training inputs
         if: steps.gate.outputs.proceed == 'true'
         uses: actions/upload-artifact@v4
         with:
