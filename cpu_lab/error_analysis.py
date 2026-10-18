@@ -39,6 +39,7 @@ def load_reports(root: Path) -> list[dict]:
         match = VALID.fullmatch(path.name)
         assert match
         seed, dataset, condition = match.groups()
+        seed = seed[-1] if seed else "single"
         if dataset not in ALLOWED:
             raise ValueError(f"dataset not allowlisted: {dataset}")
         obj = json.loads(path.read_text(encoding="utf-8"))
@@ -49,7 +50,7 @@ def load_reports(root: Path) -> list[dict]:
             if not isinstance(row, dict) or not {"column", "truth", "prediction"} <= row.keys():
                 raise ValueError(f"malformed report row: {path.name}")
             selected.append({
-                "file": path.name, "seed": seed or "single", "dataset": dataset,
+                "file": path.name, "seed": seed, "dataset": dataset,
                 "condition": condition, "column": str(row["column"]),
                 "truth": str(row["truth"]), "prediction": str(row["prediction"]),
                 "critical": bool(row.get("critical", False)), "confidence": confidence(row),
@@ -101,7 +102,7 @@ def analyze(rows: list[dict]) -> str:
     lines += ["", "### seedをまたいで再発した誤り", ""]
     if repeated:
         for (dataset, condition, column, truth, pred), seeds in sorted(repeated):
-            lines.append(f"- {dataset} / {condition}: `{column}`、{truth}→{pred}（{', '.join(sorted(seeds))}）")
+            lines.append(f"- {dataset} / {condition}: `{column}`、{truth}→{pred}（{', '.join('seed ' + s for s in sorted(seeds))}）")
     else:
         lines.append("同じ列名・正解・予測の誤りは複数seedで確認されませんでした。")
 
