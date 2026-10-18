@@ -33,6 +33,7 @@ NAME = sys.argv[1] if len(sys.argv) > 1 else "intfloat/multilingual-e5-small"
 EPOCHS = float(sys.argv[2]) if len(sys.argv) > 2 else 2
 PREFIX = "query: " if "e5" in NAME else ""
 labels = sorted(set(r[2] for r in rows)); L = {c: i for i, c in enumerate(labels)}
+base_train_rows = list(rows)  # Keep the sparse baseline free of machine pseudo-labels
 replay_path = os.environ.get("FT_CPU_LAB_REPLAY")
 pseudo_path = os.environ.get("FT_CPU_LAB_PSEUDO")
 if replay_path and pseudo_path:
@@ -44,7 +45,7 @@ if replay_path:
     print(f"CPU lab replay: {len(replay_rows)} human-verified rows from {replay_path}", flush=True)
 if pseudo_path:
     from cpu_lab.self_learning import load_pseudo_replay
-    base_rows = len(rows)
+    base_rows = len(base_train_rows)
     pseudo_rows = load_pseudo_replay(pseudo_path, set(labels), base_rows=base_rows)
     rows = rows + pseudo_rows
     print(f"CPU lab pseudo replay: {len(pseudo_rows)} unverified rows (capped at 1% of {base_rows}) from {pseudo_path}", flush=True)
@@ -174,7 +175,7 @@ def probs(rs):
     return np.vstack(out)
 from sklearn.linear_model import LogisticRegression
 from train3 import mat
-lr = LogisticRegression(C=8, max_iter=3000).fit(mat(rows), np.array([r[2] for r in rows]))
+lr = LogisticRegression(C=8, max_iter=3000).fit(mat(base_train_rows), np.array([r[2] for r in base_train_rows]))
 assert list(lr.classes_) == labels
 if os.environ.get("FT_EVAL") == "dev220":
     tests = {k: v for k, v in tests.items() if k == "開発用220"}
