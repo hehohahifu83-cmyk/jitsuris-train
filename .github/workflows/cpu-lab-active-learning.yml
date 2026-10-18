@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_cpu:
-        description: CPUで検証済み教材を使って学習する場合だけ yes
+        description: 候補学習を実行する場合だけ yes
         required: true
         type: choice
         options:
@@ -77,13 +77,14 @@ jobs:
           FT_FREEZE_EMB: '1'
           FT_SEED: ${{ matrix.seed }}
           TOKENIZERS_PARALLELISM: 'false'
+          REPLAY_PATH: ${{ inputs.replay_path }}
         run: |
           set -euo pipefail
           mkdir -p "cpu_results/seed-${{ matrix.seed }}"
           /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 2 \
             2>&1 | tee "cpu_results/seed-${{ matrix.seed }}/train.log"
           cp FINETUNE_RESULTS.md "cpu_results/seed-${{ matrix.seed }}/"
-          cp "$FT_CPU_LAB_REPLAY" "cpu_results/seed-${{ matrix.seed }}/replay-used.jsonl"
+          cp "$REPLAY_PATH" "cpu_results/seed-${{ matrix.seed }}/replay-used.jsonl"
           find . -maxdepth 1 -type f \
             \( -name 'probs_*.json' -o -name 'errors_*.json' \) \
             -exec cp {} "cpu_results/seed-${{ matrix.seed }}/" \;
