@@ -146,3 +146,7 @@
     [仕事8] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=True
     [仕事8] peak GPU memory 3.5 GiB; training loop 497s
     [仕事7] peak GPU memory 5.4 GiB; training loop 824s
+2026-10-18T04:50:27Z push の返事：Kernel version 15 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-18T04:50:57Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-18T04:50:58Z train を依頼：hfmodel/intfloat__multilingual-e5-small 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_SEED=1 FT_COMPRESS=1 FT_KEEP=1 ++ FT_SEED=2 FT_COMPRESS= FT_KEEP= ++ FT_SEED=3 FT_COMPRESS= FT_KEEP= ++ FT_FREEZE_EMB=1 ++ FT_FREEZE_EMB=1 FT_SEED=2 FT_COMPRESS= FT_KEEP= ++ FT_LR=1e-4 FT_COMPRESS= FT_KEEP= ++ FT_LR=1e-4 FT_FREEZE_EMB=1 FT_COMPRESS= FT_KEEP= ++ FT_COMPRESS_TOPK=60000 FT_KEEP=
+送ったモデル：492M	hfmodel・束の中のモデルのファイル数 55
