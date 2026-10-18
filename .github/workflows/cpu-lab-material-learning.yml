@@ -113,27 +113,50 @@ jobs:
           python -m pip install --upgrade pip kaggle
           case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
           mkdir -p /tmp/jitsuris-data
-          kaggle datasets download -d jitsurio/jitsuris-data -p /tmp/jitsuris-data --unzip
           python - <<'PY'
+          import subprocess
           from pathlib import Path
-          import shutil
-          root = Path("/tmp/jitsuris-data")
-          names = (
+          from kaggle.api.kaggle_api_extended import KaggleApi
+
+          dataset = "jitsurio/jitsuris-data"
+          allowed = {
               "real_labels.jsonl", "real_labels_biz.jsonl", "real_labels_biz2.jsonl",
               "real_labels_direct.jsonl", "real_labels_jp.jsonl", "real_labels_jp2.jsonl",
-          )
+          }
+          api = KaggleApi()
+          api.authenticate()
+          page = api.dataset_list_files(dataset)
+          names = []
+          while page:
+              for item in page.files:
+                  name = item.name
+                  if any(name == f"materials/{base}" or name.endswith(f"/materials/{base}") for base in allowed):
+                      names.append(name)
+              token = getattr(page, "next_page_token", None)
+              if not token:
+                  break
+              page = api.dataset_list_files(dataset, page_token=token)
+          if not names:
+              raise SystemExit("No allowlisted real_labels*.jsonl training corpora are listed")
+          for name in names:
+              subprocess.run(
+                  ["kaggle", "datasets", "download", "-d", dataset, "-f", name,
+                   "-p", "/tmp/jitsuris-data", "--unzip"],
+                  check=True,
+              )
+          root = Path("/tmp/jitsuris-data")
           copied = []
           for name in names:
-              matches = list(root.glob(f"**/materials/{name}"))
+              base = name.rsplit("/", 1)[-1]
+              matches = list(root.glob(f"**/materials/{base}"))
               if matches:
-                  source = matches[0]
-                  dest = Path("materials") / name
+                  dest = Path("materials") / base
                   dest.parent.mkdir(parents=True, exist_ok=True)
-                  shutil.copyfile(source, dest)
-                  copied.append(name)
+                  dest.write_bytes(matches[0].read_bytes())
+                  copied.append(base)
           if not copied:
-              raise SystemExit("No allowlisted real_labels*.jsonl training corpora were found")
-          print("Copied allowlisted training corpora:", ", ".join(copied))
+              raise SystemExit("Allowlisted corpus files downloaded but none were extracted")
+          print("Copied allowlisted training corpora:", ", ".join(sorted(set(copied))))
           PY
       - name: Score baseline probe and prepare material receipt
         if: steps.gate.outputs.proceed == 'true'
