@@ -33,6 +33,12 @@ NAME = sys.argv[1] if len(sys.argv) > 1 else "intfloat/multilingual-e5-small"
 EPOCHS = float(sys.argv[2]) if len(sys.argv) > 2 else 2
 PREFIX = "query: " if "e5" in NAME else ""
 labels = sorted(set(r[2] for r in rows)); L = {c: i for i, c in enumerate(labels)}
+replay_path = os.environ.get("FT_CPU_LAB_REPLAY")
+if replay_path:
+    from cpu_lab.self_learning import load_approved_replay
+    replay_rows = load_approved_replay(replay_path, set(labels))
+    rows = rows + replay_rows
+    print(f"CPU lab replay: {len(replay_rows)} human-verified rows from {replay_path}", flush=True)
 tok = AutoTokenizer.from_pretrained(NAME)
 model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **({"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0} if os.environ.get("FT_NO_DROPOUT") == "1" else {}))  # FT_NO_DROPOUT は検査用（束の分け方を変えても損失が同じになるかを比べる）
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
