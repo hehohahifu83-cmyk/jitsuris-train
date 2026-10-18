@@ -75,7 +75,10 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     if [ -n "$f" ]; then tail -n +2 "$f" | sed 's/^### /### Kaggle GPU /' >> ../FINETUNE_RESULTS.md; fi
     { find /tmp/out -name '*.log' -exec grep -aoE 'device [a-z]+|Tesla [A-Z0-9]+|name, memory[^"]*|[A-Za-z ]*GPU[^"]{0,60}' {} \; | head -5; echo ---; find /tmp/out -name '*.log' -exec tail -c 3000 {} \; ; } > last_run_tail.txt 2>/dev/null || true
     mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && cp -r /tmp/out/out/ft_out /tmp/model/ || true
+    mkdir -p /tmp/eval_reports
+    find /tmp/out -type f \( -name 'errors_*.json' -o -name 'probs_*.json' \) -exec cp {} /tmp/eval_reports/ \; 2>/dev/null || true
     echo done > kaggle.request
 else
   echo fetch > kaggle.request   # まだ終わっていない。30分ごとの定期実行が取りに行く
 fi
+
