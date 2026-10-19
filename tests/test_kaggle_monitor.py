@@ -28,9 +28,13 @@ class KaggleMonitorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "MONITOR.json"
             record = update_monitor(path, cycle_id="cycle-a", observed_at="t1", state="COMPLETE",
-                                   raw="KernelWorkerStatus.COMPLETE", action_run_id="42")
+                                   raw="KernelWorkerStatus.COMPLETE", action_run_id="42",
+                                   execution_evidence=["evaluation results recovered"])
             self.assertIsNone(record["first_running_at"])
             self.assertEqual(record["first_complete_at"], "t1")
+            self.assertTrue(record["training_execution_confirmed"])
+            self.assertEqual(record["execution_confirmed_at"], "t1")
+            self.assertEqual(record["execution_evidence"], ["evaluation results recovered"])
 
     def test_new_cycle_resets_lifecycle_timestamps(self):
         with tempfile.TemporaryDirectory() as tmp:
