@@ -375,3 +375,13 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - ft合計: wrong 64、unknown 44、重大な数値種類誤り6。blend70合計: wrong 57、unknown 54、重大5。blend70はこの固定試験ではwrongと重大が各7件・1件減る一方、unknownが10件増えたため採用判断は保留。unknown理由はother_class、日付根拠不足、閾値未達など。高確信度の誤りもあり、確信度だけでは重大誤りを防げていない。
 - blend70の重大誤り5件はdev220のpurchase order by customer（id→quantity）、generalのitemfield14（date→id）、business2のfine・sales-goods-svcs_ventes-biens-srvs・miscellaneous_divers（amount→quantity）。行別artifactに値・兄弟列・出典がないため、原因やラベル誤りは未確定。次の一手はLABEL_GUIDEと公開元文脈で5件を監査し、疑義があれば2人の独立確認を得る。ラベルはまだ変更しない。
 - Kaggle学習依頼は追加していない。blind setおよびセット3・5・7は閲覧・評価していない。監査一覧: eval_reports/checkpoint-39241962638/ERROR_REASON_AUDIT.md。
+
+
+## ChatGPT 更新（2026-10-19、重大誤り監査とKaggle状態確認）
+- 保存済みseed 1の推論評価に出た重大誤りを、出典・表文脈・ラベル定義と照合し、列値を記録せず `cpu_lab/reports/error-analysis-run-39241962638.md` に追記した。
+- `purchase order by customer` はSAP公開スキーマ上のidで、評価値生成もID形式。quantityへのラベル変更は根拠なし。英国の `fine` は駐車違反金でamountが妥当。カナダの2例は金額列で、同表に金額の単位・倍率列があるが、既存のUNIT列抽出は完全一致見出し限定のため `Amt-units_Mnt-unite` を拾わないことを確認した。これが誤分類の原因かは未検証。
+- `itemfield14` はGittablesの `classmark.parquet`、ラベルdateだが、列名・兄弟見出しが汎用名で、確認した5値は一般的な日付・年月・年形式でない。誤ラベルとは断定せず、独立した先生2人の確認待ち。
+- 次の一要因実験に向け、`encoder_context.py` のUNIT見出し判定に `Amt-units_Mnt-unite` 型の複合見出しを追加し、合成fixtureテストを1件足した。GitHub main更新コミットはコード `37c2706`、テスト `158713c`。正規表現の4 assertionはローカルで成功。Pythonのfocused unittest全件はまだ未実行。今回のコード変更を含むKaggle学習は未実行。
+- Kaggle Version 23（2026-10-19 06:56:06Z、e5-base 2周、seed 1/2、`FT_CTX_UNIT=1`）はKAGGLE_LOG.md上で11:05:35ZにCOMPLETE。仕事1/2の学習ループ566/576秒、GPU最大5.5GiB。結果はFINETUNE_RESULTS.mdに追記済み。Progressに残っていた07:16Z QUEUEDは古い状態だったため、kaggle/PROGRESS.mdを11:05Z完了へ更新した。
+- 最新のseed 1/2「微調整だけ」結果：開発用220 96.8/97.7%、一般 91.2/92.9%、業務 92.2/92.0%、業務2 95.9/95.8%、日本の調達 98.9/98.9%。重大誤りは開発1/1、一般1/1、業務1/4、業務2 3/3、調達0/0（seed1/2）。数値差はseed変動と並べて解釈し、順位を断定しない。
+- 次の順序：まずencoder_contextの既存Pythonテストを全件実行し、Kaggle現行ログ・requestの状態を再確認。完了済み基準に今回の見出し抽出修正だけを加えた同条件seed 1/2比較を計画する。学習依頼はまだ変更していない。blind set・セット3/5/7は未使用。
