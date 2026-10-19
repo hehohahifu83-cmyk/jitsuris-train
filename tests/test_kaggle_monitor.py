@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from kaggle_monitor import latest_training_cycle, parse_status, update_monitor
+from kaggle_monitor import latest_training_cycle, parse_status, render_progress, update_monitor
 
 
 class KaggleMonitorTests(unittest.TestCase):
@@ -46,6 +46,22 @@ class KaggleMonitorTests(unittest.TestCase):
             self.assertIsNone(record["first_running_at"])
             self.assertEqual(record["cycle_id"], "cycle-b")
             self.assertEqual(len(record["observations"]), 1)
+
+
+    def test_render_progress_uses_latest_state_and_identifies_queue(self):
+        body = render_progress(state="QUEUED", observed_at="t1", raw="KernelWorkerStatus.QUEUED",
+                               cycle_id="cycle-a", action_run_id="run-1")
+        self.assertIn("判定: GPU割当待ち", body)
+        self.assertIn("観測時刻 (UTC): t1", body)
+        self.assertIn("学習依頼ID: cycle-a", body)
+        self.assertIn("確認run: run-1", body)
+
+    def test_render_progress_does_not_reuse_prior_complete_after_unknown(self):
+        body = render_progress(state="UNKNOWN", observed_at="t2", raw="authentication failed",
+                               cycle_id="cycle-a", action_run_id="run-2")
+        self.assertIn("判定: 未確認", body)
+        self.assertNotIn("Kaggle完了", body)
+        self.assertIn("authentication failed", body)
 
     def test_extracts_latest_timestamped_training_request(self):
         log = "2026-01-01T00:00:00Z train を依頼：old\n2026-01-02T00:00:00Z train を依頼：new\n"
