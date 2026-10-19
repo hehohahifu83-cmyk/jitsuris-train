@@ -113,3 +113,8 @@ def latest_training_cycle(log_text: str) -> str:
     """Use the timestamped Kaggle push record as a stable request identifier."""
     matches = re.findall(r"^(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ) train を依頼：", log_text, re.M)
     return matches[-1] if matches else ""
+
+
+def is_unsubmitted_request(*, event_name: str, request: str, previous_cycle: str, current_cycle: str) -> bool:
+    """A new train push without a fresh Kaggle submission must not inherit stale status."""
+    return event_name == "push" and request.startswith("train ") and current_cycle == previous_cycle
