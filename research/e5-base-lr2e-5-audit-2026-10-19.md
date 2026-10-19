@@ -49,3 +49,12 @@
 - 指標原本: FINETUNE_RESULTS.md（2026-10-18 21:15 と23:23の節）
 - ケースartifact: eval artifact 12154383249 / ERROR_ANALYSIS.md（指定5セットのftセクションのみ）
 - model artifact 12154602284（評価artifactとは別。sha256 e96de0f73485f9becb87d4a4dbed01594ca2dc5b817814cf0f5761505a270844）
+
+
+### 2026-10-19追記：個票と公式指標の差の再確認
+
+- `job1_probs_business_ft.json` の `prediction=="unknown"` 26行と公式 `unknown=12` の差は、そのまま集計不整合を意味しない。`truth=="other"` かつ予測が `unknown` の行は、`score_real` では正しい見送り `other_ok` に入り、通常の `unknown` には数えない。この区別が旧ファイルで見えにくかった。
+- 一方、旧 `errors_*.json` は `error_rows` が評価セットのループ外で初期化されていたため、前セットの行を後のファイルへ累積していた。例えば business の85行と当該セット単独の公式誤り30件との差は、確かな個票一覧として扱えない。集計JSONを保存するより前にセット単位で作り直す修正を入れた。
+- 新しい評価出力は schema 2 とし、`raw_prediction`、`guarded_prediction`、公式スコア上の `outcome` を別記する。書出し前に行記録を `score_real` の公式集計へ照合し、不一致なら停止する。`abstain_eval.py` は schema 1 と予測フィールドの不一致を拒否する。
+- 変更後のローカル検証：評価記録 4件、棄却分析 8件、Python compile がすべて通過。CIも変更対象で起動する設定だが、このコネクタから最新のpush run結果は照会できていない。
+- この修正で過去の schema 1 artifact は遡及的に直らない。現runの個票による原因監査と閾値採用は保留し、次の学習実行でschema 2 artifactを生成・照合してから再開する。旧unknown件数の差だけを理由に不整合と判定していた記述は上記のとおり訂正する。
