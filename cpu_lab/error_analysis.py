@@ -53,6 +53,7 @@ def load_reports(root: Path) -> list[dict]:
                 "file": path.name, "seed": seed, "dataset": dataset,
                 "condition": condition, "column": str(row["column"]),
                 "truth": str(row["truth"]), "prediction": str(row["prediction"]),
+                "decision_reason": str(row.get("decision_reason") or "none"),
                 "critical": bool(row.get("critical", False)), "confidence": confidence(row),
             })
     return selected
@@ -113,12 +114,19 @@ def analyze(rows: list[dict]) -> str:
         lines.append("同じ列名・正解・予測の誤りは複数seedで確認されませんでした。")
 
     lines += ["", "### 全ての誤り・unknown（評価例。学習に転用しない）", "",
-              "| 区分 | セット | 条件 | seed | 列名 | 正解 | 予測 | 上位確率 | 重大 |",
+              "| 区分 | セット | 条件 | seed | 列名 | 正解 | 予測 | 理由 | 上位確率 | 重大 |",
               "|---|---|---|---:|---|---|---|---:|---:|"]
     for kind, r in sorted(cases, key=lambda item: (item[1]["dataset"], item[1]["condition"], item[1]["seed"], item[0], item[1]["column"].casefold())):
         col = r["column"].replace("|", "\\|").replace("`", "'")
         p = f"{r['confidence']:.4f}" if r["confidence"] is not None else "n/a"
         lines.append(f"| {kind} | {r['dataset']} | {r['condition']} | {r['seed']} | {col} | {r['truth']} | {r['prediction']} | {p} | {'yes' if r['critical'] else 'no'} |")
+
+    reason_counts = Counter(r["decision_reason"] for _, r in cases if r["prediction"] == "unknown")
+    lines += ["", "### unknown の判定理由", ""]
+    if reason_counts:
+        lines.extend(f"- {reason}: {count}件" for reason, count in sorted(reason_counts.items()))
+    else:
+        lines.append("unknown の行はありません。")
 
     lines += ["", "## 原因仮説（断定ではない）", ""]
     numeric_n = sum(n for (a, b), n in sum((c for (d, cond), c in confusions.items()), Counter()).items() if a in NUMERIC and b in NUMERIC)

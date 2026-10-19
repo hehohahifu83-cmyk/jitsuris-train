@@ -22,7 +22,8 @@ def classify_outcome(truth: str, prediction: str) -> str:
 
 def build_record(*, index: int, dataset: str, seed: int | str,
                  condition: str, column: str, truth: str,
-                 guarded_prediction: str, top3: list[dict[str, Any]]) -> dict[str, Any]:
+                 guarded_prediction: str, top3: list[dict[str, Any]],
+                 decision_reason: str | None = None) -> dict[str, Any]:
     raw_prediction = str(top3[0]["label"]) if top3 else None
     outcome = classify_outcome(str(truth), str(guarded_prediction))
     critical = (outcome == "wrong" and truth in NUMERIC
@@ -36,6 +37,7 @@ def build_record(*, index: int, dataset: str, seed: int | str,
         "truth": str(truth),
         "raw_prediction": raw_prediction,
         "guarded_prediction": str(guarded_prediction),
+        "decision_reason": decision_reason,
         # Legacy field retained for existing readers; it always means the scored final label.
         "prediction": str(guarded_prediction),
         "outcome": outcome,

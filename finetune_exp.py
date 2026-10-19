@@ -21,7 +21,7 @@ features.USE_NUM2 = True  # 今の仕組み側は v8 と同じ（数字の値特
 from encoder_exp import rows, tests, text
 from llm_baseline import score_real
 from evaluation_records import assert_metrics_match, build_record, is_issue
-from train3 import decide
+from train3 import decide_with_details
 
 seed_text = os.environ.get("FT_SEED")
 if seed_text is None:
@@ -232,24 +232,27 @@ for tag, w in conditions:
     res = []
     for tn, te in tests.items():
         P = w * model_probs[tn] + (1 - w) * lr_probs[tn]
-        pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
+        details = decide_with_details(labels, P, te)
+        pred = [item["guarded_prediction"] for item in details]
         truth_labels = [r[2] for r in te]
         s = score_real(pred, truth_labels)
         res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}" + (f" その他見送り{s['other_ok']}/{s['other_ok'] + s['other_ng']}" if s['other_ok'] + s['other_ng'] else ""))
         top = np.argsort(P, axis=1)[:, ::-1][:, :3]
         prob_rows = []
-        for i, (row, truth, chosen) in enumerate(zip(te, truth_labels, pred)):
+        for i, (row, truth, detail) in enumerate(zip(te, truth_labels, details)):
+            chosen = detail["guarded_prediction"]
             top3 = [{"label": labels[int(j)], "probability": round(float(P[i, j]), 6)} for j in top[i]]
             prob_rows.append(build_record(
                 index=i, dataset=safe_test_name(tn), seed=eval_seed,
                 condition=condition_names[tag], column=normalized_header(row[0]),
                 truth=truth, guarded_prediction=chosen, top3=top3,
+                decision_reason=detail["decision_reason"],
             ))
         # Fail the run before writing artifacts if row-level records cannot reproduce the official score.
         assert_metrics_match(prob_rows, s)
         error_rows = [row for row in prob_rows if is_issue(row)]
         suffix = f"{safe_test_name(tn)}_{condition_names[tag]}"
-        metadata = {"schema_version": 2, "test": tn, "dataset": safe_test_name(tn),
+        metadata = {"schema_version": 3, "test": tn, "dataset": safe_test_name(tn),
                     "seed": eval_seed, "condition": tag, "condition_id": condition_names[tag]}
         with open(f"probs_{suffix}.json", "w", encoding="utf-8") as f:
             json.dump({**metadata, "rows": prob_rows}, f, ensure_ascii=False, separators=(",", ":"))

@@ -132,10 +132,10 @@ def bad_ymd8(values):
     return ok < len(v8) / 2
 
 
-def guard(pred, probs_sorted, values):
-    """pred：一番の答え。probs_sorted：[(種類, 確率)] の大きい順。values：値の一覧"""
-    if pred == "other":  # 15種類のどれにも当たらない列（測定値・座標・URL など）は決めずに人に回す（v6〜）
-        return "unknown"
+def guard_with_reason(pred, probs_sorted, values):
+    """Return (final label, reason code); reason is None when the label is retained."""
+    if pred == "other":
+        return "unknown", "other_class"
     s = dict(zip(STAT_NAMES, value_stats(values))) if values else None
     has = s is not None and s["empty"] < 0.999
     if has:
@@ -144,16 +144,19 @@ def guard(pred, probs_sorted, values):
             old = s["date"] + s["datetime"]
             top = probs_sorted[0][1] if probs_sorted else 0.0
             if not (max(old, strong) >= 0.5 or (max(old, strong) + year >= 0.5 and top >= YEAR_CONFIDENCE)):
-                return "unknown"
-            if bad_ymd8(values):  # 10160000 のような8桁のコードを日付と取り違えない（v7〜）
-                return "unknown"
-        # 数の読み方は guard の NUM_LOOSE だけを使う（features.py の NUM_RE は『1,,2』『1,234,56』のような壊れた区切りも数にするため、v9.1 から使わない）
+                return "unknown", "date_value_evidence_low"
+            if bad_ymd8(values):
+                return "unknown", "date_invalid_8digit"
         loose = num_loose_share(values) if pred in ("amount", "quantity", "rate") else 0.0
         if pred in ("amount", "quantity", "rate") and loose < 0.5:
-            return "unknown"
-    # 上位2つがどちらも数字の種類で、差が小さいときは決めない
+            return "unknown", "numeric_values_not_parseable"
     if len(probs_sorted) > 1:
         (a, pa), (b, pb) = probs_sorted[0], probs_sorted[1]
         if a in NUMERIC and b in NUMERIC and pa - pb < 0.25:
-            return "unknown"
-    return pred
+            return "unknown", "numeric_top2_too_close"
+    return pred, None
+
+
+def guard(pred, probs_sorted, values):
+    """Backward-compatible label-only wrapper."""
+    return guard_with_reason(pred, probs_sorted, values)[0]

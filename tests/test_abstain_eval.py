@@ -12,7 +12,8 @@ from evaluation_records import build_record
 def row(truth, pred, p1):
     return build_record(index=0, dataset="test", seed=1, condition="blend70",
                         column="x", truth=truth, guarded_prediction=pred,
-                        top3=[{"label": pred, "probability": p1}])
+                        top3=[{"label": pred, "probability": p1}],
+                        decision_reason="fixture_abstention" if pred == "unknown" else None)
 
 
 class AbstainTest(unittest.TestCase):
@@ -32,7 +33,7 @@ class AbstainTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             for name, rows in (("a", [row("amount", "quantity", 0.7), row("date", "date", 0.99)]),
                                ("b", [row("id", "amount", 0.8), row("id", "id", 0.97)])):
-                json.dump({"schema_version": 2, "test": name, "condition": "x", "rows": rows}, open(Path(d, f"probs_{name}_blend70.json"), "w"))
+                json.dump({"schema_version": 3, "test": name, "condition": "x", "rows": rows}, open(Path(d, f"probs_{name}_blend70.json"), "w"))
             tests = ab.load(d, "blend70")
             self.assertEqual(ab.smallest_safe_threshold(tests, ["a"]), 0.71)
             self.assertEqual(ab.smallest_safe_threshold(tests, ["a", "b"]), 0.81)
@@ -44,14 +45,14 @@ class AbstainTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             json.dump({"test": "t", "condition": "x", "rows": [row("id", "id", 0.99)]},
                       open(Path(d, "probs_t_blend70.json"), "w"))
-            with self.assertRaisesRegex(ValueError, "schema_version=2"):
+            with self.assertRaisesRegex(ValueError, "schema_version=3"):
                 ab.load(d, "blend70")
 
     def test_prediction_alias_mismatch_is_refused(self):
         item = row("amount", "amount", 0.9)
         item["prediction"] = "unknown"
         with tempfile.TemporaryDirectory() as d:
-            json.dump({"schema_version": 2, "test": "t", "condition": "x", "rows": [item]},
+            json.dump({"schema_version": 3, "test": "t", "condition": "x", "rows": [item]},
                       open(Path(d, "probs_t_blend70.json"), "w"))
             with self.assertRaisesRegex(ValueError, "alias differs"):
                 ab.load(d, "blend70")
@@ -65,7 +66,7 @@ class AbstainTest(unittest.TestCase):
     def test_kaggle_prefixed_names_and_multiple_runs(self):
         with tempfile.TemporaryDirectory() as d:
             for run, thr_row in (("job1", row("id", "amount", 0.8)), ("job2", row("id", "amount", 0.6))):
-                json.dump({"schema_version": 2, "test": "t", "condition": "x", "rows": [thr_row, row("id", "id", 0.99)]}, open(Path(d, f"{run}_probs_t_blend70.json"), "w"))
+                json.dump({"schema_version": 3, "test": "t", "condition": "x", "rows": [thr_row, row("id", "id", 0.99)]}, open(Path(d, f"{run}_probs_t_blend70.json"), "w"))
             json.dump({"test": "t", "condition": "x", "rows": []}, open(Path(d, "job1_errors_t_blend70.json"), "w"))  # errors は読まない
             self.assertEqual(ab.runs(d, "blend70"), ["job1", "job2"])
             with self.assertRaises(ValueError):   # 置き場が複数あるのに指定しない → 取り違えを防いで止まる
@@ -76,7 +77,7 @@ class AbstainTest(unittest.TestCase):
 
     def test_single_prefixed_run_is_found_without_naming_it(self):
         with tempfile.TemporaryDirectory() as d:
-            json.dump({"schema_version": 2, "test": "t", "condition": "x", "rows": [row("id", "id", 0.99)]}, open(Path(d, "report_probs_t_ft.json"), "w"))
+            json.dump({"schema_version": 3, "test": "t", "condition": "x", "rows": [row("id", "id", 0.99)]}, open(Path(d, "report_probs_t_ft.json"), "w"))
             self.assertEqual(ab.runs(d, "ft"), ["report"])
             self.assertEqual(list(ab.load(d, "ft")), ["t"])
             self.assertEqual(ab.runs(d, "blend70"), [])

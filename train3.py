@@ -16,7 +16,7 @@ from eval_values import eval_column
 import features
 from features import DIM_CTX, vectorize
 from gen import CLASSES, column, make_train2, vary_case, to_fullwidth
-from guard import guard
+from guard import guard_with_reason
 from personal_set import PERSONAL
 from rules import rule_by_header, rule_by_values
 
@@ -151,20 +151,34 @@ class MLP:
 
 
 # ---------- 評価 ----------
-def decide(classes, P, rows, use_guard=True, thr=0.5, Ph=None):
-    """Ph：列名だけ（値なし）で判定した確率。数字の種類で、列名だけの答えと食い違ったら「不明」（見張り2）"""
-    out = []
+def decide_with_details(classes, P, rows, use_guard=True, thr=0.5, Ph=None):
+    """Return labels plus machine-readable reason codes without changing decisions."""
+    details = []
     for i, (row, p) in enumerate(zip(rows, P)):
         order = sorted(zip(classes, p), key=lambda x: -x[1])
-        lab = order[0][0] if order[0][1] >= thr else "unknown"
-        if use_guard and lab != "unknown":
-            lab = guard(lab, order, row[1])
+        raw = order[0][0] if order else None
+        reason = None
+        if not order or order[0][1] < thr:
+            lab = "unknown"
+            reason = "probability_below_threshold"
+        else:
+            lab = order[0][0]
+            if use_guard:
+                lab, reason = guard_with_reason(lab, order, row[1])
         if Ph is not None and lab in NUMERIC and row[0]:
             hl = classes[int(np.argmax(Ph[i]))]
             if hl in NUMERIC and hl != lab:
                 lab = "unknown"
-        out.append(lab)
-    return out
+                reason = "header_numeric_disagreement"
+        details.append({"raw_prediction": raw, "guarded_prediction": lab,
+                        "decision_reason": reason})
+    return details
+
+
+def decide(classes, P, rows, use_guard=True, thr=0.5, Ph=None):
+    """Backward-compatible label-only decision API."""
+    return [item["guarded_prediction"]
+            for item in decide_with_details(classes, P, rows, use_guard, thr, Ph)]
 
 
 def tally(pred, truth):

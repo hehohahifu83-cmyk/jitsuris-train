@@ -39,8 +39,8 @@ def load(dir_, cond, run=None):
             raise RuntimeError("blind test sets must not be evaluated")
         with open(path, encoding="utf-8") as f:
             d = json.load(f)
-        if d.get("schema_version") != 2:
-            raise ValueError(f"unsupported evaluation schema in {os.path.basename(path)}; regenerate with schema_version=2")
+        if d.get("schema_version") != 3:
+            raise ValueError(f"unsupported evaluation schema in {os.path.basename(path)}; regenerate with schema_version=3")
         rows = d.get("rows")
         if not isinstance(rows, list):
             raise ValueError(f"missing rows array: {os.path.basename(path)}")
@@ -49,6 +49,13 @@ def load(dir_, cond, run=None):
                 raise ValueError(f"malformed evaluation row: {os.path.basename(path)}")
             if row.get("prediction") != row.get("guarded_prediction"):
                 raise ValueError(f"legacy prediction alias differs from guarded prediction: {os.path.basename(path)}")
+            reason = row.get("decision_reason")
+            if reason is not None and not isinstance(reason, str):
+                raise ValueError(f"malformed decision reason: {os.path.basename(path)}")
+            if row.get("guarded_prediction") == "unknown" and not reason:
+                raise ValueError(f"unknown prediction is missing a decision reason: {os.path.basename(path)}")
+            if row.get("guarded_prediction") != "unknown" and reason is not None:
+                raise ValueError(f"accepted prediction has a decision reason: {os.path.basename(path)}")
             top3 = row.get("top3") or []
             raw = top3[0].get("label") if top3 else None
             if row.get("raw_prediction") != raw:
