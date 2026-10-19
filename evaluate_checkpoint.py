@@ -154,8 +154,9 @@ def run(checkpoint_root: str, prior_root: str, output_root: str) -> None:
         "- lower top-3 ranks may swap only when rank-aligned probabilities stay within tolerance",
         f"- top-3 probabilities must differ by at most {TOLERANCE}",
         "- schema version 3 records include decision reasons; column values are not saved.",
-        "", "| dataset | condition | accuracy | wrong | unknown | critical | n | max drift |",
+        "", "| dataset | condition | accuracy | wrong | unknown | critical | n (truth other excluded) | max drift |",
         "|---|---:|---:|---:|---:|---:|---:|---:|", *metric_lines, "",
+        "n excludes rows whose truth is other; all row records were included in parity checks.",
         "All ten comparisons passed."]
     (output / "CHECKPOINT_EVALUATION.md").write_text("\n".join(report) + "\n", encoding="utf-8")
 

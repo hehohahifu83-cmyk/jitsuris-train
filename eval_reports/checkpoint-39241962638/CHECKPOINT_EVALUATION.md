@@ -8,7 +8,7 @@
 - top-3 probabilities must differ by at most 0.005
 - schema version 3 records include decision reasons; column values are not saved.
 
-| dataset | condition | accuracy | wrong | unknown | critical | n | max drift |
+| dataset | condition | accuracy | wrong | unknown | critical | n (truth other excluded) | max drift |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | dev220 | ft | 96.8% | 7 | 0 | 1 | 220 | 0.000005 |
 | dev220 | blend70 | 96.8% | 7 | 0 | 1 | 220 | 0.000906 |
@@ -20,5 +20,7 @@
 | business2 | blend70 | 95.9% | 20 | 17 | 3 | 913 | 0.001293 |
 | japan_procurement | ft | 98.9% | 0 | 1 | 0 | 92 | 0.000000 |
 | japan_procurement | blend70 | 98.9% | 0 | 1 | 0 | 92 | 0.000320 |
+
+n excludes rows whose truth is other; all row records were included in parity checks.
 
 All ten comparisons passed.
