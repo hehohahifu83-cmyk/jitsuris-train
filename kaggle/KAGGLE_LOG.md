@@ -419,3 +419,4 @@
     [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
     [仕事1] peak GPU memory 5.5 GiB; training loop 581s
     [仕事2] peak GPU memory 5.5 GiB; training loop 584s
+2026-10-19T16:25:52Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
