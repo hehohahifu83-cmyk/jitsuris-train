@@ -12,6 +12,7 @@ CONDITIONS = ("sparse", "ft", "blend50", "blend60", "blend70")
 SEEDS = ("1", "2")
 FILE_RE = re.compile(r"job([12])_probs_(dev220|general|business|business2|japan_procurement)_(sparse|ft|blend50|blend60|blend70)\.json\Z")
 ERROR_FILE_RE = re.compile(r"job[12]_errors_(?:dev220|general|business|business2|japan_procurement)_(?:sparse|ft|blend50|blend60|blend70)\.json\Z")
+NUMERIC_LABELS = {"date", "amount", "quantity", "rate", "id"}
 
 
 def is_reported_error(row: dict) -> bool:
@@ -74,8 +75,10 @@ def validate_report_dir(root: Path, *, datasets=DATASETS, seeds=SEEDS, condition
                 expected_outcome = "wrong"
             if row["outcome"] != expected_outcome:
                 raise ValueError(f"outcome/label mismatch in {path.name}, row {rid}")
-            if row["critical"] and expected_outcome != "wrong":
-                raise ValueError(f"critical flag on non-error in {path.name}, row {rid}")
+            expected_critical = (expected_outcome == "wrong" and truth in NUMERIC_LABELS
+                                 and pred in NUMERIC_LABELS and truth != pred)
+            if bool(row["critical"]) != expected_critical:
+                raise ValueError(f"critical flag/labels mismatch in {path.name}, row {rid}")
             identity_key = (dataset, rid)
             signature = (row["column"], truth)
             if identity_key in identity and identity[identity_key] != signature:
