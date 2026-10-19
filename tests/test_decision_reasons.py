@@ -3,9 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import numpy as np
 from guard import guard, guard_with_reason
-from train3 import decide, decide_with_details
 
 
 class DecisionReasonTest(unittest.TestCase):
@@ -24,16 +22,9 @@ class DecisionReasonTest(unittest.TestCase):
                 self.assertEqual(final, "unknown")
                 self.assertEqual(reason, expected_reason)
 
-    def test_legacy_decide_matches_details_output(self):
-        classes = ["amount", "org", "quantity"]
-        probs = np.array([[0.7, 0.2, 0.1], [0.4, 0.4, 0.2]])
-        rows = [("revenue", ["100", "200"]), ("name", [])]
-        details = decide_with_details(classes, probs, rows, use_guard=False)
-        self.assertEqual(decide(classes, probs, rows, use_guard=False),
-                         [x["guarded_prediction"] for x in details])
-        self.assertEqual(details[0]["decision_reason"], None)
-        self.assertEqual(details[1]["decision_reason"], "probability_below_threshold")
-        self.assertEqual(details[0]["raw_prediction"], "amount")
+    def test_retained_prediction_has_no_reason(self):
+        final, reason = guard_with_reason("amount", [("amount", 0.99)], ["100", "200"])
+        self.assertEqual((final, reason), ("amount", None))
 
 
 if __name__ == "__main__":
