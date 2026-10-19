@@ -1,1 +1,7 @@
-2026-10-19T11:05:35Z 完了確認：2026-10-19T06:56:06Z依頼（e5-base、2周、seed 1/2、FT_CTX_UNIT=1）はKAGGLE_LOG.mdでKernelWorkerStatus.COMPLETE。仕事1/2の学習ループは566秒/576秒、最大GPUメモリ5.5GiB/各。固定5試験の結果はFINETUNE_RESULTS.mdに記録済み。07:16ZのQUEUED表示は古い観測で、現在状態として扱わない。
+# Kaggle 最新観測
+
+- 判定: Kaggle完了（COMPLETEを今回確認）
+- 観測時刻 (UTC): 2026-10-19T12:39:34Z
+- 学習依頼ID: 2026-10-19T06:56:06Z
+- GitHub Actions確認run: 39253741625
+- Kaggle API応答: jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
