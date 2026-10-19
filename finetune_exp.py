@@ -18,6 +18,11 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_
 import gen, features
 from batching import plan_micro_batches, pad_batch
 features.USE_NUM2 = True  # 今の仕組み側は v8 と同じ（数字の値特徴あり）
+# Experiment A: add explicit interactions between header semantics and value-shape evidence.
+FT_CROSS = os.environ.get("FT_CROSS") == "1"
+if FT_CROSS:
+    features.set_dims(cross=True)
+    print("feature interaction experiment: header × value-profile crosses enabled", flush=True)
 from encoder_exp import rows, tests, text
 from llm_baseline import score_real
 from evaluation_records import assert_metrics_match, build_record, is_issue
@@ -162,6 +167,19 @@ else:
 opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01, **({"fused": True} if FUSED else {}))
 sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
 scaler = torch.amp.GradScaler(enabled=DEV == "cuda")
+FOCAL_GAMMA_TEXT = os.environ.get("FT_FOCAL_GAMMA", "").strip()
+FOCAL_GAMMA = float(FOCAL_GAMMA_TEXT) if FOCAL_GAMMA_TEXT else None
+if FOCAL_GAMMA is not None and FOCAL_GAMMA <= 0:
+    raise ValueError("FT_FOCAL_GAMMA must be positive")
+def training_loss(logits, targets):
+    # Experiment B: focal loss gives more gradient to difficult, currently misclassified samples.
+    ce = torch.nn.functional.cross_entropy(logits.float(), targets, reduction="none")
+    if FOCAL_GAMMA is None:
+        return ce.mean()
+    pt = torch.exp(-ce)
+    return (((1.0 - pt) ** FOCAL_GAMMA) * ce).mean()
+if FOCAL_GAMMA is not None:
+    print(f"focal-loss experiment: gamma={FOCAL_GAMMA}", flush=True)
 trace_n = int(os.environ.get("FT_TRACE_LOSS", "0"))
 if DEV == "cuda": torch.cuda.reset_peak_memory_stats()
 t0 = time.time(); model.train(); step = 0; micro = 0
@@ -178,7 +196,7 @@ while step < steps:
             for m in micros:
                 m = {k: v.to(DEV) for k, v in m.items()}
                 with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
-                    loss = model(**m).loss * (m["labels"].shape[0] / n)  # 束の文数/実効バッチの文数で重みを付ける＝64文を一度に流したのと同じ勾配
+                    loss = training_loss(model(**m).logits, m["labels"]) * (m["labels"].shape[0] / n)  # 束の文数/実効バッチの文数で重みを付ける＝64文を一度に流したのと同じ勾配
                 scaler.scale(loss).backward(); eff_loss += loss.detach()
             finish_step(eff_loss)
             if step >= steps: break
@@ -187,7 +205,7 @@ while step < steps:
         for b in dl:
             b = {k: v.to(DEV) for k, v in b.items()}
             with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
-                loss = model(**b).loss / ACC
+                loss = training_loss(model(**b).logits, b["labels"]) / ACC
             scaler.scale(loss).backward(); micro += 1; eff_loss += loss.detach()
             if micro % ACC: continue
             finish_step(eff_loss); eff_loss = torch.zeros((), device=DEV)
