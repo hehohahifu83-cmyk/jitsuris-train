@@ -7,7 +7,7 @@
 - [Kaggle notebook](https://www.kaggle.com/code/jitsurio/jitsuris-train)：Kaggle側の現在状態と実行画面。
 - [KAGGLE_LOG.md](KAGGLE_LOG.md)：時刻付きの状態履歴。
 - [MONITOR.json](MONITOR.json)：学習依頼ごとの観測履歴と、最初に観測した開始・完了時刻。
-- [PROGRESS.md](PROGRESS.md)：実行中に定期更新する途中経過。
+- [PROGRESS.md](PROGRESS.md)：定期観測ごとに最新状態・時刻・Kaggle応答・依頼IDを同期する表示。途中経過も含む。
 
 ## 状態の判定
 
@@ -21,7 +21,7 @@
 | キャンセル | Kaggleが実行をキャンセル | 最新状態ログが `CANCELED` または `CANCELLED` |
 | 未確認 | Kaggleの新しい状態を取得できていない | `done` などの依頼ファイルだけでは完了とみなさない |
 
-「依頼を受け付けた」「GitHub Actionsが動いている」「KaggleがRUNNINGになった」は別の段階です。各GitHub Actions runは学習コマンド後にもKaggle APIを読み直し、今回取得した状態だけを `MONITOR.json` に記録します。Kaggleの `RUNNING` を観測して初めて「開始確認」、`COMPLETE` を観測して初めて「完了確認」とします。10分間隔の確認の間に状態が変わった場合、完了は確認できても開始の観測時刻は「未観測」のままにし、推測で補いません。状態取得に失敗したときも以前の状態で埋めません。
+「依頼を受け付けた」「GitHub Actionsが動いている」「KaggleがRUNNINGになった」は別の段階です。各GitHub Actions runは学習コマンド後にもKaggle APIを読み直し、今回取得した状態だけを `MONITOR.json` に記録します。Kaggleの `RUNNING` を観測して初めて「開始確認」、`COMPLETE` を観測して初めて「完了確認」とします。10分間隔の確認の間に状態が変わった場合、完了は確認できても開始の観測時刻は「未観測」のままにし、推測で補いません。状態取得に失敗したときも以前の状態で埋めません。`STATUS.md` と `PROGRESS.md` は同じ観測を表示し、最後の観測時刻が古い場合は現在状態と断定しません。
 
 ## 結果の回収も別に確認
 
