@@ -8,6 +8,7 @@
 使い方：python abstain_eval.py eval_reports/latest [条件名（ft・sparse・blend50・blend70。既定 blend70）] [置き場（job1・job2・report。省略で全部）]
 """
 import glob, json, os, sys
+from evaluation_records import summarize_records
 
 NUMERIC = {"date", "amount", "quantity", "rate", "id"}
 THRESHOLDS = [round(0.5 + 0.01 * i, 2) for i in range(0, 50)]  # 0.50 〜 0.99
@@ -38,7 +39,22 @@ def load(dir_, cond, run=None):
             raise RuntimeError("blind test sets must not be evaluated")
         with open(path, encoding="utf-8") as f:
             d = json.load(f)
-        tests[d["test"]] = d["rows"]
+        if d.get("schema_version") != 2:
+            raise ValueError(f"unsupported evaluation schema in {path.name}; regenerate with schema_version=2")
+        rows = d.get("rows")
+        if not isinstance(rows, list):
+            raise ValueError(f"missing rows array: {path.name}")
+        for row in rows:
+            if not isinstance(row, dict):
+                raise ValueError(f"malformed evaluation row: {path.name}")
+            if row.get("prediction") != row.get("guarded_prediction"):
+                raise ValueError(f"legacy prediction alias differs from guarded prediction: {path.name}")
+            top3 = row.get("top3") or []
+            raw = top3[0].get("label") if top3 else None
+            if row.get("raw_prediction") != raw:
+                raise ValueError(f"raw prediction differs from top-1 probability label: {path.name}")
+        summarize_records(rows)  # reject outcome/critical counts that disagree with truth and guarded prediction
+        tests[d["test"]] = rows
     return tests
 
 
@@ -46,7 +62,7 @@ def apply(rows, t_num):
     """しきい値を当てた結果の数え方（score_real と同じ意味）。"""
     c = w = u = k = oc = ow = 0
     for r in rows:
-        pred = r["prediction"]
+        pred = r["guarded_prediction"]
         p1 = r["top3"][0]["probability"] if r["top3"] else 1.0
         if pred in NUMERIC and p1 < t_num:
             pred = "unknown"
