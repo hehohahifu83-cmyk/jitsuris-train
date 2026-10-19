@@ -1,0 +1,74 @@
+name: 保存済みチェックポイントの理由付き再評価
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [kaggle/checkpoint-eval.request]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: 実行要求を確認
+        id: gate
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] || grep -qx 'run 39241962638' kaggle/checkpoint-eval.request; then
+            echo "run=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=0" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == '1'
+        with:
+          python-version: '3.11'
+      - name: CPU依存を入れる
+        if: steps.gate.outputs.run == '1'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: 前回のモデルと評価結果を回収
+        if: steps.gate.outputs.run == '1'
+        uses: actions/download-artifact@v4
+        with:
+          name: jitsuris-model
+          run-id: 39241962638
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/prior-model
+      - name: 前回の行単位評価結果を回収
+        if: steps.gate.outputs.run == '1'
+        uses: actions/download-artifact@v4
+        with:
+          name: jitsuris-evaluation-reports
+          run-id: 39241962638
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/prior-evaluation
+      - name: 軽量な単体検査
+        if: steps.gate.outputs.run == '1'
+        run: python -m unittest discover -s tests -p test_checkpoint_eval.py -v
+      - name: seed 1 checkpointを推論だけで評価し、旧結果と照合
+        if: steps.gate.outputs.run == '1'
+        run: |
+          find /tmp/prior-model -type f \( -name config.json -o -name labels.json -o -name model.safetensors -o -name pytorch_model.bin \) -print
+          python evaluate_checkpoint.py --checkpoint /tmp/prior-model --prior /tmp/prior-evaluation --output /tmp/checkpoint-evaluation && mkdir -p eval_reports/checkpoint-39241962638 && cp -a /tmp/checkpoint-evaluation/. eval_reports/checkpoint-39241962638/
+      - name: 結果を記録
+        if: always() && steps.gate.outputs.run == '1'
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          mkdir -p eval_reports/checkpoint-39241962638
+          if [ "$JOB_STATUS" = success ]; then
+            echo 'done 39241962638' > kaggle/checkpoint-eval.request
+          else
+            echo "failed 39241962638 ($JOB_STATUS)" > kaggle/checkpoint-eval.request
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add kaggle/checkpoint-eval.request eval_reports/checkpoint-39241962638
+          git diff --cached --quiet && exit 0
+          git commit -m "保存済みチェックポイントを理由付きで再評価"
+          for i in 1 2 3; do git push && break; git pull --rebase --autostash; done
