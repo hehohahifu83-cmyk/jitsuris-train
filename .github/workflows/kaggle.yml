@@ -101,7 +101,7 @@ jobs:
           python - <<'PY'
           import os, subprocess, textwrap
           from pathlib import Path
-          from kaggle_monitor import latest_training_cycle, parse_status, update_monitor
+          from kaggle_monitor import latest_training_cycle, parse_status, render_progress, update_monitor
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
           latest = " ".join(os.environ.get("OBSERVED_RAW", "").split())[:500]
@@ -126,6 +126,9 @@ jobs:
               "kaggle/MONITOR.json", cycle_id=cycle_id, observed_at=observed_at,
               state=raw_state, raw=latest, action_run_id=os.environ["ACTION_RUN_ID"],
               execution_evidence=execution_evidence)
+          Path("kaggle/PROGRESS.md").write_text(render_progress(
+              state=raw_state, observed_at=observed_at, raw=latest, cycle_id=cycle_id,
+              action_run_id=os.environ["ACTION_RUN_ID"]), encoding="utf-8")
           previous_status = Path("kaggle/STATUS.md").read_text(encoding="utf-8") if Path("kaggle/STATUS.md").exists() else ""
           def previous_value(prefixes):
               for line in previous_status.splitlines():
