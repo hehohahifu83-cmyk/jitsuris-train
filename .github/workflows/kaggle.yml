@@ -64,6 +64,27 @@ jobs:
         id: eval_artifact
         if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
+      - name: Observe Kaggle state after this run
+        id: live_status
+        if: always() && steps.gate.outputs.skip != '1'
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          set +e
+          case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
+          raw=$(kaggle kernels status "$KAGGLE_USERNAME/jitsuris-train" 2>&1)
+          rc=$?
+          observed_at=$(date -u +%FT%TZ)
+          delimiter="KAGGLE_STATUS_$(date +%s)_$RANDOM"
+          {
+            echo "raw<<$delimiter"
+            printf '%s\\n' "$raw"
+            echo "$delimiter"
+            echo "returncode=$rc"
+            echo "observed_at=$observed_at"
+          } >> "$GITHUB_OUTPUT"
+          echo "Fresh Kaggle status: $raw"
       - name: Record separate training and recovery states
         if: always() && steps.gate.outputs.skip != '1'
         env:
@@ -71,19 +92,25 @@ jobs:
           EVAL_ARTIFACT_ID: ${{ steps.eval_artifact.outputs['artifact-id'] }}
           ACTION_RUN_ID: ${{ github.run_id }}
           ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          OBSERVED_RAW: ${{ steps.live_status.outputs.raw }}
+          OBSERVED_RETURN_CODE: ${{ steps.live_status.outputs.returncode }}
+          OBSERVED_AT: ${{ steps.live_status.outputs.observed_at }}
         run: |
           python - <<'PY'
           import os, subprocess, textwrap
           from pathlib import Path
+          from kaggle_monitor import latest_training_cycle, parse_status, update_monitor
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
-          import re
-          state_lines = [line for line in log.splitlines() if "KernelWorkerStatus." in line]
-          latest = state_lines[-1] if state_lines else "Kaggle kernel status: no status recorded"
-          match = re.search(r"KernelWorkerStatus\.([A-Z_]+)", latest)
-          raw_state = match.group(1) if match else "UNKNOWN"
-          state_times = [re.match(r"^(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ)", line) for line in state_lines]
-          observed_at = next((m.group(1) for m in reversed(state_times) if m), "時刻記録なし")
+          latest = os.environ.get("OBSERVED_RAW", "").strip().replace("\\n", " ")[:500]
+          raw_state = parse_status(latest, int(os.environ.get("OBSERVED_RETURN_CODE", "1") or "1"))
+          observed_at = os.environ.get("OBSERVED_AT", "").strip() or "時刻記録なし"
+          cycle_id = latest_training_cycle(log)
+          monitor = update_monitor(
+              "kaggle/MONITOR.json", cycle_id=cycle_id, observed_at=observed_at,
+              state=raw_state, raw=latest, action_run_id=os.environ["ACTION_RUN_ID"])
+          if not latest:
+              latest = "今回のKaggle状態取得に失敗（前回状態を流用せず未確認）"
           changed = subprocess.run(["git", "diff", "--quiet", "--", "FINETUNE_RESULTS.md"]).returncode != 0
           report_count = sum(1 for p in Path("/tmp/eval_reports").glob("*") if p.is_file())
           model_id = os.environ.get("MODEL_ARTIFACT_ID", "").strip()
@@ -122,6 +149,9 @@ jobs:
           - Kaggle学習状態: {training}
           - Kaggle状態の最終観測時刻 (UTC): {observed_at}
           - Kaggle状態の根拠ログ: `{latest}`
+          - 学習依頼ID: `{cycle_id or "未特定"}`
+          - Kaggleでの開始を観測した時刻 (UTC): {monitor.get("first_running_at") or "未観測"}
+          - Kaggleでの完了を観測した時刻 (UTC): {monitor.get("first_complete_at") or "未観測"}
           - 評価結果回収: {results}
           - 評価レポートartifact: {eval_artifact}
           - 学習済みモデル回収: {checkpoint}
@@ -138,7 +168,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          for f in FINETUNE_RESULTS.md kaggle/PROGRESS.md kaggle/STATUS.md kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
+          for f in FINETUNE_RESULTS.md kaggle/PROGRESS.md kaggle/STATUS.md kaggle/MONITOR.json kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
           if [ -s /tmp/eval_reports/ERROR_ANALYSIS.md ]; then mkdir -p cpu_lab/reports; cp /tmp/eval_reports/ERROR_ANALYSIS.md "cpu_lab/reports/error-analysis-run-${GITHUB_RUN_ID}.md"; git add "cpu_lab/reports/error-analysis-run-${GITHUB_RUN_ID}.md"; fi
           # 確率（列名・正解・予測・上位3つの確率だけ。列の値は入らない）のうち『微調整だけ』と『7割＋3割』を、読めるようにリポジトリにも置く（最新の1回分。全部は artifact に30日）。誤りの一覧は確率から作れる
           if ls /tmp/eval_reports/*.json >/dev/null 2>&1; then rm -rf eval_reports/latest; mkdir -p eval_reports/latest; cp /tmp/eval_reports/*_probs_*_ft.json /tmp/eval_reports/*_probs_*_blend70.json eval_reports/latest/ 2>/dev/null || true; git add eval_reports; fi
