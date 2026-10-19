@@ -19,6 +19,14 @@ jobs:
         with: { python-version: '3.12' }
       - name: Test Kaggle lifecycle monitor
         run: python -m unittest discover -s tests -p 'test_kaggle_monitor.py'
+      - name: Capture previously submitted training cycle
+        id: previous_cycle
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          from kaggle_monitor import latest_training_cycle
+          print(f"cycle={latest_training_cycle(Path('kaggle/KAGGLE_LOG.md').read_text(encoding='utf-8'))}")
+          PY
       - run: pip install kaggle
       - name: 回収する用事があるか（定期実行のとき）
         id: gate
@@ -93,6 +101,8 @@ jobs:
           MODEL_ARTIFACT_ID: ${{ steps.model_artifact.outputs['artifact-id'] }}
           EVAL_ARTIFACT_ID: ${{ steps.eval_artifact.outputs['artifact-id'] }}
           ACTION_RUN_ID: ${{ github.run_id }}
+          EVENT_NAME: ${{ github.event_name }}
+          PREVIOUS_CYCLE: ${{ steps.previous_cycle.outputs.cycle }}
           ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           OBSERVED_RAW: ${{ steps.live_status.outputs.raw }}
           OBSERVED_RETURN_CODE: ${{ steps.live_status.outputs.returncode }}
@@ -108,7 +118,14 @@ jobs:
           raw_state = parse_status(latest, int(os.environ.get("OBSERVED_RETURN_CODE", "1") or "1"))
           observed_at = os.environ.get("OBSERVED_AT", "").strip() or "時刻記録なし"
           cycle_id = latest_training_cycle(log)
-          if not latest:
+          new_train_push = os.environ.get("EVENT_NAME") == "push" and request.startswith("train ")
+          previous_cycle = os.environ.get("PREVIOUS_CYCLE", "").strip()
+          if new_train_push and cycle_id == previous_cycle:
+              # A prior Kaggle COMPLETE may be returned even when this request failed before push.
+              raw_state = "UNKNOWN"
+              cycle_id = f"unsubmitted-{os.environ['ACTION_RUN_ID']}"
+              latest = "今回の依頼はKaggleへのpush記録がないため、以前のKaggle状態を結び付けず未確認"
+          elif not latest:
               latest = "今回のKaggle状態取得に失敗（前回状態を流用せず未確認）"
           changed = subprocess.run(["git", "diff", "--quiet", "--", "FINETUNE_RESULTS.md"]).returncode != 0
           report_count = sum(1 for p in Path("/tmp/eval_reports").glob("*") if p.is_file())
