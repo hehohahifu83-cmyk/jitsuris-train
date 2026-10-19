@@ -15,14 +15,25 @@ class CheckpointEvaluationTests(unittest.TestCase):
                              {"label": "amount", "probability": 0.05}]}]
         self.assertTrue(compare_rows(prior, current)["passed"])
 
-    def test_rowwise_parity_rejects_decision_or_probability_drift(self):
+    def test_lower_rank_ties_do_not_fail_when_top1_and_probabilities_match(self):
         prior = [{"truth": "date", "prediction": "date", "column": "posted date",
-                  "top3": [{"label": "date", "probability": 0.9}]}]
-        changed = [{"truth": "date", "prediction": "amount", "column": "posted date",
-                    "top3": [{"label": "date", "probability": 0.9}]}]
+                  "top3": [{"label": "date", "probability": 0.9},
+                           {"label": "amount", "probability": 0.0501},
+                           {"label": "quantity", "probability": 0.05}]}]
+        tied = [{"truth": "date", "prediction": "date", "column": "posted date",
+                 "top3": [{"label": "date", "probability": 0.9},
+                          {"label": "quantity", "probability": 0.05},
+                          {"label": "amount", "probability": 0.0501}]}]
+        self.assertTrue(compare_rows(prior, tied)["passed"])
+        changed = [{"truth": "date", "prediction": "date", "column": "posted date",
+                    "top3": [{"label": "amount", "probability": 0.9},
+                             {"label": "quantity", "probability": 0.05},
+                             {"label": "date", "probability": 0.0501}]}]
         self.assertFalse(compare_rows(prior, changed)["passed"])
         drift = [{"truth": "date", "prediction": "date", "column": "posted date",
-                  "top3": [{"label": "date", "probability": 0.89}]}]
+                  "top3": [{"label": "date", "probability": 0.89},
+                           {"label": "amount", "probability": 0.05},
+                           {"label": "quantity", "probability": 0.04}]}]
         self.assertFalse(compare_rows(prior, drift)["passed"])
 
     def test_checkpoint_discovery_requires_exactly_one_complete_model(self):

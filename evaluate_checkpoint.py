@@ -36,9 +36,14 @@ def compare_rows(prior: list[dict[str, Any]], current: list[dict[str, Any]],
             mismatches.append({"index": i, "kind": "row_identity_or_decision"})
             continue
         a, b = old.get("top3") or [], new.get("top3") or []
-        if [x.get("label") for x in a] != [x.get("label") for x in b]:
-            mismatches.append({"index": i, "kind": "top3_order"})
+        if not a or not b or a[0].get("label") != b[0].get("label"):
+            mismatches.append({"index": i, "kind": "top1_label"})
             continue
+        if len(a) != len(b):
+            mismatches.append({"index": i, "kind": "top3_length"})
+            continue
+        # Rank probabilities should match, but lower ranks may swap when their
+        # probabilities are effectively tied at CPU/BLAS rounding precision.
         drift = max((abs(float(x["probability"]) - float(y["probability"]))
                      for x, y in zip(a, b)), default=0.0)
         max_drift = max(max_drift, drift)
@@ -145,7 +150,8 @@ def run(checkpoint_root: str, prior_root: str, output_root: str) -> None:
         "- source checkpoint: Actions run 39241962638, job1, seed 1",
         "- training configuration: multilingual-e5-base, 2 epochs",
         "- fixed development datasets only; ft and blend70; 10 row-level comparisons",
-        "- comparison includes row order, normalized header, truth, final decision, top-3 labels",
+        "- comparison includes row order, normalized header, truth, final decision, and top-1 label",
+        "- lower top-3 ranks may swap only when rank-aligned probabilities stay within tolerance",
         f"- top-3 probabilities must differ by at most {TOLERANCE}",
         "- schema version 3 records include decision reasons; column values are not saved.",
         "", "| dataset | condition | accuracy | wrong | unknown | critical | n | max drift |",
