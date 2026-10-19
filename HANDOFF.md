@@ -371,7 +371,7 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 
 ### 2026-10-19 UTC — 保存済みseed 1 checkpointの推論監査
 - checkpoint-evaluation workflow run [39251294219](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39251294219) はsuccess。run 39241962638のjob1 / seed 1モデルをCPU上で推論のみ再実行し、ft・blend70×固定試験5種の行ごと比較10/10通過。トップ1・判定・truth・正規化列名は一致し、確率最大差は0.001293（許容0.005）。一件だけ下位rankの僅差でtop3順が入れ替わったため、トップ1は厳密一致を維持し、下位rankの並びだけ確率許容差内で扱うよう比較を修正した。初回run 39250095640のfailure原因と修正内容はこの記録に含めた。
-- 固定5試験の各行合計2,161行をschema v3で再出力し、判定理由も記録。確率・正解・正規化列名のみで、列値は保存していない。結果表のnはtruth=otherを除く採点対象件数。詳細: eval_reports/checkpoint-39241962638/CHECKPOINT_EVALUATION.md、eval_reports/checkpoint-39241962638/comparison.json。
+- 固定5試験の各条件2,161行、合計4,322行をschema v3で再出力し、判定理由も記録。確率・正解・正規化列名のみで、列値は保存していない。結果表のnはtruth=otherを除く採点対象件数。詳細: eval_reports/checkpoint-39241962638/CHECKPOINT_EVALUATION.md、eval_reports/checkpoint-39241962638/comparison.json。
 - ft合計: wrong 64、unknown 44、重大な数値種類誤り6。blend70合計: wrong 57、unknown 54、重大5。blend70はこの固定試験ではwrongと重大が各7件・1件減る一方、unknownが10件増えたため採用判断は保留。unknown理由はother_class、日付根拠不足、閾値未達など。高確信度の誤りもあり、確信度だけでは重大誤りを防げていない。
 - blend70の重大誤り5件はdev220のpurchase order by customer（id→quantity）、generalのitemfield14（date→id）、business2のfine・sales-goods-svcs_ventes-biens-srvs・miscellaneous_divers（amount→quantity）。行別artifactに値・兄弟列・出典がないため、原因やラベル誤りは未確定。次の一手はLABEL_GUIDEと公開元文脈で5件を監査し、疑義があれば2人の独立確認を得る。ラベルはまだ変更しない。
 - Kaggle学習依頼は追加していない。blind setおよびセット3・5・7は閲覧・評価していない。監査一覧: eval_reports/checkpoint-39241962638/ERROR_REASON_AUDIT.md。
