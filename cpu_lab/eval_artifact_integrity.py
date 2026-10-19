@@ -55,6 +55,10 @@ def validate_report_dir(root: Path, *, datasets=DATASETS, seeds=SEEDS, condition
         for row in obj["rows"]:
             if not isinstance(row, dict) or not {"index", "column", "truth", "prediction", "outcome", "critical"} <= row.keys():
                 raise ValueError(f"malformed row in {path.name}")
+            row_meta = {"dataset": dataset, "seed": seed, "condition": condition}
+            if any(field in row and str(row[field]) != expected_value
+                   for field, expected_value in row_meta.items()):
+                raise ValueError(f"row metadata mismatch in {path.name}")
             rid = row["index"]
             if rid in seen:
                 raise ValueError(f"duplicate row index {rid}: {path.name}")
