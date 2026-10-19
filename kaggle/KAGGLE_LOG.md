@@ -402,3 +402,20 @@
 2026-10-19T15:16:06Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
 2026-10-19T15:16:07Z train を依頼：hfmodel/intfloat__multilingual-e5-base 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_CROSS= FT_FOCAL_GAMMA=1.5 FT_SEED=1 ++ FT_SEED=2
 送ったモデル：1.1G	hfmodel・束の中のモデルのファイル数 55
+2026-10-19T15:31:23Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    
+    <html><head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>502 Server Error</title>
+    </head>
+    <body text=#000000 bgcolor=#ffffff>
+    <h1>Error: Server Error</h1>
+    <h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>
+    <h2></h2>
+    </body></html>
+    [仕事1] training rows=55213 seed=1
+    [仕事2] training rows=55213 seed=2
+    [仕事1] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事1] peak GPU memory 5.5 GiB; training loop 581s
+    [仕事2] peak GPU memory 5.5 GiB; training loop 584s
