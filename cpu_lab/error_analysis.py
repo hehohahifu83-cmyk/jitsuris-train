@@ -53,7 +53,7 @@ def load_reports(root: Path) -> list[dict]:
                 "file": path.name, "seed": seed, "dataset": dataset,
                 "condition": condition, "column": str(row["column"]),
                 "truth": str(row["truth"]), "prediction": str(row["prediction"]),
-                "decision_reason": str(row.get("decision_reason") or "none"),
+                "decision_reason": str(row.get("decision_reason") or "not_recorded"),
                 "critical": bool(row.get("critical", False)), "confidence": confidence(row),
             })
     return selected
