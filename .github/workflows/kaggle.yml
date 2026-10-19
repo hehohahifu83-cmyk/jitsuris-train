@@ -108,15 +108,24 @@ jobs:
           raw_state = parse_status(latest, int(os.environ.get("OBSERVED_RETURN_CODE", "1") or "1"))
           observed_at = os.environ.get("OBSERVED_AT", "").strip() or "時刻記録なし"
           cycle_id = latest_training_cycle(log)
-          monitor = update_monitor(
-              "kaggle/MONITOR.json", cycle_id=cycle_id, observed_at=observed_at,
-              state=raw_state, raw=latest, action_run_id=os.environ["ACTION_RUN_ID"])
           if not latest:
               latest = "今回のKaggle状態取得に失敗（前回状態を流用せず未確認）"
           changed = subprocess.run(["git", "diff", "--quiet", "--", "FINETUNE_RESULTS.md"]).returncode != 0
           report_count = sum(1 for p in Path("/tmp/eval_reports").glob("*") if p.is_file())
           model_id = os.environ.get("MODEL_ARTIFACT_ID", "").strip()
           eval_id = os.environ.get("EVAL_ARTIFACT_ID", "").strip()
+          execution_evidence = []
+          if raw_state == "COMPLETE":
+              if changed:
+                  execution_evidence.append("Kaggle COMPLETE and FINETUNE_RESULTS.md updated in this recovery run")
+              if model_id:
+                  execution_evidence.append(f"Kaggle model artifact {model_id} created")
+              if eval_id:
+                  execution_evidence.append(f"Kaggle evaluation artifact {eval_id} created")
+          monitor = update_monitor(
+              "kaggle/MONITOR.json", cycle_id=cycle_id, observed_at=observed_at,
+              state=raw_state, raw=latest, action_run_id=os.environ["ACTION_RUN_ID"],
+              execution_evidence=execution_evidence)
           previous_status = Path("kaggle/STATUS.md").read_text(encoding="utf-8") if Path("kaggle/STATUS.md").exists() else ""
           def previous_value(prefixes):
               for line in previous_status.splitlines():
@@ -154,6 +163,7 @@ jobs:
           - 学習依頼ID: `{cycle_id or "未特定"}`
           - Kaggleでの開始を観測した時刻 (UTC): {monitor.get("first_running_at") or "未観測"}
           - Kaggleでの完了を観測した時刻 (UTC): {monitor.get("first_complete_at") or "未観測"}
+          - 実学習の実行確認: {("確認済み（Kaggle結果・artifactを回収）" if monitor.get("training_execution_confirmed") else "未確認")}
           - 評価結果回収: {results}
           - 評価レポートartifact: {eval_artifact}
           - 学習済みモデル回収: {checkpoint}
