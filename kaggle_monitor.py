@@ -17,6 +17,35 @@ def parse_status(raw: str, returncode: int = 0) -> str:
     return match.group(1) if returncode == 0 and match else "UNKNOWN"
 
 
+DISPLAY_STATE = {
+    "QUEUED": "GPU割当待ち（Kaggle QUEUED）",
+    "RUNNING": "Kaggleで実行中（RUNNINGを今回確認）",
+    "COMPLETE": "Kaggle完了（COMPLETEを今回確認）",
+    "ERROR": "Kaggle失敗（ERRORを今回確認）",
+    "CANCELED": "Kaggleがキャンセル（CANCELEDを今回確認）",
+    "CANCELLED": "Kaggleがキャンセル（CANCELLEDを今回確認）",
+    "UNKNOWN": "未確認（新しいKaggle状態を確認できず）",
+}
+
+
+def render_progress(*, state: str, observed_at: str, raw: str,
+                    cycle_id: str, action_run_id: str) -> str:
+    """Render the latest observation only; never reuse an older state."""
+    label = DISPLAY_STATE.get(state, DISPLAY_STATE["UNKNOWN"])
+    evidence = " ".join((raw or "").split()) or "今回の状態取得結果なし"
+    lines = [
+        "# Kaggle 最新観測",
+        "",
+        f"- 判定: {label}",
+        f"- 観測時刻 (UTC): {observed_at or '未記録'}",
+        f"- 学習依頼ID: {cycle_id or '未特定'}",
+        f"- GitHub Actions確認run: {action_run_id or '未特定'}",
+        f"- Kaggle API応答: {evidence[:500]}",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def update_monitor(
     path: str | Path,
     *,
