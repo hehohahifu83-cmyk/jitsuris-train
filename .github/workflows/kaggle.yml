@@ -81,7 +81,7 @@ jobs:
           delimiter="KAGGLE_STATUS_$(date +%s)_$RANDOM"
           {
             echo "raw<<$delimiter"
-            printf '%s\\n' "$raw"
+            printf '%s\n' "$raw"
             echo "$delimiter"
             echo "returncode=$rc"
             echo "observed_at=$observed_at"
@@ -104,7 +104,7 @@ jobs:
           from kaggle_monitor import latest_training_cycle, parse_status, update_monitor
           request = Path("kaggle/kaggle.request").read_text(encoding="utf-8").strip()
           log = Path("kaggle/KAGGLE_LOG.md").read_text(encoding="utf-8")
-          latest = os.environ.get("OBSERVED_RAW", "").strip().replace("\\n", " ")[:500]
+          latest = " ".join(os.environ.get("OBSERVED_RAW", "").split())[:500]
           raw_state = parse_status(latest, int(os.environ.get("OBSERVED_RETURN_CODE", "1") or "1"))
           observed_at = os.environ.get("OBSERVED_AT", "").strip() or "時刻記録なし"
           cycle_id = latest_training_cycle(log)
