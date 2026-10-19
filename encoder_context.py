@@ -3,7 +3,7 @@ import random
 import re
 from collections import defaultdict
 
-_UNIT_HEADER = re.compile(r"^(?:unit|units|uom|unit of measure|measurement unit|単位|単位名)$", re.I)
+_UNIT_HEADER = re.compile(r"^(?:unit|units|uom|unit of measure|measurement unit|単位|単位名|(?:amt|amount)[-_ ]units?(?:[_ -].*)?)$", re.I)
 _JUNK = {"", "nan", "none", "null", "n/a", "na", "-"}
 
 
