@@ -49,8 +49,9 @@ class EvaluationRecordsTest(unittest.TestCase):
     def test_outcome_field_mismatch_is_not_silently_accepted(self):
         row = rec(0, "other", "unknown", raw="other")
         row["outcome"] = "unknown"
-        self.assertEqual(summarize_records([row])["unknown"], 1)  # summarizer consumes declared outcomes
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
+            summarize_records([row])
+        with self.assertRaises(ValueError):
             assert_metrics_match([row], score_real(["unknown"], ["other"]))
 
 
