@@ -391,3 +391,9 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - 原因を直し、正しい公開ID `intfloat/multilingual-e5-base` で同じe5-base・2周・seed 1/2・他設定固定の依頼を再投入。run 39253866587が開始し、Kaggle依存導入と監視テストは成功。12:42 UTC時点でKaggle準備／実行stepが進行中。開始・完了の確認はまだ取れておらず、結果未確定。
 - 先の失敗時、直近依頼がKaggleへpushされていないのに、旧jobの `COMPLETE` を現在依頼の状態として表示する監視上の欠陥を確認。次回以降の依頼では、Kaggleログの新規push記録がない場合に以前の状態を引き継がずUNKNOWNとする修正を `kaggle.yml` と `kaggle_monitor.py` に追加し、回帰テストを追加した。main commit: `d6e3642` / `1885221` / `27310cb`。この監視修正を含むActions runはまだ実行されていない。
 - `encoder_context.py` の複合金額単位見出し修正と既存監視テストを合わせ、ローカルで10件のfocused unittestが成功。YAMLのCI実行確認は未取得。
+
+
+### 2026-10-19 13:33 UTC追記 — Version 24進行中
+- Kaggle/PROGRESS.mdの50分観測は `KernelWorkerStatus.RUNNING`。Version 24の依頼は12:42:29ZにRUNNING、12:42:29Zに学習依頼記録。13:33Z時点でActions run 39253866587とKaggle stepは継続中。今回のFINETUNE_RESULTSは未追記で、完了・精度は未確認。
+- 監視修正を含めたローカルのencoder-context＋Kaggle-monitor focused unittestは13件成功。現在走っているrunは監視修正前のworkflow revisionだが、新しいKaggle push記録がすでにあるため、今回の学習cycleは旧Version 23と区別できる。
+- 次はKaggleの終端状態、2仕事分の実行ログ、FINETUNE_RESULTS追加、artifactを照合してからこの実験を判定する。
