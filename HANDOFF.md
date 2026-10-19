@@ -404,5 +404,5 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - Version 24 artifactから再集計（2seed×固定5試験、同じ評価行をseed間で反復）: FT単独=誤り137/重大19/不明78/other見落とし33、blend50=97/13/153/17、blend70=127/16/90/30。重大誤りは誤りの内数。
 - FT→blend50のペア比較: FTの誤り34件（重大7件）が不明へ、正解48件が不明へ、誤り10件が正解へ、正解3件が誤りへ移った。seed間で同一評価行を重複して数える。
 - cpu_lab/error_analysis.py のフィルターがft/blend70だけでblend50を落としていたためblend50/blend60にも対応。abstain_eval.py と rescore_guard.py のblend60表示/既定条件も更新。finetune_exp.py に60:40評価条件を追加。修正後、Version 24 artifactで30 probability files/12,966行が再集計され、py_compile成功。
-- kaggle/kaggle.request は同一モデル・教材・seed・学習設定のまま60:40を追加評価する依頼に更新済み。GitHub側の実行は処理待ち、Kaggle push・kernel version・QUEUED/RUNNINGはまだ未確認。二重依頼を出さない。
-- 次: 新しいnonce付きpush記録を確認してから開始状態を記録し、Kaggle COMPLETE後に60:40結果とcase artifactを回収。固定5試験・複数seedで誤り/重大/不明/other見落としと自動適用/要確認のtradeoffを比較する。blind_set*・セット3/5/7は触らない。
+- kaggle/kaggle.request は同一モデル・教材・seed・学習設定のまま60:40を追加評価する依頼に更新済み。Kaggle Kernel Version 25 successfully pushed 2026-10-19T14:03:29Z、依頼直後にQUEUEDを確認 14:03:59Z。GPU割当待ちで、RUNNING/学習開始は未確認。requestはtrainのまま。二重依頼を出さない。
+- 次: Version 25のQUEUEDからRUNNINGへの遷移を確認して開始時刻を記録し、Kaggle COMPLETE後に60:40結果とcase artifactを回収。固定5試験・複数seedで誤り/重大/不明/other見落としと自動適用/要確認のtradeoffを比較する。blind_set*・セット3/5/7は触らない。
