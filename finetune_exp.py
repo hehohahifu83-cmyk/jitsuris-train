@@ -21,7 +21,7 @@ features.USE_NUM2 = True  # 今の仕組み側は v8 と同じ（数字の値特
 from encoder_exp import rows, tests, text
 from llm_baseline import score_real
 from evaluation_records import assert_metrics_match, build_record, is_issue
-from train3 import decide_with_details
+from train3 import decide, decide_with_details
 
 seed_text = os.environ.get("FT_SEED")
 if seed_text is None:
