@@ -1,4 +1,4 @@
-# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-18 13:57）
+# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-19 19:49 日本時間、ChatGPT）
 
 オーナー指示：「Claude の利用制限が近いので、ChatGPT にも同じ作業をさせたい」。この文書だけで続きができるように書く。
 
@@ -332,3 +332,25 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - 学習中に限り、CPU Labは既存 `cpu-lab-material-learning.yml` のゲート（Kaggle request=fetch、kernel QUEUED、成功した元run、他Kaggle workflow非実行）を全て満たす場合だけ監査済みreplay候補を学習。KaggleがQUEUEDを離れたらCPUを停止する。今回はCPU Labを手動で並走させず、既存ゲートに任せる。
 - 研究の方法参考（課題が異なるので結果をそのまま移さない）：Confident Learning https://arxiv.org/abs/1911.00068 （誤ラベル候補を確率から優先確認する発想、ラベル訂正は別監査）；Robust Learning with Multi-source Noise Simulation and Hard Example Mining https://arxiv.org/abs/2107.07113 （拡張・hard exampleを比較試験する発想）。
 - 未回収/未確認：現行学習済みcheckpointはGitHub artifactに存在しない。CPU Labの以前の準備runはKaggle終了後に到達しスキップ。今回は新しいqueue待ちでCPU gateが機能するかをrun単位で確認する。
+
+## 2026-10-19 ChatGPT: CPU Lab audited replay run 39229300892 — 1 seed completed, paired result incomplete
+
+### 確認済みの事実
+- GitHub Actions [39228611337](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39228611337) のCPU Lab安全テストは18/18 pass。続く [39229300892](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39229300892) はworkflowとしてsuccess。prepareはKaggle run 39212587761の成功とkernel QUEUEDを確認し、allowlist済み学習データのみを検証。準備receiptはpool=28、pseudo候補=0、準備時seed_runs=[]、semantic learning claimはprobe比較まで保留。
+- seed 1の実学習は完了：e5-base、1 epoch、80件/label上限の層化標本＋人手監査済みreplay 28件、合計1308学習行。CPU 2 threads、batch 16×accumulation 2。学習452秒、評価265秒、壁時計12:53、最大RSS 8,887,940 KB。GPU学習ではない。
+- seed 2 jobはworkflow上success扱いだが、ログには「KaggleがQUEUEDを離れたため即時yield、partial runは結果扱いしない」とある。完走したseed 2評価はなく、2 seed比較は未成立。
+- seed 1の新head単独の許可済み固定試験出力は、dev220 0/220正解・220 unknown、general 0/295・295 unknown、business 0/475・475 unknown、business2 0/913・913 unknown、japan_procurement 0/92・92 unknown。合計1995件をすべて棄権し、通常誤り・重大誤りは0件。これは品質向上ではなく、実用的予測が出ていない結果。従来機構のみの精度は順に88.2/86.4/90.1/92.0/98.9%、同じログの50:50混合は78.2/70.5/80.8/79.6/97.8%で、混合も全5試験で低下。
+- 同じ時点のKaggle requestは `fetch`。対象GPU学習は `FT_FREEZE_EMB=0` のseed1/2 run 39212587761で、KAGGLE_LOG/STATUSの最終記録は2026-10-19 09:07:21ZにQUEUED。これより新しいKaggle観測は今回取得できず、現在状態は未確認（完了とは扱わない）。GitHub Actions in_progress runは確認時0件。Kaggle依頼ファイルは変更していない。
+- seed1 artifactにはFINETUNE_RESULTS、train.log、receipt、reviewed replayがある。一方、コードは行ごとの `probs_*.json` / `errors_*.json` を生成するが、アップロードartifactには含まれていない。したがって未知1995件の個票、top confidence、guard前後の予測・guard理由を照合できず、行ごとの原因監査は未完了。raw件数の独立artifact照合も未実施。
+
+### 原因の判定（観測と仮説を分離）
+- **確定・高確度（実装事実）**：CPU実験は既存の学習済みジツリスを継続学習していない。workflowは `FT_INIT_MODEL_PATH` を指定せず、`finetune_exp.py` の通常分岐はbase E5からSequenceClassificationを新規ロードする。train.logにもclassifier weightsがMISSING（新規初期化）と記録。pooler weightsのUNEXPECTEDは異なるtask/architectureからのロード差としてログに記載。
+- **原因仮説・中程度**：新規分類head、1308行への縮小（通常GPU学習ログの55,213行より少ない）、1 epochの組合せでタスク適応が不足した可能性が高い。ただし各要因を分離した対照実験ではなく、all-unknownの直接原因とまでは断定できない。
+- **原因未確定**：`train3.decide` の既定は閾値0.5かつguard有効。1995件のunknownが確率閾値未達なのかguard棄権なのかを示す予測確率・guard_reasonがartifactにない。ラベル誤り、出典/分割差、重複漏洩、UNIT/兄弟列・前処理・tokenizer起因を裏付ける行別データも本artifactからは確認できず、原因と断定しない。
+- **再発性**：今回の新head seed 1だけなのでseed間再現性は評価不能。50:50混合の悪化は同一seed内の比較であり、独立seed再現ではない。ラベル変更はしていない。blind_set* とセット3・5・7は閲覧・利用していない。
+
+### 次の改善・ゲート
+1. **P0 監査可能性**：CPU Lab artifactに許可済み固定試験の行別errors/probsを保存し、row id、truth/prediction、top-k確率、threshold判定、guard前後/理由、token数・truncation、安全な値統計を含める。raw集計と最終表を機械照合し、1件でもずれたら評価失敗にする。列値や個人情報は保存しない。
+2. **P0 起点モデル**：CPU replayは現状「base E5＋新規headの小標本smoke test」と限定。既存モデルの能力を伸ばす主張には使わない。既存checkpointとlabels.jsonが利用可能・一致確認済みの場合だけ、`FT_INIT_MODEL_PATH` によるwarm-startを別の単要因実験として検討。今回の成果からcheckpoint存在は確認できていない。
+3. **P1 検証**：まずthreshold/guard内訳とラベル対応を固定probeで確認し、seed2の完走を含む再現試験を行う。GPUの順番が回ればKaggle優先。CPU LabはQUEUED中だけ、監視で状態が変われば停止。人手ラベル疑義は先生2名の独立確認と根拠裁定まで変更しない。
+4. 今回のCPU試験は学習パイプラインの動作・監査性のテストであり、ChatGPT/Claude同一課題比較・実用化目標に対する改善証拠ではない。次の学習依頼は提出していない。
