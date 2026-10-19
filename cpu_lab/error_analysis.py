@@ -16,7 +16,7 @@ from pathlib import Path
 
 ALLOWED = {"dev220", "general", "business", "business2", "japan_procurement"}
 FORBIDDEN = re.compile(r"blind_set|(?:^|[^a-z0-9])(?:set[_-]?)?(?:3|5|7)(?:[^a-z0-9]|$)", re.I)
-VALID = re.compile(r"(?:(job[12]|report)_)?probs_(dev220|general|business|business2|japan_procurement)_(ft|blend70)\.json$")
+VALID = re.compile(r"(?:(job[12]|report)_)?probs_(dev220|general|business|business2|japan_procurement)_(ft|blend50|blend60|blend70)\.json$")
 NUMERIC = {"date", "amount", "quantity", "rate", "id"}
 
 
