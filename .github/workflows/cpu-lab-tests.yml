@@ -10,6 +10,7 @@ on:
       - 'tests/test_decision_reasons.py'
       - 'evaluation_records.py'
       - 'tests/test_evaluation_records.py'
+      - 'tests/test_eval_artifact_integrity.py'
       - 'abstain_eval.py'
       - 'tests/test_abstain_eval.py'
       - '.github/workflows/cpu-lab-tests.yml'
@@ -42,6 +43,8 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_decision_reasons.py' -v
       - name: Check scored evaluation row contract
         run: python -m unittest discover -s tests -p 'test_evaluation_records.py' -v
+      - name: Check evaluation artifact completeness and parity
+        run: python -m unittest discover -s tests -p 'test_eval_artifact_integrity.py' -v
       - name: Check abstention audit schema and thresholds
         run: python -m unittest discover -s tests -p 'test_abstain_eval.py' -v
       - name: Verify leakage and approval guards
