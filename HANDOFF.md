@@ -397,3 +397,12 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - Kaggle/PROGRESS.mdの50分観測は `KernelWorkerStatus.RUNNING`。Version 24の依頼は12:42:29ZにRUNNING、12:42:29Zに学習依頼記録。13:33Z時点でActions run 39253866587とKaggle stepは継続中。今回のFINETUNE_RESULTSは未追記で、完了・精度は未確認。
 - 監視修正を含めたローカルのencoder-context＋Kaggle-monitor focused unittestは13件成功。現在走っているrunは監視修正前のworkflow revisionだが、新しいKaggle push記録がすでにあるため、今回の学習cycleは旧Version 23と区別できる。
 - 次はKaggleの終端状態、2仕事分の実行ログ、FINETUNE_RESULTS追加、artifactを照合してからこの実験を判定する。
+
+## 9. 最新状況（2026-10-19 14:04:04 UTC）
+- Kaggle Version 24 は 2026-10-19 13:52:29Z に COMPLETE。GitHub Actions run 39253866587 は success、model/evaluation artifact 回収済み。
+- Safari webarchive にあった学習566/576秒と集計127/85/164はVersion 23の古いNotebook出力だった。Version 24の実績と誤認しない。Version 24の実学習はseed1=582秒、seed2=563秒。KAGGLE_LOGと正式なprobability artifactで照合する。
+- Version 24 artifactから再集計（2seed×固定5試験、同じ評価行をseed間で反復）: FT単独=誤り137/重大19/不明78/other見落とし33、blend50=97/13/153/17、blend70=127/16/90/30。重大誤りは誤りの内数。
+- FT→blend50のペア比較: FTの誤り34件（重大7件）が不明へ、正解48件が不明へ、誤り10件が正解へ、正解3件が誤りへ移った。seed間で同一評価行を重複して数える。
+- cpu_lab/error_analysis.py のフィルターがft/blend70だけでblend50を落としていたためblend50/blend60にも対応。abstain_eval.py と rescore_guard.py のblend60表示/既定条件も更新。finetune_exp.py に60:40評価条件を追加。修正後、Version 24 artifactで30 probability files/12,966行が再集計され、py_compile成功。
+- kaggle/kaggle.request は同一モデル・教材・seed・学習設定のまま60:40を追加評価する依頼に更新済み。GitHub側の実行は処理待ち、Kaggle push・kernel version・QUEUED/RUNNINGはまだ未確認。二重依頼を出さない。
+- 次: 新しいnonce付きpush記録を確認してから開始状態を記録し、Kaggle COMPLETE後に60:40結果とcase artifactを回収。固定5試験・複数seedで誤り/重大/不明/other見落としと自動適用/要確認のtradeoffを比較する。blind_set*・セット3/5/7は触らない。
