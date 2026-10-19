@@ -26,10 +26,12 @@ class EncoderUnitContextTest(unittest.TestCase):
             ("Unit Price", ["4.1", "5.2"], "amount", [], "table-a"),
             ("金額", ["10", "20"], "amount", [], "table-a"),
             ("単位", ["人", "件"], "category", [], "table-b"),
+            ("Amt-units_Mnt-unite", ["thousands", "millions"], "category", [], "table-c"),
         ]
         got = unit_context_map(rows)
         self.assertEqual(got["table-a"], "Unit: USD, EUR")
         self.assertEqual(got["table-b"], "単位: 人, 件")
+        self.assertEqual(got["table-c"], "Amt-units_Mnt-unite: thousands, millions")
 
     def test_evaluation_rows_keep_unit_values_outside_the_header_context(self):
         rows = [("VALUE", ["7.4", "4.9"], "amount", ["UNIT"], "table-a")]
