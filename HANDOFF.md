@@ -1,4 +1,4 @@
-# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-19 19:49 日本時間、ChatGPT）
+# ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-19 19:56 日本時間、ChatGPT）
 
 オーナー指示：「Claude の利用制限が近いので、ChatGPT にも同じ作業をさせたい」。この文書だけで続きができるように書く。
 
@@ -354,3 +354,4 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 2. **P0 起点モデル**：CPU replayは現状「base E5＋新規headの小標本smoke test」と限定。既存モデルの能力を伸ばす主張には使わない。既存checkpointとlabels.jsonが利用可能・一致確認済みの場合だけ、`FT_INIT_MODEL_PATH` によるwarm-startを別の単要因実験として検討。今回の成果からcheckpoint存在は確認できていない。
 3. **P1 検証**：まずthreshold/guard内訳とラベル対応を固定probeで確認し、seed2の完走を含む再現試験を行う。GPUの順番が回ればKaggle優先。CPU LabはQUEUED中だけ、監視で状態が変われば停止。人手ラベル疑義は先生2名の独立確認と根拠裁定まで変更しない。
 4. 今回のCPU試験は学習パイプラインの動作・監査性のテストであり、ChatGPT/Claude同一課題比較・実用化目標に対する改善証拠ではない。次の学習依頼は提出していない。
+- ai-bridge共有はメッセージファイルをcommit 523075fとして作成し存在を確認したが、自動整理run 39240924006がfailureでINBOX.mdは更新されていない。Claude側の未読一覧への反映・受領は未確認。二重投稿はせず、原因はActionの取得ログが空で特定できていない。
