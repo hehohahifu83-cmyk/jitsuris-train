@@ -9,6 +9,7 @@
 - 学習依頼ID: `2026-10-19T06:56:06Z`
 - Kaggleでの開始を観測した時刻 (UTC): 未観測
 - Kaggleでの完了を観測した時刻 (UTC): 2026-10-19T11:06:59Z
+- 実学習の実行確認: 確認済み（KaggleがCOMPLETEを返し、今回の評価結果・モデルartifactを回収）
 - 評価結果回収: 今回の実行で FINETUNE_RESULTS.md を更新
 - 評価レポートartifact: 回収 artifact ID 12180754903（81ファイル）
 - 学習済みモデル回収: 回収 artifact ID 12182225865
