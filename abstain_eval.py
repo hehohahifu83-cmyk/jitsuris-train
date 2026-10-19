@@ -40,19 +40,19 @@ def load(dir_, cond, run=None):
         with open(path, encoding="utf-8") as f:
             d = json.load(f)
         if d.get("schema_version") != 2:
-            raise ValueError(f"unsupported evaluation schema in {path.name}; regenerate with schema_version=2")
+            raise ValueError(f"unsupported evaluation schema in {os.path.basename(path)}; regenerate with schema_version=2")
         rows = d.get("rows")
         if not isinstance(rows, list):
-            raise ValueError(f"missing rows array: {path.name}")
+            raise ValueError(f"missing rows array: {os.path.basename(path)}")
         for row in rows:
             if not isinstance(row, dict):
-                raise ValueError(f"malformed evaluation row: {path.name}")
+                raise ValueError(f"malformed evaluation row: {os.path.basename(path)}")
             if row.get("prediction") != row.get("guarded_prediction"):
-                raise ValueError(f"legacy prediction alias differs from guarded prediction: {path.name}")
+                raise ValueError(f"legacy prediction alias differs from guarded prediction: {os.path.basename(path)}")
             top3 = row.get("top3") or []
             raw = top3[0].get("label") if top3 else None
             if row.get("raw_prediction") != raw:
-                raise ValueError(f"raw prediction differs from top-1 probability label: {path.name}")
+                raise ValueError(f"raw prediction differs from top-1 probability label: {os.path.basename(path)}")
         summarize_records(rows)  # reject outcome/critical counts that disagree with truth and guarded prediction
         tests[d["test"]] = rows
     return tests
