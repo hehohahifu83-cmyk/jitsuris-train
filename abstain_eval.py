@@ -5,7 +5,7 @@
 方針：重大な取り違えは「数字の種類（date・amount・quantity・rate・id）どうしの取り違え」。
       数字の種類を答えようとしたとき、1位の確率が T_num 未満なら「不明」にする（数字の種類だけに厳しい基準）。
       T_num は一部の試験で決め、決めなかった試験で確かめる（試験ごとに 1 つ外して決める＝leave-one-test-out）。同じ試験で決めて同じ試験で測ると甘くなるため。
-使い方：python abstain_eval.py eval_reports/latest [条件名（ft・sparse・blend50・blend70。既定 blend70）] [置き場（job1・job2・report。省略で全部）]
+使い方：python abstain_eval.py eval_reports/latest [条件名（ft・sparse・blend50・blend60・blend70。既定 blend70）] [置き場（job1・job2・report。省略で全部）]
 """
 import glob, json, os, sys
 from evaluation_records import summarize_records
