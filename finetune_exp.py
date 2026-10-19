@@ -215,8 +215,8 @@ if any("blind" in k.lower() for k in tests):
 eval_start = time.time()
 model_probs = {tn: probs(te) for tn, te in tests.items()}
 lr_probs = {tn: lr.predict_proba(mat(te)) for tn, te in tests.items()}
-conditions = (("微調整だけ", 1.0), ("今の仕組みだけ", 0.0), ("微調整＋今の仕組み（半々）", 0.5), ("微調整7割＋今の仕組み3割", 0.7))
-condition_names = {"微調整だけ": "ft", "今の仕組みだけ": "sparse", "微調整＋今の仕組み（半々）": "blend50", "微調整7割＋今の仕組み3割": "blend70"}
+conditions = (("微調整だけ", 1.0), ("今の仕組みだけ", 0.0), ("微調整＋今の仕組み（半々）", 0.5), ("微調整6割＋今の仕組み4割", 0.6), ("微調整7割＋今の仕組み3割", 0.7))
+condition_names = {"微調整だけ": "ft", "今の仕組みだけ": "sparse", "微調整＋今の仕組み（半々）": "blend50", "微調整6割＋今の仕組み4割": "blend60", "微調整7割＋今の仕組み3割": "blend70"}
 critical_labels = {"date", "amount", "quantity", "rate", "id"}
 
 def normalized_header(value):
