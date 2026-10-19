@@ -20,6 +20,7 @@ from batching import plan_micro_batches, pad_batch
 features.USE_NUM2 = True  # 今の仕組み側は v8 と同じ（数字の値特徴あり）
 from encoder_exp import rows, tests, text
 from llm_baseline import score_real
+from evaluation_records import assert_metrics_match, build_record, is_issue
 from train3 import decide
 
 seed_text = os.environ.get("FT_SEED")
@@ -226,28 +227,34 @@ def safe_test_name(name):
     return names.get(name, "test")
 
 lines = []
+eval_seed = seed_text if seed_text is not None else "default"
 for tag, w in conditions:
     res = []
-    error_rows = []
     for tn, te in tests.items():
         P = w * model_probs[tn] + (1 - w) * lr_probs[tn]
         pred = ["unknown" if p == "other" else p for p in decide(labels, P, te)]
-        s = score_real(pred, [r[2] for r in te])
+        truth_labels = [r[2] for r in te]
+        s = score_real(pred, truth_labels)
         res.append(f"{tn} 正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}" + (f" その他見送り{s['other_ok']}/{s['other_ok'] + s['other_ng']}" if s['other_ok'] + s['other_ng'] else ""))
         top = np.argsort(P, axis=1)[:, ::-1][:, :3]
         prob_rows = []
-        for i, (row, truth, chosen) in enumerate(zip(te, [r[2] for r in te], pred)):
+        for i, (row, truth, chosen) in enumerate(zip(te, truth_labels, pred)):
             top3 = [{"label": labels[int(j)], "probability": round(float(P[i, j]), 6)} for j in top[i]]
-            critical = truth in critical_labels and chosen in critical_labels and chosen != truth
-            item = {"index": i, "column": normalized_header(row[0]), "truth": truth, "prediction": chosen, "critical": critical, "top3": top3}
-            prob_rows.append(item)
-            if chosen != truth and not (truth == "other" and chosen == "unknown"):
-                error_rows.append(item)
+            prob_rows.append(build_record(
+                index=i, dataset=safe_test_name(tn), seed=eval_seed,
+                condition=condition_names[tag], column=normalized_header(row[0]),
+                truth=truth, guarded_prediction=chosen, top3=top3,
+            ))
+        # Fail the run before writing artifacts if row-level records cannot reproduce the official score.
+        assert_metrics_match(prob_rows, s)
+        error_rows = [row for row in prob_rows if is_issue(row)]
         suffix = f"{safe_test_name(tn)}_{condition_names[tag]}"
+        metadata = {"schema_version": 2, "test": tn, "dataset": safe_test_name(tn),
+                    "seed": eval_seed, "condition": tag, "condition_id": condition_names[tag]}
         with open(f"probs_{suffix}.json", "w", encoding="utf-8") as f:
-            json.dump({"test": tn, "condition": tag, "rows": prob_rows}, f, ensure_ascii=False, separators=(",", ":"))
+            json.dump({**metadata, "rows": prob_rows}, f, ensure_ascii=False, separators=(",", ":"))
         with open(f"errors_{suffix}.json", "w", encoding="utf-8") as f:
-            json.dump({"test": tn, "condition": tag, "errors": error_rows}, f, ensure_ascii=False, separators=(",", ":"))
+            json.dump({**metadata, "errors": error_rows}, f, ensure_ascii=False, separators=(",", ":"))
     lines.append(f"| {NAME} 微調整 {EPOCHS}周{'・水増し' if AUG else ''}・{tag} | " + " | ".join(res) + f" | 学習 {train_seconds:.0f}秒・評価 {time.time() - eval_start:.0f}秒 |"); print(lines[-1], flush=True)
 notes = []
 if os.environ.get("FT_COMPRESS") == "1":   # 縮めた版（語彙削減・INT8・fp16）の質。失敗しても本体の結果は残す
