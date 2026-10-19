@@ -91,60 +91,22 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a") as out: out.write(f"proceed=true\nsource_run_id={run_id}\n")
           print(f"All gates passed for Kaggle run {run_id}")
           PY
-      - name: Download only approved labeled training corpora
+      - name: Validate only approved labeled training corpora from the repository
         if: steps.gate.outputs.proceed == 'true'
-        env:
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip kaggle
-          case "$KAGGLE_KEY" in KGAT_*) export KAGGLE_API_TOKEN="$KAGGLE_KEY";; esac
-          mkdir -p /tmp/jitsuris-data
           python - <<'PY'
-          import subprocess
           from pathlib import Path
-          from kaggle.api.kaggle_api_extended import KaggleApi
-
-          dataset = "jitsurio/jitsuris-data"
           allowed = {
               "real_labels.jsonl", "real_labels_biz.jsonl", "real_labels_biz2.jsonl",
               "real_labels_direct.jsonl", "real_labels_jp.jsonl", "real_labels_jp2.jsonl",
           }
-          api = KaggleApi()
-          api.authenticate()
-          page = api.dataset_list_files(dataset)
-          names = []
-          while page:
-              for item in page.files:
-                  name = item.name
-                  if any(name == f"materials/{base}" or name.endswith(f"/materials/{base}") for base in allowed):
-                      names.append(name)
-              token = getattr(page, "next_page_token", None)
-              if not token:
-                  break
-              page = api.dataset_list_files(dataset, page_token=token)
-          if not names:
-              raise SystemExit("No allowlisted real_labels*.jsonl training corpora are listed")
-          for name in names:
-              subprocess.run(
-                  ["kaggle", "datasets", "download", "-d", dataset, "-f", name,
-                   "-p", "/tmp/jitsuris-data", "--unzip"],
-                  check=True,
-              )
-          root = Path("/tmp/jitsuris-data")
-          copied = []
-          for name in names:
-              base = name.rsplit("/", 1)[-1]
-              matches = list(root.glob(f"**/materials/{base}"))
-              if matches:
-                  dest = Path("materials") / base
-                  dest.parent.mkdir(parents=True, exist_ok=True)
-                  dest.write_bytes(matches[0].read_bytes())
-                  copied.append(base)
-          if not copied:
-              raise SystemExit("Allowlisted corpus files downloaded but none were extracted")
-          print("Copied allowlisted training corpora:", ", ".join(sorted(set(copied))))
+          root = Path("materials")
+          found = {name for name in allowed if (root / name).is_file() and (root / name).stat().st_size > 0}
+          missing = sorted(allowed - found)
+          if missing:
+              raise SystemExit("Approved training files are missing or empty: " + ", ".join(missing))
+          print("Validated allowlisted training corpora:", ", ".join(sorted(found)))
           PY
       - name: Validate the lab and prepare material receipt
         if: steps.gate.outputs.proceed == 'true'
