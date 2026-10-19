@@ -87,13 +87,20 @@ class EvalArtifactIntegrityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing paired error report"):
             validate_report_dir(self.root, datasets=self.datasets, seeds=self.seeds, conditions=self.conditions)
 
-    def test_outcome_and_critical_semantics_are_checked(self):
+    def test_outcome_semantics_are_checked(self):
         path = self.root / "job1_probs_dev220_ft.json"
         obj = json.loads(path.read_text())
-        obj["rows"][2]["critical"] = False
         obj["rows"][0]["outcome"] = "wrong"
         path.write_text(json.dumps(obj), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "outcome/label mismatch"):
+            validate_report_dir(self.root, datasets=self.datasets, seeds=self.seeds, conditions=self.conditions)
+
+    def test_critical_requires_numeric_to_numeric_misclassification(self):
+        path = self.root / "job1_probs_dev220_ft.json"
+        obj = json.loads(path.read_text())
+        obj["rows"][2]["critical"] = False
+        path.write_text(json.dumps(obj), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "critical flag/labels mismatch"):
             validate_report_dir(self.root, datasets=self.datasets, seeds=self.seeds, conditions=self.conditions)
 
     def test_truth_mapping_must_match_across_conditions(self):
@@ -101,10 +108,11 @@ class EvalArtifactIntegrityTests(unittest.TestCase):
         obj = json.loads(path.read_text())
         obj["rows"][0]["truth"] = "quantity"
         obj["rows"][0]["outcome"] = "wrong"
+        obj["rows"][0]["critical"] = True
         path.write_text(json.dumps(obj), encoding="utf-8")
         errors_path = self.root / "job2_errors_dev220_blend60.json"
         errors = json.loads(errors_path.read_text())
-        errors["errors"].append(row(0, "quantity", "amount", "wrong"))
+        errors["errors"].append(dict(row(0, "quantity", "amount", "wrong", True), dataset="dev220", seed="2", condition="blend60"))
         errors_path.write_text(json.dumps(errors), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "row identity/truth differs"):
             validate_report_dir(self.root, datasets=self.datasets, seeds=self.seeds, conditions=self.conditions)
