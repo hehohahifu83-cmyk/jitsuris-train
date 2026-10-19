@@ -385,3 +385,9 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - Kaggle Version 23（2026-10-19 06:56:06Z、e5-base 2周、seed 1/2、`FT_CTX_UNIT=1`）はKAGGLE_LOG.md上で11:05:35ZにCOMPLETE。仕事1/2の学習ループ566/576秒、GPU最大5.5GiB。結果はFINETUNE_RESULTS.mdに追記済み。Progressに残っていた07:16Z QUEUEDは古い状態だったため、kaggle/PROGRESS.mdを11:05Z完了へ更新した。
 - 最新のseed 1/2「微調整だけ」結果：開発用220 96.8/97.7%、一般 91.2/92.9%、業務 92.2/92.0%、業務2 95.9/95.8%、日本の調達 98.9/98.9%。重大誤りは開発1/1、一般1/1、業務1/4、業務2 3/3、調達0/0（seed1/2）。数値差はseed変動と並べて解釈し、順位を断定しない。
 - 次の順序：まずencoder_contextの既存Pythonテストを全件実行し、Kaggle現行ログ・requestの状態を再確認。完了済み基準に今回の見出し抽出修正だけを加えた同条件seed 1/2比較を計画する。学習依頼はまだ変更していない。blind set・セット3/5/7は未使用。
+
+### 2026-10-19 12:42 UTC追記 — 実験投入と監視の誤判定を修正
+- 先の学習投入run 39253741625はHugging Faceの準備で失敗。依頼にKaggle保存先 `hfmodel/intfloat__multilingual-e5-base` をHFモデルIDとして渡していたのが原因。Kaggle側への新規pushはなく、今回の学習は始まっていない。
+- 原因を直し、正しい公開ID `intfloat/multilingual-e5-base` で同じe5-base・2周・seed 1/2・他設定固定の依頼を再投入。run 39253866587が開始し、Kaggle依存導入と監視テストは成功。12:42 UTC時点でKaggle準備／実行stepが進行中。開始・完了の確認はまだ取れておらず、結果未確定。
+- 先の失敗時、直近依頼がKaggleへpushされていないのに、旧jobの `COMPLETE` を現在依頼の状態として表示する監視上の欠陥を確認。次回以降の依頼では、Kaggleログの新規push記録がない場合に以前の状態を引き継がずUNKNOWNとする修正を `kaggle.yml` と `kaggle_monitor.py` に追加し、回帰テストを追加した。main commit: `d6e3642` / `1885221` / `27310cb`。この監視修正を含むActions runはまだ実行されていない。
+- `encoder_context.py` の複合金額単位見出し修正と既存監視テストを合わせ、ローカルで10件のfocused unittestが成功。YAMLのCI実行確認は未取得。
