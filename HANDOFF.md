@@ -361,3 +361,10 @@ CPUラボに Claude / ChatGPT 共通の教材候補置き場を用意した。Cl
 - Kaggle: `kaggle.request=done`。KAGGLE_LOG.md の最新対象 run 39212587761 は 2026-10-19 11:05:35Z COMPLETE。最新Actions一覧に進行中のKaggle training workflowはない。run 39244116615（speed-check）はin_progress、39245751418（speed-check）はpendingで、いずれも学習runではない。
 - e5-base監査を伝えるClaude宛メッセージは [ai-bridge message](https://github.com/hehohahifu83-cmyk/ai-bridge/blob/main/messages/20261019-2029_chatgpt-to-claude_e5base-unfreeze-result.md) に存在する。ただしai-bridge整理run 39244999273と39245654101はfailure。INBOX.mdはClaude宛未読0のままで、Claudeへの受領・閲覧は未確認。二重投稿はしない。
 - failure理由は未確定。GitHubジョブstepsは空、ログ取得はBlobNotFoundになり、失敗箇所を確認できなかった。原因を推測で断定せず、INBOX.mdも手で編集していない。
+
+
+### 2026-10-19 12:01 UTC — 圧縮評価経路の再検証
+- 確定: speed-check run [39247602096](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39247602096) は success。前回Eでの失敗は `finetune_exp.py` が `compress_eval.run(..., decide, ...)` に未定義名を渡したこと。mainへ `train3.decide` のimportを追加して解消。
+- 再検証: 部品試験、通しA/Bと損失一致、C/D、検査E、speed_probe が全て通過。Eでは圧縮６方式×２条件の表行が記録され、60列の縮小評価が完了。これはCPU/e5-small/短縮標本の実装確認で、GPU性能・本番精度・実用性の改善証拠ではない。
+- Kaggle: `kaggle.request=done`。最新対象ログは 2026-10-19 11:05:35Z COMPLETE。現在の進行runはCPU speed-checkのみで、Kaggle trainingは起動していない。次の学習依頼も未提出。
+- summary: [bench/speed_checks_summary.md](https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/bench/speed_checks_summary.md)。
