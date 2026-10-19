@@ -34,8 +34,9 @@ class EvalArtifactIntegrityTests(unittest.TestCase):
                 job = f"job{seed}"
                 base = {"schema_version": 3, "dataset": "dev220", "seed": seed,
                         "condition_id": condition}
-                probs = dict(base, rows=self.rows)
-                errors = dict(base, errors=[r for r in self.rows if r["outcome"] in ("wrong", "unknown", "other_ng")])
+                rows = [dict(r, dataset="dev220", seed=seed, condition=condition) for r in self.rows]
+                probs = dict(base, rows=rows)
+                errors = dict(base, errors=[r for r in rows if r["outcome"] in ("wrong", "unknown", "other_ng")])
                 (self.root / f"{job}_probs_dev220_{condition}.json").write_text(json.dumps(probs), encoding="utf-8")
                 (self.root / f"{job}_errors_dev220_{condition}.json").write_text(json.dumps(errors), encoding="utf-8")
 
@@ -46,12 +47,20 @@ class EvalArtifactIntegrityTests(unittest.TestCase):
         self.assertEqual(result["paired_error_files"], 8)
         self.assertEqual(result["unique_dataset_rows"], 5)
 
+    def test_row_metadata_is_checked(self):
+        path = self.root / "job1_probs_dev220_ft.json"
+        obj = json.loads(path.read_text())
+        obj["rows"][0]["condition"] = "blend50"
+        path.write_text(json.dumps(obj), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "row metadata mismatch"):
+            validate_report_dir(self.root, datasets=self.datasets, seeds=self.seeds, conditions=self.conditions)
+
     def test_missing_condition_is_detected(self):
         (self.root / "job2_probs_dev220_blend60.json").unlink()
         with self.assertRaisesRegex(ValueError, "report matrix mismatch"):
             validate_report_dir(self.root, datasets=self.datasets, seeds=self.seeds, conditions=self.conditions)
 
-    def test_duplicate_report_is_detected(self):
+    def test_job_seed_mapping_is_checked(self):
         source = self.root / "job1_probs_dev220_ft.json"
         (self.root / "job2_probs_dev220_ft.json").write_text(source.read_text(), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "job/seed mismatch"):
