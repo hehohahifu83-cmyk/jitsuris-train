@@ -3,7 +3,7 @@
 何をするか：Kaggle の学習が eval_reports/latest/ に残す probs（上位3つの確率）と、同じ固定試験の列の値（materials の公開データ）を突き合わせ、
   decide() と同じ手順（確率 0.5 未満は不明 → guard → その他は不明）で答えを決め直す。保存されている答え（その学習のときの見張りの結果）と並べて出す。
 安全のための確認：列名と正解が保存したものと一致しなければ止まる（試験の並びが違うまま採点しない）。
-使い方：python rescore_guard.py eval_reports/latest [条件名（ft・sparse・blend50・blend70。省略で全部）] [置き場（job1・job2・report。省略で全部）]
+使い方：python rescore_guard.py eval_reports/latest [条件名（ft・sparse・blend50・blend60・blend70。省略で全部）] [置き場（job1・job2・report。省略で全部）]
 未見セット（blind_set*）は扱わない。
 """
 from __future__ import annotations
@@ -62,7 +62,7 @@ def main(argv):
     from guard import guard
     from llm_baseline import score_real
     d = argv[1] if len(argv) > 1 else "eval_reports/latest"
-    conds = [argv[2]] if len(argv) > 2 and argv[2] else ["ft", "sparse", "blend50", "blend70"]
+    conds = [argv[2]] if len(argv) > 2 and argv[2] else ["ft", "sparse", "blend50", "blend60", "blend70"]
     tests = load_tests()
     lines = ["| 置き場 | 条件 | 試験 | 保存した答え | 今の guard.py で決め直し |", "|---|---|---|---|---|"]
     cell = lambda s: f"正{s['acc_all']:.1%} 誤{s['wrong']} 不明{s['unknown']} 重大{s['critical']}"
