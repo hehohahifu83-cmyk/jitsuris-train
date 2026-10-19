@@ -25,6 +25,7 @@ def update_monitor(
     state: str,
     raw: str,
     action_run_id: str,
+    execution_evidence: list[str] | None = None,
 ) -> dict[str, Any]:
     """Persist bounded observations and the first confirmed lifecycle times."""
     target = Path(path)
@@ -68,6 +69,11 @@ def update_monitor(
     if state in TERMINAL:
         record["terminal_state"] = state
         record.setdefault("terminal_at", observed_at)
+    if execution_evidence:
+        record["training_execution_confirmed"] = True
+        record.setdefault("execution_confirmed_at", observed_at)
+        existing = record.setdefault("execution_evidence", [])
+        record["execution_evidence"] = list(dict.fromkeys(existing + execution_evidence))
 
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
