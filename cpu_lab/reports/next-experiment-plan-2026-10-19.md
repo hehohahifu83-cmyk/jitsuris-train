@@ -1,6 +1,6 @@
 # 次回e5-base精度実験計画（2026-10-19）
 
-> 状態：この文書に記した FT_LR=2e-5 のmatched試験は完了。既定LRの変更は採用しない。結果と判断は [監査記録](../../research/e5-base-lr2e-5-audit-2026-10-19.md) を参照。最新の埋め込み固定解除比較は [別監査](../../research/e5-base-unfreeze-embeddings-audit-2026-10-19.md)。次回実験をこの古い計画から再実行しない。評価schema 2 のKaggle成果物が整合確認されるまで、新しい学習条件は保留。
+> 状態：この文書に記した FT_LR=2e-5 のmatched試験は完了。既定LRの変更は採用しない。結果と判断は [監査記録](../../research/e5-base-lr2e-5-audit-2026-10-19.md) を参照。最新の埋め込み固定解除比較は [別監査](../../research/e5-base-unfreeze-embeddings-audit-2026-10-19.md)。次回実験をこの古い計画から再実行しない。評価出力schema 3に判定理由を付ける実装は commit 50d86bd、修正版のCPU安全テストは commit f099844 で成功した。Kaggleの新しいschema 3成果物はまだないため、学習条件は引き続き保留。
 
 
 ## 目的
