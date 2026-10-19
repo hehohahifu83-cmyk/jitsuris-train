@@ -45,19 +45,31 @@ def build_record(*, index: int, dataset: str, seed: int | str,
 
 
 def summarize_records(records: Iterable[dict[str, Any]]) -> dict[str, int | float]:
-    counts = Counter(str(row.get("outcome") or classify_outcome(
-        str(row["truth"]), str(row.get("guarded_prediction", row["prediction"]))
-    )) for row in records)
-    invalid = set(counts) - VALID_OUTCOMES
-    if invalid:
-        raise ValueError(f"invalid evaluation outcomes: {sorted(invalid)}")
+    rows = list(records)
+    counts: Counter[str] = Counter()
+    critical = 0
+    for row in rows:
+        truth = str(row["truth"])
+        prediction = str(row.get("guarded_prediction", row.get("prediction", "unknown")))
+        expected = classify_outcome(truth, prediction)
+        outcome = str(row.get("outcome", expected))
+        if outcome not in VALID_OUTCOMES:
+            raise ValueError(f"invalid evaluation outcome: {outcome}")
+        if outcome != expected:
+            raise ValueError(f"evaluation outcome does not match truth/prediction: {outcome} != {expected}")
+        expected_critical = (outcome == "wrong" and truth in NUMERIC
+                             and prediction in NUMERIC and truth != prediction)
+        if bool(row.get("critical", expected_critical)) != expected_critical:
+            raise ValueError("critical flag does not match scored truth/prediction")
+        counts[outcome] += 1
+        critical += int(expected_critical)
     correct, wrong, unknown = counts["correct"], counts["wrong"], counts["unknown"]
     n = correct + wrong + unknown
     return {
         "correct": correct,
         "wrong": wrong,
         "unknown": unknown,
-        "critical": sum(bool(row.get("critical")) for row in records),
+        "critical": critical,
         "n": n,
         "acc_all": correct / max(n, 1),
         "answered": (correct + wrong) / max(n, 1),
