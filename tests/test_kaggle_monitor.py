@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from kaggle_monitor import latest_training_cycle, parse_status, render_progress, update_monitor
+from kaggle_monitor import is_unsubmitted_request, latest_training_cycle, parse_status, render_progress, update_monitor
 
 
 class KaggleMonitorTests(unittest.TestCase):
@@ -62,6 +62,11 @@ class KaggleMonitorTests(unittest.TestCase):
         self.assertIn("判定: 未確認", body)
         self.assertNotIn("Kaggle完了", body)
         self.assertIn("authentication failed", body)
+
+    def test_new_train_push_without_fresh_submission_cannot_reuse_old_complete(self):
+        self.assertTrue(is_unsubmitted_request(event_name="push", request="train intfloat/model 2", previous_cycle="old", current_cycle="old"))
+        self.assertFalse(is_unsubmitted_request(event_name="push", request="train intfloat/model 2", previous_cycle="old", current_cycle="new"))
+        self.assertFalse(is_unsubmitted_request(event_name="schedule", request="train intfloat/model 2", previous_cycle="old", current_cycle="old"))
 
     def test_extracts_latest_timestamped_training_request(self):
         log = "2026-01-01T00:00:00Z train を依頼：old\n2026-01-02T00:00:00Z train を依頼：new\n"
