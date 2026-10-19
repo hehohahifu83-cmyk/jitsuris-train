@@ -42,7 +42,7 @@ class EvaluationRecordsTest(unittest.TestCase):
         metrics = summarize_records(rows)
         self.assertEqual(metrics["wrong"], 2)
         self.assertEqual(metrics["unknown"], 1)
-        self.assertEqual(metrics["critical"], 1)
+        self.assertEqual(metrics["critical"], 2)
         self.assertEqual(metrics["other_ok"], 1)
         self.assertEqual(metrics["other_ng"], 1)
 
