@@ -17,6 +17,8 @@ jobs:
       - run: git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
+      - name: Test Kaggle lifecycle monitor
+        run: python -m unittest discover -s tests -p 'test_kaggle_monitor.py'
       - run: pip install kaggle
       - name: 回収する用事があるか（定期実行のとき）
         id: gate
