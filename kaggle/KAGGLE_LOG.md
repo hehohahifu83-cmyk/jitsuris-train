@@ -301,3 +301,7 @@
     [仕事2] peak GPU memory 3.5 GiB; training loop 471s
     [仕事1] peak GPU memory 3.5 GiB; training loop 493s
 2026-10-18T23:55:07Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+2026-10-19T01:21:14Z push の返事：Kernel version 22 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-19T01:21:44Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-19T01:21:45Z train を依頼：hfmodel/intfloat__multilingual-e5-large 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_SEED=1 ++ FT_SEED=2
+送ったモデル：2.2G	hfmodel・束の中のモデルのファイル数 55
