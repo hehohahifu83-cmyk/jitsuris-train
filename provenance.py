@@ -136,6 +136,14 @@ def library_versions():
     return v
 
 
+def read_json(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
 def read_commit(paths=("kaggle/commit.txt", "commit.txt")):
     """Kaggle の束に GitHub 側が書いた commit（無ければ unknown）。"""
     for p in paths:
@@ -154,7 +162,9 @@ def build_manifest(*, model_name, hf_repo_id, epochs, seed, labels, train_rows, 
         "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "commit": read_commit(),
         "model": {"name_or_path": model_name, "hf_repo_id": hf_repo_id,
-                  "source_files": small_files_digests(source_model_dir) if source_model_dir else {}},
+                  "source_files": small_files_digests(source_model_dir) if source_model_dir else {},
+                  "source_weights": weights_digests(source_model_dir) if source_model_dir else {},   # 学習の出発点の重み（Hugging Face から取ったもの）
+                  "hf_revision": read_json(os.path.join(source_model_dir, "hf_revision.json")) if source_model_dir else None},
         "run": {"seed": seed, "epochs": epochs, "env": ft_env(environ)},
         "labels": labels_digest(labels),
         "train_rows": rows_digest(train_rows),

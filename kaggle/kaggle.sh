@@ -30,7 +30,7 @@ if [ "$mode" = train ]; then
   case "$(awk '{print $1}' args.txt)" in embed|probe) MI=2;; *) MI=1;; esac   # embed と probe は 1 語目が種類、2 語目がモデル
   M=$(awk -v n=$MI '{print $n}' args.txt); D="hfmodel/${M//\//__}"
   pip install -q huggingface_hub
-  ( cd .. && rm -rf hfmodel && python -c "from huggingface_hub import snapshot_download as s; s('$M', local_dir='$D', allow_patterns=['*.json','*.safetensors','*.model','*.txt','sentencepiece*','tokenizer*'])" && du -sh hfmodel && ls -R hfmodel | head -20 ) | tee -a /tmp/hf.txt
+  ( cd .. && rm -rf hfmodel && python kaggle/hf_fetch.py "$M" "$D" && du -sh hfmodel && ls -R hfmodel | head -20 ) | tee -a /tmp/hf.txt   # 重みが safetensors でない repo（mmBERT-small）は bin も取る・取った版を hf_revision.json に残す
   if [ "$MI" = 2 ]; then sed -i -E "1s#^(embed|probe) [^ ]*#\1 $D#" args.txt; else sed -i "1s#^[^ ]*#$D#" args.txt; fi
   # 今回だけの印。ファイル名に入れておき、Kaggle 側の一覧にこの名前が出るまで待つ（同じモデルの前回の版を、今回の版と取り違えないため）
   NONCE="$(date -u +%Y%m%dT%H%M%S)-$RANDOM"

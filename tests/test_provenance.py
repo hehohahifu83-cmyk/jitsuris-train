@@ -98,9 +98,16 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(m["replay_rows"], {"count": 0})
             self.assertIn("provenance.py", m["code"])
             self.assertIn("tokenizer.json", m["model"]["source_files"])
+            self.assertEqual(m["model"]["source_weights"]["model.safetensors"]["bytes"], 1)
+            self.assertIsNone(m["model"]["hf_revision"])
+            with open(os.path.join(model_dir, "hf_revision.json"), "w", encoding="utf-8") as f:
+                json.dump({"repo": "jhu-clsp/mmBERT-small", "revision": "abc"}, f)
+            m2 = P.build_manifest(model_name="x", hf_repo_id="x", epochs=1, seed="1", labels=["a"], train_rows=rows, source_model_dir=model_dir)
+            self.assertEqual(m2["model"]["hf_revision"]["revision"], "abc")
             self.assertEqual(P.weights_sha256(m), P.sha256_bytes(b"w"))
             path = P.write_manifest(os.path.join(d, "sub", "manifest.json"), m)
-            self.assertEqual(json.load(open(path, encoding="utf-8"))["model"]["hf_repo_id"], "jhu-clsp/mmBERT-small")
+            with open(path, encoding="utf-8") as f:
+                self.assertEqual(json.load(f)["model"]["hf_repo_id"], "jhu-clsp/mmBERT-small")
 
 
 if __name__ == "__main__":

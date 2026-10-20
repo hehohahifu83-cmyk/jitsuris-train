@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['tests/mmbert_smoke.py', 'mmbert_smoke.request', '.github/workflows/mmbert-smoke.yml']
+    paths: ['tests/mmbert_smoke.py', 'mmbert_smoke.request', 'kaggle/hf_fetch.py', '.github/workflows/mmbert-smoke.yml']
 permissions:
   contents: write
 jobs:
@@ -34,18 +34,9 @@ jobs:
         shell: bash
         run: |
           exec > >(tee fetch.log) 2>&1
-          python - <<'PY'
-          from huggingface_hub import HfApi, snapshot_download
-          api = HfApi()
-          for repo, local, pats in [
-              ("jhu-clsp/mmBERT-small", "hfmodel/jhu-clsp__mmBERT-small", ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*']),
-              ("intfloat/multilingual-e5-base", "hfmodel/intfloat__multilingual-e5-base", ['*.json', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*'])]:
-              info = api.model_info(repo)
-              lic = (info.card_data.license if info.card_data is not None and hasattr(info.card_data, "license") else None)
-              print(repo, "revision", info.sha, "license", lic, [t for t in (info.tags or []) if t.startswith("license")])
-              snapshot_download(repo, local_dir=local, allow_patterns=pats)
-          PY
-          ls -la hfmodel/jhu-clsp__mmBERT-small hfmodel/intfloat__multilingual-e5-base
+          python kaggle/hf_fetch.py jhu-clsp/mmBERT-small hfmodel/jhu-clsp__mmBERT-small
+          python kaggle/hf_fetch.py intfloat/multilingual-e5-base hfmodel/intfloat__multilingual-e5-base --tokenizer-only
+          ls -la hfmodel/jhu-clsp__mmBERT-small
       - name: 部品ごとの試運転（読み込み・トークナイザ・分類の頭・1 ステップ・保存と読み込み・ONNX）
         shell: bash
         run: |
