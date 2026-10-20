@@ -1,6 +1,6 @@
 # トークナイザの正規化の一致試験（GitHub Actions）
 
-run: 39100545244　commit: 7bb54bdde0c7c1becc3958021d4ebc071fd49eea
+run: 39427928045　commit: d3f029245a581fec2259995f435e23d29853fd84
 
 ## 正解データの作成（Python・tokenizers）
 ```
