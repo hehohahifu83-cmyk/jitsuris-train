@@ -1,7 +1,1 @@
-# Kaggle 最新観測
-
-- 判定: Kaggle完了（COMPLETEを今回確認）
-- 観測時刻 (UTC): 2026-10-20T18:57:25Z
-- 学習依頼ID: 2026-10-20T14:01:06Z
-- GitHub Actions確認run: 39479234099
-- Kaggle API応答: jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+2026-10-20T21:13:24Z 途中（10 分）：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING"
