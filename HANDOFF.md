@@ -40,13 +40,14 @@
    `train intfloat/multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
 3. 両方が COMPLETE になったら、`ls eval_reports/runs | tail -2` で 2 つの番号を得て（新しい方が E5-base）、
    `python compare_models.py --group mmBERT-small=eval_reports/runs/<mmBERT の番号>:job1,job2,job3 --group E5-base=eval_reports/runs/<E5-base の番号>:job1,job2,job3 --out bench/compare_mmbert_vs_e5base.md`（見出し別・クラス別 P/R・重大・誤断定・不明。固定試験は回帰診断の別表で、判定に使わない）。持ち帰った重みの SHA-256 は `check_trained_model.py` で manifest と照合する。
-4. **最終判定は、新しい独立評価だけで行う**（ChatGPT が主セットを準備中、Claude が独立にラベルを付ける。HDB 8 列は予備セットで、独立ラベルは 8/8 一致）。持ち帰った 6 つの重み（mmBERT 3・E5-base 3）を主セットに当てる経路は、主セットが固定されてから実行する（`checkpoint-evaluation.yml` の複数モデル版を Claude が用意する予定。着手前に STATE.md の「作業中」に書く）。
+4. **最終判定は、新しい独立評価だけで行う**（ChatGPT が主セットを準備中、Claude が独立にラベルを付ける。HDB 8 列は予備セットで、独立ラベルは 8/8 一致）。持ち帰った 6 つの重み（mmBERT 3・E5-base 3）を主セットに当てる経路は用意済み（`evaluate_independent.py`）。主セットが固定されたら、重みごとに `predict`（ラベルを読まない・台帳で 1 回だけ）→ ラベルは別ファイルで `score` → `compare_models.py --group 名前=<出力先>:job1,job2,job3` の順に実行する。主セットの形（schema_version 1）とラベルの形は `evaluate_independent.py` の冒頭に書いた（ChatGPT の抽出がこの形で出せるか、または変換が要るかは未確認）。GitHub の CPU で流す workflow は、主セットの置き場所が決まってから足す。
 
 ## 道具（どれも未見セットは読まない）
-`provenance.py`（学習の記録）、`val_split.py`（検証＝学習側の表の 1/8）、`slice_eval.py`（既知ペア／既知見出し・別ラベル／未知見出し）、`compare_models.py`（モデルの並べ方）、`sweep_pick.py`（学習率の選び方）、`check_trained_model.py`（取ったモデルの重みの SHA-256 の照合）、`model_setup.py`（ModernBERT の読み込み・.bin の置き直し・fp16→fp32 の切り替え判断）、`kaggle/hf_fetch.py`、`tests/mmbert_smoke.py`・`mmbert-smoke.yml`（CPU の試運転）。
+`provenance.py`（学習の記録）、`val_split.py`（検証＝学習側の表の 1/8）、`slice_eval.py`（既知ペア／既知見出し・別ラベル／未知見出し）、`compare_models.py`（モデルの並べ方）、`sweep_pick.py`（学習率の選び方）、`error_overlap.py`（2 つの仕事の外れの重なり）、`evaluate_independent.py`（保存した重みを学習の束の外の主セットに当てる。予測とラベルの採点を分け、各（主セット, 重み）の組は 1 回だけ）、`check_trained_model.py`（取ったモデルの重みの SHA-256 の照合）、`model_setup.py`（ModernBERT の読み込み・.bin の置き直し・fp16→fp32 の切り替え判断）、`kaggle/hf_fetch.py`、`tests/mmbert_smoke.py`・`mmbert-smoke.yml`（CPU の試運転）。
 
 ## 確認の程度（テスト／実機／実績を分ける）
 - テスト：単体試験（手元・GitHub）が成功。mmBERT-small の CPU 試運転（run 39433968539、commit f7917c9）は必須項目の NG 0 件、`finetune_exp.py` の通し（検証モード・256 行）まで成功。強制した .bin→safetensors の置き直しは読み込み結果が元と完全一致。CPU の学習済み重みの SHA-256 は変更の前後で同じ（4ca77d90…）。
+- 独立評価の経路（`evaluate_independent.py`）：単体試験 9 件（手元）。本物の torch（CPU）で、学習が書いた重み（mmBERT の CPU 試運転の重み）を通し、学習時の評価と最上位ラベル 24/24・判断 24/24・見出し 24/24・確率の最大差 0 で一致（run 39503519924、`bench/mmbert_smoke.md`）。**主セットでの実際の評価は未実施**（主セットが固定されていない）。
 - 実機：GPU（Tesla T4・fp16）での mmBERT-small の学習・評価は、探索の 4 本で確認（fp32 への切り替え 0 回）。最終比較の 3 本は実行中。ONNX／ブラウザの経路は mmBERT では未確認（CPU で ONNX 書き出しの一致のみ確認：最大差 1.6e-5。競争力が出てから）。
 - 実績：mmBERT の精度は、検証（889 行・seed 1）での探索の値だけで、E5-base と区別できない。**優位は未確認**。E5-base（版 31）の見出し別の基準は `bench/slice_eval_e5base_v31.md`：未知の見出しの正解率は約 85%、全体の 93〜94% は見出しの重なりで高く出ている。
 - 版 31 の仕事 3・4（リプレイ）は、固定試験と見出し・ラベルが重なる 9 行を含む 39 行で学習していた（ChatGPT が 0c95af2 で除去・訂正済み）。その結果は比較に使わない。
