@@ -86,6 +86,8 @@ def cell(xs, fmt="pct"):
         return "—"
     if fmt == "pct":
         return f"{m * 100:.1f}% ±{sd * 100:.1f}（{lo * 100:.1f}〜{hi * 100:.1f}）"
+    if lo == hi:
+        return f"{lo:.0f}"
     return f"{m:.1f} ±{sd:.1f}（{lo:.0f}〜{hi:.0f}）"
 
 
