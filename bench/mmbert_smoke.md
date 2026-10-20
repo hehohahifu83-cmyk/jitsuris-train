@@ -1,25 +1,24 @@
 # mmBERT-small の試運転（CPU・GitHub Actions）
 
-run: 39430761623　commit: 95586730b3ecaf63de316195398d7ba04346df90
+run: 39430763050　commit: 95586730b3ecaf63de316195398d7ba04346df90
 
 ## モデルの取得
 ```
 jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license mit ['license:mit']
 Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 4 files:  50%|█████     | 2/4 [00:00<00:00, 11.83it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00,  3.78it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00,  4.20it/s]
+Fetching 4 files:  50%|█████     | 2/4 [00:00<00:00, 12.36it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00,  3.86it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00,  4.30it/s]
 intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit ['license:mit']
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files:  23%|██▎       | 3/13 [00:00<00:00, 29.27it/s]Fetching 13 files:  69%|██████▉   | 9/13 [00:00<00:00, 43.38it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 13.30it/s]
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files:  23%|██▎       | 3/13 [00:00<00:00, 21.53it/s]Fetching 13 files:  69%|██████▉   | 9/13 [00:00<00:00, 37.96it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 11.53it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 13.76it/s]
 hfmodel/intfloat__multilingual-e5-base:
 total 21676
-drwxr-xr-x 5 runner runner     4096 Oct 20 13:30 .
-drwxr-xr-x 4 runner runner     4096 Oct 20 13:30 ..
-drwxr-xr-x 3 runner runner     4096 Oct 20 13:30 .cache
-drwxr-xr-x 2 runner runner     4096 Oct 20 13:30 1_Pooling
--rw-r--r-- 1 runner runner      694 Oct 20 13:30 config.json
--rw-r--r-- 1 runner runner      387 Oct 20 13:30 modules.json
-drwxr-xr-x 2 runner runner     4096 Oct 20 13:30 onnx
--rw-r--r-- 1 runner runner       57 Oct 20 13:30 sentence_bert_config.json
--rw-r--r-- 1 runner runner  5069051```
+drwxr-xr-x 5 runner runner     4096 Oct 20 13:31 .
+drwxr-xr-x 4 runner runner     4096 Oct 20 13:31 ..
+drwxr-xr-x 3 runner runner     4096 Oct 20 13:31 .cache
+drwxr-xr-x 2 runner runner     4096 Oct 20 13:31 1_Pooling
+-rw-r--r-- 1 runner runner      694 Oct 20 13:31 config.json
+-rw-r--r-- 1 runner runner      387 Oct 20 13:31 modules.json
+drwxr-xr-x 2 runner runner     4096 Oct 20 13:31 onnx
+-rw-r--r-- 1 runner run```
 ## 部品の単体試験
 ```
 [仕事2] 終了（終了コード 0）
@@ -30,21 +29,21 @@ drwxr-xr-x 2 runner runner     4096 Oct 20 13:30 onnx
 [仕事5] 終了（終了コード 0）
 ok
 test_single_job_runs_in_the_root (tests.test_jobs.RunJobsTest.test_single_job_runs_in_the_root) ... ok
-test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事1] 開始（GPU 0）FT_TAG=a
-[仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
-[仕事1] 終了（終了コード 0）
+test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
+[仕事1] 開始（GPU 0）FT_TAG=a
 [仕事2] 終了（終了コード 0）
+[仕事1] 終了（終了コード 0）
 ok
 test_unlaunchable_job_is_reported_as_failure (tests.test_jobs.RunJobsTest.test_unlaunchable_job_is_reported_as_failure) ... [仕事1] 開始（GPU 0）（設定なし）
 [仕事2] 開始（GPU 1）仕事1との違い：なし
-[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmpb3206odd/missing_script.py': [Errno 2] No such file or directory
-[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmpb3206odd/missing_script.py': [Errno 2] No such file or directory
-[仕事1] 終了（終了コード 2）
+[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp_dtqarrn/missing_script.py': [Errno 2] No such file or directory
+[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp_dtqarrn/missing_script.py': [Errno 2] No such file or directory
 [仕事2] 終了（終了コード 2）
+[仕事1] 終了（終了コード 2）
 ok
 
 ----------------------------------------------------------------------
-Ran 54 tests in 4.962s
+Ran 54 tests in 3.898s
 
 OK
 ```
