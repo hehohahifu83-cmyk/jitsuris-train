@@ -1,28 +1,32 @@
 # ブラウザ用の書き出しの検査（GitHub Actions・CPU）
 
-run: 39098438676　commit: 9b6e0918af1d6deb259a11ff13a2bdc406461b5c　学習済みモデル:  
+run: 39427927910　commit: d3f029245a581fec2259995f435e23d29853fd84　学習済みモデル:  ft_out_job1
 
 # ブラウザ用に書き出したモデルの試験（intfloat/multilingual-e5-small）
 
 - 残す単語片 21,772 個／全体 250,037 個（上位 K=0）。per_channel=False
-- ファイルの大きさ：fp32 120.3MB／埋め込み表だけ INT8 95.3MB／さらに全結合層も INT8（model_quantized.onnx）31.3MB／tokenizer.json 1.0MB
+- ファイルの大きさ：fp32 120.3MB／埋め込み表だけ INT8 95.3MB／さらに全結合層の重みも INT8＝重みだけ（model_quantized.onnx。72 個・21.2M 個の重み。計算は fp32）31.7MB／比較用の動的量子化（model_dyn8.onnx）31.3MB／tokenizer.json 0.6MB
 
 | 版・組み合わせ | 開発用220 | 本物（一般） | 本物（業務） | 本物（業務2） | 本物（日本の調達） | 比較 |
 |---|---|---|---|---|---|---|
-| PyTorch fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.025） |
-| PyTorch fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.025） |
-| ONNX fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 67.28%・確率の最大差 0.003・logits の最大差 0.045（logits の広がり 0.025） |
-| ONNX 埋め込みINT8＋全結合層INT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 68.90%・確率の最大差 0.003・logits の最大差 0.044（logits の広がり 0.025） |
-| ONNX 埋め込みINT8＋全結合層INT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 68.90%・確率の最大差 0.003・logits の最大差 0.044（logits の広がり 0.025） |
+| PyTorch fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.031） |
+| PyTorch fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.000・logits の最大差 0.000（logits の広がり 0.031） |
+| ONNX fp32・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.002・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX fp32・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.002・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX 埋め込みINT8・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.002・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX 埋め込みINT8・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.002・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX 埋め込みINT8＋全結合層INT8（重みだけ）・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.002・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX 埋め込みINT8＋全結合層INT8（重みだけ）・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.002・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX 埋め込みINT8＋全結合層INT8（動的量子化）・微調整だけ | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.003・logits の最大差 0.043（logits の広がり 0.031） |
+| ONNX 埋め込みINT8＋全結合層INT8（動的量子化）・微調整7割＋今の仕組み3割 | 開発用220 正0.0% 誤0 不明100 重大0 | 本物（一般） 正0.0% 誤0 不明80 重大0 | 本物（業務） 正0.0% 誤0 不明98 重大0 | 本物（業務2） 正0.0% 誤0 不明94 重大0 | 本物（日本の調達） 正0.0% 誤0 不明92 重大0 | PyTorch fp32 との top-1 一致 100.00%・確率の最大差 0.003・logits の最大差 0.043（logits の広がり 0.031） |
 
-- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX fp32）：平均 62ms・中央値 62ms／列（全 492 列の文の平均 96 トークン）
-- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX fp32）：平均 34ms・中央値 33ms／列（全 492 列の文の平均 96 トークン）
-- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX INT8（model_quantized.onnx））：平均 40ms・中央値 39ms／列（全 492 列の文の平均 96 トークン）
-- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX INT8（model_quantized.onnx））：平均 23ms・中央値 22ms／列（全 492 列の文の平均 96 トークン）
-- ブラウザの試験の正解データ（reference.json）：40 文
+- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX fp32）：平均 25ms・中央値 25ms／列（全 492 列の文の平均 96 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX fp32）：平均 15ms・中央値 14ms／列（全 492 列の文の平均 96 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX INT8 重みだけ（model_quantized.onnx））：平均 22ms・中央値 22ms／列（全 492 列の文の平均 96 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX INT8 重みだけ（model_quantized.onnx））：平均 13ms・中央値 13ms／列（全 492 列の文の平均 96 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・1スレッド・ONNX INT8 動的量子化（model_dyn8.onnx））：平均 13ms・中央値 12ms／列（全 492 列の文の平均 96 トークン）
+- 1 列ずつ流した時間（onnxruntime・CPU・2スレッド・ONNX INT8 動的量子化（model_dyn8.onnx））：平均 7ms・中央値 7ms／列（全 492 列の文の平均 96 トークン）
+- ブラウザの試験の正解データ（reference.json）：モデルを流す文 40 文／トークナイザの番号だけを比べる文 566 文（試験の全列＋変わった文字列 74 個）
 
 数字は GitHub Actions の CPU の結果で、ブラウザ（WASM）の実機の速さではない。精度は保存したモデルを書き出して試験に流した結果。
 
@@ -47,49 +51,49 @@ run: 39098438676　commit: 9b6e0918af1d6deb259a11ff13a2bdc406461b5c　学習済�
    "threads": 1,
    "isolated": true,
    "effectiveThreads": 1,
-   "tokenizerLoadMs": 55,
-   "loadMs": 1452,
-   "tokMsMean": 1.77,
-   "idMismatch": 3,
-   "maxLogitDiffVsOrtInt8": 0.0059,
-   "maxLogitDiffVsOrtFp32": 0.0113,
-   "argmaxAgreeVsOrtInt8": "38/40",
-   "msPerColumnMean": 109.2,
-   "msPerColumnMedian": 103.4,
-   "msPerColumnP90": 140.5,
-   "wallSeconds": 6.348
+   "tokenizerLoadMs": 46,
+   "loadMs": 978,
+   "tokMsMean": 1.07,
+   "idMismatch": 0,
+   "maxLogitDiffVsOrtInt8": 0.0009,
+   "maxLogitDiffVsOrtFp32": 0.0013,
+   "argmaxAgreeVsOrtInt8": "40/40",
+   "msPerColumnMean": 153.9,
+   "msPerColumnMedian": 146.5,
+   "msPerColumnP90": 187.2,
+   "wallSeconds": 8.078
   },
   {
    "threads": 2,
    "isolated": true,
    "effectiveThreads": 2,
-   "tokenizerLoadMs": 52,
-   "loadMs": 1432,
-   "tokMsMean": 1.16,
-   "idMismatch": 3,
-   "maxLogitDiffVsOrtInt8": 0.0059,
-   "maxLogitDiffVsOrtFp32": 0.0113,
-   "argmaxAgreeVsOrtInt8": "38/40",
-   "msPerColumnMean": 114.8,
-   "msPerColumnMedian": 97.3,
-   "msPerColumnP90": 127.5,
-   "wallSeconds": 7.788
+   "tokenizerLoadMs": 42,
+   "loadMs": 985,
+   "tokMsMean": 1.5,
+   "idMismatch": 0,
+   "maxLogitDiffVsOrtInt8": 0.0009,
+   "maxLogitDiffVsOrtFp32": 0.0013,
+   "argmaxAgreeVsOrtInt8": "40/40",
+   "msPerColumnMean": 89.8,
+   "msPerColumnMedian": 79,
+   "msPerColumnP90": 107.7,
+   "wallSeconds": 5.799
   },
   {
    "threads": 4,
    "isolated": true,
    "effectiveThreads": 4,
-   "tokenizerLoadMs": 56,
-   "loadMs": 1665,
-   "tokMsMean": 2.1,
-   "idMismatch": 3,
-   "maxLogitDiffVsOrtInt8": 0.0059,
-   "maxLogitDiffVsOrtFp32": 0.0113,
-   "argmaxAgreeVsOrtInt8": "38/40",
-   "msPerColumnMean": 105.7,
-   "msPerColumnMedian": 75.1,
-   "msPerColumnP90": 196.1,
-   "wallSeconds": 7.219
+   "tokenizerLoadMs": 40,
+   "loadMs": 1177,
+   "tokMsMean": 1.3,
+   "idMismatch": 0,
+   "maxLogitDiffVsOrtInt8": 0.0009,
+   "maxLogitDiffVsOrtFp32": 0.0013,
+   "argmaxAgreeVsOrtInt8": "40/40",
+   "msPerColumnMean": 81,
+   "msPerColumnMedian": 65.6,
+   "msPerColumnP90": 156.2,
+   "wallSeconds": 5.511
   }
  ],
  "blocked": [],
@@ -100,141 +104,38 @@ run: 39098438676　commit: 9b6e0918af1d6deb259a11ff13a2bdc406461b5c　学習済�
    "ready": true
   }
  ],
+ "normalizer": "charsmap.mjs（表 237539 バイト）",
+ "tokParity": {
+  "total": 566,
+  "edge": 74,
+  "mismatches": 0,
+  "mismatchesEdge": 0,
+  "ms": 102,
+  "first": []
+ },
  "build": "transformers.web.min.js",
- "mismatches": [
-  {
-   "i": 13,
-   "firstDiff": 127,
-   "lenGot": 128,
-   "lenWant": 128,
-   "got": [
-    "外",
-    "からの",
-    "転"
-   ],
-   "want": [
-    "外",
-    "からの",
-    "</s>"
-   ],
-   "gotIds": [
-    977,
-    5972,
-    8105
-   ],
-   "wantIds": [
-    977,
-    5972,
-    2
-   ],
-   "codepoints": [
-    "U+5217",
-    "U+540D",
-    "U+793E",
-    "U+4F1A",
-    "U+52D5",
-    "U+614B",
-    "U+4ED6",
-    "U+533A",
-    "U+304B",
-    "U+3089",
-    "U+306E",
-    "U+8EE2"
-   ]
-  },
-  {
-   "i": 34,
-   "firstDiff": 127,
-   "lenGot": 128,
-   "lenWant": 128,
-   "got": [
-    "▁",
-    "契約",
-    "番号"
-   ],
-   "want": [
-    "▁",
-    "契約",
-    "</s>"
-   ],
-   "gotIds": [
-    6,
-    7265,
-    12971
-   ],
-   "wantIds": [
-    6,
-    7265,
-    2
-   ],
-   "codepoints": [
-    "U+5217",
-    "U+540D",
-    "U+5DE5",
-    "U+4E8B",
-    "U+FF08",
-    "U+59D4",
-    "U+8A17",
-    "U+FF09",
-    "U+5024",
-    "U+4EE4",
-    "U+548C",
-    "U+FF17"
-   ]
-  },
-  {
-   "i": 38,
-   "firstDiff": 127,
-   "lenGot": 128,
-   "lenWant": 128,
-   "got": [
-    "名",
-    ",",
-    "▁"
-   ],
-   "want": [
-    "名",
-    ",",
-    "</s>"
-   ],
-   "gotIds": [
-    902,
-    4,
-    6
-   ],
-   "wantIds": [
-    902,
-    4,
-    2
-   ],
-   "codepoints": [
-    "U+5217",
-    "U+540D",
-    "U+8ACB",
-    "U+8CA0",
-    "U+696D",
-    "U+8005",
-    "U+5024",
-    "U+9AD8",
-    "U+6A4B",
-    "U+5DE5",
-    "U+682A",
-    "U+5F0F"
-   ]
-  }
- ],
+ "mismatches": [],
  "served": {
-  "model_quantized.onnx": 31284394,
+  "model_quantized.onnx": 31736000,
   "ort-wasm-simd-threaded.asyncify.wasm": 26861777,
-  "tokenizer.json": 957555,
+  "tokenizer.json": 640791,
   "transformers.web.min.js": 454425,
   "ort.min.mjs": 368019,
+  "charsmap.bin": 237539,
   "ort.webgpu.bundle.min.mjs": 117929,
   "ort-wasm-simd-threaded.asyncify.mjs": 53057,
+  "charsmap.mjs": 6973,
   "config.json": 1371,
   "tokenizer_config.json": 392
  },
- "servedTotalMB": 60.1,
+ "servedTotalMB": 60.5,
+ "servedBrotliMB": 33.1,
+ "wasmFiles": {
+  "ort-wasm-simd-threaded.asyncify.wasm": 26.9,
+  "ort-wasm-simd-threaded.jsep.wasm": 28.4,
+  "ort-wasm-simd-threaded.jspi.wasm": 16.8,
+  "ort-wasm-simd-threaded.wasm": 14.3
+ },
  "dist": [
   [
    "ort-wasm-simd-threaded.jsep.mjs",
@@ -290,3 +191,14 @@ run: 39098438676　commit: 9b6e0918af1d6deb259a11ff13a2bdc406461b5c　学習済�
   ]
  ]
 }```
+
+## 正規化の一致（Chromium の中・軽い正解データ）
+```
+=== 要点（この下が注に出る）===
+Chromium の中での正規化の一致試験（HeadlessChrome 156.0.8078.4・Intl.Segmenter あり）: 全 1123090 件中 不一致 0
+1 文字（全スカラー値）: 1112064 件中 不一致 0
+pairs: 3782 件中 不一致 0
+triples: 1596 件中 不一致 0
+random: 5500 件中 不一致 0
+edge: 148 件中 不一致 0
+```
