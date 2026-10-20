@@ -34,12 +34,20 @@ jobs:
           import json
           from pathlib import Path
           from cpu_lab.self_learning import load_approved_replay
-          from encoder_exp import rows as base_rows
           path = Path("cpu_lab/materials/verified_replay/chatgpt_audit_20261020.jsonl")
           rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
           if len(rows) != 8:
               raise SystemExit(f"expected 8 audited rows, got {len(rows)}")
-          accepted = load_approved_replay(str(path), {row[2] for row in base_rows})
+          base_files = sorted(Path("materials").glob("real_labels*.jsonl"))
+          allowed = {
+              json.loads(line)["label"]
+              for base in base_files
+              for line in base.read_text(encoding="utf-8").splitlines()
+              if line.strip()
+          }
+          if not allowed:
+              raise SystemExit("no approved base training labels found")
+          accepted = load_approved_replay(str(path), allowed)
           if len(accepted) != len(rows):
               raise SystemExit("audited replay validation count mismatch")
           print(f"Validated {len(accepted)} independently generated, audited training examples.")
