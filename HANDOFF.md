@@ -1,4 +1,4 @@
-# 最新確認 2026-10-21 06:44 JST（Claude。mmBERT-small・E5-base の学習率探索は完了。mmBERT-small の最終比較〔seed 1・2・3〕を Kaggle に依頼して実行中）
+# 最新確認 2026-10-21 07:54 JST（Claude。mmBERT-small と E5-base の最終比較〔seed 1・2・3〕が完了。固定試験の診断では E5-base が上で、mmBERT-small の優位は確認できていない。最終判定は新しい独立評価〔主セット待ち〕）
 
 オーナー決定（ChatGPT 経由で確認済み）：土台モデルを `jhu-clsp/mmBERT-small`（MIT）に切り替えて比べる。Claude が実装と調整。E5-base の道筋・結果・設定は基準として残す。**新しいモデルの利用者への配布はオーナー承認が要る（未実施）。**
 
@@ -31,34 +31,61 @@
 - 同じ検証での並べ方（seed 1。優劣を決める値ではない）：mmBERT(1e-4) と E5-base(3e-5) は、未知見出し macro-F1 83.2% 対 82.3%、全体 macro-F1 93.6% 対 93.1%、全体の正解率 92.1% 対 92.5%、重大 3 対 2、誤断定 48 対 48、不明 22 対 19。区別できない（同じ検証で学習率を選んだ偏りは両方に入っている）。
 - 未知の見出し 255 行の外れの重なり（`error_overlap.py`、`bench/error_overlap_validation_seed1.md`）：mmBERT 51 行・E5 52 行、**両方が外したのは 39 行**（予測まで同じ 24 行）。中身は、正解 quantity→予測 category が 14 行（見出しが分類名で値が件数に見える「横持ち」の表。診療科名の列など）、正解 other の指標列が 9 行（英国の deprivation 指数の列。mmBERT は category、E5 は rate）、残り約 16 行は散らばり。**仮説（未検証）：土台モデルの差より、学習データ（横持ちの表・other の指標列）とラベル方針の影響が大きい。** 同じ表の列がまとめて外れるので 255 行は独立な件数ではない。`LABEL_GUIDE`・学習データは独立評価の前に変えない（変えるなら、検証を見てから作ったと記録に残す）。
 
-## いま動いているもの
-- **Kaggle：mmBERT-small の最終比較**（commit f87278a、2026-10-21 06:44 JST に依頼。seed 1・2・3、`FT_LR=1e-4`、`FT_VAL` なし＝全 55,213 行、`FT_KEEP=1`＝3 モデルを `jitsuris-model` に持ち帰る）。見積り（連絡箱 20261021-0643 に依頼の前に記載）：依頼から COMPLETE まで約 20〜25 分、持ち帰りまで含めて 30 分前後。固定試験は回帰診断の別表で、判定に使わない。**動いている間は `kaggle/kaggle.request` を書き換えない。**
+## 完了：最終比較（種子 1・2・3。mmBERT-small=Kaggle run 39502740378〔commit f87278a、依頼から約 20 分〕、E5-base=run 39506074807〔commit 8d688f5、約 23 分〕）
+同じ学習行（全 55,213 行・`FT_VAL` なし）・同じ入力文（単位列の文脈つき）・同じ守り（v9.1）・同じ評価。学習率は検証で選んだ値（mmBERT-small 1e-4、E5-base 3e-5）、`FT_KEEP=1`。**固定試験は使い切った回帰診断で、これは最終判定ではない。** 表：`bench/compare_mmbert_vs_e5base.md`（compare_models.py）。計算資源と切り詰め：`bench/resources_mmbert_vs_e5base.md`（resource_table.py）。元データ：`eval_reports/runs/39502740378/`・`39506074807/`。
 
-## 次にやること（STATE.md の常設の依頼 S4。ChatGPT の毎時の確認が進めてよい）
-1. `tail -3 kaggle/KAGGLE_LOG.md`。最後の「状態：」が COMPLETE か確かめる。**ERROR／CANCEL なら、`kaggle/last_run_tail.txt` と KAGGLE_LOG の診断行を読んで原因を連絡箱に書く。自分で依頼し直さない。**
-2. COMPLETE なら `git pull --rebase --autostash origin main`。`kaggle/kaggle.request` が `done` であることを確かめ、E5-base の最終比較を依頼する（見積りは連絡箱 20261021-0643 に記載済み：COMPLETE まで約 28〜35 分、持ち帰りまで 40 分前後）：
-   `train intfloat/multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
-3. 両方が COMPLETE になったら、`ls eval_reports/runs | tail -2` で 2 つの番号を得て（新しい方が E5-base）、
-   `python compare_models.py --group mmBERT-small=eval_reports/runs/<mmBERT の番号>:job1,job2,job3 --group E5-base=eval_reports/runs/<E5-base の番号>:job1,job2,job3 --out bench/compare_mmbert_vs_e5base.md`（見出し別・クラス別 P/R・重大・誤断定・不明。固定試験は回帰診断の別表で、判定に使わない）。持ち帰った重みの SHA-256 は `check_trained_model.py` で manifest と照合する。
-4. **最終判定は、新しい独立評価だけで行う**（ChatGPT が主セットを準備中、Claude が独立にラベルを付ける。HDB 8 列は予備セットで、独立ラベルは 8/8 一致）。持ち帰った 6 つの重み（mmBERT 3・E5-base 3）を主セットに当てる経路は用意済み（`evaluate_independent.py`）。主セットが固定されたら、重みごとに `predict`（ラベルを読まない・台帳で 1 回だけ）→ ラベルは別ファイルで `score` → `compare_models.py --group 名前=<出力先>:job1,job2,job3` の順に実行する。主セットの形（schema_version 1）とラベルの形は `evaluate_independent.py` の冒頭に書いた（ChatGPT の抽出がこの形で出せるか、または変換が要るかは未確認）。GitHub の CPU で流す workflow は、主セットの置き場所が決まってから足す。
+| 指標（実表 1,941 行。平均 ±標準偏差〔最小〜最大〕） | mmBERT-small | E5-base |
+|---|---|---|
+| 正解率（見送りの正解を含む） | 92.6% ±0.3（92.2〜92.8） | 93.5% ±0.3（93.1〜93.8） |
+| macro-F1 | 94.5% ±0.8（93.6〜95.1） | 94.6% ±0.2（94.4〜94.8） |
+| 重大誤り（日付/金額/数量/割合/ID の取り違え） | 13.0 ±3.0（10〜16） | 5.3 ±1.5（4〜7） |
+| 誤断定（誤答＋その他の誤受理） | 88.7 ±5.5（85〜95） | 68.7 ±8.1（63〜78） |
+| 【未知見出し 635 行】正解率 | 82.4% ±0.7（81.6〜83.0） | 86.2% ±1.1（85.2〜87.4） |
+| 【未知見出し】macro-F1 | 83.3% ±2.1（81.5〜85.6） | 86.7% ±1.9（84.9〜88.8） |
+| 【未知見出し】重大誤り | 12.7 ±3.5（9〜16） | 5.0 ±1.0（4〜6） |
+| 【未知見出し】誤断定 | 73.7 ±4.0（70〜78） | 50.3 ±7.5（43〜58） |
+| 学習ループ／GPU メモリ最大（T4） | 464 秒／3.32 GiB | 543 秒／5.47 GiB |
+| 推論 1 行あたり（T4・fp32） | 4.4〜4.8 ms | 6.0〜6.7 ms |
+
+- **言えること**：この診断では E5-base が、未知の見出しの正解率・重大誤り・誤断定で上（3 つの種子の範囲が重ならない。macro-F1 は範囲が重なる）。全体の macro-F1 は同じ。クラス別（未知見出し）では、mmBERT は id の適合率（90.1% 対 97.7%）・other の再現率（74.6% 対 85.9%）・text の適合率（69.2% 対 97.4%。text は 18 行だけ）が低く、E5-base は text の再現率（70.4% 対 94.4%）・address の適合率（77.6% 対 84.1%）が低い。mmBERT-small は学習が約 15%、GPU メモリが約 40%、推論が約 25% 小さい／速い（T4 での値で、端末での速さではない）。
+- **言えないこと**：(1) 固定試験は使い切りで、最終判定は新しい独立評価で行う。(2) 共通の学習設定（焦点損失 γ=1.5・2 周・バッチ・単位列の文脈・守り）は E5 系の実験で整えたもので、mmBERT-small で再調整したのは学習率だけ（検証で 4 点）。E5-base に有利に働いている可能性がある。(3) mmBERT-small の日本語での優位は、この設定では示せなかった（「ない」と言い切る根拠もない）。
+- **mmBERT-small が低い理由の仮説（どれも未検証）**：(a) ドロップアウト 0（mmBERT の既定。E5-base は 0.1）、(b) 128 トークンでの切り詰め（学習行は 5.3% 対 5.8% で同程度だが、試験では mmBERT のほうが多い：一般 13.3% 対 7.3%、業務 12.7% 対 9.0%、業務2 5.6% 対 2.7%。切られるのは文の後ろ＝同じ表の列と単位列）、(c) 2 周では足りない（MLM だけの事前学習）、(d) 埋め込みを除いた大きさが E5-base（約 86M）の約半分（約 42M）。確かめる設定は下の「追加の実験」。
+- 6 本とも completed。fp16 のまま完走（mmBERT-small で fp32 への切り替え 0 回）。持ち帰った重みは artifact `jitsuris-model`（mmBERT 1.58 GB、E5-base 2.60 GB）。**保存期限：mmBERT は 2026-11-19 22:06 UTC（11/20 07:06 JST）、E5-base は 22:38 UTC（07:38 JST）まで。**
+- 定期（schedule）で動いた同じ workflow の run 39506142456 は、最後の Save（コミットと push の段）で失敗。ログが取れない（403）ので原因は未確認。学習と回収は run 39506074807 で成功しており、その結果（manifest は 3 本とも completed）を表に使った。
+
+## 次にやること（STATE.md の常設の依頼 S6。ChatGPT の毎時の確認が進めてよい）
+1. **独立評価（最終判定）**：ChatGPT が主セットを準備中（`independent_eval/`。候補の発見は公開 run 39508102810 で成功。出典ごとの利用条件・個人情報・学習データとの重複の審査 → 採用表の固定 → 値の抽出、の順で、抽出は未実装）。**主セットが固定されて ChatGPT が連絡箱に合図を書くまで、ラベル付けは保留**（ChatGPT の依頼）。合図のあと、Claude と ChatGPT が別々にラベルを付け、照合してから評価する（LABEL_GUIDE の改訂は評価の後）。
+2. **独立評価の流し方**（6 つの重み。GitHub の CPU で流す。この作業場からは PyPI に届かず〔名前解決の失敗、1 回の試行〕torch を入れられない）：
+   - 重みを取る：`gh run download 39502740378 -R hehohahifu83-cmyk/jitsuris-train -n jitsuris-model -D trained/mmbert`（E5-base は 39506074807 → `trained/e5base`。中に `ft_out_job1`〜`ft_out_job3`）。取った重みは `check_trained_model.py` と同じ検査（manifest の SHA-256）を `predict` が自動で通す。
+   - 重みごとに `python evaluate_independent.py predict --set <主セット.json> --checkpoint trained/<mmbert|e5base>/ft_out_jobN --out out/<名前>_jobN_preds.json`（台帳 `eval_reports/independent/ledger.jsonl` が、同じ〔主セット, 重み〕の 2 回目を断る。ラベルは読まない。値は出力に書かない）。
+   - ラベルを付けた人ごとに `python evaluate_independent.py score --preds out/<名前>_jobN_preds.json --labels <ラベル.json> --out-dir out/<名前>/<ラベルの人> --run jobN --seed N`。
+   - 並べる：`python compare_models.py --group mmBERT-small=out/mmbert/<ラベルの人>:job1,job2,job3 --group E5-base=out/e5base/<ラベルの人>:job1,job2,job3 --out bench/independent_eval_<主セット>.md`。判定の前に、ラベルの人ごと・出典ごと・言語ごとにも見る（1 つの出典に偏っていないか）。
+   - 公開リポジトリの Actions で流すなら、主セットの値は再配布が許される出典に限る（ChatGPT の審査の前提にしてほしい）。非公開の経路が要るなら別途相談。
+   - 保存期限（上）までに主セットが固定されない場合は、同じ依頼を出し直して重みを取り直す（`FT_KEEP=1`。mmBERT 約 20〜25 分、E5-base 約 25〜30 分）。
+3. **追加の実験**（任意。未依頼。オーナーまたは ChatGPT が指示したときだけ。いずれも、依頼の前に見積りを連絡箱の【進捗】に書く。選ぶ規則は検証だけで、固定試験は選ぶのに使わない。やるなら、独立評価の候補を固定する前＝主セットに触る前に）：
+   - a. mmBERT-small の設定を変えた再挑戦（仮説 a・b）：`FT_MAX_LEN=192 FT_DROPOUT=0.1` で最終比較 1 回（3 つの種子。約 20〜25 分）。E5-base にも同じ回数の別設定（`FT_MAX_LEN=192`。約 25〜30 分）を割り当てる（探索量をそろえる）。診断の結果で選ばず、どちらの設定も独立評価の候補に入れる。見込みは小さい（効果は 1 ポイント前後と見ているが、根拠は薄い）。4 周（仮説 c）にすると時間が約 2 倍（mmBERT 約 35〜40 分、E5-base 約 45 分）。
+   - b. 大きさをそろえた比較：E5-small（いまブラウザで動かしている縮めたモデル。重み 21M。学習ループは 1 本約 4 分）を同じ設定で。学習率探索 4 本（約 15 分）→ 最終比較 3 本（約 15 分）。mmBERT-small が E5-small より上なら「小さいモデルとしての価値」が言える。ブラウザに入れる大きさが決め手になるときの比較。
+   - c. データ側：検証の未知見出しの外れは 39／51 が両モデル共通（`bench/error_overlap_validation_seed1.md`）。横持ちの表（見出しが分類名で値が件数。正解 quantity→予測 category）と other の指標列の教材。LABEL_GUIDE・教材を変えるなら、検証を見てから作ったと記録に残す。主セットの外れから教材を作らない（主セットは判定専用）。
+4. **変えないこと**：新しいモデルの利用者への配布・公開サイトへの載せ替えはオーナー承認が要る（未実施）。ERROR／CANCEL は自分で依頼し直さない。`kaggle/kaggle.request` は現在 `done`（実行中の学習はない）。
 
 ## 道具（どれも未見セットは読まない）
-`provenance.py`（学習の記録）、`val_split.py`（検証＝学習側の表の 1/8）、`slice_eval.py`（既知ペア／既知見出し・別ラベル／未知見出し）、`compare_models.py`（モデルの並べ方）、`sweep_pick.py`（学習率の選び方）、`error_overlap.py`（2 つの仕事の外れの重なり）、`evaluate_independent.py`（保存した重みを学習の束の外の主セットに当てる。予測とラベルの採点を分け、各（主セット, 重み）の組は 1 回だけ）、`check_trained_model.py`（取ったモデルの重みの SHA-256 の照合）、`model_setup.py`（ModernBERT の読み込み・.bin の置き直し・fp16→fp32 の切り替え判断）、`kaggle/hf_fetch.py`、`tests/mmbert_smoke.py`・`mmbert-smoke.yml`（CPU の試運転）。
+`provenance.py`（学習の記録）、`val_split.py`（検証＝学習側の表の 1/8）、`slice_eval.py`（既知ペア／既知見出し・別ラベル／未知見出し）、`compare_models.py`（モデルの並べ方）、`resource_table.py`（manifest から学習時間・GPU メモリ・推論時間・切り詰め率の表）、`sweep_pick.py`（学習率の選び方）、`error_overlap.py`（2 つの仕事の外れの重なり）、`evaluate_independent.py`（保存した重みを学習の束の外の主セットに当てる。予測とラベルの採点を分け、各（主セット, 重み）の組は 1 回だけ）、`check_trained_model.py`（取ったモデルの重みの SHA-256 の照合）、`model_setup.py`（ModernBERT の読み込み・.bin の置き直し・fp16→fp32 の切り替え判断・ドロップアウトの指定）、`kaggle/hf_fetch.py`、`tests/mmbert_smoke.py`・`mmbert-smoke.yml`（CPU の試運転）。
+`finetune_exp.py` の任意の設定（未指定なら今までどおり）：`FT_MAX_LEN`（最大トークン数。既定 128。manifest の `extra.max_length` と `evaluate_independent.py` が同じ値を使う）、`FT_DROPOUT`（0〜0.5。ModernBERT は attention／mlp／embedding／classifier、XLM-R は hidden／attention。`FT_NO_DROPOUT` とは併用できない）、`FT_NO_DROPOUT`。
 
 ## 確認の程度（テスト／実機／実績を分ける）
-- テスト：単体試験（手元・GitHub）が成功。mmBERT-small の CPU 試運転（run 39433968539、commit f7917c9）は必須項目の NG 0 件、`finetune_exp.py` の通し（検証モード・256 行）まで成功。強制した .bin→safetensors の置き直しは読み込み結果が元と完全一致。CPU の学習済み重みの SHA-256 は変更の前後で同じ（4ca77d90…）。
-- 独立評価の経路（`evaluate_independent.py`）：単体試験 9 件（手元）。本物の torch（CPU）で、学習が書いた重み（mmBERT の CPU 試運転の重み）を通し、学習時の評価と最上位ラベル 24/24・判断 24/24・見出し 24/24・確率の最大差 0 で一致（run 39503519924、`bench/mmbert_smoke.md`）。**主セットでの実際の評価は未実施**（主セットが固定されていない）。
-- 実機：GPU（Tesla T4・fp16）での mmBERT-small の学習・評価は、探索の 4 本で確認（fp32 への切り替え 0 回）。最終比較の 3 本は実行中。ONNX／ブラウザの経路は mmBERT では未確認（CPU で ONNX 書き出しの一致のみ確認：最大差 1.6e-5。競争力が出てから）。
-- 実績：mmBERT の精度は、検証（889 行・seed 1）での探索の値だけで、E5-base と区別できない。**優位は未確認**。E5-base（版 31）の見出し別の基準は `bench/slice_eval_e5base_v31.md`：未知の見出しの正解率は約 85%、全体の 93〜94% は見出しの重なりで高く出ている。
+- テスト：単体試験（手元・GitHub）が成功（`resource_table.py` 5 件を含む 101 件、手元）。mmBERT-small の CPU 試運転は commit 0de5652 でも成功（run 39510163285。必須項目の NG 0 件。`FT_MAX_LEN=192`・`FT_DROPOUT=0.1` が効くこと〔設定に dropout 0.1、切り詰め 0.00%〕を CPU で確認）。強制した .bin→safetensors の置き直しは読み込み結果が元と完全一致。
+- 独立評価の経路（`evaluate_independent.py`）：単体試験 9 件。本物の torch（CPU）で、学習が書いた重みを通し、学習時の評価と最上位ラベル 24/24・判断 24/24・見出し 24/24・確率の最大差 0 で一致（run 39503519924、max_length=192 の重みでも run 39510163285）。**主セットでの実際の評価は未実施**（主セットが固定されていない）。6 つの重みを GitHub の CPU で流す workflow は未作成（主セットの置き場所が決まってから）。
+- 実機：GPU（Tesla T4・fp16）での学習・評価は、mmBERT-small 7 本（探索 4＋最終 3）と E5-base 7 本（探索 4＋最終 3）で確認。すべて completed、mmBERT で fp32 への切り替え 0 回。`FT_MAX_LEN`・`FT_DROPOUT` の GPU 実行は未経験（CPU のみ）。ONNX／ブラウザの経路は mmBERT では未確認（CPU で ONNX 書き出しの一致のみ確認：最大差 1.6e-5。競争力が出てから）。
+- 実績：固定試験の診断（上の表）では E5-base が上で、mmBERT-small の優位は示せていない。**独立評価はまだ 1 件もない**ので、最終判定はしていない。目標（未知見出しの正解率 90% 以上・重大誤り 0）は、どちらのモデルでも未達（E5-base で 86%・重大 5 件／635 行）。E5-base（版 31）の見出し別の基準は `bench/slice_eval_e5base_v31.md`：全体の 93〜94% は見出しの重なりで高く出ている。
 - 版 31 の仕事 3・4（リプレイ）は、固定試験と見出し・ラベルが重なる 9 行を含む 39 行で学習していた（ChatGPT が 0c95af2 で除去・訂正済み）。その結果は比較に使わない。
 
 ## 守ること
 未見セット（`blind_set*`、セット 3・5・7）は開かない・学習に使わない。固定試験の内容を教材に入れない。個人の連絡先の列は集めない。依頼は 1 回 1 モデル・8 本まで、動いている学習を置き換えない。ERROR／CANCEL は自分で依頼し直さない。未検証は未検証と書く。
 
 ## 未完了
-- 新しい独立評価（出典 4 以上・30 表・300 列以上を目標。第 1 号の HDB 8 列は予備セット）。
-- tool-kobo `research/column-ai` への写し（51 コミット遅れ。こちらが先に進んでいる）。
-- 第 11 章（mmBERT 切替の記録）は、探索の結果が出てから書く。
+- 新しい独立評価（出典 4 以上・30 表・300 列以上を目標。第 1 号の HDB 8 列は予備セット）。ChatGPT が採用表を固定中。6 つの重みを流す workflow の追加。
+- tool-kobo `research/column-ai` への写し（51 コミット遅れ。こちらが先に進んでいる。HANDOFF.md は分かれているので、README・llm_baseline・exp15・LABEL_GUIDE を上書きしないよう注意して統合する）。
+- 追加の実験（上の 3 の a〜c）は、オーナーまたは ChatGPT の指示待ち。
 
 ---
 
@@ -267,6 +294,26 @@ python compare_runs.py FINETUNE_RESULTS.md --a "$K4" --b "$K7"             # 埋
 - 見張りは **v9.1**（セット7を測る前に固定。guard.py と tool-kobo の column-ai.js の両方が同じ）。さらに直すときは Claude に連絡箱で相談（Python と JS を同時に直し、guard_fixtures.json・guard_value_fixtures.json を作り直して JS で 0 件の不一致を確かめる必要がある）。
 - 秘密・価格・「必ず」「No.1」は書かない。未見セットは開かない。本番・公開サイト・Cloudflare は触らない。
 
+
+## 11. mmBERT-small への切替の比較の記録（2026-10-21、Claude）
+**決定**（オーナー確認済み・ChatGPT 経由）：土台モデルを `jhu-clsp/mmBERT-small`（MIT）に切り替えて比べる。Claude が実装と調整。最初の実験はモデルだけを変える。うまく合わない設定があれば、検証だけで等しい探索量を使い、変えた点を書く。固定試験は回帰診断に使うだけ。最終判定は学習・調整に使わない新しい独立評価だけ。3 つ以上の種子。macro-F1・クラス別の適合率と再現率・重大誤り・不明／誤断定・推論時間・GPU メモリを残す。全体の正解率だけで決めない。mmBERT の日本語での優位は未証明で、前提にしない。新しいモデルの配布はオーナー承認が要る（未実施）。
+
+| 段 | commit／Kaggle run | 内容 | 結果の置き場 |
+|---|---|---|---|
+| CPU 試運転 | f7917c9／GitHub run 39433968539 | ModernBERT の読み込み・トークナイザ・学習 3 ステップ・保存→読み込みの一致 | `bench/mmbert_smoke.md` |
+| mmBERT 学習率探索 | 22144f0／39435238999 | `FT_VAL=1`・seed 1・2 周・4 点（5e-5〜4e-4）→ **1e-4** | `bench/lr_sweep_mmbert_small.md` |
+| E5-base 学習率探索 | 47c7eac／39496935773 | 同じ条件・4 点（2e-5〜1e-4）→ **3e-5** | `bench/lr_sweep_e5_base.md` |
+| mmBERT 最終比較 | f87278a／39502740378 | 全 55,213 行・種子 1〜3・`FT_KEEP=1` | `bench/compare_mmbert_vs_e5base.md` |
+| E5-base 最終比較 | 8d688f5／39506074807 | 同上 | 同上、`bench/resources_mmbert_vs_e5base.md` |
+
+選び方は事前に固定（`sweep_pick.py`）：未知見出し macro-F1 が最大 → 1.5 ポイント以内は同点 → 重大誤りが少ない → 誤断定が少ない → 学習率が小さい。端なら範囲を広げる（どちらも端ではなかった）。
+依頼文（再現用。`kaggle/kaggle.request` の書き方）：
+- 最終比較 mmBERT：`train jhu-clsp/mmBERT-small 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=1e-4 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
+- 最終比較 E5-base：`train intfloat/multilingual-e5-base 2 …（同じ）… FT_LR=3e-5 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
+- 探索はそれぞれ `FT_VAL=1 FT_SEED=1 …（同じ）… FT_LR=<値> ++ FT_LR=<値> ++ …`（4 本）。
+
+**結果（要点）**：最終比較の固定試験の診断では E5-base が上（未知見出し正解率 86.2% 対 82.4%、重大誤り 5.3 対 13.0、誤断定 69 対 89。macro-F1 は同じ）。mmBERT-small は学習が約 15%、GPU メモリが約 40%、推論が約 25% 小さい／速い。検証（seed 1）では区別できなかった。未知見出しの外れの 39／51 は両モデル共通で、土台モデルよりデータ（横持ちの表・other の指標列）とラベル方針の影響が大きいという仮説（未検証）。E5-base の未知見出しの正解率（診断）86% 前後・重大 5 件は、目標の 90% 以上・重大 0 に届いていない。
+**この章で確認していないこと**：独立評価での優劣、mmBERT の設定を変えたときの精度（`FT_MAX_LEN`・`FT_DROPOUT`・周回数）、大きさをそろえた E5-small との比較、mmBERT の ONNX／INT8／ブラウザの経路、日本語での優位。次の手順は先頭の「次にやること」。
 
 ## 独立CPU学習ラボ（オーナー指示 2026-10-18）
 - 目的：Kaggle GPUの待機時間にも教材整理・候補学習を進める。ただし既存CPU e5-base学習やKaggleで待機中の同一実験と重複せず、CPU資源も取り合わない。
