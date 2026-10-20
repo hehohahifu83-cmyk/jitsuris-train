@@ -37,7 +37,8 @@ if [ "$mode" = train ]; then
   ( cd .. && rm -f kaggle/nonce-*.txt && : > "kaggle/nonce-$NONCE.txt" )
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
       *.py kaggle/args.txt "kaggle/nonce-$NONCE.txt" materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
-      materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl hfmodel )
+      materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl \
+      cpu_lab/self_learning.py cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/progress_probe.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
   printf '{"title":"jitsuris-data","id":"%s","licenses":[{"name":"other"}]}' "$DS" > /tmp/ds/dataset-metadata.json
   if kaggle datasets status "$DS" >/dev/null 2>&1; then kaggle datasets version -p /tmp/ds -m "update $(date -u +%FT%TZ)"
@@ -89,6 +90,7 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     mkdir -p /tmp/eval_reports
     # 仕事（job1・job2）や report ごとの置き場の名前を頭に付けて、同じ名前のファイルが上書きし合わないようにする
     find /tmp/out -type f \( -name 'errors_*.json' -o -name 'probs_*.json' -o -name 'probe_*.json' \) | while read -r pf; do cp "$pf" "/tmp/eval_reports/$(basename "$(dirname "$pf")")_$(basename "$pf")"; done 2>/dev/null || true
+    find /tmp/out -type f -path '*/progress_probe_results/*.json' | while read -r pf; do job=$(basename "$(dirname "$(dirname "$pf")")"); cp "$pf" "/tmp/eval_reports/${job}_progress_probe_$(basename "$pf")"; done 2>/dev/null || true
     echo done > kaggle.request
 else
   echo fetch > kaggle.request   # まだ終わっていない。30分ごとの定期実行が取りに行く

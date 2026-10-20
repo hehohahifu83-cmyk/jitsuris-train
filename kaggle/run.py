@@ -53,6 +53,10 @@ def copy_reports(src, dst):
     os.makedirs(dst, exist_ok=True)
     for pat in ("errors_*.json", "probs_*.json", "probe_*.json"):
         for f in glob.glob(os.path.join(src, pat)): shutil.copy(f, dst)
+    for f in glob.glob(os.path.join(src, "progress_probe_results", "*.json")):
+        target = os.path.join(dst, "progress_probe_results")
+        os.makedirs(target, exist_ok=True)
+        shutil.copy(f, target)
 if len(specs) == 1:
     if os.path.exists("FINETUNE_RESULTS.md"): shutil.copy("FINETUNE_RESULTS.md", OUT + "/FINETUNE_RESULTS.md")
     copy_reports(".", OUT + "/report")

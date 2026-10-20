@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Compile trainer and evaluation utilities
-        run: python -m py_compile finetune_exp.py evaluation_records.py abstain_eval.py guard.py train3.py cpu_lab/self_learning.py cpu_lab/material_receipt.py cpu_lab/progress_probe.py jobs.py kaggle/run.py
+        run: python -m py_compile finetune_exp.py evaluation_records.py abstain_eval.py guard.py train3.py cpu_lab/self_learning.py cpu_lab/material_receipt.py cpu_lab/progress_probe.py cpu_lab/compare_replay_probe.py jobs.py kaggle/run.py
       - name: Check decision reason parity
         run: python -m unittest discover -s tests -p 'test_decision_reasons.py' -v
       - name: Check scored evaluation row contract

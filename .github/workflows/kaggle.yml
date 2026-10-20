@@ -75,6 +75,16 @@ jobs:
           mkdir -p /tmp/eval_reports
           python cpu_lab/error_analysis.py /tmp/eval_reports --out /tmp/eval_reports/ERROR_ANALYSIS.md
           cat /tmp/eval_reports/ERROR_ANALYSIS.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Compare audited replay with matched baselines
+        if: always() && steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
+        run: |
+          files=(/tmp/eval_reports/job1_progress_probe_after.json /tmp/eval_reports/job2_progress_probe_after.json /tmp/eval_reports/job3_progress_probe_after.json /tmp/eval_reports/job4_progress_probe_after.json)
+          if [ -f "${files[0]}" ] && [ -f "${files[1]}" ] && [ -f "${files[2]}" ] && [ -f "${files[3]}" ]; then
+            python cpu_lab/compare_replay_probe.py --baseline "${files[0]}" "${files[1]}" --replay "${files[2]}" "${files[3]}" --out /tmp/eval_reports/REPLAY_PROBE_COMPARISON.json
+            cat /tmp/eval_reports/REPLAY_PROBE_COMPARISON.json >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "4条件の学習後probeが揃わないため、比較は未実施。" >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/upload-artifact@v4
         id: eval_artifact
         if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
