@@ -63,6 +63,14 @@ def main():
 
     info = {"transformers": transformers.__version__, "torch": torch.__version__, "python": sys.version.split()[0]}
     print(json.dumps(info), flush=True)
+    import model_setup
+
+    def load_cls(path, pooling=None, num_labels=15):
+        """finetune_exp.py と同じ作り方（model_setup）で分類モデルを読む。"""
+        cfg = AutoConfig.from_pretrained(path)
+        ch = model_setup.apply_modernbert_overrides(cfg, num_labels=num_labels, pooling=pooling or "")
+        m = AutoModelForSequenceClassification.from_pretrained(path, config=cfg, attn_implementation="sdpa")
+        return m, ch
 
     # ---- ★1 読み込み ----
     @guard("★1", "読み込み（config・トークナイザ・重み）")
@@ -121,16 +129,14 @@ def main():
         enc = tok(["列名: 金額 | 値: 100, 200 | 同じ表の列: 日付", "列名: 取引先 | 値: 山田商事 | 同じ表の列: 金額"], padding=True, return_tensors="pt")
         outs = {}
         for pooling in ("cls", "mean", None):
-            kw = {"reference_compile": False, "attn_implementation": "sdpa"}
-            if pooling:
-                kw["classifier_pooling"] = pooling
-            m = AutoModelForSequenceClassification.from_pretrained(a.model_dir, num_labels=15, **kw).eval()
+            m, ch = load_cls(a.model_dir, pooling)
+            m = m.eval()
             with torch.no_grad():
                 lg = m(**enc).logits
             outs[str(pooling)] = lg
             ok = tuple(lg.shape) == (2, 15) and bool(torch.isfinite(lg).all())
             record("★3", f"pooling={pooling or '（config のまま：' + str(getattr(m.config, 'classifier_pooling', None)) + '）'}", ok,
-                   f"logits shape={tuple(lg.shape)} attn={m.config._attn_implementation} head={[n for n, _ in m.named_children()]}")
+                   f"logits shape={tuple(lg.shape)} attn={m.config._attn_implementation} head={[n for n, _ in m.named_children()]} config変更={ch}")
         return outs
     heads()
 
@@ -139,7 +145,7 @@ def main():
     def one_step():
         import encoder_exp as E
         torch.manual_seed(0)
-        m = AutoModelForSequenceClassification.from_pretrained(a.model_dir, num_labels=15, reference_compile=False, attn_implementation="sdpa")
+        m, _ = load_cls(a.model_dir)
         m.train()
         labels = sorted(set(r[2] for r in E.rows))
         L = {c: i for i, c in enumerate(labels)}
@@ -163,7 +169,8 @@ def main():
     @guard("★5", "保存と読み込み")
     def save_load():
         torch.manual_seed(0)
-        m = AutoModelForSequenceClassification.from_pretrained(a.model_dir, num_labels=15, reference_compile=False, attn_implementation="sdpa").eval()
+        m, _ = load_cls(a.model_dir)
+        m = m.eval()
         enc = tok(["列名: 金額 | 値: 100, 200 | 同じ表の列: 日付", "列名: 取引先 | 値: 山田商事 | 同じ表の列: 金額"], padding=True, return_tensors="pt")
         with torch.no_grad():
             before = m(**enc).logits
@@ -171,7 +178,7 @@ def main():
             m.save_pretrained(d); tok.save_pretrained(d)
             json.dump([f"c{i}" for i in range(15)], open(os.path.join(d, "labels.json"), "w"))
             files = sorted(os.listdir(d))
-            m2 = AutoModelForSequenceClassification.from_pretrained(d, reference_compile=False, attn_implementation="sdpa").eval()
+            m2 = AutoModelForSequenceClassification.from_pretrained(d, attn_implementation="sdpa").eval()
             tok2 = AutoTokenizer.from_pretrained(d)
             enc2 = tok2(["列名: 金額 | 値: 100, 200 | 同じ表の列: 日付", "列名: 取引先 | 値: 山田商事 | 同じ表の列: 金額"], padding=True, return_tensors="pt")
             with torch.no_grad():
@@ -189,7 +196,8 @@ def main():
     def speed():
         import encoder_exp as E
         torch.set_num_threads(max(1, os.cpu_count() or 1))
-        m = AutoModelForSequenceClassification.from_pretrained(a.model_dir, num_labels=15, reference_compile=False, attn_implementation="sdpa").eval()
+        m, _ = load_cls(a.model_dir)
+        m = m.eval()
         rs = E.tests["開発用220"][:32]
         enc = tok([E.text(r, "") for r in rs], truncation=True, max_length=128, padding=True, return_tensors="pt")
         with torch.no_grad():
@@ -206,7 +214,8 @@ def main():
         @guard("☆7", "ONNX への書き出し")
         def onnx_export():
             import onnxruntime as ort
-            m = AutoModelForSequenceClassification.from_pretrained(a.model_dir, num_labels=15, reference_compile=False, attn_implementation="sdpa").eval()
+            m, _ = load_cls(a.model_dir)
+            m = m.eval()
             enc = tok(["列名: 金額 | 値: 100, 200 | 同じ表の列: 日付", "列名: 取引先 | 値: 山田商事 | 同じ表の列: 金額"], padding=True, return_tensors="pt")
             with tempfile.TemporaryDirectory() as d:
                 p = os.path.join(d, "m.onnx")

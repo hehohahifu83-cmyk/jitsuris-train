@@ -21,7 +21,7 @@ import time
 SCHEMA_VERSION = 1
 # コードの版として記録するファイル（学習の計算に関わるもの）
 CODE_FILES = ("finetune_exp.py", "encoder_exp.py", "encoder_context.py", "train3.py", "features.py", "gen.py",
-              "jobs.py", "batching.py", "evaluation_records.py", "llm_baseline.py", "exp7.py", "provenance.py")
+              "jobs.py", "batching.py", "evaluation_records.py", "llm_baseline.py", "exp7.py", "provenance.py", "model_setup.py", "val_split.py")
 
 
 def sha256_bytes(data):

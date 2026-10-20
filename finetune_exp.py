@@ -58,22 +58,22 @@ if pseudo_path:
     rows = rows + pseudo_rows
     print(f"CPU lab pseudo replay: {len(pseudo_rows)} unverified rows (capped at 1% of {base_rows}) from {pseudo_path}", flush=True)
 tok = AutoTokenizer.from_pretrained(NAME)
-# --- モデルの種類ごとの違い（2026-10-20：mmBERT-small＝ModernBERT 系を通すため。E5（XLM-R 系）の計算は変えない）---
+# --- モデルの種類ごとの違い（2026-10-20：mmBERT-small＝ModernBERT 系を通すため。E5（XLM-R 系）の計算は変えない。違いは model_setup.py に集めた）---
 from transformers import AutoConfig
+import model_setup
 MODEL_TYPE = getattr(AutoConfig.from_pretrained(os.environ.get("FT_INIT_MODEL_PATH") or NAME), "model_type", "")
+NO_DROPOUT = os.environ.get("FT_NO_DROPOUT") == "1"
+config_changes = {}
 if MODEL_TYPE == "modernbert":
     tok.model_input_names = ["input_ids", "attention_mask"]   # ModernBERT は token_type_ids を受け取らない
-if os.environ.get("FT_NO_DROPOUT") == "1":
-    dropout_args = ({"attention_dropout": 0.0, "mlp_dropout": 0.0, "embedding_dropout": 0.0, "classifier_dropout": 0.0} if MODEL_TYPE == "modernbert"
-                    else {"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0})
+    _mcfg = AutoConfig.from_pretrained(os.environ.get("FT_INIT_MODEL_PATH") or NAME)
+    config_changes = model_setup.apply_modernbert_overrides(_mcfg, num_labels=len(labels), pooling=os.environ.get("FT_POOLING", ""), no_dropout=NO_DROPOUT)
+    # config を渡して読む（引数で渡すと transformers の版によって落ちる）。T4 では flash-attn は使えないので sdpa
+    model_args = {"config": _mcfg, "attn_implementation": os.environ.get("FT_ATTN", "sdpa")}
+    fresh_extra = {}
 else:
-    dropout_args = {}   # 何も指定しなければ、各モデルの既定のまま（E5 は 0.1、ModernBERT は 0.0）
-model_args = dict(dropout_args)
-if MODEL_TYPE == "modernbert":
-    model_args["reference_compile"] = False                          # torch.compile を使わない（長さが毎回違う入力で作り直しが起きる・triton に頼らない）
-    model_args["attn_implementation"] = os.environ.get("FT_ATTN", "sdpa")   # T4 では flash-attn は使えない
-    if os.environ.get("FT_POOLING", "").strip():
-        model_args["classifier_pooling"] = os.environ["FT_POOLING"].strip()   # cls / mean（指定しなければ config のまま）
+    model_args = model_setup.no_dropout_args(MODEL_TYPE) if NO_DROPOUT else {}   # 何も指定しなければ、各モデルの既定のまま（E5 は dropout 0.1）
+    fresh_extra = {"num_labels": len(labels)}
 init_model_path = os.environ.get("FT_INIT_MODEL_PATH")
 if init_model_path:
     init_labels_path = os.path.join(init_model_path, "labels.json")
@@ -84,11 +84,11 @@ if init_model_path:
         raise ValueError("FT_INIT_MODEL_PATH classifier dimension does not match current labels")
     print(f"initialized from audited source checkpoint: {init_model_path}", flush=True)
 else:
-    model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **model_args)
+    model = AutoModelForSequenceClassification.from_pretrained(NAME, **fresh_extra, **model_args)
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
 print(f"model_type={MODEL_TYPE} params={sum(p.numel() for p in model.parameters()):,} attn={getattr(model.config, '_attn_implementation', None)} "
-      f"pooling={getattr(model.config, 'classifier_pooling', None)} model_args={model_args}", flush=True)
+      f"pooling={getattr(model.config, 'classifier_pooling', None)} config_changes={config_changes}", flush=True)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
 def text_aug(r, prefix):
     h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
@@ -202,7 +202,7 @@ manifest = provenance.build_manifest(
     model_name=NAME, hf_repo_id=provenance.hf_repo_id_from_path(NAME), epochs=EPOCHS, seed=seed_text or "default", labels=labels,
     train_rows=train_rows, replay_rows=replay_rows, tests={tn: provenance.rows_digest(te) for tn, te in tests.items()},
     source_model_dir=(init_model_path or (NAME if os.path.isdir(NAME) else None)),
-    extra={"model_type": MODEL_TYPE, "model_args": {k: v for k, v in model_args.items()}, "prefix": PREFIX, "max_length": MAX_LEN,
+    extra={"model_type": MODEL_TYPE, "config_changes": config_changes, "no_dropout": NO_DROPOUT, "prefix": PREFIX, "max_length": MAX_LEN,
            "token_stats": token_stats, "request_args": _args_txt, "device": DEV,
            "gpu": (torch.cuda.get_device_name(0) if DEV == "cuda" else None), "eval_mode": "validation" if os.environ.get("FT_VAL") == "1" else "fixed_tests"})
 manifest["status"] = "started"
