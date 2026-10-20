@@ -1,0 +1,45 @@
+name: 独立評価主セットを固定・抽出
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "independent_eval/extract.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: independent-eval-main-extract
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 固定 allowlist・形式・安全性の自己テスト
+        run: |
+          python independent_eval/prepare.py --self-test
+          python independent_eval/prepare.py --dry-run
+      - name: 公開可能な主セットを抽出して SHA-256 を記録
+        run: python independent_eval/prepare.py
+      - name: 固定セットと出典記録だけを保存
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add independent_eval/results/main/independent_main.json
+          git add independent_eval/results/main/provenance.json
+          git add independent_eval/results/main/ATTRIBUTION.md
+          if git diff --cached --quiet; then
+            echo "出力の変更がありません"
+            exit 0
+          fi
+          git commit -m "独立評価主セットを固定"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
