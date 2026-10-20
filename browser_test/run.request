@@ -5,6 +5,8 @@
 #   model_dir=ft_out_job1  … artifact の中のモデルの置き場（FT_KEEP=1 の仕事は ft_out_job<番号>。版15 は仕事1 と仕事4 が残る）
 #   limit=0  … 試験ごとの列数の上限（0 なら全部。学習済みモデルの精度を測るときは 0）
 #   model=…  … kaggle_run を使わないとき、書き出すモデル（Hugging Face の名前）
+#   model_sha256=…  … 64 桁の 16 進。取ったモデルの重みの SHA-256 が一致しなければ止める（どの回収の・どの仕事の重みかの取り違え防止）。
+#     値は、回収した ft_out_job<番号>/manifest.json の saved_model.weights.<ファイル>.sha256（1 ファイルのとき）、または eval_reports/runs/<回収の番号>/job<番号>_manifest.json から読む。書かなくても動くが、manifest との照合は常に行う
 # 例（学習済みの仕事1 を全部の列で）：
 # kaggle_run=latest model_dir=ft_out_job1 limit=0
 # 結果：bench/browser_model_trained_summary.md（後に流した方で上書きされるので、1 本目の結果は別名で控える）と、チェックランの注。

@@ -22,7 +22,7 @@ on:
   push:
     branches: [main]
     # browser_test/run.request：Actions を直接起動できない側（ChatGPT など）が、この 1 行ファイルを書き換えて起動する（下の「実行の条件を決める」）
-    paths: ['browser_test/*.mjs', 'browser_test/run.request', 'export_onnx.py', 'compress_eval.py', 'edge_texts.py', 'tests/test_export_onnx.py', 'tests/test_compress_eval.py', '.github/workflows/browser-model.yml']
+    paths: ['browser_test/*.mjs', 'browser_test/run.request', 'check_trained_model.py', 'export_onnx.py', 'compress_eval.py', 'edge_texts.py', 'tests/test_export_onnx.py', 'tests/test_compress_eval.py', '.github/workflows/browser-model.yml']
 permissions:
   contents: write
   actions: read
@@ -38,7 +38,7 @@ jobs:
         env: { GH_TOKEN: '${{ github.token }}' }
         shell: bash
         run: |
-          MODEL="${{ inputs.model }}"; KRUN="${{ inputs.kaggle_run }}"; MDIR="${{ inputs.model_dir }}"; LIMIT="${{ inputs.limit }}"
+          MODEL="${{ inputs.model }}"; KRUN="${{ inputs.kaggle_run }}"; MDIR="${{ inputs.model_dir }}"; LIMIT="${{ inputs.limit }}"; MSHA=""
           # 依頼ファイル：1 行に「キー=値」を空白で区切って書く（例：kaggle_run=latest model_dir=ft_out_job1 limit=0）。# で始まる行は読まない。
           # この push で変わったときだけ読む（ほかのファイルの push で、前の依頼がまた走らないように）。
           if [ "${{ github.event_name }}" = push ] && [ -f browser_test/run.request ] && git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" 2>/dev/null | grep -qx 'browser_test/run.request'; then
@@ -49,9 +49,10 @@ jobs:
                 kaggle_run=*) KRUN="${kv#kaggle_run=}";;
                 model_dir=*) MDIR="${kv#model_dir=}";;
                 limit=*) LIMIT="${kv#limit=}";;
+                model_sha256=*) MSHA="${kv#model_sha256=}";;
               esac
             done
-            echo "依頼ファイルから: model=$MODEL kaggle_run=$KRUN model_dir=$MDIR limit=$LIMIT"
+            echo "依頼ファイルから: model=$MODEL kaggle_run=$KRUN model_dir=$MDIR limit=$LIMIT model_sha256=${MSHA:-（なし）}"
           fi
           if [ "$KRUN" = latest ]; then
             KRUN=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=jitsuris-model&per_page=20" --jq '[.artifacts[] | select(.expired | not)] | sort_by(.created_at) | last | .workflow_run.id // empty')
@@ -60,7 +61,8 @@ jobs:
           fi
           [ -z "$MDIR" ] && MDIR=ft_out_job1
           [ -z "$LIMIT" ] && LIMIT=100
-          { echo "model=$MODEL"; echo "kaggle_run=$KRUN"; echo "model_dir=$MDIR"; echo "limit=$LIMIT"; } >> "$GITHUB_OUTPUT"
+          if [ -n "$MSHA" ] && ! echo "$MSHA" | grep -qE '^[0-9a-fA-F]{64}$'; then echo "model_sha256 は 64 桁の 16 進で書く: $MSHA"; exit 1; fi
+          { echo "model=$MODEL"; echo "kaggle_run=$KRUN"; echo "model_dir=$MDIR"; echo "limit=$LIMIT"; echo "model_sha256=$MSHA"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - name: 依存を入れる（CPU 版）
@@ -70,12 +72,12 @@ jobs:
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: 部品の検査
         shell: bash
-        run: python -m unittest tests.test_export_onnx tests.test_compress_eval tests.test_tokenizer_fixtures -v 2>&1 | tee unittest.log | tail -40
+        run: python -m unittest tests.test_export_onnx tests.test_compress_eval tests.test_tokenizer_fixtures tests.test_check_trained_model -v 2>&1 | tee unittest.log | tail -40
       - uses: actions/cache/restore@v4
         id: bmcache
         with:
           path: browser_model
-          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py', 'edge_texts.py') }}-${{ steps.cfg.outputs.model || 'default' }}-${{ steps.cfg.outputs.kaggle_run || 'none' }}-${{ steps.cfg.outputs.model_dir }}-${{ steps.cfg.outputs.limit }}
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py', 'edge_texts.py') }}-${{ steps.cfg.outputs.model || 'default' }}-${{ steps.cfg.outputs.kaggle_run || 'none' }}-${{ steps.cfg.outputs.model_dir }}-${{ steps.cfg.outputs.limit }}-${{ steps.cfg.outputs.model_sha256 || 'nosha' }}
       - name: 学習済みモデルを取ってくる（Kaggle 回収の artifact）
         if: steps.cfg.outputs.kaggle_run != '' && steps.bmcache.outputs.cache-hit != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
@@ -83,6 +85,9 @@ jobs:
         run: |
           gh run download "${{ steps.cfg.outputs.kaggle_run }}" -R "$GITHUB_REPOSITORY" -n jitsuris-model -D trained
           ls -la "trained/${{ steps.cfg.outputs.model_dir }}" | head -20
+          # 取ったモデルが、manifest.json と依頼（model_sha256）の重みと同じかを確かめる。食い違えばここで止める（別の仕事の重みを書き出さない）
+          SHA="${{ steps.cfg.outputs.model_sha256 }}"
+          python check_trained_model.py "trained/${{ steps.cfg.outputs.model_dir }}" ${SHA:+--expect-sha256 "$SHA"} --out trained_model_check.json
       - name: 書き出しと試験（学習していないモデルなら精度の数字に意味はない。大きさ・動くこと・速さの確認）
         if: steps.bmcache.outputs.cache-hit != 'true'
         shell: bash
@@ -95,7 +100,7 @@ jobs:
         if: always() && steps.bmcache.outputs.cache-hit != 'true' && hashFiles('browser_model/reference.json') != ''
         with:
           path: browser_model
-          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py', 'edge_texts.py') }}-${{ steps.cfg.outputs.model || 'default' }}-${{ steps.cfg.outputs.kaggle_run || 'none' }}-${{ steps.cfg.outputs.model_dir }}-${{ steps.cfg.outputs.limit }}
+          key: bm-${{ hashFiles('export_onnx.py', 'compress_eval.py', 'edge_texts.py') }}-${{ steps.cfg.outputs.model || 'default' }}-${{ steps.cfg.outputs.kaggle_run || 'none' }}-${{ steps.cfg.outputs.model_dir }}-${{ steps.cfg.outputs.limit }}-${{ steps.cfg.outputs.model_sha256 || 'nosha' }}
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - name: 正規化の単体試験（Node。自作の小さな表で、書記素・最初に見つかった規則などの動きを確かめる）
@@ -143,6 +148,7 @@ jobs:
           if [ "$OK" = 1 ]; then
             { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}　学習済みモデル: $KRUN $MDIR"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > "$T/$SUMMARY"
             [ -f charsmap_chromium.log ] && { echo; echo "## 正規化の一致（Chromium の中・軽い正解データ）"; echo '```'; sed -n '/=== 要点/,$p' charsmap_chromium.log; echo '```'; } >> "$T/$SUMMARY"
+            [ -f trained_model_check.json ] && { echo; echo "## 学習済みモデルの確認（重みの SHA-256・manifest・依頼との照合）"; echo '```json'; cat trained_model_check.json; echo '```'; } >> "$T/$SUMMARY"
           fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com

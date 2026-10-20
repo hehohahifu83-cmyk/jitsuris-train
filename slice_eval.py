@@ -90,7 +90,8 @@ def load_records(dir_, cond, jobs=None):
         run = base.split("probs_")[0].rstrip("_")
         if jobs and run not in jobs:
             continue
-        d = json.load(open(path, encoding="utf-8"))
+        with open(path, encoding="utf-8") as fh:
+            d = json.load(fh)
         out[(run, d["dataset"])] = d["rows"]
     return out
 
