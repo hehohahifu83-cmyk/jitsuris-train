@@ -22,7 +22,8 @@ EXCLUDED_AMBIGUOUS_IDS = {
 class AuditedMaterialTests(unittest.TestCase):
     def test_only_audited_materials_with_known_taxonomy_are_trainable(self):
         rows = [json.loads(line) for line in MATERIALS.read_text(encoding="utf-8").splitlines() if line]
-        self.assertEqual(len(rows), 28)
+        self.assertEqual(len(rows), 30)
+        self.assertTrue({"codex-20261020-001", "codex-20261020-002"}.issubset({r["id"] for r in rows}))
         self.assertTrue(all(r["id"] not in EXCLUDED_AMBIGUOUS_IDS for r in rows))
         self.assertTrue(all(r.get("audit_confidence") in {"high", "medium"} for r in rows))
         tuples = load_approved_replay(str(MATERIALS), LABELS)

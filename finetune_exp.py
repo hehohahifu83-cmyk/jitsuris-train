@@ -113,6 +113,55 @@ elif limit_text:
     limit = int(limit_text)
     if limit < 1: raise ValueError("FT_LIMIT must be a positive integer")
     train_rows = rows[:limit]
+
+# Optional synthetic, train-excluded probe for the CPU lab. The same newly
+# initialized classifier is scored immediately before and after fitting, so
+# this measures within-run learning without touching the fixed test sets.
+PROGRESS_PROBE = os.environ.get("FT_PROGRESS_PROBE", "").strip()
+progress_rows = []
+if PROGRESS_PROBE:
+    from cpu_lab.self_learning import _read_jsonl
+    progress_rows = _read_jsonl(__import__("pathlib").Path(PROGRESS_PROBE))
+    if not progress_rows or any(r.get("split") != "progress_probe" or "target" not in r for r in progress_rows):
+        raise ValueError("FT_PROGRESS_PROBE must point to labeled progress_probe rows")
+    missing_probe_labels = sorted({r["target"] for r in progress_rows} - set(labels))
+    if missing_probe_labels:
+        raise ValueError(f"probe labels missing from training taxonomy: {missing_probe_labels}")
+    train_signatures = {(str(r[0]), tuple(map(str, r[1])), str(r[2])) for r in train_rows}
+    probe_signatures = {(str(r["header"]), tuple(map(str, r["values"])), str(r["target"])) for r in progress_rows}
+    if train_signatures & probe_signatures:
+        raise ValueError("progress probe overlaps the selected training rows")
+    print(f"separate progress probe: {len(progress_rows)} synthetic rows; excluded from training", flush=True)
+
+def score_progress_probe(stage):
+    if not progress_rows:
+        return
+    model.eval()
+    predictions = []
+    with torch.inference_mode():
+        for start in range(0, len(progress_rows), 32):
+            batch = progress_rows[start:start + 32]
+            enc = tok([text((r["header"], r["values"], r["target"], r.get("context", []), r.get("unit_context", "")), PREFIX)
+                      for r in batch], truncation=True, max_length=128, padding=True, return_tensors="pt")
+            enc = {k: v.to(DEV) for k, v in enc.items()}
+            probs = torch.softmax(model(**enc).logits.float(), dim=-1).cpu().tolist()
+            for row, p in zip(batch, probs):
+                pred = labels[max(range(len(p)), key=lambda i: p[i])]
+                predictions.append({"id": row["id"], "target": row["target"], "prediction": pred,
+                                    "correct": pred == row["target"]})
+    correct = sum(int(x["correct"]) for x in predictions)
+    result = {"stage": stage, "seed": seed_text or "default", "model_name": NAME,
+              "probe_count": len(progress_rows), "correct": correct,
+              "errors": len(progress_rows) - correct, "accuracy": correct / len(progress_rows),
+              "predictions": predictions, "split": "progress_probe",
+              "training_overlap": 0, "fixed_test_sets_used": False}
+    os.makedirs("progress_probe_results", exist_ok=True)
+    with open(f"progress_probe_results/{stage}.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+    print(f"progress probe {stage}: {correct}/{len(progress_rows)} ({result['accuracy']:.1%})", flush=True)
+
+if progress_rows:
+    score_progress_probe("before")
 data = [(r, L[r[2]]) for r in train_rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in train_rows]
 print(f"training rows={len(train_rows)} seed={seed_text or 'default'}", flush=True)
 random.shuffle(data)
@@ -213,6 +262,8 @@ while step < steps:
 if DEV == "cuda": print(f"peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB; training loop {time.time() - t0:.0f}s", flush=True)
 train_seconds = time.time() - train_setup_start
 model.eval()
+if progress_rows:
+    score_progress_probe("after")
 EVAL_BS = 4 if DEV == "cuda" and IS_LARGE else 32
 def probs(rs):
     out = []
