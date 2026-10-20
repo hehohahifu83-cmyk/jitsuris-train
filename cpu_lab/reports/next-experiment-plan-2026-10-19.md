@@ -1,42 +1,12 @@
-# 次回e5-base精度実験計画（2026-10-19）
+# 完了済みCPU Lab・学習率実験計画 — アーカイブ
 
-> 状態：この文書に記した FT_LR=2e-5 のmatched試験は完了。既定LRの変更は採用しない。結果と判断は [監査記録](../../research/e5-base-lr2e-5-audit-2026-10-19.md) を参照。最新の埋め込み固定解除比較は [別監査](../../research/e5-base-unfreeze-embeddings-audit-2026-10-19.md)。次回実験をこの古い計画から再実行しない。評価出力schema 3に判定理由を付ける実装は commit 50d86bd、修正版のCPU安全テストは commit f099844 で成功した。Kaggleの新しいschema 3成果物はまだないため、学習条件は引き続き保留。
+更新: 2026-10-20 UTC
 
+この計画の後続実験は完了または評価され、記載コマンドは現行の依頼ではありません。再実行しないでください。現行の作業順と停止条件は [tool-kobo 正本の現行学習計画](https://github.com/hehohahifu83-cmyk/tool-kobo/blob/research/column-ai/research/column-ai/TEACHING_PLAN.md) を参照。
 
-## 目的
+- CPU Lab fresh-head: 固定評価1995例で全件unknown。能力向上実験として無効、パイプライン確認に限定。
+- FT_LR=2e-5: matched seed比較完了。平均差は全セットで1.5pp未満、誤り134→133、重大20→22。既定値を維持。
+- e5-large: 品質差は基準内、重大誤り20→25、学習時間約3.24倍、peak GPU 3.5→9.0GiB。拡大を採用せず。
+- 詳細数値・手順は research/e5-base-lr2e-5-audit-2026-10-19.md、research/e5-base-unfreeze-embeddings-audit-2026-10-19.md、research/E5_LARGE_SIZE_AUDIT_2026-10-19.md に保持。
 
-列種判定の精度を上げる候補として、モデルサイズや教材の変更を先に増やさず、e5-baseの学習率を現在の既定値 (5\times10^{-5}) から (2\times10^{-5}) に下げる一因子試験を行う。高い学習率による汎化不足を抑える仮説であり、改善は未確認。
-
-## 直近の対照と既実施条件
-
-基準は e5-base、UNIT文脈、埋め込み固定、2 epoch、batch 32 × accumulation 2、seed 1/2。現行コードの学習率既定値は (5\times10^{-5})。直近Kaggle学習は [Actions run 39169777668](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39169777668) でCOMPLETE。
-
-| 固定評価セット | 基準 seed1/2 の正解率 | FT_AUG seed1/2 の正解率 | 平均差 |
-|---|---:|---:|---:|
-| dev220 | 95.9% / 97.3% | 95.9% / 96.8% | -0.25 pp |
-| general | 92.5% / 91.5% | 90.8% / 93.6% | +0.20 pp |
-| business | 92.4% / 91.8% | 91.4% / 92.4% | -0.20 pp |
-| business2 | 95.3% / 95.5% | 95.1% / 95.5% | -0.10 pp |
-| japan_procurement | 98.9% / 98.9% | 98.9% / 98.9% | 0.00 pp |
-
-FT_AUG のseed対はKaggleログ上で依頼・完了済み。同じ学習条件の基準対と比べ、5セット全てで平均差が1.5ポイント未満。集計上の誤り数は両条件とも134、重大誤りは基準20対FT_AUG 21、unknownは基準89対FT_AUG 93。精度向上として採用せず、同条件の再実行もしない。
-
-学習率 (2\times10^{-5}) は以前の8ジョブ試験でseed1のみ・埋め込み非固定の探索結果がある。今の凍結埋め込み条件とのseed 1/2比較は未実施。
-
-## 今回の一因子試験
-
-固定するもの：モデル、UNIT文脈、凍結埋め込み、epoch、batch/accumulation、GPU高速化設定、学習教材、評価・後処理。
-
-変更するもの：`FT_LR=2e-5` のみ。seed 1と2を両方実行し、現在の凍結UNIT基準 seed 1/2 と比較する。
-
-```text
-train intfloat/multilingual-e5-base 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=1 FT_LR=2e-5 FT_SEED=1 ++ FT_SEED=2
-```
-
-## 判定と制約
-
-- 各5セットで accuracy、誤り数、重大誤り数、unknown数をseed別に比較する。学習時間と最大GPUメモリも比較する。
-- 1.5ポイント未満の精度差は差なしとする。5セット全体の総数だけで勝敗を決めない。
-- 評価セットの列名・ラベル・値を教材へコピーしない。教材は今回変更しない。
-- `blind_set*` と sets 3、5、7 は開かず、参照せず、学習にも使わない。
-- 差が1.5ポイント以上でも、seed間のばらつきと重大誤りが悪化していないことを確認する。改善がなければ学習率変更を採用しない。
+過去のコマンド本文を除き、再現に必要な実験結果と監査報告は削除していません。
