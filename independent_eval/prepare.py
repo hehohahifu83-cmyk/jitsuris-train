@@ -369,6 +369,14 @@ def run_self_test():
 
 def main(dry_run: bool = False):
     allow, allow_raw, candidates, candidates_raw, manifest, corpus_rows, reviewed_tables, summary = verify_frozen_plan()
+    request = read_json(REQUEST_PATH)
+    if request.get("set_id") != allow.get("set_id"):
+        raise ValueError("extract.request set_id does not match the frozen allowlist")
+    if request.get("candidate_file_git_blob_sha1") != allow.get("candidate_file_git_blob_sha1"):
+        raise ValueError("extract.request candidate pin does not match the frozen allowlist")
+    if request.get("allowlist_git_blob_sha1") != git_blob_sha1(allow_raw):
+        raise ValueError("extract.request allowlist pin does not match the frozen allowlist")
+
     if dry_run:
         print(
             "DRY_RUN_OK "
@@ -377,11 +385,6 @@ def main(dry_run: bool = False):
         )
         return
 
-    request = read_json(REQUEST_PATH)
-    if request.get("set_id") != allow.get("set_id"):
-        raise ValueError("extract.request set_id does not match the frozen allowlist")
-    if request.get("candidate_file_git_blob_sha1") != allow.get("candidate_file_git_blob_sha1"):
-        raise ValueError("extract.request candidate pin does not match the frozen allowlist")
     if SET_PATH.exists() or PROVENANCE_PATH.exists() or ATTRIBUTION_PATH.exists():
         raise ValueError("main set already exists; refusing to replace a frozen evaluation snapshot")
 
