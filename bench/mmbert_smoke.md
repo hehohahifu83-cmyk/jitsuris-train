@@ -1,6 +1,6 @@
 # mmBERT-small の試運転（CPU・GitHub Actions）
 
-run: 39431299396　commit: 874dfd9cd5cf0ba56f22b34c405c42f5a5aa87d8
+run: 39431957709　commit: 944bb057199508e8a658de236f940032a1c3de39
 
 ## モデルの取得
 ```
@@ -8,10 +8,10 @@ jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license 
 repo files: ['.gitattributes', 'README.md', 'config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 allow_patterns: ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*', 'pytorch_model*.bin']
 Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 5 files:  60%|██████    | 3/5 [00:00<00:00, 22.50it/s]Fetching 5 files: 100%|██████████| 5/5 [00:01<00:00,  2.74it/s]
+Fetching 5 files:  20%|██        | 1/5 [00:00<00:00,  9.42it/s]Fetching 5 files:  80%|████████  | 4/5 [00:01<00:00,  3.33it/s]Fetching 5 files: 100%|██████████| 5/5 [00:43<00:00, 11.92s/it]Fetching 5 files: 100%|██████████| 5/5 [00:43<00:00,  8.63s/it]
 fetched: ['config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit tags ['license:mit']
-repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_model.bin', 'openvino/openvino_model.xml', 'pytorch_model.bin', 'sentence_bert_config.json', 'sentencepiece.bpe.model', 'special_tokens_map.json', 'tokenizer.```
+repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_mo```
 ## 部品の単体試験
 ```
 [仕事3] 開始（GPU 0）仕事1との違い：FT_TAG=c
@@ -22,21 +22,21 @@ repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.j
 [仕事5] 終了（終了コード 0）
 ok
 test_single_job_runs_in_the_root (tests.test_jobs.RunJobsTest.test_single_job_runs_in_the_root) ... ok
-test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事1] 開始（GPU 0）FT_TAG=a
-[仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
+test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
+[仕事1] 開始（GPU 0）FT_TAG=a
 [仕事1] 終了（終了コード 0）
 [仕事2] 終了（終了コード 0）
 ok
 test_unlaunchable_job_is_reported_as_failure (tests.test_jobs.RunJobsTest.test_unlaunchable_job_is_reported_as_failure) ... [仕事1] 開始（GPU 0）（設定なし）
 [仕事2] 開始（GPU 1）仕事1との違い：なし
-[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmpudj8vaoi/missing_script.py': [Errno 2] No such file or directory
-[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmpudj8vaoi/missing_script.py': [Errno 2] No such file or directory
-[仕事1] 終了（終了コード 2）
+[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp6g3jaerz/missing_script.py': [Errno 2] No such file or directory
+[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp6g3jaerz/missing_script.py': [Errno 2] No such file or directory
 [仕事2] 終了（終了コード 2）
+[仕事1] 終了（終了コード 2）
 ok
 
 ----------------------------------------------------------------------
-Ran 54 tests in 4.876s
+Ran 59 tests in 5.049s
 
 OK
 ```
@@ -66,39 +66,127 @@ OK
 | ★2 | 長さ E5 / 本物（業務） | OK | n=490 平均=92.4 p50=91 p95=138 p99=145 最大=150 128超で切捨=44件(8.98%) |
 | ★2 | 長さ E5 / 本物（業務2） | OK | n=976 平均=85.4 p50=83 p95=123 p99=139 最大=159 128超で切捨=24件(2.46%) |
 | ★2 | 長さ E5 / 本物（日本の調達） | OK | n=92 平均=109.1 p50=111 p95=158 p99=199 最大=199 128超で切捨=22件(23.91%) |
-| ★3 | 分類の頭（cls / mean） | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
-| ★4 | 学習の1ステップ | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
-| ★5 | 保存と読み込み | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
-| ☆6 | 速度の目安（CPU） | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
-| ☆7 | ONNX への書き出し | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
+| ★3 | pooling=cls | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'classifier_pooling': 'cls', 'num_labels': 15} |
+| ★3 | pooling=mean | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'classifier_pooling': 'mean', 'num_labels': 15} |
+| ★3 | pooling=（config のまま：mean） | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'num_labels': 15} |
+| ★4 | 3 ステップ | OK | 損失 [6.5048, 2.0658, 0.8604] 勾配ノルム 44.148（同じ 16 文を使い回すので下がるのが普通。下がった=True） |
+| ★5 | 保存→読み込みで logits 一致・トークナイザの ID 一致 | OK | 最大差 0.00e+00／ID一致 True／保存したファイル ['config.json', 'labels.json', 'model.safetensors', 'tokenizer.json', 'tokenizer_config.json']／重み model.safetensors: 563MB |
+| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 2.97 秒（93 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
+| ☆7 | ONNX opset 18・legacy | OK | onnxruntime と PyTorch の最大差 1.62e-05／別の長さ 1.81e-05／563MB（fp32・語彙を削る前） |
 
-必須（★）で NG：3 件
+必須（★）で NG：0 件
 
 ※ CPU の試運転であり、GPU（fp16）での学習・精度・端末での速さは確かめていない。
 ## finetune_exp.py の通し（末尾）
 ```
 FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 検証（一般） 204, 検証（業務） 204, 検証（業務2） 415, 検証（日本の調達） 66
-Traceback (most recent call last):
-  File "/home/runner/work/jitsuris-train/jitsuris-train/finetune_exp.py", line 87, in <module>
-    model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **model_args)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 411, in from_pretrained
-    return model_class.from_pretrained(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4300, in from_pretrained
-    model = cls(config, *model_args, **model_kwargs)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile'
+Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 10779.83it/s]
+[transformers] [1mModernBertForSequenceClassification LOAD REPORT[0m from: hfmodel/jhu-clsp__mmBERT-small
+Key               | Status     | 
+------------------+------------+-
+decoder.bias      | UNEXPECTED | 
+decoder.weight    | UNEXPECTED | 
+classifier.weight | MISSING    | 
+classifier.bias   | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+device cpu; CPU threads=2/4
+model_type=modernbert params=140,647,696 attn=sdpa pooling=mean config_changes={'num_labels': 16}
+training rows=256 seed=1
+token lengths (max_length=128): train mean=52.5 p95=114 p99=149 max=156 truncated=1.95%
+CPU token cache: 256 rows tokenized once
+train batch=16, accumulation=1, effective=16, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False
+focal-loss experiment: gamma=1.5
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整だけ | 検証（一般） 正8.1% 誤15 不明121 重大2 その他見送り53/56 | 検証（業務） 正20.9% 誤3 不明152 重大3 その他見送り7/8 | 検証（業務2） 正14.4% 誤17 不明310 重大12 その他見送り30/33 | 検証（日本の調達） 正10.8% 誤0 不明58 重大0 その他見送り0/1 | 学習 65秒・
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・今の仕組みだけ | 検証（一般） 正85.8% 誤12 不明9 重大0 その他見送り52/56 | 検証（業務） 正93.9% 誤10 不明2 重大2 その他見送り8/8 | 検証（業務2） 正93.5% 誤9 不明16 重大3 その他見送り22/33 | 検証（日本の調達） 正96.9% 誤0 不明2 重大0 その他見送り1/1 | 学習 65秒・
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整＋今の仕組み（半々） | 検証（一般） 正73.6% 誤2 不明37 重大0 その他見送り54/56 | 検証（業務） 正83.7% 誤2 不明30 重大2 その他見送り8/8 | 検証（業務2） 正81.4% 誤2 不明69 重大1 その他見送り23/33 | 検証（日本の調達） 正90.8% 誤0 不明6 重大0 その他見送り1/1
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整6割＋今の仕組み4割 | 検証（一般） 正23.6% 誤1 不明112 重大0 その他見送り53/56 | 検証（業務） 正42.9% 誤1 不明111 重大1 その他見送り8/8 | 検証（業務2） 正42.1% 誤0 不明221 重大0 その他見送り32/33 | 検証（日本の調達） 正35.4% 誤0 不明42 重大0 その他見送り1/1
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正13.5% 誤1 不明127 重大0 その他見送り53/56 | 検証（業務） 正34.2% 誤1 不明128 重大1 その他見送り8/8 | 検証（業務2） 正29.8% 誤0 不明268 重大0 その他見送り32/33 | 検証（日本の調達） 正23.1% 誤0 不明50 重大0 その他見送り1/1
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.79it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.78it/s]
+manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc861c1c611bcb2c1ef39024
 ```
 ## 検査・集計・記録
 ```
-Traceback (most recent call last):
-  File "/home/runner/work/jitsuris-train/jitsuris-train/cpu_lab/eval_artifact_integrity.py", line 163, in <module>
-    main()
-  File "/home/runner/work/jitsuris-train/jitsuris-train/cpu_lab/eval_artifact_integrity.py", line 156, in main
-    result = validate_report_dir(args.report_dir,
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/cpu_lab/eval_artifact_integrity.py", line 64, in validate_report_dir
-    raise ValueError("no probs report found")
-ValueError: no probs report found
+  },
+  "検証（業務）": {
+   "count": 204,
+   "sha256_ordered": "8fb19dd702923db7108d08724d95cdc8bde796c7a0153e36d3e7aee93f2f658e",
+   "sha256_unordered": "dec9299a959c8ba094619bfbbdae986950140feaf43603f4e112283682c03cad"
+  }
+ },
+ "timing": {
+  "eval_seconds": 66.4,
+  "inference_rows": {
+   "検証（一般）": 204,
+   "検証（日本の調達）": 66,
+   "検証（業務2）": 415,
+   "検証（業務）": 204
+  },
+  "inference_seconds": {
+   "検証（一般）": 15.19,
+   "検証（日本の調達）": 4.93,
+   "検証（業務2）": 29.87,
+   "検証（業務）": 14.46
+  },
+  "peak_gpu_gib": null,
+  "train_loop_seconds": 64.7,
+  "train_total_seconds": 65.2
+ },
+ "model_config": {
+  "attn_implementation": "sdpa",
+  "classifier_pooling": "mean",
+  "hidden_size": 384,
+  "layers": 22,
+  "model_type": "modernbert",
+  "parameters": 140647696,
+  "vocab_size": 256000
+ },
+ "libraries": {
+  "numpy": "2.5.4",
+  "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+  "python": "3.12.15",
+  "safetensors": "0.8.0",
+  "scikit-learn": "1.9.1",
+  "tokenizers": "0.23.3",
+  "torch": "2.14.1+cpu",
+  "transformers": "5.20.2"
+ },
+ "extra": {
+  "config_changes": {
+   "num_labels": 16
+  },
+  "device": "cpu",
+  "eval_mode": "validation",
+  "gpu": null,
+  "max_length": 128,
+  "model_type": "modernbert",
+  "no_dropout": false,
+  "prefix": "",
+  "request_args": null
+ },
+ "token_stats_keys": [
+  "train",
+  "検証（一般）",
+  "検証（日本の調達）",
+  "検証（業務2）",
+  "検証（業務）"
+ ],
+ "saved_model": {
+  "files": {
+   "config.json": "9fe3839f839e614e8eccebaa77a88b7f0d92f45438ecf82ebbe61c55ed89254a",
+   "labels.json": "fc7e758c07c6b2107cc587a5d50981c7107c1f9a04ab4dc7753c063167ffa3bf",
+   "tokenizer.json": "f231fae363627485dbad73e8b95f601378deede800416098c14c81a0deafa813",
+   "tokenizer_config.json": "a610934a0c3e4f0287078cfaf77b6931fd13598445d27f860cc436b8bf2c4454"
+  },
+  "weights": {
+   "model.safetensors": {
+    "bytes": 562604960,
+    "sha256": "4ca77d90814661dd41bc5e9918df81c78f3322c1cc861c1c611bcb2c1ef39024"
+   }
+  }
+ },
+ "outputs_count": 41
+}
 ```
