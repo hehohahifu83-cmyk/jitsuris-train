@@ -104,3 +104,16 @@ probeとの重複確認は (header, values, target) 完全一致のみ。学習�
 - Transformers XLM-RoBERTa sequence classification head: https://github.com/huggingface/transformers/blob/main/src/transformers/models/xlm_roberta/modeling_xlm_roberta.py
 - AncSetFit (EMNLP 2023): https://aclanthology.org/2023.emnlp-main.692/
 - Selective prediction in NLP (ACL 2021): https://aclanthology.org/2021.acl-long.84/
+
+
+## 2026-10-20 — paired replay evaluation audit (run 39374324597)
+
+Full report and row appendix: [eval-audit-run-39374324597.md](eval-audit-run-39374324597.md).
+
+Confirmed: run success/Kaggle COMPLETE, request done; 100/100 metric cells reconcile. On FT-only fixed sets, replay changes mean accuracy by +0.23/-0.67/+0.21/+0.33/-0.54pp, all below 1.5pp. Wrong 143→122 and critical 18→14, but unknown 97→114; business2 other false accepts 13→25. This is not a demonstrated overall accuracy gain. The replay added 39 rows (9 new single-reviewer ChatGPT examples). The available model artifact is baseline job1; replay job3/4 checkpoints were not saved.
+
+The replay artifact lists 1,105 issue instances across FT/blend50/blend60/blend70, seeds 1/2, and permitted sets only. Frequent transitions include category→quantity, quantity→category, org→account, and category→text. FT includes 38 wrongs with raw p≥0.90 and 51 guard abstentions despite a raw top-1 equal to gold. These establish error/decision patterns, not their data-level cause.
+
+Cause limits: allowed source records matched issue indices and gold labels for non-dev sets, but exported records omit raw values, exact UNIT match, token/truncation, and stable source-row IDs. Source-shift, UNIT/context, preprocessing, leakage, and label-boundary contributions remain hypotheses. The replay `税率`→tax_class example conflicts with the guideline/generator/rules; label unchanged pending two independent teacher reviews and evidence adjudication.
+
+No training request was changed or added. Full case-by-case observations, evidence, confidence, and follow-up actions are in the linked report; blind_set* and sets 3/5/7 were not opened or used.
