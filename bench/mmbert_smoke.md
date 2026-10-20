@@ -1,27 +1,20 @@
 # mmBERT-small の試運転（CPU・GitHub Actions）
 
-run: 39430763050　commit: 95586730b3ecaf63de316195398d7ba04346df90
+run: 39431299396　commit: 874dfd9cd5cf0ba56f22b34c405c42f5a5aa87d8
 
 ## モデルの取得
 ```
-jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license mit ['license:mit']
-Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 4 files:  50%|█████     | 2/4 [00:00<00:00, 12.36it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00,  3.86it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00,  4.30it/s]
-intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit ['license:mit']
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files:  23%|██▎       | 3/13 [00:00<00:00, 21.53it/s]Fetching 13 files:  69%|██████▉   | 9/13 [00:00<00:00, 37.96it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 11.53it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 13.76it/s]
-hfmodel/intfloat__multilingual-e5-base:
-total 21676
-drwxr-xr-x 5 runner runner     4096 Oct 20 13:31 .
-drwxr-xr-x 4 runner runner     4096 Oct 20 13:31 ..
-drwxr-xr-x 3 runner runner     4096 Oct 20 13:31 .cache
-drwxr-xr-x 2 runner runner     4096 Oct 20 13:31 1_Pooling
--rw-r--r-- 1 runner runner      694 Oct 20 13:31 config.json
--rw-r--r-- 1 runner runner      387 Oct 20 13:31 modules.json
-drwxr-xr-x 2 runner runner     4096 Oct 20 13:31 onnx
--rw-r--r-- 1 runner run```
+jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license mit tags ['license:mit']
+repo files: ['.gitattributes', 'README.md', 'config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
+allow_patterns: ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*', 'pytorch_model*.bin']
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 5 files:  60%|██████    | 3/5 [00:00<00:00, 22.50it/s]Fetching 5 files: 100%|██████████| 5/5 [00:01<00:00,  2.74it/s]
+fetched: ['config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
+intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit tags ['license:mit']
+repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_model.bin', 'openvino/openvino_model.xml', 'pytorch_model.bin', 'sentence_bert_config.json', 'sentencepiece.bpe.model', 'special_tokens_map.json', 'tokenizer.```
 ## 部品の単体試験
 ```
-[仕事2] 終了（終了コード 0）
+[仕事3] 開始（GPU 0）仕事1との違い：FT_TAG=c
 [仕事4] 開始（GPU 1）仕事1との違い：FT_TAG=d
 [仕事3] 終了（終了コード 0）
 [仕事4] 終了（終了コード 0）
@@ -29,21 +22,21 @@ drwxr-xr-x 2 runner runner     4096 Oct 20 13:31 onnx
 [仕事5] 終了（終了コード 0）
 ok
 test_single_job_runs_in_the_root (tests.test_jobs.RunJobsTest.test_single_job_runs_in_the_root) ... ok
-test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
-[仕事1] 開始（GPU 0）FT_TAG=a
-[仕事2] 終了（終了コード 0）
+test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事1] 開始（GPU 0）FT_TAG=a
+[仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
 [仕事1] 終了（終了コード 0）
+[仕事2] 終了（終了コード 0）
 ok
 test_unlaunchable_job_is_reported_as_failure (tests.test_jobs.RunJobsTest.test_unlaunchable_job_is_reported_as_failure) ... [仕事1] 開始（GPU 0）（設定なし）
 [仕事2] 開始（GPU 1）仕事1との違い：なし
-[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp_dtqarrn/missing_script.py': [Errno 2] No such file or directory
-[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp_dtqarrn/missing_script.py': [Errno 2] No such file or directory
-[仕事2] 終了（終了コード 2）
+[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmpudj8vaoi/missing_script.py': [Errno 2] No such file or directory
+[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmpudj8vaoi/missing_script.py': [Errno 2] No such file or directory
 [仕事1] 終了（終了コード 2）
+[仕事2] 終了（終了コード 2）
 ok
 
 ----------------------------------------------------------------------
-Ran 54 tests in 3.898s
+Ran 54 tests in 4.876s
 
 OK
 ```
@@ -73,11 +66,11 @@ OK
 | ★2 | 長さ E5 / 本物（業務） | OK | n=490 平均=92.4 p50=91 p95=138 p99=145 最大=150 128超で切捨=44件(8.98%) |
 | ★2 | 長さ E5 / 本物（業務2） | OK | n=976 平均=85.4 p50=83 p95=123 p99=139 最大=159 128超で切捨=24件(2.46%) |
 | ★2 | 長さ E5 / 本物（日本の調達） | OK | n=92 平均=109.1 p50=111 p95=158 p99=199 最大=199 128超で切捨=22件(23.91%) |
-| ★3 | 分類の頭（cls / mean） | NG | OSError: Error no file named model.safetensors, or pytorch_model.bin, found in directory hfmodel/jhu-clsp__mmBERT-small. |
-| ★4 | 学習の1ステップ | NG | OSError: Error no file named model.safetensors, or pytorch_model.bin, found in directory hfmodel/jhu-clsp__mmBERT-small. |
-| ★5 | 保存と読み込み | NG | OSError: Error no file named model.safetensors, or pytorch_model.bin, found in directory hfmodel/jhu-clsp__mmBERT-small. |
-| ☆6 | 速度の目安（CPU） | NG | OSError: Error no file named model.safetensors, or pytorch_model.bin, found in directory hfmodel/jhu-clsp__mmBERT-small. |
-| ☆7 | ONNX への書き出し | NG | OSError: Error no file named model.safetensors, or pytorch_model.bin, found in directory hfmodel/jhu-clsp__mmBERT-small. |
+| ★3 | 分類の頭（cls / mean） | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
+| ★4 | 学習の1ステップ | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
+| ★5 | 保存と読み込み | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
+| ☆6 | 速度の目安（CPU） | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
+| ☆7 | ONNX への書き出し | NG | TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile' |
 
 必須（★）で NG：3 件
 
@@ -92,12 +85,10 @@ Traceback (most recent call last):
   File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 411, in from_pretrained
     return model_class.from_pretrained(
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4251, in from_pretrained
-    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
-                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/transformers/modeling_utils.py", line 627, in _get_resolved_checkpoint_files
-    raise OSError(
-OSError: Error no file named model.safetensors, or pytorch_model.bin, found in directory hfmodel/jhu-clsp__mmBERT-small.
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4300, in from_pretrained
+    model = cls(config, *model_args, **model_kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ModernBertForSequenceClassification.__init__() got an unexpected keyword argument 'reference_compile'
 ```
 ## 検査・集計・記録
 ```
