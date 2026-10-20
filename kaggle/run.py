@@ -1,6 +1,6 @@
 """Kaggle（無料の GPU）で動く入口。データセット jitsuris-data の中身（研究用のコードと公開データのラベル。未見セットは入れない）を
 作業場所に広げて、args.txt の引数で学習・試験を行う。結果（集計の md とモデル）は /kaggle/working に残し、GitHub 側が取りに来る。"""
-import glob, os, shutil, subprocess, sys, tarfile
+import glob, json, os, shutil, subprocess, sys, tarfile
 W = "/kaggle/working/src"
 EXPECT = ""  # GitHub 側が今回のモデルの置き場所を書き込む
 EXPECT_NONCE = ""  # GitHub 側が今回だけの印を書き込む（同じモデルの前回の版を今回の版と取り違えないため）
@@ -31,6 +31,22 @@ if args[0].startswith("hfmodel/") and not os.path.exists(os.path.join(args[0], "
 if EXPECT and args[0] != EXPECT:
     diag.write("古い版のデータセット：" + args[0] + " ≠ " + EXPECT + "\n"); diag.close(); sys.exit(3)
 diag.write("model: " + args[0] + " exists=" + str(os.path.exists(os.path.join(args[0], "config.json"))) + "\n")
+# ModernBERT 系（mmBERT-small など）は transformers 4.48 以上が要る。古ければ入れ直す（Kaggle の実行はインターネットに出られる設定）
+import importlib.metadata as _md
+def _ver(pkg):
+    try: return _md.version(pkg)
+    except Exception: return None
+_mt = None
+try: _mt = json.load(open(os.path.join(args[0], "config.json"), encoding="utf-8")).get("model_type")
+except Exception as e: diag.write("config read error " + repr(e) + "\n")
+diag.write("transformers: %s torch: %s tokenizers: %s model_type: %s\n" % (_ver("transformers"), _ver("torch"), _ver("tokenizers"), _mt))
+if _mt == "modernbert":
+    try: _ok = tuple(int(x) for x in (_ver("transformers") or "0").split(".")[:2]) >= (4, 48)
+    except Exception: _ok = False
+    if not _ok:
+        _r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", "transformers>=4.48"], capture_output=True, text=True)
+        diag.write("pip install transformers>=4.48: rc=%s %s\n" % (_r.returncode, (_r.stdout + _r.stderr)[-300:]))
+        diag.write("transformers now: %s\n" % _ver("transformers"))
 n_gpu = 0
 try:
     import torch; n_gpu = torch.cuda.device_count()   # 名前の取得（get_device_name）は親の側に GPU の場所を取ってしまうので使わない
@@ -51,7 +67,7 @@ OUT = "/kaggle/working/out"
 os.makedirs(OUT, exist_ok=True)
 def copy_reports(src, dst):
     os.makedirs(dst, exist_ok=True)
-    for pat in ("errors_*.json", "probs_*.json", "probe_*.json"):
+    for pat in ("errors_*.json", "probs_*.json", "probe_*.json", "manifest.json"):   # manifest.json＝どの重み・データ・設定で作ったかの記録
         for f in glob.glob(os.path.join(src, pat)): shutil.copy(f, dst)
     for f in glob.glob(os.path.join(src, "progress_probe_results", "*.json")):
         target = os.path.join(dst, "progress_probe_results")

@@ -1,7 +1,7 @@
 """学習済みの多言語モデル（multilingual-e5-small、MIT）を、列の種類の判定に合わせて微調整する（PyTorch・CPU、GitHub Actions）。
 入力の文は encoder_exp.py と同じ。試験は Claude 側の試験（表ごとに分けた試験側・開発用）。集計だけを FINETUNE_RESULTS.md に出す。
 学習したモデルは ft_out に保存する（ONNX への書き出しは未実装）。FT_COMPRESS=1 なら、学習のあと縮めた版（語彙削減・INT8・fp16）の質も測って同じ表に足す（compress_eval.py）。"""
-import json, os, random, re, sys, time, unicodedata
+import json, math, os, random, re, sys, time, unicodedata
 from cpu_speed import configure_cpu_threads
 
 CPU_AVAILABLE, CPU_THREADS = configure_cpu_threads()
@@ -16,6 +16,7 @@ except RuntimeError as exc:
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
 import gen, features
+import provenance   # 学習の記録（manifest.json）。どの重み・データ・設定で作ったかを後から確かめるため
 from batching import plan_micro_batches, pad_batch
 features.USE_NUM2 = True  # 今の仕組み側は v8 と同じ（数字の値特徴あり）
 # Experiment A: add explicit interactions between header semantics and value-shape evidence.
@@ -57,20 +58,37 @@ if pseudo_path:
     rows = rows + pseudo_rows
     print(f"CPU lab pseudo replay: {len(pseudo_rows)} unverified rows (capped at 1% of {base_rows}) from {pseudo_path}", flush=True)
 tok = AutoTokenizer.from_pretrained(NAME)
-dropout_args = {"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0} if os.environ.get("FT_NO_DROPOUT") == "1" else {}
+# --- モデルの種類ごとの違い（2026-10-20：mmBERT-small＝ModernBERT 系を通すため。E5（XLM-R 系）の計算は変えない）---
+from transformers import AutoConfig
+MODEL_TYPE = getattr(AutoConfig.from_pretrained(os.environ.get("FT_INIT_MODEL_PATH") or NAME), "model_type", "")
+if MODEL_TYPE == "modernbert":
+    tok.model_input_names = ["input_ids", "attention_mask"]   # ModernBERT は token_type_ids を受け取らない
+if os.environ.get("FT_NO_DROPOUT") == "1":
+    dropout_args = ({"attention_dropout": 0.0, "mlp_dropout": 0.0, "embedding_dropout": 0.0, "classifier_dropout": 0.0} if MODEL_TYPE == "modernbert"
+                    else {"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0})
+else:
+    dropout_args = {}   # 何も指定しなければ、各モデルの既定のまま（E5 は 0.1、ModernBERT は 0.0）
+model_args = dict(dropout_args)
+if MODEL_TYPE == "modernbert":
+    model_args["reference_compile"] = False                          # torch.compile を使わない（長さが毎回違う入力で作り直しが起きる・triton に頼らない）
+    model_args["attn_implementation"] = os.environ.get("FT_ATTN", "sdpa")   # T4 では flash-attn は使えない
+    if os.environ.get("FT_POOLING", "").strip():
+        model_args["classifier_pooling"] = os.environ["FT_POOLING"].strip()   # cls / mean（指定しなければ config のまま）
 init_model_path = os.environ.get("FT_INIT_MODEL_PATH")
 if init_model_path:
     init_labels_path = os.path.join(init_model_path, "labels.json")
     if not os.path.isfile(init_labels_path) or json.load(open(init_labels_path, encoding="utf-8")) != labels:
         raise ValueError("FT_INIT_MODEL_PATH label map does not exactly match current training labels")
-    model = AutoModelForSequenceClassification.from_pretrained(init_model_path, **dropout_args)
+    model = AutoModelForSequenceClassification.from_pretrained(init_model_path, **model_args)
     if model.config.num_labels != len(labels):
         raise ValueError("FT_INIT_MODEL_PATH classifier dimension does not match current labels")
     print(f"initialized from audited source checkpoint: {init_model_path}", flush=True)
 else:
-    model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **dropout_args)
+    model = AutoModelForSequenceClassification.from_pretrained(NAME, num_labels=len(labels), **model_args)
 DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
+print(f"model_type={MODEL_TYPE} params={sum(p.numel() for p in model.parameters()):,} attn={getattr(model.config, '_attn_implementation', None)} "
+      f"pooling={getattr(model.config, 'classifier_pooling', None)} model_args={model_args}", flush=True)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
 def text_aug(r, prefix):
     h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
@@ -164,6 +182,31 @@ if progress_rows:
     score_progress_probe("before")
 data = [(r, L[r[2]]) for r in train_rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in train_rows]
 print(f"training rows={len(train_rows)} seed={seed_text or 'default'}", flush=True)
+# --- 学習の記録（manifest.json）と、入力の長さ・切り捨ての割合（2026-10-20）---
+MAX_LEN = 128
+token_stats = {}
+if os.environ.get("FT_TOKEN_STATS", "1") == "1":
+    def _len_stats(rs):
+        ids = tok([text(r, PREFIX) for r in rs], truncation=False, padding=False)["input_ids"]
+        return provenance.length_stats([len(x) for x in ids], MAX_LEN)
+    token_stats["train"] = _len_stats(train_rows)
+    for _tn, _te in tests.items():
+        token_stats[_tn] = _len_stats(_te)
+    _t = token_stats["train"]
+    print(f"token lengths (max_length={MAX_LEN}): train mean={_t['mean']:.1f} p95={_t['p95']} p99={_t['p99']} max={_t['max']} truncated={_t['truncated_rate']:.2%}", flush=True)
+try:
+    _args_txt = open("kaggle/args.txt", encoding="utf-8").read().strip() if os.path.isfile("kaggle/args.txt") else None
+except OSError:
+    _args_txt = None
+manifest = provenance.build_manifest(
+    model_name=NAME, hf_repo_id=provenance.hf_repo_id_from_path(NAME), epochs=EPOCHS, seed=seed_text or "default", labels=labels,
+    train_rows=train_rows, replay_rows=replay_rows, tests={tn: provenance.rows_digest(te) for tn, te in tests.items()},
+    source_model_dir=(init_model_path or (NAME if os.path.isdir(NAME) else None)),
+    extra={"model_type": MODEL_TYPE, "model_args": {k: v for k, v in model_args.items()}, "prefix": PREFIX, "max_length": MAX_LEN,
+           "token_stats": token_stats, "request_args": _args_txt, "device": DEV,
+           "gpu": (torch.cuda.get_device_name(0) if DEV == "cuda" else None), "eval_mode": "validation" if os.environ.get("FT_VAL") == "1" else "fixed_tests"})
+manifest["status"] = "started"
+provenance.write_manifest("manifest.json", manifest)
 random.shuffle(data)
 CPU_TOKEN_CACHE = DEV == "cpu" and not AUG and os.environ.get("FT_CPU_CACHE", "1") == "1"
 if CPU_TOKEN_CACHE:
@@ -232,12 +275,19 @@ if FOCAL_GAMMA is not None:
 trace_n = int(os.environ.get("FT_TRACE_LOSS", "0"))
 if DEV == "cuda": torch.cuda.reset_peak_memory_stats()
 t0 = time.time(); model.train(); step = 0; micro = 0
+_nonfinite = [0]
 def finish_step(eff_loss):
     global step
     scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
     scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad(); step += 1
     if step <= trace_n: print(f"step_loss {step} {eff_loss.item():.6f}", flush=True)
-    if step % 100 == 0: print(f"step {step}/{steps} loss {eff_loss.item():.3f} {time.time() - t0:.0f}s", flush=True)
+    if step % 100 == 0:
+        _lv = eff_loss.item()
+        print(f"step {step}/{steps} loss {_lv:.3f} {time.time() - t0:.0f}s", flush=True)
+        # 損失が有限でない状態が続いたら止める（fp16 の桁あふれなどで、何も学ばないまま結果だけ出るのを防ぐ）
+        _nonfinite[0] = 0 if math.isfinite(_lv) else _nonfinite[0] + 1
+        if _nonfinite[0] >= 3:
+            raise RuntimeError("損失が 3 回続けて有限でない（学習が壊れている）")
 while step < steps:
     if SORT:
         for micros, n in dl:
@@ -259,7 +309,9 @@ while step < steps:
             if micro % ACC: continue
             finish_step(eff_loss); eff_loss = torch.zeros((), device=DEV)
             if step >= steps: break
-if DEV == "cuda": print(f"peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB; training loop {time.time() - t0:.0f}s", flush=True)
+peak_gpu_gib = torch.cuda.max_memory_allocated() / 2**30 if DEV == "cuda" else None
+if DEV == "cuda": print(f"peak GPU memory {peak_gpu_gib:.1f} GiB; training loop {time.time() - t0:.0f}s", flush=True)
+train_loop_seconds = time.time() - t0
 train_seconds = time.time() - train_setup_start
 model.eval()
 if progress_rows:
@@ -282,7 +334,11 @@ if os.environ.get("FT_EVAL") == "dev220":
 if any("blind" in k.lower() for k in tests):
     raise RuntimeError("blind test sets must not be evaluated or saved")
 eval_start = time.time()
-model_probs = {tn: probs(te) for tn, te in tests.items()}
+model_probs, infer_seconds = {}, {}
+for tn, te in tests.items():
+    _ti = time.time(); model_probs[tn] = probs(te); infer_seconds[tn] = round(time.time() - _ti, 2)   # 推論の時間（この GPU / CPU での値。端末での速さではない）
+    if not np.isfinite(model_probs[tn]).all():
+        raise RuntimeError(f"確率が有限でない（NaN/inf）：{tn}")
 lr_probs = {tn: lr.predict_proba(mat(te)) for tn, te in tests.items()}
 conditions = (("微調整だけ", 1.0), ("今の仕組みだけ", 0.0), ("微調整＋今の仕組み（半々）", 0.5), ("微調整6割＋今の仕組み4割", 0.6), ("微調整7割＋今の仕組み3割", 0.7))
 condition_names = {"微調整だけ": "ft", "今の仕組みだけ": "sparse", "微調整＋今の仕組み（半々）": "blend50", "微調整6割＋今の仕組み4割": "blend60", "微調整7割＋今の仕組み3割": "blend70"}
@@ -292,7 +348,8 @@ def normalized_header(value):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(value)).strip()).casefold()
 
 def safe_test_name(name):
-    names = {"開発用220": "dev220", "本物（一般）": "general", "本物（業務）": "business", "本物（業務2）": "business2", "本物（日本の調達）": "japan_procurement"}
+    names = {"開発用220": "dev220", "本物（一般）": "general", "本物（業務）": "business", "本物（業務2）": "business2", "本物（日本の調達）": "japan_procurement",
+             "検証（一般）": "val_general", "検証（業務）": "val_business", "検証（業務2）": "val_business2", "検証（日本の調達）": "val_japan_procurement"}   # 検証＝学習から除いた表（FT_VAL=1）
     return names.get(name, "test")
 
 lines = []
@@ -342,4 +399,16 @@ line = "\n".join(lines)
 os.makedirs("ft_out", exist_ok=True); model.save_pretrained("ft_out"); tok.save_pretrained("ft_out"); json.dump(labels, open("ft_out/labels.json", "w"))
 prev = (open("FINETUNE_RESULTS.md").read() if os.path.exists("FINETUNE_RESULTS.md") else "# 学習済みモデルの微調整（集計）\n") + f"\n### {time.strftime('%Y-%m-%d %H:%M')}（試験：{', '.join(tests)}）\n"
 open("FINETUNE_RESULTS.md", "w").write(prev + line + "\n" + ("\n" + "\n".join(notes) + "\n" if notes else ""))
+# --- 学習の記録を完成させる（重みの SHA-256・出力ファイルの SHA-256・時間・メモリ）。モデルと一緒に ft_out にも置く ---
+manifest["status"] = "completed"
+manifest["saved_model"] = {"files": provenance.small_files_digests("ft_out"), "weights": provenance.weights_digests("ft_out")}
+manifest["outputs"] = provenance.output_digests(".", ("probs_*.json", "errors_*.json", "progress_probe_results/*.json", "FINETUNE_RESULTS.md"))
+manifest["timing"] = {"train_loop_seconds": round(train_loop_seconds, 1), "train_total_seconds": round(train_seconds, 1), "eval_seconds": round(time.time() - eval_start, 1),
+                      "inference_seconds": infer_seconds, "inference_rows": {tn: len(te) for tn, te in tests.items()}, "peak_gpu_gib": None if peak_gpu_gib is None else round(peak_gpu_gib, 2)}
+manifest["model_config"] = {"model_type": MODEL_TYPE, "parameters": sum(p.numel() for p in model.parameters()), "hidden_size": getattr(model.config, "hidden_size", None),
+                            "layers": getattr(model.config, "num_hidden_layers", None), "vocab_size": getattr(model.config, "vocab_size", None),
+                            "classifier_pooling": getattr(model.config, "classifier_pooling", None), "attn_implementation": getattr(model.config, "_attn_implementation", None)}
+provenance.write_manifest("manifest.json", manifest)
+provenance.write_manifest("ft_out/manifest.json", manifest)
+print("manifest.json written; weights sha256 " + str(provenance.weights_sha256(manifest)), flush=True)
 

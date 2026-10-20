@@ -35,8 +35,9 @@ if [ "$mode" = train ]; then
   # 今回だけの印。ファイル名に入れておき、Kaggle 側の一覧にこの名前が出るまで待つ（同じモデルの前回の版を、今回の版と取り違えないため）
   NONCE="$(date -u +%Y%m%dT%H%M%S)-$RANDOM"
   ( cd .. && rm -f kaggle/nonce-*.txt && : > "kaggle/nonce-$NONCE.txt" )
+  printf '%s\n' "${GITHUB_SHA:-unknown}" > commit.txt   # 学習の記録（manifest.json）に、どの commit のコードで流したかを残す
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
-      *.py kaggle/args.txt "kaggle/nonce-$NONCE.txt" materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
+      *.py kaggle/args.txt kaggle/commit.txt "kaggle/nonce-$NONCE.txt" materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
       materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl \
       cpu_lab/self_learning.py cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/progress_probe.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
@@ -85,11 +86,11 @@ if echo "$st" | grep -qiE 'complete|error|cancel'; then
     find /tmp/out -name '*.log' -exec grep -aoE '(\[仕事[0-9]+\] )?(peak GPU memory[^"\\]*|train batch=[^"\\]*|training rows=[^"\\]*)' {} \; 2>/dev/null | sed 's/^/    /' >> KAGGLE_LOG.md || true
     if [ -n "$f" ]; then tail -n +2 "$f" | sed 's/^### /### Kaggle GPU /' >> ../FINETUNE_RESULTS.md; fi
     { find /tmp/out -name '*.log' -exec grep -aoE 'device [a-z]+|Tesla [A-Z0-9]+|name, memory[^"]*|[A-Za-z ]*GPU[^"]{0,60}' {} \; | head -5; echo ---; find /tmp/out -name '*.log' -exec tail -c 3000 {} \; ; } > last_run_tail.txt 2>/dev/null || true
-    mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && cp -r /tmp/out/out/ft_out /tmp/model/ || true
-    for d in /tmp/out/out/ft_out_job*; do [ -d "$d" ] && cp -r "$d" /tmp/model/ || true; done   # FT_KEEP=1 の仕事のモデル
+    mkdir -p /tmp/model && [ -d /tmp/out/out/ft_out ] && mv /tmp/out/out/ft_out /tmp/model/ || true   # 移す（複製しない）＝実行機のディスクを2倍使わない
+    for d in /tmp/out/out/ft_out_job*; do [ -d "$d" ] && mv "$d" /tmp/model/ || true; done   # FT_KEEP=1 の仕事のモデル（重みの SHA-256 は各 ft_out*/manifest.json に入っている）
     mkdir -p /tmp/eval_reports
     # 仕事（job1・job2）や report ごとの置き場の名前を頭に付けて、同じ名前のファイルが上書きし合わないようにする
-    find /tmp/out -type f \( -name 'errors_*.json' -o -name 'probs_*.json' -o -name 'probe_*.json' \) | while read -r pf; do cp "$pf" "/tmp/eval_reports/$(basename "$(dirname "$pf")")_$(basename "$pf")"; done 2>/dev/null || true
+    find /tmp/out -type f -not -path '*/ft_out*' \( -name 'errors_*.json' -o -name 'probs_*.json' -o -name 'probe_*.json' -o -name 'manifest.json' \) | while read -r pf; do cp "$pf" "/tmp/eval_reports/$(basename "$(dirname "$pf")")_$(basename "$pf")"; done 2>/dev/null || true
     find /tmp/out -type f -path '*/progress_probe_results/*.json' | while read -r pf; do job=$(basename "$(dirname "$(dirname "$pf")")"); cp "$pf" "/tmp/eval_reports/${job}_progress_probe_$(basename "$pf")"; done 2>/dev/null || true
     echo done > kaggle.request
 else

@@ -19,6 +19,12 @@ b_all = load_real(("materials/real_labels_biz.jsonl",))
 b2_all = load_real(("materials/real_labels_biz2.jsonl", "materials/real_labels_direct.jsonl")) if os.path.exists("materials/real_labels_biz2.jsonl") else []
 j_all = load_real(tuple(f for f in ("materials/real_labels_jp.jsonl", "materials/real_labels_jp2.jsonl") if os.path.exists(f))) if os.path.exists("materials/real_labels_jp.jsonl") else []
 gtr, gte = split(g_all); btr, bte = split(b_all); b2tr, b2te = split(b2_all); jtr, jte = split(j_all)
+# FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
+VAL_MODE = os.environ.get("FT_VAL") == "1"
+gval = bval = b2val = jval = []
+if VAL_MODE:
+    from val_split import split_val
+    gtr, gval = split_val(gtr); btr, bval = split_val(btr); b2tr, b2val = split_val(b2tr); jtr, jval = split_val(jtr)
 unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 rows = syn + real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
@@ -28,6 +34,12 @@ if b2te:
     tests["本物（業務2）"] = attach_unit_context(b2te, unit_by_table)
 if jte:
     tests["本物（日本の調達）"] = attach_unit_context(jte, unit_by_table)
+if VAL_MODE:   # 検証モードでは固定の試験を評価しない（検証だけ）。名前は試験側と同じ並び
+    tests = {}
+    for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval)):
+        if _vr:
+            tests[_name] = attach_unit_context(_vr, unit_by_table)
+    print("FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 " + ", ".join(f"{k} {len(v)}" for k, v in tests.items()), flush=True)
 
 
 CTX_UNIT = os.environ.get("FT_CTX_UNIT") == "1"  # 同じ表の UNIT / Unit / 単位の値を文脈に足す ablation（既定オフ）

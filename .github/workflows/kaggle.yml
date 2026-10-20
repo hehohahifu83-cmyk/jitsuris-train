@@ -62,12 +62,14 @@ jobs:
           else
             bash kaggle/kaggle.sh
           fi
-      - name: Validate paired evaluation artifacts
+      - name: Validate evaluation artifacts
+        # auto＝仕事1・2が種子1・2で開発用220 を評価した従来の対の設計なら、従来どおり全部揃っているかまで確かめる。それ以外（検証モード・種子3つ・学習率の探索）は、存在する (仕事, 試験) ごとに全条件が揃っているかと、1 ファイルごとの検査。
         if: always() && steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
-        run: python cpu_lab/eval_artifact_integrity.py /tmp/eval_reports --conditions sparse,ft,blend50,blend60,blend70
+        run: python cpu_lab/eval_artifact_integrity.py /tmp/eval_reports --conditions sparse,ft,blend50,blend60,blend70 --layout auto
       - uses: actions/upload-artifact@v4
         id: model_artifact
-        if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
+        # 検査が失敗しても、持ち帰ったモデルと結果は残す（証拠を捨てない）。失敗は上の検査の赤で見える
+        if: always() && steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         with: { name: jitsuris-model, path: /tmp/model, retention-days: 30, if-no-files-found: ignore }
       - name: Evidence-first error analysis
         if: always() && steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
@@ -87,7 +89,7 @@ jobs:
           fi
       - uses: actions/upload-artifact@v4
         id: eval_artifact
-        if: steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
+        if: always() && steps.gate.outputs.skip != '1' && steps.gate.outputs.mode != 'status'
         with: { name: jitsuris-evaluation-reports, path: /tmp/eval_reports, retention-days: 30, if-no-files-found: ignore }
       - name: Observe Kaggle state after this run
         id: live_status
@@ -218,7 +220,13 @@ jobs:
           for f in FINETUNE_RESULTS.md kaggle/PROGRESS.md kaggle/STATUS.md kaggle/MONITOR.json kaggle/KAGGLE_LOG.md kaggle/kaggle.request kaggle/last_run_tail.txt; do [ -e "$f" ] && git add "$f"; done; true
           if [ -s /tmp/eval_reports/ERROR_ANALYSIS.md ]; then mkdir -p cpu_lab/reports; cp /tmp/eval_reports/ERROR_ANALYSIS.md "cpu_lab/reports/error-analysis-run-${GITHUB_RUN_ID}.md"; git add "cpu_lab/reports/error-analysis-run-${GITHUB_RUN_ID}.md"; fi
           # 確率（列名・正解・予測・上位3つの確率だけ。列の値は入らない）のうち『微調整だけ』と『7割＋3割』を、読めるようにリポジトリにも置く（最新の1回分。全部は artifact に30日）。誤りの一覧は確率から作れる
-          if ls /tmp/eval_reports/*.json >/dev/null 2>&1; then rm -rf eval_reports/latest; mkdir -p eval_reports/latest; cp /tmp/eval_reports/*_probs_*_ft.json /tmp/eval_reports/*_probs_*_blend70.json eval_reports/latest/ 2>/dev/null || true; git add eval_reports; fi
+          if ls /tmp/eval_reports/*.json >/dev/null 2>&1; then
+            rm -rf eval_reports/latest; mkdir -p eval_reports/latest
+            cp /tmp/eval_reports/*_probs_*_ft.json /tmp/eval_reports/*_probs_*_blend70.json /tmp/eval_reports/*_manifest.json eval_reports/latest/ 2>/dev/null || true
+            # 回収した実行ごとに残す（latest は次の回収で置き換わる）。この番号が browser_test/run.request の kaggle_run と同じ番号
+            mkdir -p "eval_reports/runs/${GITHUB_RUN_ID}"; cp eval_reports/latest/* "eval_reports/runs/${GITHUB_RUN_ID}/" 2>/dev/null || true
+            git add eval_reports
+          fi
           git diff --cached --quiet && exit 0
           git commit -m "Kaggle の GPU での学習（状態・集計）"
           for i in 1 2 3; do git push && break; git pull --rebase; done

@@ -1,0 +1,140 @@
+name: mmBERT-small の試運転（CPU）
+# 2026-10-20：土台モデルを jhu-clsp/mmBERT-small（MIT）に切り替えて比べるため、今の学習の道筋（finetune_exp.py）にそのまま通るかを、GPU を使う前に CPU で確かめる。
+# 部品ごとの検査（tests/mmbert_smoke.py）と、finetune_exp.py の通し（検証モード・少数行）。結果は bench/mmbert_smoke*.md と、チェックランの注に出る。
+# 精度の比較ではない（GPU・fp16・全データでの学習は Kaggle で行う）。
+concurrency: { group: mmbert-smoke, cancel-in-progress: false }
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tests/mmbert_smoke.py', 'mmbert_smoke.request', '.github/workflows/mmbert-smoke.yml']
+permissions:
+  contents: write
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 50 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: ライブラリを入れる
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece tokenizers huggingface_hub safetensors protobuf onnx onnxruntime onnxscript
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -c "import torch, transformers, tokenizers; print('torch', torch.__version__, 'transformers', transformers.__version__, 'tokenizers', tokenizers.__version__)"
+      - name: 部品の単体試験
+        shell: bash
+        run: |
+          exec > >(tee unittest.log) 2>&1
+          python -m unittest tests.test_provenance tests.test_val_split tests.test_slice_eval tests.test_eval_artifact_integrity tests.test_jobs -v 2>&1 | tail -25
+      - name: モデルを取る（mmBERT-small は全部、E5-base は長さの比較用にトークナイザだけ）
+        shell: bash
+        run: |
+          exec > >(tee fetch.log) 2>&1
+          python - <<'PY'
+          from huggingface_hub import HfApi, snapshot_download
+          api = HfApi()
+          for repo, local, pats in [
+              ("jhu-clsp/mmBERT-small", "hfmodel/jhu-clsp__mmBERT-small", ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*']),
+              ("intfloat/multilingual-e5-base", "hfmodel/intfloat__multilingual-e5-base", ['*.json', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*'])]:
+              info = api.model_info(repo)
+              lic = (info.card_data.license if info.card_data is not None and hasattr(info.card_data, "license") else None)
+              print(repo, "revision", info.sha, "license", lic, [t for t in (info.tags or []) if t.startswith("license")])
+              snapshot_download(repo, local_dir=local, allow_patterns=pats)
+          PY
+          ls -la hfmodel/jhu-clsp__mmBERT-small hfmodel/intfloat__multilingual-e5-base
+      - name: 部品ごとの試運転（読み込み・トークナイザ・分類の頭・1 ステップ・保存と読み込み・ONNX）
+        shell: bash
+        run: |
+          exec > >(tee smoke.log) 2>&1
+          python tests/mmbert_smoke.py hfmodel/jhu-clsp__mmBERT-small --e5 hfmodel/intfloat__multilingual-e5-base --onnx --out mmbert_smoke.md
+      - name: finetune_exp.py の通し（CPU・検証モード・少数行・1 周）
+        if: always()
+        shell: bash
+        env:
+          FT_VAL: '1'
+          FT_LIMIT: '256'
+          FT_SEED: '1'
+          FT_BS: '16'
+          FT_SORT: '1'
+          FT_PAD8: '1'
+          FT_CTX_UNIT: '1'
+          FT_FOCAL_GAMMA: '1.5'
+          FT_LR: '1e-4'
+          HF_HUB_OFFLINE: '1'
+        run: |
+          exec > >(tee ft.log) 2>&1
+          python finetune_exp.py hfmodel/jhu-clsp__mmBERT-small 1
+      - name: 評価結果の検査・見出し別の集計・記録の中身
+        if: always()
+        shell: bash
+        env:
+          FT_VAL: '1'
+        run: |
+          exec > >(tee after.log) 2>&1
+          mkdir -p /tmp/er
+          for f in probs_*.json errors_*.json; do [ -e "$f" ] && cp "$f" "/tmp/er/report_$f"; done
+          ls /tmp/er | head -50
+          python cpu_lab/eval_artifact_integrity.py /tmp/er --conditions sparse,ft,blend50,blend60,blend70 --layout generic
+          python slice_eval.py /tmp/er ft --jobs report --out mmbert_smoke_slice.md | tail -40
+          python - <<'PY'
+          import json
+          m = json.load(open("manifest.json", encoding="utf-8"))
+          keep = {k: m.get(k) for k in ("status", "commit", "model", "run", "labels", "train_rows", "replay_rows", "tests", "timing", "model_config", "libraries")}
+          keep["extra"] = {k: v for k, v in (m.get("extra") or {}).items() if k != "token_stats"}
+          keep["token_stats_keys"] = sorted((m.get("extra") or {}).get("token_stats", {}))
+          keep["saved_model"] = m.get("saved_model")
+          keep["outputs_count"] = len(m.get("outputs") or {})
+          print(json.dumps(keep, ensure_ascii=False, indent=1)[:6000])
+          PY
+      - name: 結果をリポジトリに書く
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          exec > >(tee record.log) 2>&1
+          T=$(mktemp -d)
+          {
+            echo "# mmBERT-small の試運転（CPU・GitHub Actions）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}"; echo
+            echo "## モデルの取得"; echo '```'; head -c 1500 fetch.log 2>/dev/null; echo '```'
+            echo "## 部品の単体試験"; echo '```'; tail -30 unittest.log 2>/dev/null; echo '```'
+            [ -f mmbert_smoke.md ] && { echo; cat mmbert_smoke.md; }
+            echo "## finetune_exp.py の通し（末尾）"; echo '```'; tail -60 ft.log 2>/dev/null | cut -c1-400; echo '```'
+            echo "## 検査・集計・記録"; echo '```'; tail -80 after.log 2>/dev/null | cut -c1-400; echo '```'
+          } > "$T/mmbert_smoke.md"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          for i in 1 2 3 4; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp "$T/mmbert_smoke.md" bench/mmbert_smoke.md
+            git add bench/mmbert_smoke.md
+            git diff --cached --quiet && break
+            git commit -q -m "mmBERT-small の試運転の結果（CPU）"
+            git push -q && break
+            sleep 3
+          done
+      - name: 要点を注（アノテーション）に出す
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          def emit(path, title, n=3200, tail=28):
+              if not os.path.exists(path): return
+              ls = open(path, encoding="utf-8", errors="replace").read().splitlines()[-tail:]
+              t = "\n".join(l[-260:] for l in ls)[-n:]
+              t = t.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::notice title={title}::{t}")
+          emit("fetch.log", "fetch", tail=6)
+          emit("unittest.log", "unittest", tail=8)
+          if os.path.exists("smoke.log"):
+              s = open("smoke.log", encoding="utf-8", errors="replace").read()
+              i = s.find("=== 要点")
+              emit("smoke.log", "smoke_summary", n=3200, tail=len(s[i:].splitlines()) if i >= 0 else 20)
+          emit("ft.log", "finetune", tail=24)
+          emit("after.log", "after", tail=30)
+          emit("record.log", "record", tail=6)
+          PY
