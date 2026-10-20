@@ -1,3 +1,17 @@
+# 最新確認 2026-10-21 08:33:06 JST（ChatGPT。独立評価主セットを抽出。S6 は独立ラベル2組待ち）
+
+## 独立評価主セットを固定・抽出
+- セット ID: `independent-main-20261021-v1`。GitHub Actions run `39515319651` 成功。
+- 結果: `independent_eval/results/main/independent_main.json`（schema v1）、32 表・313 列・30 データセット・4 出典・2 言語。各表は選択列の先頭5データ行のみ。
+- SHA-256: セット `4b47c72d70c30982123eaccdcbd1c8f6707d8bf1db8159b3774f1a4078ff3d87`、allowlist `fe5b1216ce7cc6f831cf163f2bc812d839acece948e10e169b8a7a3706b87c5e`。候補 metadata Git blob SHA-1 `8d4689fdb3068dc6830d342ffa380d7cb6437fe1`。訓練コーパス `materials/real_corpus_jp2.jsonl` 350行（blob SHA-1 `907b6b7598a1230d68cfa25efe2fbe976014fbff`）との完全一致 URL は0件。
+- 出典・利用条件・版・各リソースの取得SHA-256は `independent_eval/results/main/ATTRIBUTION.md` と `provenance.json` に記録。セットに一括ライセンスは付けない。元CSV全体は保存していない。
+- 初回の抽出検査で t16 の金額列の例がプライバシーパターン検査に一致したため、その列を除外して再固定。該当値は保存・ログ出力していない。最終抽出の選択列は全件検査を通過。provenance は `labels_written=false`、`blind_sets_read=false`、`raw_source_files_written=false`。
+
+## 次の作業
+Claude と ChatGPT が `LABEL_GUIDE.md` v1.5 に従い、モデル予測を見ずに別々のラベルを作成してから照合する。ラベルは公開リポジトリへ置かず、照合前は相手のラベルを開かない。照合・必要な裁定までは予測を実行しない。固定試験・教材・`LABEL_GUIDE.md` を変更せず、blind set 3/5/7 も開かない。
+
+---
+
 # 最新確認 2026-10-21 07:54 JST（Claude。mmBERT-small と E5-base の最終比較〔seed 1・2・3〕が完了。固定試験の診断では E5-base が上で、mmBERT-small の優位は確認できていない。最終判定は新しい独立評価〔主セット待ち〕）
 
 オーナー決定（ChatGPT 経由で確認済み）：土台モデルを `jhu-clsp/mmBERT-small`（MIT）に切り替えて比べる。Claude が実装と調整。E5-base の道筋・結果・設定は基準として残す。**新しいモデルの利用者への配布はオーナー承認が要る（未実施）。**
@@ -54,7 +68,7 @@
 - 定期（schedule）で動いた同じ workflow の run 39506142456 は、最後の Save（コミットと push の段）で失敗。ログが取れない（403）ので原因は未確認。学習と回収は run 39506074807 で成功しており、その結果（manifest は 3 本とも completed）を表に使った。
 
 ## 次にやること（STATE.md の常設の依頼 S6。ChatGPT の毎時の確認が進めてよい）
-1. **独立評価（最終判定）**：ChatGPT が主セットを準備中（`independent_eval/`。候補の発見は公開 run 39508102810 で成功。出典ごとの利用条件・個人情報・学習データとの重複の審査 → 採用表の固定 → 値の抽出、の順で、抽出は未実装）。**主セットが固定されて ChatGPT が連絡箱に合図を書くまで、ラベル付けは保留**（ChatGPT の依頼）。合図のあと、Claude と ChatGPT が別々にラベルを付け、照合してから評価する（LABEL_GUIDE の改訂は評価の後）。
+1. **独立評価（最終判定）**：主セットはChatGPTが固定・抽出済み（`independent-main-20261021-v1`、32表・313列、SHA-256 `4b47c72d70c30982123eaccdcbd1c8f6707d8bf1db8159b3774f1a4078ff3d87`）。個別条件・プライバシー検査・訓練URL重複0件を確認し、provenanceとATTRIBUTIONを保存。ChatGPTは連絡箱 `20261021-0833_chatgpt-to-claude_independent-main-labels.md` でClaudeへ独立ラベル付けを依頼済み。ChatGPTも別にラベルを作り、照合が済むまで予測を流さない。ラベルの内容は公開しない。
 2. **独立評価の流し方**（6 つの重み。GitHub の CPU で流す。この作業場からは PyPI に届かず〔名前解決の失敗、1 回の試行〕torch を入れられない）：
    - 重みを取る：`gh run download 39502740378 -R hehohahifu83-cmyk/jitsuris-train -n jitsuris-model -D trained/mmbert`（E5-base は 39506074807 → `trained/e5base`。中に `ft_out_job1`〜`ft_out_job3`）。取った重みは `check_trained_model.py` と同じ検査（manifest の SHA-256）を `predict` が自動で通す。
    - 重みごとに `python evaluate_independent.py predict --set <主セット.json> --checkpoint trained/<mmbert|e5base>/ft_out_jobN --out out/<名前>_jobN_preds.json`（台帳 `eval_reports/independent/ledger.jsonl` が、同じ〔主セット, 重み〕の 2 回目を断る。ラベルは読まない。値は出力に書かない）。
@@ -74,7 +88,7 @@
 
 ## 確認の程度（テスト／実機／実績を分ける）
 - テスト：単体試験（手元・GitHub）が成功（`resource_table.py` 5 件を含む 101 件、手元）。mmBERT-small の CPU 試運転は commit 0de5652 でも成功（run 39510163285。必須項目の NG 0 件。`FT_MAX_LEN=192`・`FT_DROPOUT=0.1` が効くこと〔設定に dropout 0.1、切り詰め 0.00%〕を CPU で確認）。強制した .bin→safetensors の置き直しは読み込み結果が元と完全一致。
-- 独立評価の経路（`evaluate_independent.py`）：単体試験 9 件。本物の torch（CPU）で、学習が書いた重みを通し、学習時の評価と最上位ラベル 24/24・判断 24/24・見出し 24/24・確率の最大差 0 で一致（run 39503519924、max_length=192 の重みでも run 39510163285）。**主セットでの実際の評価は未実施**（主セットが固定されていない）。6 つの重みを GitHub の CPU で流す workflow は未作成（主セットの置き場所が決まってから）。
+- 独立評価の経路（`evaluate_independent.py`）：単体試験 9 件。本物の torch（CPU）で、学習が書いた重みを通し、学習時の評価と最上位ラベル 24/24・判断 24/24・見出し 24/24・確率の最大差 0 で一致（run 39503519924、max_length=192 の重みでも run 39510163285）。**主セットでの実際の評価は未実施**（主セットは固定済みだが、独立ラベル2組の作成・照合待ち）。6 つの重みを GitHub の CPU で流す workflow は未作成（主セットの置き場所が決まってから）。
 - 実機：GPU（Tesla T4・fp16）での学習・評価は、mmBERT-small 7 本（探索 4＋最終 3）と E5-base 7 本（探索 4＋最終 3）で確認。すべて completed、mmBERT で fp32 への切り替え 0 回。`FT_MAX_LEN`・`FT_DROPOUT` の GPU 実行は未経験（CPU のみ）。ONNX／ブラウザの経路は mmBERT では未確認（CPU で ONNX 書き出しの一致のみ確認：最大差 1.6e-5。競争力が出てから）。
 - 実績：固定試験の診断（上の表）では E5-base が上で、mmBERT-small の優位は示せていない。**独立評価はまだ 1 件もない**ので、最終判定はしていない。目標（未知見出しの正解率 90% 以上・重大誤り 0）は、どちらのモデルでも未達（E5-base で 86%・重大 5 件／635 行）。E5-base（版 31）の見出し別の基準は `bench/slice_eval_e5base_v31.md`：全体の 93〜94% は見出しの重なりで高く出ている。
 - 版 31 の仕事 3・4（リプレイ）は、固定試験と見出し・ラベルが重なる 9 行を含む 39 行で学習していた（ChatGPT が 0c95af2 で除去・訂正済み）。その結果は比較に使わない。
@@ -83,7 +97,7 @@
 未見セット（`blind_set*`、セット 3・5・7）は開かない・学習に使わない。固定試験の内容を教材に入れない。個人の連絡先の列は集めない。依頼は 1 回 1 モデル・8 本まで、動いている学習を置き換えない。ERROR／CANCEL は自分で依頼し直さない。未検証は未検証と書く。
 
 ## 未完了
-- 新しい独立評価（出典 4 以上・30 表・300 列以上を目標。第 1 号の HDB 8 列は予備セット）。ChatGPT が採用表を固定中。6 つの重みを流す workflow の追加。
+- 新しい独立評価：主セット（32表・313列、4出典・2言語、URL重複0件）を固定・抽出済み。Claude と ChatGPT の別ラベル作成・照合、および6つの重みを流す workflow の追加が未完了。第1号の HDB 8列は予備セットのまま。
 - tool-kobo `research/column-ai` への写し（51 コミット遅れ。こちらが先に進んでいる。HANDOFF.md は分かれているので、README・llm_baseline・exp15・LABEL_GUIDE を上書きしないよう注意して統合する）。
 - 追加の実験（上の 3 の a〜c）は、オーナーまたは ChatGPT の指示待ち。
 
