@@ -1,3 +1,12 @@
+# 最新確認 2026-10-20 UTC
+
+- Kaggle run [39374324597](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39374324597) は成功し、COMPLETE。request=done、現時点で学習workflowは進行中でない。
+- Replay条件は精度向上を実証せず（5セットの平均差はすべて±1.5pp未満）。wrong 143→122、critical 18→14、unknown 97→114。詳細監査 [eval-audit-run-39374324597.md](cpu_lab/reports/eval-audit-run-39374324597.md)。
+- evaluation artifactは回収済み。model artifactはbaseline job1のみでreplay checkpointは未保存。ケース別の根因は値/UNIT/token/source情報不足で未確定。次の学習は保留、依頼ファイルは触らない。
+- Geminiは比較対象外。ChatGPT/Claudeとの同一課題・同一条件比較は今回行っていない。blind_set*、セット3・5・7は未閲覧・未使用。
+
+---
+
 # ジツリス 引き継ぎ書（Claude → ChatGPT。最終更新 2026-10-19 19:56 日本時間、ChatGPT）
 
 オーナー指示：「Claude の利用制限が近いので、ChatGPT にも同じ作業をさせたい」。この文書だけで続きができるように書く。
