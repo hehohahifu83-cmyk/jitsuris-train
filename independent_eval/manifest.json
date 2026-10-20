@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "stage": "discovery",
+  "goals": {
+    "min_tables": 30,
+    "min_columns": 300,
+    "max_columns_per_table": 10,
+    "min_sources": 4,
+    "min_languages": 2,
+    "required_values_per_column": 5
+  },
+  "source_policy": {
+    "train_sources_excluded": [
+      "Zenodo 6517052",
+      "e-Gov/日本CKAN",
+      "data.gov.uk",
+      "data.gov.ie",
+      "catalogue.data.govt.nz",
+      "open.canada.ca",
+      "青森市",
+      "山口県",
+      "山形市",
+      "練馬区",
+      "世田谷区",
+      "警察庁",
+      "内閣府",
+      "e-Stat国勢調査"
+    ],
+    "pilot_dataset_excluded": [
+      "HDB resale-flat-prices d_8b84c4ee58e3cfc0ece0d773c8ca6abc"
+    ],
+    "blind_sets_read": false,
+    "labels_separate": true,
+    "sample_values_persisted_in_discovery": false
+  },
+  "sources": [
+    {
+      "id": "yokohama",
+      "language": "ja",
+      "kind": "ckan",
+      "api": "https://data.city.yokohama.lg.jp/api/3/action",
+      "catalog": "https://data.city.yokohama.lg.jp/dataset/",
+      "license_ids": [
+        "cc-by"
+      ],
+      "allowed_hosts": [
+        "data.city.yokohama.lg.jp",
+        "www.city.yokohama.lg.jp"
+      ],
+      "license_policy": "Accept only the individual CKAN dataset license_id cc-by; retain its license_title/license_url."
+    },
+    {
+      "id": "kobe",
+      "language": "ja",
+      "kind": "ckan",
+      "api": "https://catalog.city.kobe.lg.jp/api/3/action",
+      "catalog": "https://catalog.city.kobe.lg.jp/dataset/",
+      "license_ids": [
+        "cc-by"
+      ],
+      "allowed_hosts": [
+        "catalog.city.kobe.lg.jp",
+        "data.city.kobe.lg.jp",
+        "www.city.kobe.lg.jp"
+      ],
+      "license_policy": "Accept only the individual CKAN dataset license_id cc-by; retain its license_title/license_url."
+    },
+    {
+      "id": "sapporo",
+      "language": "ja",
+      "kind": "ckan",
+      "api": "https://ckan.pf-sapporo.jp/api/3/action",
+      "catalog": "https://ckan.pf-sapporo.jp/dataset/",
+      "license_ids": [
+        "CC-BY-4.0"
+      ],
+      "allowed_hosts": [
+        "ckan.pf-sapporo.jp",
+        "data.pf-sapporo.jp",
+        "www.city.sapporo.jp"
+      ],
+      "license_policy": "Accept only individual CC-BY-4.0 datasets published by Sapporo City; preserve per-dataset license metadata."
+    },
+    {
+      "id": "nyc",
+      "language": "en",
+      "kind": "socrata",
+      "domain": "data.cityofnewyork.us",
+      "catalog": "https://data.cityofnewyork.us/",
+      "license_policy": "NYC Open Data public-dataset terms; verify city-agency source and any dataset-specific terms before freezing."
+    }
+  ],
+  "frozen_tables": []
+}
