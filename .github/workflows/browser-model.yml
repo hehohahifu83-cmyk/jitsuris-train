@@ -108,6 +108,16 @@ jobs:
           npm i @huggingface/transformers playwright 2>&1 | tail -2
           npx playwright install --with-deps chromium 2>&1 | tail -2
           node run.mjs "$GITHUB_WORKSPACE/browser_model" "$GITHUB_WORKSPACE/browser_model/reference.json" "$GITHUB_WORKSPACE/browser_result.json" 2>&1 | tee "$GITHUB_WORKSPACE/browser_js.log" | tail -80
+      - name: 正規化の一致試験（Chromium の中で。書記素の分け方が Node と違っても同じ答えか。軽い正解データ）
+        if: always()
+        shell: bash
+        run: |
+          if [ -d /tmp/js/node_modules/playwright ]; then
+            cp browser_test/charsmap.chromium.test.mjs browser_test/charsmap.mjs /tmp/js/ && cp -r browser_test/fixtures /tmp/js/fixtures
+            cd /tmp/js && node charsmap.chromium.test.mjs /tmp/js/fixtures 2>&1 | tee "$GITHUB_WORKSPACE/charsmap_chromium.log" | tail -30
+          else
+            echo "playwright が入っていない（前の手順が失敗）" | tee "$GITHUB_WORKSPACE/charsmap_chromium.log"; exit 1
+          fi
       - name: 書き出したものを置く（軽いものだけ）
         if: always()
         run: |
@@ -132,6 +142,7 @@ jobs:
           SUMMARY=browser_model_summary.md; [ -n "$KRUN" ] && SUMMARY=browser_model_trained_summary.md
           if [ "$OK" = 1 ]; then
             { echo "# ブラウザ用の書き出しの検査（GitHub Actions・CPU）"; echo; echo "run: ${{ github.run_id }}　commit: ${{ github.sha }}　学習済みモデル: $KRUN $MDIR"; echo; cat browser_model/REPORT.md; echo; echo "## ブラウザ（headless Chromium・WASM・Transformers.js）で動かした結果"; echo '```json'; cat browser_result.json 2>/dev/null || echo "（結果なし）"; echo '```'; } > "$T/$SUMMARY"
+            [ -f charsmap_chromium.log ] && { echo; echo "## 正規化の一致（Chromium の中・軽い正解データ）"; echo '```'; sed -n '/=== 要点/,$p' charsmap_chromium.log; echo '```'; } >> "$T/$SUMMARY"
           fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -158,6 +169,6 @@ jobs:
               t = "\n".join(l[-200:] for l in ls)[-n:]   # 長い行は後ろ（理由が書いてある所）を残す
               t = t.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::notice title={title}::{t}")
-          for p, title in [("unittest.log", "unittest"), ("charsmap_unit.log", "charsmap_unit"), ("export.log", "export"), ("browser_model/REPORT.md", "REPORT"), ("browser_js.log", "browser_js"), ("record.log", "record")]:
+          for p, title in [("unittest.log", "unittest"), ("charsmap_unit.log", "charsmap_unit"), ("charsmap_chromium.log", "charsmap_chromium"), ("export.log", "export"), ("browser_model/REPORT.md", "REPORT"), ("browser_js.log", "browser_js"), ("record.log", "record")]:
               emit(p, title)
           PY
