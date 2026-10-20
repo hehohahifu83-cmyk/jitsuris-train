@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['tests/mmbert_smoke.py', 'mmbert_smoke.request', 'kaggle/hf_fetch.py', 'model_setup.py', 'finetune_exp.py', 'kaggle/run.py', '.github/workflows/mmbert-smoke.yml']
+    paths: ['tests/mmbert_smoke.py', 'mmbert_smoke.request', 'kaggle/hf_fetch.py', 'model_setup.py', 'finetune_exp.py', 'kaggle/run.py', 'evaluate_independent.py', 'tests/independent_eval_smoke.py', 'tests/test_evaluate_independent.py', '.github/workflows/mmbert-smoke.yml']
 permissions:
   contents: write
 jobs:
@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           exec > >(tee unittest.log) 2>&1
-          python -m unittest tests.test_provenance tests.test_val_split tests.test_model_setup tests.test_slice_eval tests.test_eval_artifact_integrity tests.test_jobs -v 2>&1 | tail -25
+          python -m unittest tests.test_provenance tests.test_val_split tests.test_model_setup tests.test_slice_eval tests.test_eval_artifact_integrity tests.test_jobs tests.test_sweep_pick tests.test_error_overlap tests.test_evaluate_independent -v 2>&1 | tail -25
       - name: モデルを取る（mmBERT-small は全部、E5-base は長さの比較用にトークナイザだけ）
         shell: bash
         run: |
@@ -59,6 +59,15 @@ jobs:
         run: |
           exec > >(tee ft.log) 2>&1
           python finetune_exp.py hfmodel/jhu-clsp__mmBERT-small 1
+      - name: 独立評価の経路の通し（predict → 学習時の評価との一致 → score → 台帳）
+        if: always()
+        shell: bash
+        env:
+          FT_VAL: '1'
+          HF_HUB_OFFLINE: '1'
+        run: |
+          exec > >(tee indep.log) 2>&1
+          python tests/independent_eval_smoke.py --checkpoint ft_out --out independent_eval_smoke.md
       - name: 評価結果の検査・見出し別の集計・記録の中身
         if: always()
         shell: bash
@@ -93,6 +102,7 @@ jobs:
             echo "## モデルの取得"; echo '```'; head -c 1500 fetch.log 2>/dev/null; echo '```'
             echo "## 部品の単体試験"; echo '```'; tail -30 unittest.log 2>/dev/null; echo '```'
             [ -f mmbert_smoke.md ] && { echo; cat mmbert_smoke.md; }
+            [ -f independent_eval_smoke.md ] && { echo; cat independent_eval_smoke.md; }
             echo "## finetune_exp.py の通し（末尾）"; echo '```'; tail -60 ft.log 2>/dev/null | cut -c1-400; echo '```'
             echo "## 検査・集計・記録"; echo '```'; tail -80 after.log 2>/dev/null | cut -c1-400; echo '```'
           } > "$T/mmbert_smoke.md"
@@ -126,6 +136,7 @@ jobs:
               i = s.find("=== 要点")
               emit("smoke.log", "smoke_summary", n=3200, tail=len(s[i:].splitlines()) if i >= 0 else 20)
           emit("ft.log", "finetune", tail=24)
+          emit("indep.log", "independent_eval", tail=16)
           emit("after.log", "after", tail=30)
           emit("record.log", "record", tail=6)
           PY
