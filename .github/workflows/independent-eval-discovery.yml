@@ -1,0 +1,43 @@
+name: 独立評価候補のメタデータ発見
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/independent-eval-discovery.yml"
+      - "independent_eval/discover.py"
+      - "independent_eval/manifest.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: independent-eval-metadata-discovery
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 安全フィルターとCSV読取の自己テスト
+        run: python independent_eval/discover.py self-test
+      - name: 候補メタデータを調べる
+        run: python independent_eval/discover.py
+      - name: 候補メタデータだけを記録
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add independent_eval/results/discovery/candidates.json independent_eval/results/discovery/candidates.md
+          if git diff --cached --quiet; then
+            echo "候補メタデータに変更はありません"
+            exit 0
+          fi
+          git commit -m "独立評価候補のメタデータを記録"
+          git pull --rebase --autostash
+          git push
