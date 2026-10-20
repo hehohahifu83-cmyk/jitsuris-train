@@ -488,3 +488,7 @@
     [仕事3] peak GPU memory 5.5 GiB; training loop 582s
     [仕事4] peak GPU memory 5.5 GiB; training loop 616s
 2026-10-20T09:59:36Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+2026-10-20T14:00:36Z push の返事：Kernel version 32 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-20T14:01:06Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-20T14:01:06Z train を依頼：hfmodel/jhu-clsp__mmBERT-small 2 FT_VAL=1 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=5e-5 ++ FT_LR=1e-4 ++ FT_LR=2e-4 ++ FT_LR=4e-4
+送ったモデル：jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license mit tags ['license:mit']・束の中のモデルのファイル数 25
