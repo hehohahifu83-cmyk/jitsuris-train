@@ -64,7 +64,7 @@ probeとの重複確認は (header, values, target) 完全一致のみ。学習�
 
 ### 7. 学習元にラベル矛盾・未監査ラベルがある
 
-- リプレイ `codex-20261020-028` は、header `税率`、values `0.10/0.08` を `tax_class` として追加している。
+- リプレイ `synthetic-unlabeled-028` は、header `税率`、values `0.10/0.08` を `tax_class` として追加している。
 - 同じリポジトリの `gen.py` では `税率` は `rate` のCORE語彙で、`tax_class` 語彙は `税率区分`。`rules.py` のルールも bare `税率` を `rate` に一致させる。
 - LABEL_GUIDE v1.5 も `tax_class` の定義を税「区分」、例を「税率区分」とし、数値の税率値とは区別する読みが自然。少なくとも教師データ間に矛盾がある。**この1例は修正・除外対象候補**であり、他のラベル教材も同じ語彙に対して衝突がないか走査する必要がある。
 - `encoder_exp.py` は `build_train({"syn": 400, "muni": 2, "cur": 4}, ...)` で自治体教師ラベルを通常学習データに含める。ところが `materials/teacher_labels.py` のdocstringは「人の抜き取り確認：未実施」と記載する。誤りの混入量は未測定だが、未監査ラベルを教師信号として使っていることは確認できる。
