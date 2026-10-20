@@ -379,6 +379,8 @@ def main(dry_run: bool = False):
         raise ValueError("extract.request set_id does not match the frozen allowlist")
     if request.get("candidate_file_git_blob_sha1") != allow.get("candidate_file_git_blob_sha1"):
         raise ValueError("extract.request candidate pin does not match the frozen allowlist")
+    if SET_PATH.exists() or PROVENANCE_PATH.exists() or ATTRIBUTION_PATH.exists():
+        raise ValueError("main set already exists; refusing to replace a frozen evaluation snapshot")
 
     source_specs = source_policy(manifest)
     columns = []
