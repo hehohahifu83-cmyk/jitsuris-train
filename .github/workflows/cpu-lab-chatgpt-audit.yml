@@ -1,0 +1,106 @@
+name: CPU lab ChatGPT audited replay comparison
+on:
+  push:
+    branches:
+      - experiment/chatgpt-audited-replay-20261020
+    paths:
+      - cpu_lab/materials/verified_replay/chatgpt_audit_20261020.jsonl
+      - .github/workflows/cpu-lab-chatgpt-audit.yml
+permissions:
+  contents: read
+concurrency:
+  group: jitsuris-cpu-training
+  cancel-in-progress: false
+jobs:
+  train:
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        condition: [baseline, audited_replay]
+        seed: [1, 2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate reviewed examples and safety tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s cpu_lab/tests -v
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from cpu_lab.self_learning import load_approved_replay
+          from encoder_exp import rows as base_rows
+          path = Path("cpu_lab/materials/verified_replay/chatgpt_audit_20261020.jsonl")
+          rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+          if len(rows) != 8:
+              raise SystemExit(f"expected 8 audited rows, got {len(rows)}")
+          accepted = load_approved_replay(str(path), {row[2] for row in base_rows})
+          if len(accepted) != len(rows):
+              raise SystemExit("audited replay validation count mismatch")
+          print(f"Validated {len(accepted)} independently generated, audited training examples.")
+          PY
+      - name: Install CPU training dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Train matched baseline or audited replay candidate
+        shell: bash
+        env:
+          FT_CPU_THREADS: '2'
+          FT_CPU_LAB_REPLAY: ${{ matrix.condition == 'audited_replay' && 'cpu_lab/materials/verified_replay/chatgpt_audit_20261020.jsonl' || '' }}
+          FT_LIMIT_PER_LABEL: '80'
+          FT_SAMPLE_SEED: '20261020'
+          FT_BS: '32'
+          FT_ACC: '2'
+          FT_CKPT: '0'
+          FT_SORT: '1'
+          FT_PAD8: '1'
+          FT_FUSED: '0'
+          FT_CTX_UNIT: '1'
+          FT_FREEZE_EMB: '1'
+          FT_SEED: ${{ matrix.seed }}
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          set -euo pipefail
+          out="cpu_results/${{ matrix.condition }}/seed-${{ matrix.seed }}"
+          mkdir -p "$out"
+          echo "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$out/run_meta.txt"
+          echo "condition=${{ matrix.condition }}" >> "$out/run_meta.txt"
+          echo "seed=${{ matrix.seed }}" >> "$out/run_meta.txt"
+          if [ "${{ matrix.condition }}" = "audited_replay" ]; then
+            python cpu_lab/material_receipt.py prepare-reviewed --materials cpu_lab/materials/verified_replay/chatgpt_audit_20261020.jsonl --source-model "hub:intfloat/multilingual-e5-base" --out "$out/material_receipt.json"
+          fi
+          /usr/bin/time -v python finetune_exp.py intfloat/multilingual-e5-base 2>&1 | tee "$out/train.log"
+          echo "finished_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$out/run_meta.txt"
+          if [ "${{ matrix.condition }}" = "audited_replay" ]; then
+            python cpu_lab/material_receipt.py mark-trained --receipt "$out/material_receipt.json" --train-log "$out/train.log" --seed "${{ matrix.seed }}" --out "$out/material_receipt.json"
+          fi
+          cp FINETUNE_RESULTS.md "$out/"
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          out = Path("cpu_results/${{ matrix.condition }}/seed-${{ matrix.seed }}")
+          for path in Path(".").glob("probs_*.json"):
+              shutil.copy2(path, out / path.name)
+          for path in Path(".").glob("errors_*.json"):
+              shutil.copy2(path, out / path.name)
+          PY
+          if [ "${{ matrix.condition }}" = "audited_replay" ]; then
+            cp cpu_lab/materials/verified_replay/chatgpt_audit_20261020.jsonl "$out/replay-used.jsonl"
+          fi
+          rm -rf ft_out
+      - name: Upload comparison results and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatgpt-audit-${{ matrix.condition }}-seed-${{ matrix.seed }}-${{ github.run_id }}
+          path: cpu_results/${{ matrix.condition }}/seed-${{ matrix.seed }}/
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 0
