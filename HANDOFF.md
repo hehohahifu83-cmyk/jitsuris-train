@@ -1,4 +1,4 @@
-# 最新確認 2026-10-21 06:02 JST（Claude が「連絡箱」で復帰。mmBERT-small の学習率探索は完了、E5-base の同じ探索を実行中）
+# 最新確認 2026-10-21 06:44 JST（Claude。mmBERT-small・E5-base の学習率探索は完了。mmBERT-small の最終比較〔seed 1・2・3〕を Kaggle に依頼して実行中）
 
 オーナー決定（ChatGPT 経由で確認済み）：土台モデルを `jhu-clsp/mmBERT-small`（MIT）に切り替えて比べる。Claude が実装と調整。E5-base の道筋・結果・設定は基準として残す。**新しいモデルの利用者への配布はオーナー承認が要る（未実施）。**
 
@@ -16,27 +16,39 @@
 - 5e-5・1e-4・2e-4 の差は、検証の大きさ（未知見出し 255 行、正解率の標準誤差が約 2 ポイント）と 1 つの種子では区別できない。はっきり悪いのは 4e-4 だけ。**この数字は E5-base との優劣を示さない**（同じ検証セットで E5-base を測るのは下の探索）。
 - 実機（GPU・fp16）で初めて通った：4 本とも manifest の status は completed、fp32 への切り替え 0 回、.bin の置き直しは不要（Kaggle は torch 2.11.0+cu128・transformers 5.16.1・tokenizers 0.23.1、Tesla T4 2 枚）。学習ループ 428〜438 秒、GPU メモリ最大 3.31 GiB、検証 889 行の推論 4.1〜4.2 秒（T4・まとめて処理）。
 
+## 完了：E5-base の学習率探索（Kaggle run 39496935773、commit 47c7eac。4 本とも完了、依頼から約 26 分）
+同じ検証・同じ規則。結果は `bench/lr_sweep_e5_base.md`（2cc51ca）、元データは `eval_reports/runs/39496935773/`。
+
+| 学習率 | 未知見出し macro-F1 | 未知見出し正解率 | 全体 macro-F1 | 全体の正解率 | 重大誤り | 誤断定 | 不明 |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2e-5 | 79.1% | 78.4% | 92.4% | 92.0% | 4 | 49 | 22 |
+| **3e-5** | 82.3% | 79.6% | 93.1% | 92.5% | 2 | 48 | 19 |
+| 5e-5 | 82.9% | 80.8% | 93.1% | 92.5% | 3 | 49 | 18 |
+| 1e-4 | 82.7% | 80.4% | 92.9% | 92.4% | 4 | 48 | 20 |
+
+- **選んだ学習率：3e-5**（最良は 5e-5 の 82.9%。3e-5・5e-5・1e-4 が同点で、重大誤りが最少の 3e-5）。版 31 までの既定は 5e-5。3e-5 と 5e-5 の差は誤差の範囲で、「3e-5 が良い」わけではない。はっきり低いのは 2e-5 だけ。最良は探索の端ではないので再探索は不要。
+- 実機：4 本とも completed、学習ループ 546〜551 秒、GPU メモリ最大 5.5 GiB。
+- 同じ検証での並べ方（seed 1。優劣を決める値ではない）：mmBERT(1e-4) と E5-base(3e-5) は、未知見出し macro-F1 83.2% 対 82.3%、全体 macro-F1 93.6% 対 93.1%、全体の正解率 92.1% 対 92.5%、重大 3 対 2、誤断定 48 対 48、不明 22 対 19。区別できない（同じ検証で学習率を選んだ偏りは両方に入っている）。
+- 未知の見出し 255 行の外れの重なり（`error_overlap.py`、`bench/error_overlap_validation_seed1.md`）：mmBERT 51 行・E5 52 行、**両方が外したのは 39 行**（予測まで同じ 24 行）。中身は、正解 quantity→予測 category が 14 行（見出しが分類名で値が件数に見える「横持ち」の表。診療科名の列など）、正解 other の指標列が 9 行（英国の deprivation 指数の列。mmBERT は category、E5 は rate）、残り約 16 行は散らばり。**仮説（未検証）：土台モデルの差より、学習データ（横持ちの表・other の指標列）とラベル方針の影響が大きい。** 同じ表の列がまとめて外れるので 255 行は独立な件数ではない。`LABEL_GUIDE`・学習データは独立評価の前に変えない（変えるなら、検証を見てから作ったと記録に残す）。
+
 ## いま動いているもの
-- **Kaggle：E5-base の学習率探索**（commit 47c7eac、run 39496935773、2026-10-21 06:01 JST 頃に依頼。検証モード・seed 1・4 本：`FT_LR` = 2e-5／3e-5／5e-5／1e-4）。見積り：依頼から回収まで約 30〜40 分。複数仕事の e5-base なので、仕事 1（2e-5）のモデルだけが自動で持ち帰られる（学習の計算は変わらない）。
+- **Kaggle：mmBERT-small の最終比較**（commit f87278a、2026-10-21 06:44 JST に依頼。seed 1・2・3、`FT_LR=1e-4`、`FT_VAL` なし＝全 55,213 行、`FT_KEEP=1`＝3 モデルを `jitsuris-model` に持ち帰る）。見積り（連絡箱 20261021-0643 に依頼の前に記載）：依頼から COMPLETE まで約 20〜25 分、持ち帰りまで含めて 30 分前後。固定試験は回帰診断の別表で、判定に使わない。**動いている間は `kaggle/kaggle.request` を書き換えない。**
 
 ## 次にやること（STATE.md の常設の依頼 S4。ChatGPT の毎時の確認が進めてよい）
 1. `tail -3 kaggle/KAGGLE_LOG.md`。最後の「状態：」が COMPLETE か確かめる。**ERROR／CANCEL なら、`kaggle/last_run_tail.txt` と KAGGLE_LOG の診断行を読んで原因を連絡箱に書く。自分で依頼し直さない。**
-2. COMPLETE なら `git pull --rebase --autostash origin main` → `ls eval_reports/runs | tail -1` で最新の番号を得て、
-   `python sweep_pick.py eval_reports/runs/<番号> --jobs job1,job2,job3,job4 --title "E5-base 学習率の探索（検証・seed 1）" --out bench/lr_sweep_e5_base.md`
-   規則は mmBERT と同じ（結果を見る前に固定済み。`sweep_pick.py` の冒頭）。最良が端（2e-5 か 1e-4）なら外側へ 1 点足して再探索（mmBERT 側にも同数まで）。
-3. 最終比較（**モデルごとの 2 つの依頼**。`kaggle.request` が `done` になってから 1 つずつ。依頼の前に見積りを【進捗】に書く）。`FT_VAL` は付けない（学習は全 55,213 行・評価は固定試験＝回帰診断）。`FT_KEEP=1` を仕事 1 に書けば全仕事のモデルが持ち帰られる（独立評価で使う）：
-   - mmBERT：`train jhu-clsp/mmBERT-small 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=1e-4 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
-   - E5-base：同じ形で `intfloat/multilingual-e5-base`、`FT_LR=<探索で選んだ値>`
-   - 並べ方：`python compare_models.py --group mmBERT-small=eval_reports/runs/<番号>:job1,job2,job3 --group E5-base=eval_reports/runs/<番号>:job1,job2,job3 --out bench/compare_mmbert_vs_e5base.md`（見出し別・クラス別 P/R・重大・誤断定・不明。固定試験は回帰診断の別表で、判定に使わない）。
-4. **最終判定は、新しい独立評価だけで行う**（ChatGPT が主セットを準備中、Claude が独立にラベルを付ける。HDB 8 列は予備セットで、独立ラベルは 8/8 一致）。モデルの重みを独立評価に当てる手順は、主セットが固定されてから決める（`checkpoint-evaluation.yml` を使う案）。
+2. COMPLETE なら `git pull --rebase --autostash origin main`。`kaggle/kaggle.request` が `done` であることを確かめ、E5-base の最終比較を依頼する（見積りは連絡箱 20261021-0643 に記載済み：COMPLETE まで約 28〜35 分、持ち帰りまで 40 分前後）：
+   `train intfloat/multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
+3. 両方が COMPLETE になったら、`ls eval_reports/runs | tail -2` で 2 つの番号を得て（新しい方が E5-base）、
+   `python compare_models.py --group mmBERT-small=eval_reports/runs/<mmBERT の番号>:job1,job2,job3 --group E5-base=eval_reports/runs/<E5-base の番号>:job1,job2,job3 --out bench/compare_mmbert_vs_e5base.md`（見出し別・クラス別 P/R・重大・誤断定・不明。固定試験は回帰診断の別表で、判定に使わない）。持ち帰った重みの SHA-256 は `check_trained_model.py` で manifest と照合する。
+4. **最終判定は、新しい独立評価だけで行う**（ChatGPT が主セットを準備中、Claude が独立にラベルを付ける。HDB 8 列は予備セットで、独立ラベルは 8/8 一致）。持ち帰った 6 つの重み（mmBERT 3・E5-base 3）を主セットに当てる経路は、主セットが固定されてから実行する（`checkpoint-evaluation.yml` の複数モデル版を Claude が用意する予定。着手前に STATE.md の「作業中」に書く）。
 
 ## 道具（どれも未見セットは読まない）
 `provenance.py`（学習の記録）、`val_split.py`（検証＝学習側の表の 1/8）、`slice_eval.py`（既知ペア／既知見出し・別ラベル／未知見出し）、`compare_models.py`（モデルの並べ方）、`sweep_pick.py`（学習率の選び方）、`check_trained_model.py`（取ったモデルの重みの SHA-256 の照合）、`model_setup.py`（ModernBERT の読み込み・.bin の置き直し・fp16→fp32 の切り替え判断）、`kaggle/hf_fetch.py`、`tests/mmbert_smoke.py`・`mmbert-smoke.yml`（CPU の試運転）。
 
 ## 確認の程度（テスト／実機／実績を分ける）
 - テスト：単体試験（手元・GitHub）が成功。mmBERT-small の CPU 試運転（run 39433968539、commit f7917c9）は必須項目の NG 0 件、`finetune_exp.py` の通し（検証モード・256 行）まで成功。強制した .bin→safetensors の置き直しは読み込み結果が元と完全一致。CPU の学習済み重みの SHA-256 は変更の前後で同じ（4ca77d90…）。
-- 実機：GPU での mmBERT は未確認（上の run が初回）。ONNX／ブラウザの経路は mmBERT では未確認（CPU で ONNX 書き出しの一致のみ確認：最大差 1.6e-5。競争力が出てから）。
-- 実績：mmBERT の精度は未測定。**優位は未確認**。E5-base（版 31）の見出し別の基準は `bench/slice_eval_e5base_v31.md`：未知の見出しの正解率は約 85%、全体の 93〜94% は見出しの重なりで高く出ている。
+- 実機：GPU（Tesla T4・fp16）での mmBERT-small の学習・評価は、探索の 4 本で確認（fp32 への切り替え 0 回）。最終比較の 3 本は実行中。ONNX／ブラウザの経路は mmBERT では未確認（CPU で ONNX 書き出しの一致のみ確認：最大差 1.6e-5。競争力が出てから）。
+- 実績：mmBERT の精度は、検証（889 行・seed 1）での探索の値だけで、E5-base と区別できない。**優位は未確認**。E5-base（版 31）の見出し別の基準は `bench/slice_eval_e5base_v31.md`：未知の見出しの正解率は約 85%、全体の 93〜94% は見出しの重なりで高く出ている。
 - 版 31 の仕事 3・4（リプレイ）は、固定試験と見出し・ラベルが重なる 9 行を含む 39 行で学習していた（ChatGPT が 0c95af2 で除去・訂正済み）。その結果は比較に使わない。
 
 ## 守ること
