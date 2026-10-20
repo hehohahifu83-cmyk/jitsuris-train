@@ -1,6 +1,6 @@
 # mmBERT-small の試運転（CPU・GitHub Actions）
 
-run: 39503519924　commit: b7c01789ee8ce431608fe67606065114f67d3844
+run: 39510163285　commit: 0de56529d8e4e336aafcfdbbd0abfa5d1d810bb9
 
 ## モデルの取得
 ```
@@ -8,7 +8,7 @@ jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license 
 repo files: ['.gitattributes', 'README.md', 'config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 allow_patterns: ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*', 'pytorch_model*.bin']
 Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 5 files:  80%|████████  | 4/5 [00:00<00:00, 15.22it/s]Fetching 5 files: 100%|██████████| 5/5 [00:01<00:00,  2.91it/s]
+Fetching 5 files:  80%|████████  | 4/5 [00:00<00:00, 15.34it/s]Fetching 5 files: 100%|██████████| 5/5 [00:05<00:00,  1.19s/it]
 fetched: ['config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit tags ['license:mit']
 repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_model.bin', 'openvino/openvino_model.xml', 'pytorch_model.bin', 'sentence_bert_config.json', 'sentencepiece.bpe.model', 'special_tokens_map.json', 'tokeni```
@@ -36,7 +36,7 @@ test_load_set_ok_and_rows_have_empty_label (tests.test_evaluate_independent.SetT
 test_load_set_rejects_bad_shapes (tests.test_evaluate_independent.SetTests.test_load_set_rejects_bad_shapes) ... ok
 
 ----------------------------------------------------------------------
-Ran 90 tests in 5.408s
+Ran 96 tests in 4.659s
 
 OK
 ```
@@ -69,11 +69,11 @@ OK
 | ★3 | pooling=cls | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'classifier_pooling': 'cls', 'num_labels': 15} |
 | ★3 | pooling=mean | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'classifier_pooling': 'mean', 'num_labels': 15} |
 | ★3 | pooling=（config のまま：mean） | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'num_labels': 15} |
-| ★4 | 3 ステップ | OK | 損失 [6.5048, 2.0658, 0.8604] 勾配ノルム 44.148（同じ 16 文を使い回すので下がるのが普通。下がった=True） |
+| ★4 | 3 ステップ | OK | 損失 [6.5048, 2.0657, 0.8603] 勾配ノルム 43.444（同じ 16 文を使い回すので下がるのが普通。下がった=True） |
 | ★5 | 保存→読み込みで logits 一致・トークナイザの ID 一致 | OK | 最大差 0.00e+00／ID一致 True／保存したファイル ['config.json', 'labels.json', 'model.safetensors', 'tokenizer.json', 'tokenizer_config.json']／重み model.safetensors: 563MB |
 | ★5 | .bin → safetensors の置き直し（強制）で読み込み結果が一致 | OK | 最大差 0.00e+00／テンソル 138 個・957MB／変換の要否（torch 2.5.1→True、この環境 2.14.1+cpu→False、2.6.0→False） |
-| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 3.23 秒（101 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
-| ☆7 | ONNX opset 18・legacy | OK | onnxruntime と PyTorch の最大差 1.62e-05／別の長さ 1.81e-05／563MB（fp32・語彙を削る前） |
+| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 2.61 秒（82 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
+| ☆7 | ONNX opset 18・legacy | OK | onnxruntime と PyTorch の最大差 1.43e-05／別の長さ 1.62e-05／563MB（fp32・語彙を削る前） |
 
 必須（★）で NG：0 件
 
@@ -83,22 +83,22 @@ OK
 
 | 項目 | 状態 | 内容 |
 |---|---|---|
-| ★1 重みの検査と設定の読み取り | OK | model=jhu-clsp/mmBERT-small type=modernbert prefix='' max_length=128 ctx_unit=True 重み 4ca77d908146… |
-| ★2 predict（本物の torch） | OK | 24 列・1.877 秒（78.21 ms/列、CPU） |
+| ★1 重みの検査と設定の読み取り | OK | model=jhu-clsp/mmBERT-small type=modernbert prefix='' max_length=192 ctx_unit=True 重み bc1a9a26445e… |
+| ★2 predict（本物の torch） | OK | 24 列・2.586 秒（107.764 ms/列、CPU） |
 | ★3 学習時の評価と一致 | OK | 最上位ラベル 24/24、守りを通した判断 24/24、見出し 24/24、確率の最大差 0.00e+00 |
-| ★4 score と slice_eval の読み込み | OK | 件数 {'unknown': 12, 'other_ok': 8, 'wrong': 3, 'correct': 1} |
-| ★5 同じ組の 2 回目を断る | OK | この（主セット, 重み）はすでに予測済み（2026-10-20T21:55:32Z）。やり直すなら --repeat-reason に理由を書く |
+| ★4 score と slice_eval の読み込み | OK | 件数 {'unknown': 16, 'other_ok': 8} |
+| ★5 同じ組の 2 回目を断る | OK | この（主セット, 重み）はすでに予測済み（2026-10-20T22:48:35Z）。やり直すなら --repeat-reason に理由を書く |
 
 必須項目の NG：0 件
 ## finetune_exp.py の通し（末尾）
 ```
 FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 検証（一般） 204, 検証（業務） 204, 検証（業務2） 415, 検証（日本の調達） 66
-Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 19973.58it/s]
+Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 24912.67it/s]
 [transformers] [1mModernBertForSequenceClassification LOAD REPORT[0m from: hfmodel/jhu-clsp__mmBERT-small
 Key               | Status     | 
 ------------------+------------+-
-decoder.bias      | UNEXPECTED | 
 decoder.weight    | UNEXPECTED | 
+decoder.bias      | UNEXPECTED | 
 classifier.bias   | MISSING    | 
 classifier.weight | MISSING    | 
 
@@ -106,32 +106,27 @@ Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
 - MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
 device cpu; CPU threads=2/4
-model_type=modernbert params=140,647,696 attn=sdpa pooling=mean config_changes={'num_labels': 16}
+model_type=modernbert params=140,647,696 attn=sdpa pooling=mean config_changes={'attention_dropout': 0.1, 'mlp_dropout': 0.1, 'embedding_dropout': 0.1, 'classifier_dropout': 0.1, 'num_labels': 16}
 training rows=256 seed=1
-token lengths (max_length=128): train mean=52.5 p95=114 p99=149 max=156 truncated=1.95%
+token lengths (max_length=192): train mean=52.5 p95=114 p99=149 max=156 truncated=0.00%
 CPU token cache: 256 rows tokenized once
 train batch=16, accumulation=1, effective=16, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False
 mixed precision: mode=fp16 active=False fallback_to_fp32=True
 focal-loss experiment: gamma=1.5
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整だけ | 検証（一般） 正8.1% 誤15 不明121 重大2 その他見送り53/56 | 検証（業務） 正20.9% 誤3 不明152 重大3 その他見送り7/8 | 検証（業務2） 正14.4% 誤17 不明310 重大12 その他見送り30/33 | 検証（日本の調達） 正10.8% 誤0 不明58 重大0 その他見送り0/1 | 学習 64秒・
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・今の仕組みだけ | 検証（一般） 正85.8% 誤12 不明9 重大0 その他見送り52/56 | 検証（業務） 正93.9% 誤10 不明2 重大2 その他見送り8/8 | 検証（業務2） 正93.5% 誤9 不明16 重大3 その他見送り22/33 | 検証（日本の調達） 正96.9% 誤0 不明2 重大0 その他見送り1/1 | 学習 64秒・
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整＋今の仕組み（半々） | 検証（一般） 正73.6% 誤2 不明37 重大0 その他見送り54/56 | 検証（業務） 正83.7% 誤2 不明30 重大2 その他見送り8/8 | 検証（業務2） 正81.4% 誤2 不明69 重大1 その他見送り23/33 | 検証（日本の調達） 正90.8% 誤0 不明6 重大0 その他見送り1/1
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整6割＋今の仕組み4割 | 検証（一般） 正23.6% 誤1 不明112 重大0 その他見送り53/56 | 検証（業務） 正42.9% 誤1 不明111 重大1 その他見送り8/8 | 検証（業務2） 正42.1% 誤0 不明221 重大0 その他見送り32/33 | 検証（日本の調達） 正35.4% 誤0 不明42 重大0 その他見送り1/1
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正13.5% 誤1 不明127 重大0 その他見送り53/56 | 検証（業務） 正34.2% 誤1 不明128 重大1 その他見送り8/8 | 検証（業務2） 正29.8% 誤0 不明268 重大0 その他見送り32/33 | 検証（日本の調達） 正23.1% 誤0 不明50 重大0 その他見送り1/1
-Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  7.05it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  7.04it/s]
-manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc861c1c611bcb2c1ef39024
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整だけ | 検証（一般） 正2.7% 誤0 不明144 重大0 その他見送り55/56 | 検証（業務） 正5.1% 誤0 不明186 重大0 その他見送り8/8 | 検証（業務2） 正2.6% 誤0 不明372 重大0 その他見送り33/33 | 検証（日本の調達） 正0.0% 誤0 不明65 重大0 その他見送り1/1 | 学習 67秒・評価
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・今の仕組みだけ | 検証（一般） 正85.8% 誤12 不明9 重大0 その他見送り52/56 | 検証（業務） 正93.4% 誤10 不明3 重大2 その他見送り8/8 | 検証（業務2） 正93.5% 誤9 不明16 重大3 その他見送り22/33 | 検証（日本の調達） 正96.9% 誤0 不明2 重大0 その他見送り1/1 | 学習 67秒・
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整＋今の仕組み（半々） | 検証（一般） 正72.3% 誤2 不明39 重大0 その他見送り54/56 | 検証（業務） 正85.2% 誤2 不明27 重大2 その他見送り8/8 | 検証（業務2） 正83.5% 誤2 不明61 重大1 その他見送り25/33 | 検証（日本の調達） 正92.3% 誤0 不明5 重大0 その他見送り1/1
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整6割＋今の仕組み4割 | 検証（一般） 正20.3% 誤0 不明118 重大0 その他見送り56/56 | 検証（業務） 正35.2% 誤1 不明126 重大1 その他見送り8/8 | 検証（業務2） 正34.3% 誤0 不明251 重大0 その他見送り33/33 | 検証（日本の調達） 正16.9% 誤0 不明54 重大0 その他見送り1/1
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正6.1% 誤0 不明139 重大0 その他見送り56/56 | 検証（業務） 正14.8% 誤0 不明167 重大0 その他見送り8/8 | 検証（業務2） 正9.4% 誤0 不明346 重大0 その他見送り33/33 | 検証（日本の調達） 正1.5% 誤0 不明64 重大0 その他見送り1/1 | 
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  8.94it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  8.92it/s]
+manifest.json written; weights sha256 bc1a9a26445ebaa100ef874984904beb70fd3ad5a24dba8ff56719d2d0ae31c3
 ```
 ## 検査・集計・記録
 ```
-  },
-  "検証（業務）": {
-   "count": 204,
-   "sha256_ordered": "8fb19dd702923db7108d08724d95cdc8bde796c7a0153e36d3e7aee93f2f658e",
-   "sha256_unordered": "dec9299a959c8ba094619bfbbdae986950140feaf43603f4e112283682c03cad"
   }
  },
  "timing": {
-  "eval_seconds": 67.7,
+  "eval_seconds": 71.8,
   "inference_rows": {
    "検証（一般）": 204,
    "検証（日本の調達）": 66,
@@ -139,14 +134,14 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
    "検証（業務）": 204
   },
   "inference_seconds": {
-   "検証（一般）": 16.93,
-   "検証（日本の調達）": 4.89,
-   "検証（業務2）": 29.41,
-   "検証（業務）": 14.56
+   "検証（一般）": 15.92,
+   "検証（日本の調達）": 7.05,
+   "検証（業務2）": 32.94,
+   "検証（業務）": 14.38
   },
   "peak_gpu_gib": null,
-  "train_loop_seconds": 63.7,
-  "train_total_seconds": 64.2
+  "train_loop_seconds": 66.2,
+  "train_total_seconds": 66.6
  },
  "model_config": {
   "attn_implementation": "sdpa",
@@ -169,12 +164,17 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
  },
  "extra": {
   "config_changes": {
+   "attention_dropout": 0.1,
+   "classifier_dropout": 0.1,
+   "embedding_dropout": 0.1,
+   "mlp_dropout": 0.1,
    "num_labels": 16
   },
   "device": "cpu",
+  "dropout_override": 0.1,
   "eval_mode": "validation",
   "gpu": null,
-  "max_length": 128,
+  "max_length": 192,
   "model_type": "modernbert",
   "no_dropout": false,
   "prefix": "",
@@ -189,15 +189,15 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
  ],
  "saved_model": {
   "files": {
-   "config.json": "9fe3839f839e614e8eccebaa77a88b7f0d92f45438ecf82ebbe61c55ed89254a",
+   "config.json": "1cedd649cf99f764d13e4dc811a84c53bacf461d71ebbb9f2de1befda658e6e7",
    "labels.json": "fc7e758c07c6b2107cc587a5d50981c7107c1f9a04ab4dc7753c063167ffa3bf",
-   "tokenizer.json": "f231fae363627485dbad73e8b95f601378deede800416098c14c81a0deafa813",
+   "tokenizer.json": "bdb39e9aaa92647d5ce6d16328282a1a6ae9d864bb1000a204862746949df881",
    "tokenizer_config.json": "a610934a0c3e4f0287078cfaf77b6931fd13598445d27f860cc436b8bf2c4454"
   },
   "weights": {
    "model.safetensors": {
     "bytes": 562604960,
-    "sha256": "4ca77d90814661dd41bc5e9918df81c78f3322c1cc861c1c611bcb2c1ef39024"
+    "sha256": "bc1a9a26445ebaa100ef874984904beb70fd3ad5a24dba8ff56719d2d0ae31c3"
    }
   }
  },
