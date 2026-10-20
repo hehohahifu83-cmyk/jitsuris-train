@@ -2,8 +2,8 @@
   "schema_version": 1,
   "status": "frozen",
   "set_id": "independent-main-20261021-v1",
-  "frozen_at_jst": "2026-10-21 08:21:20",
-  "frozen_by": "ChatGPT",
+  "frozen_at_jst": "2026-10-21 08:28:59",
+  "frozen_by": "ChatGPT (privacy review)",
   "candidate_file": "independent_eval/results/discovery/candidates.json",
   "candidate_file_git_blob_sha1": "8d4689fdb3068dc6830d342ffa380d7cb6437fe1",
   "training_corpus_file": "materials/real_corpus_jp2.jsonl",
@@ -20,7 +20,7 @@
   },
   "selection_summary": {
     "tables": 32,
-    "columns": 314,
+    "columns": 313,
     "sources": 4,
     "languages": 2,
     "datasets": 30
@@ -493,7 +493,6 @@
         "unit_appropriation_number",
         "federal_funds_financial_plan_amount",
         "federal_funds_current_budget_amount",
-        "state_funds_financial_plan_amount",
         "other_categorical_funds_financial_plan_amount",
         "other_categorical_funds_adopted_budget_amount",
         "other_categorical_funds_current_budget_amount"
@@ -927,6 +926,14 @@
         "previous_file_number",
         "modified_date"
       ]
+    }
+  ],
+  "amendments": [
+    {
+      "amended_at_jst": "2026-10-21 08:28:59",
+      "table_id": "t16",
+      "removed_heading": "state_funds_financial_plan_amount",
+      "reason": "The first-five-row privacy-pattern gate matched a selected example. The value was neither persisted nor logged; this heading was removed."
     }
   ]
 }
