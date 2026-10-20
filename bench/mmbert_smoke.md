@@ -1,6 +1,6 @@
 # mmBERT-small の試運転（CPU・GitHub Actions）
 
-run: 39433968539　commit: f7917c96ca2cc70e912fc2cb9d0ae8aa5e256238
+run: 39503519924　commit: b7c01789ee8ce431608fe67606065114f67d3844
 
 ## モデルの取得
 ```
@@ -8,35 +8,35 @@ jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license 
 repo files: ['.gitattributes', 'README.md', 'config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 allow_patterns: ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*', 'pytorch_model*.bin']
 Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 5 files:  80%|████████  | 4/5 [00:00<00:00,  6.40it/s]Fetching 5 files: 100%|██████████| 5/5 [00:02<00:00,  1.91it/s]Fetching 5 files: 100%|██████████| 5/5 [00:02<00:00,  2.30it/s]
+Fetching 5 files:  80%|████████  | 4/5 [00:00<00:00, 15.22it/s]Fetching 5 files: 100%|██████████| 5/5 [00:01<00:00,  2.91it/s]
 fetched: ['config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit tags ['license:mit']
-repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_model.bin', 'openvino/openvino_model.xml', 'pytorch_model.bin', 'sente```
+repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_model.bin', 'openvino/openvino_model.xml', 'pytorch_model.bin', 'sentence_bert_config.json', 'sentencepiece.bpe.model', 'special_tokens_map.json', 'tokeni```
 ## 部品の単体試験
 ```
-[仕事4] 開始（GPU 0）仕事1との違い：FT_TAG=d
-[仕事3] 開始（GPU 1）仕事1との違い：FT_TAG=c
-[仕事3] 終了（終了コード 0）
-[仕事4] 終了（終了コード 0）
-[仕事5] 開始（GPU 1）仕事1との違い：FT_TAG=e
-[仕事5] 終了（終了コード 0）
-ok
-test_single_job_runs_in_the_root (tests.test_jobs.RunJobsTest.test_single_job_runs_in_the_root) ... ok
-test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事1] 開始（GPU 0）FT_TAG=a
-[仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
-[仕事1] 終了（終了コード 0）
-[仕事2] 終了（終了コード 0）
-ok
-test_unlaunchable_job_is_reported_as_failure (tests.test_jobs.RunJobsTest.test_unlaunchable_job_is_reported_as_failure) ... [仕事1] 開始（GPU 0）（設定なし）
-[仕事2] 開始（GPU 1）仕事1との違い：なし
-[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmptdwczvwz/missing_script.py': [Errno 2] No such file or directory
-[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmptdwczvwz/missing_script.py': [Errno 2] No such file or directory
-[仕事1] 終了（終了コード 2）
-[仕事2] 終了（終了コード 2）
-ok
+test_ineligible_jobs_are_excluded (tests.test_sweep_pick.PickTests.test_ineligible_jobs_are_excluded) ... ok
+test_outside_tie_is_not_chosen (tests.test_sweep_pick.PickTests.test_outside_tie_is_not_chosen) ... ok
+test_tie_within_1_5pp_prefers_fewer_critical_then_false_assert_then_small_lr (tests.test_sweep_pick.PickTests.test_tie_within_1_5pp_prefers_fewer_critical_then_false_assert_then_small_lr) ... ok
+test_render_mentions_choice_edge_and_caution (tests.test_sweep_pick.RenderTests.test_render_mentions_choice_edge_and_caution) ... ok
+test_render_when_nothing_eligible (tests.test_sweep_pick.RenderTests.test_render_when_nothing_eligible) ... ok
+test_counts (tests.test_error_overlap.OverlapTests.test_counts) ... ok
+test_different_rows_are_refused (tests.test_error_overlap.OverlapTests.test_different_rows_are_refused) ... ok
+test_render_has_key_numbers_and_caution (tests.test_error_overlap.OverlapTests.test_render_has_key_numbers_and_caution) ... ok
+test_parse_spec (tests.test_error_overlap.ParseTests.test_parse_spec) ... ok
+test_keeps_only_unseen_headers_and_marks_outcome (tests.test_error_overlap.UnseenRowsTests.test_keeps_only_unseen_headers_and_marks_outcome) ... ok
+test_other_job_is_ignored (tests.test_error_overlap.UnseenRowsTests.test_other_job_is_ignored) ... ok
+test_info_reads_settings_from_manifest (tests.test_evaluate_independent.CheckpointTests.test_info_reads_settings_from_manifest) ... ok
+test_tampered_weights_or_unfinished_run_are_refused (tests.test_evaluate_independent.CheckpointTests.test_tampered_weights_or_unfinished_run_are_refused) ... ok
+test_texts_follow_training_format (tests.test_evaluate_independent.CheckpointTests.test_texts_follow_training_format) ... ok
+test_predict_writes_label_free_predictions_and_ledger (tests.test_evaluate_independent.PredictAndScoreTests.test_predict_writes_label_free_predictions_and_ledger) ... ok
+test_same_pair_is_refused_twice_unless_reason_given (tests.test_evaluate_independent.PredictAndScoreTests.test_same_pair_is_refused_twice_unless_reason_given) ... ok
+test_score_refuses_mismatched_or_unknown_labels (tests.test_evaluate_independent.PredictAndScoreTests.test_score_refuses_mismatched_or_unknown_labels) ... ok
+test_score_writes_records_readable_by_slice_eval (tests.test_evaluate_independent.PredictAndScoreTests.test_score_writes_records_readable_by_slice_eval) ... ok
+test_load_set_ok_and_rows_have_empty_label (tests.test_evaluate_independent.SetTests.test_load_set_ok_and_rows_have_empty_label) ... ok
+test_load_set_rejects_bad_shapes (tests.test_evaluate_independent.SetTests.test_load_set_rejects_bad_shapes) ... ok
 
 ----------------------------------------------------------------------
-Ran 65 tests in 5.036s
+Ran 90 tests in 5.408s
 
 OK
 ```
@@ -72,23 +72,35 @@ OK
 | ★4 | 3 ステップ | OK | 損失 [6.5048, 2.0658, 0.8604] 勾配ノルム 44.148（同じ 16 文を使い回すので下がるのが普通。下がった=True） |
 | ★5 | 保存→読み込みで logits 一致・トークナイザの ID 一致 | OK | 最大差 0.00e+00／ID一致 True／保存したファイル ['config.json', 'labels.json', 'model.safetensors', 'tokenizer.json', 'tokenizer_config.json']／重み model.safetensors: 563MB |
 | ★5 | .bin → safetensors の置き直し（強制）で読み込み結果が一致 | OK | 最大差 0.00e+00／テンソル 138 個・957MB／変換の要否（torch 2.5.1→True、この環境 2.14.1+cpu→False、2.6.0→False） |
-| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 2.83 秒（88 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
+| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 3.23 秒（101 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
 | ☆7 | ONNX opset 18・legacy | OK | onnxruntime と PyTorch の最大差 1.62e-05／別の長さ 1.81e-05／563MB（fp32・語彙を削る前） |
 
 必須（★）で NG：0 件
 
 ※ CPU の試運転であり、GPU（fp16）での学習・精度・端末での速さは確かめていない。
+
+# 独立評価の経路の試運転（CPU）
+
+| 項目 | 状態 | 内容 |
+|---|---|---|
+| ★1 重みの検査と設定の読み取り | OK | model=jhu-clsp/mmBERT-small type=modernbert prefix='' max_length=128 ctx_unit=True 重み 4ca77d908146… |
+| ★2 predict（本物の torch） | OK | 24 列・1.877 秒（78.21 ms/列、CPU） |
+| ★3 学習時の評価と一致 | OK | 最上位ラベル 24/24、守りを通した判断 24/24、見出し 24/24、確率の最大差 0.00e+00 |
+| ★4 score と slice_eval の読み込み | OK | 件数 {'unknown': 12, 'other_ok': 8, 'wrong': 3, 'correct': 1} |
+| ★5 同じ組の 2 回目を断る | OK | この（主セット, 重み）はすでに予測済み（2026-10-20T21:55:32Z）。やり直すなら --repeat-reason に理由を書く |
+
+必須項目の NG：0 件
 ## finetune_exp.py の通し（末尾）
 ```
 FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 検証（一般） 204, 検証（業務） 204, 検証（業務2） 415, 検証（日本の調達） 66
-Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 14520.92it/s]
+Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 19973.58it/s]
 [transformers] [1mModernBertForSequenceClassification LOAD REPORT[0m from: hfmodel/jhu-clsp__mmBERT-small
 Key               | Status     | 
 ------------------+------------+-
-decoder.weight    | UNEXPECTED | 
 decoder.bias      | UNEXPECTED | 
-classifier.weight | MISSING    | 
+decoder.weight    | UNEXPECTED | 
 classifier.bias   | MISSING    | 
+classifier.weight | MISSING    | 
 
 Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
@@ -106,7 +118,7 @@ focal-loss experiment: gamma=1.5
 | hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整＋今の仕組み（半々） | 検証（一般） 正73.6% 誤2 不明37 重大0 その他見送り54/56 | 検証（業務） 正83.7% 誤2 不明30 重大2 その他見送り8/8 | 検証（業務2） 正81.4% 誤2 不明69 重大1 その他見送り23/33 | 検証（日本の調達） 正90.8% 誤0 不明6 重大0 その他見送り1/1
 | hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整6割＋今の仕組み4割 | 検証（一般） 正23.6% 誤1 不明112 重大0 その他見送り53/56 | 検証（業務） 正42.9% 誤1 不明111 重大1 その他見送り8/8 | 検証（業務2） 正42.1% 誤0 不明221 重大0 その他見送り32/33 | 検証（日本の調達） 正35.4% 誤0 不明42 重大0 その他見送り1/1
 | hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正13.5% 誤1 不明127 重大0 その他見送り53/56 | 検証（業務） 正34.2% 誤1 不明128 重大1 その他見送り8/8 | 検証（業務2） 正29.8% 誤0 不明268 重大0 その他見送り32/33 | 検証（日本の調達） 正23.1% 誤0 不明50 重大0 その他見送り1/1
-Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.93it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.92it/s]
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  7.05it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  7.04it/s]
 manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc861c1c611bcb2c1ef39024
 ```
 ## 検査・集計・記録
@@ -119,7 +131,7 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
   }
  },
  "timing": {
-  "eval_seconds": 65.6,
+  "eval_seconds": 67.7,
   "inference_rows": {
    "検証（一般）": 204,
    "検証（日本の調達）": 66,
@@ -127,14 +139,14 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
    "検証（業務）": 204
   },
   "inference_seconds": {
-   "検証（一般）": 14.87,
-   "検証（日本の調達）": 4.81,
-   "検証（業務2）": 29.7,
-   "検証（業務）": 14.34
+   "検証（一般）": 16.93,
+   "検証（日本の調達）": 4.89,
+   "検証（業務2）": 29.41,
+   "検証（業務）": 14.56
   },
   "peak_gpu_gib": null,
-  "train_loop_seconds": 63.0,
-  "train_total_seconds": 63.5
+  "train_loop_seconds": 63.7,
+  "train_total_seconds": 64.2
  },
  "model_config": {
   "attn_implementation": "sdpa",
@@ -147,7 +159,7 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
  },
  "libraries": {
   "numpy": "2.5.4",
-  "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
   "python": "3.12.15",
   "safetensors": "0.8.0",
   "scikit-learn": "1.9.1",
