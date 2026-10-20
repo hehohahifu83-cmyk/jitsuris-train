@@ -547,3 +547,21 @@
 2026-10-20T21:45:24Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
 2026-10-20T21:45:24Z train を依頼：hfmodel/jhu-clsp__mmBERT-small 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=1e-4 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3
 送ったモデル：jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license mit tags ['license:mit']・束の中のモデルのファイル数 25
+2026-10-20T22:05:39Z 状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+    input: /kaggle/input /kaggle/input/datasets /kaggle/input/datasets/jitsurio /kaggle/input/datasets/jitsurio/jitsuris-data /kaggle/input/datasets/jitsurio/jitsuris-data/cpu_lab /kaggle/input/datasets/jitsurio/jitsuris-data/cpu_lab/materials /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/jhu-clsp__mmBERT-small /kaggle/input/datasets/jitsurio/jitsuris-data/kaggle /kaggle/input/datasets/jitsurio/jitsuris-data/materials
+    config: /kaggle/input/datasets/jitsurio/jitsuris-data/hfmodel/jhu-clsp__mmBERT-small/config.json
+    印: ['nonce-20261020T214422-1423.txt']
+    model: hfmodel/jhu-clsp__mmBERT-small exists=True
+    transformers: 5.16.1 torch: 2.11.0+cu128 tokenizers: 0.23.1 model_type: modernbert
+    cuda: True devices=2 Tesla T4, 15360 MiB / Tesla T4, 15360 MiB
+    重みの読み込み：置き直しなし（torch 2.11.0+cu128）
+    仕事の数: 3 [{'args': ['hfmodel/jhu-clsp__mmBERT-small', '2'], 'env': {'FT_SEED': '1', 'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_CTX_UNIT': '1', 'FT_FREEZE_EMB': '0', 'FT_FOCAL_GAMMA': '1.5', 'FT_LR': '1e-4', 'FT_KEEP': '1'}}, {'args': ['hfmodel/jhu-clsp__mmBERT-small', '2'], 'env': {'FT_SEED': '2', 'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_CTX_UNIT': '1', 'FT_FREEZE_EMB': '0', 'FT_FOCAL_GAMMA': '1.5', 'FT_LR': '1e-4', 'FT_KEEP': '1'}}, {'args': ['hfmodel/jhu-clsp__mmBERT-small', '2'], 'env': {'FT_SEED': '3', 'FT_BS': '32', 'FT_ACC': '2', 'FT_CKPT': '0', 'FT_SORT': '1', 'FT_PAD8': '1', 'FT_FUSED': '1', 'FT_CTX_UNIT': '1', 'FT_FREEZE_EMB': '0', 'FT_FOCAL_GAMMA': '1.5', 'FT_LR': '1e-4', 'FT_KEEP': '1'}}]
+    [仕事1] training rows=55213 seed=1
+    [仕事2] training rows=55213 seed=2
+    [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事1] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事2] peak GPU memory 3.3 GiB; training loop 458s
+    [仕事1] peak GPU memory 3.3 GiB; training loop 475s
+    [仕事3] training rows=55213 seed=3
+    [仕事3] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+    [仕事3] peak GPU memory 3.3 GiB; training loop 460s
