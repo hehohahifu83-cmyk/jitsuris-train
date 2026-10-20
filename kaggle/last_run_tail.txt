@@ -1,21 +1,20 @@
 name, memory.total [MiB]\n
 Tesla T4
 Tesla T4
-GPU 1）仕事1との違い：FT_SEED=2 FT_KEEP=（外す）\n
-GPU 0）FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=
 ---
-,"data":"[仕事4] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整＋今の仕組み（半々） | 開発用220 正95.5% 誤5 不明5 重大1 | 本物（一般） 正88.1% 誤6 不明29 重大0 その他見送り84/88 | 本物（業務） 正90.5% 誤16 不明29 重大2 その他見送り15/15 | 本物（業務2） 正93.9% 誤17 不明39 重大5 その他見送り58/63 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | 学習 622秒・評価 19秒 |\n"}
-,{"stream_name":"stdout","time":1570.450284291,"data":"[仕事4] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整6割＋今の仕組み4割 | 開発用220 正97.3% 誤5 不明1 重大1 | 本物（一般） 正90.2% 誤7 不明22 重大1 その他見送り84/88 | 本物（業務） 正90.9% 誤25 不明18 重大4 その他見送り15/15 | 本物（業務2） 正94.3% 誤22 不明30 重大6 その他見送り60/63 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | 学習 622秒・評価 19秒 |\n"}
-,{"stream_name":"stdout","time":1570.787013878,"data":"[仕事4] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整7割＋今の仕組み3割 | 開発用220 正96.8% 誤6 不明1 重大1 | 本物（一般） 正90.5% 誤8 不明20 重大2 その他見送り84/88 | 本物（業務） 正91.8% 誤28 不明11 重大5 その他見送り15/15 | 本物（業務2） 正94.3% 誤28 不明24 重大6 その他見送り54/63 | 本物（日本の調達） 正98.9% 誤0 不明1 重大0 | 学習 622秒・評価 20秒 |\n"}
-,{"stream_name":"stdout","time":1570.817701636,"data":"[仕事4] \n"}
-,{"stream_name":"stdout","time":1572.224208365,"data":"[仕事4] Writing model shards:   0%|          | 0/1 [00:00\u003c?, ?it/s]\n"}
-,{"stream_name":"stdout","time":1572.224400278,"data":"[仕事4] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.41s/it]\n"}
-,{"stream_name":"stdout","time":1572.224411148,"data":"[仕事4] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.41s/it]\n"}
-,{"stream_name":"stdout","time":1574.17063431,"data":"[仕事4] 終了（終了コード 0）\n"}
-,{"stream_name":"stderr","time":1576.891362239,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":1576.891391582,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":1577.173450788,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":1577.173478635,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":1578.03173866,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":1579.11165414,"data":"[NbConvertApp] Writing 303930 bytes to __results__.html\n"}
+[{"stream_name":"stdout","time":29.718865304,"data":"name, memory.total [MiB]\n"}
+,{"stream_name":"stdout","time":29.718913589,"data":"Tesla T4, 15360 MiB\n"}
+,{"stream_name":"stdout","time":29.718918324,"data":"Tesla T4, 15360 MiB\n"}
+,{"stream_name":"stderr","time":38.906438425,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":38.906816048,"data":"  File \"/kaggle/src/script.py\", line 44, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":38.906832208,"data":"    specs = J.split_jobs(args)\n"}
+,{"stream_name":"stderr","time":38.906835914,"data":"  File \"/kaggle/working/src/jobs.py\", line 52, in split_jobs\n"}
+,{"stream_name":"stderr","time":38.906839304,"data":"    raise ValueError(f\"2 つめ以降の仕事に書けるのは FT_ の設定と周数だけ：{args}\")\n"}
+,{"stream_name":"stderr","time":38.906843545,"data":"ValueError: 2 つめ以降の仕事に書けるのは FT_ の設定と周数だけ：['intfloat/multilingual-e5-base', '2']\n"}
+,{"stream_name":"stderr","time":44.417299799,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":44.417327501,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":44.731573509,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":44.731626319,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":45.540018924,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":46.623269806,"data":"[NbConvertApp] Writing 303930 bytes to __results__.html\n"}
 ]
