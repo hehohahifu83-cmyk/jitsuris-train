@@ -1,6 +1,6 @@
 # mmBERT-small の試運転（CPU・GitHub Actions）
 
-run: 39431957709　commit: 944bb057199508e8a658de236f940032a1c3de39
+run: 39433968539　commit: f7917c96ca2cc70e912fc2cb9d0ae8aa5e256238
 
 ## モデルの取得
 ```
@@ -8,35 +8,35 @@ jhu-clsp/mmBERT-small revision abc32620dd4f6ab06f5fbe905dc25f310618e09f license 
 repo files: ['.gitattributes', 'README.md', 'config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 allow_patterns: ['*.json', '*.safetensors', '*.model', '*.txt', 'sentencepiece*', 'tokenizer*', 'pytorch_model*.bin']
 Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 5 files:  20%|██        | 1/5 [00:00<00:00,  9.42it/s]Fetching 5 files:  80%|████████  | 4/5 [00:01<00:00,  3.33it/s]Fetching 5 files: 100%|██████████| 5/5 [00:43<00:00, 11.92s/it]Fetching 5 files: 100%|██████████| 5/5 [00:43<00:00,  8.63s/it]
+Fetching 5 files:  80%|████████  | 4/5 [00:00<00:00,  6.40it/s]Fetching 5 files: 100%|██████████| 5/5 [00:02<00:00,  1.91it/s]Fetching 5 files: 100%|██████████| 5/5 [00:02<00:00,  2.30it/s]
 fetched: ['config.json', 'pytorch_model.bin', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json']
 intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit tags ['license:mit']
-repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_mo```
+repo files: ['.eval_results/ArguAna.yaml', '.gitattributes', '1_Pooling/config.json', 'README.md', 'config.json', 'model.safetensors', 'modules.json', 'onnx/config.json', 'onnx/model.onnx', 'onnx/model_O4.onnx', 'onnx/model_qint8_avx512_vnni.onnx', 'onnx/sentencepiece.bpe.model', 'onnx/special_tokens_map.json', 'onnx/tokenizer.json', 'onnx/tokenizer_config.json', 'openvino/openvino_model.bin', 'openvino/openvino_model.xml', 'pytorch_model.bin', 'sente```
 ## 部品の単体試験
 ```
-[仕事3] 開始（GPU 0）仕事1との違い：FT_TAG=c
-[仕事4] 開始（GPU 1）仕事1との違い：FT_TAG=d
+[仕事4] 開始（GPU 0）仕事1との違い：FT_TAG=d
+[仕事3] 開始（GPU 1）仕事1との違い：FT_TAG=c
 [仕事3] 終了（終了コード 0）
 [仕事4] 終了（終了コード 0）
-[仕事5] 開始（GPU 0）仕事1との違い：FT_TAG=e
+[仕事5] 開始（GPU 1）仕事1との違い：FT_TAG=e
 [仕事5] 終了（終了コード 0）
 ok
 test_single_job_runs_in_the_root (tests.test_jobs.RunJobsTest.test_single_job_runs_in_the_root) ... ok
-test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
-[仕事1] 開始（GPU 0）FT_TAG=a
+test_two_jobs_run_side_by_side_with_separate_outputs (tests.test_jobs.RunJobsTest.test_two_jobs_run_side_by_side_with_separate_outputs) ... [仕事1] 開始（GPU 0）FT_TAG=a
+[仕事2] 開始（GPU 1）仕事1との違い：FT_TAG=b
 [仕事1] 終了（終了コード 0）
 [仕事2] 終了（終了コード 0）
 ok
 test_unlaunchable_job_is_reported_as_failure (tests.test_jobs.RunJobsTest.test_unlaunchable_job_is_reported_as_failure) ... [仕事1] 開始（GPU 0）（設定なし）
 [仕事2] 開始（GPU 1）仕事1との違い：なし
-[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp6g3jaerz/missing_script.py': [Errno 2] No such file or directory
-[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmp6g3jaerz/missing_script.py': [Errno 2] No such file or directory
-[仕事2] 終了（終了コード 2）
+[仕事1] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmptdwczvwz/missing_script.py': [Errno 2] No such file or directory
+[仕事2] /opt/hostedtoolcache/Python/3.12.15/x64/bin/python: can't open file '/tmp/tmptdwczvwz/missing_script.py': [Errno 2] No such file or directory
 [仕事1] 終了（終了コード 2）
+[仕事2] 終了（終了コード 2）
 ok
 
 ----------------------------------------------------------------------
-Ran 59 tests in 5.049s
+Ran 65 tests in 5.036s
 
 OK
 ```
@@ -71,7 +71,8 @@ OK
 | ★3 | pooling=（config のまま：mean） | OK | logits shape=(2, 15) attn=sdpa head=['model', 'head', 'drop', 'classifier'] config変更={'num_labels': 15} |
 | ★4 | 3 ステップ | OK | 損失 [6.5048, 2.0658, 0.8604] 勾配ノルム 44.148（同じ 16 文を使い回すので下がるのが普通。下がった=True） |
 | ★5 | 保存→読み込みで logits 一致・トークナイザの ID 一致 | OK | 最大差 0.00e+00／ID一致 True／保存したファイル ['config.json', 'labels.json', 'model.safetensors', 'tokenizer.json', 'tokenizer_config.json']／重み model.safetensors: 563MB |
-| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 2.97 秒（93 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
+| ★5 | .bin → safetensors の置き直し（強制）で読み込み結果が一致 | OK | 最大差 0.00e+00／テンソル 138 個・957MB／変換の要否（torch 2.5.1→True、この環境 2.14.1+cpu→False、2.6.0→False） |
+| ☆6 | 推論 32 列（平均長に詰めた束） | OK | 2.83 秒（88 ms/列・4 スレッド・fp32・この CPU のみの参考値）shape=(32, 128) |
 | ☆7 | ONNX opset 18・legacy | OK | onnxruntime と PyTorch の最大差 1.62e-05／別の長さ 1.81e-05／563MB（fp32・語彙を削る前） |
 
 必須（★）で NG：0 件
@@ -80,12 +81,12 @@ OK
 ## finetune_exp.py の通し（末尾）
 ```
 FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 検証（一般） 204, 検証（業務） 204, 検証（業務2） 415, 検証（日本の調達） 66
-Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 10779.83it/s]
+Loading weights:   0%|          | 0/136 [00:00<?, ?it/s]Loading weights: 100%|██████████| 136/136 [00:00<00:00, 14520.92it/s]
 [transformers] [1mModernBertForSequenceClassification LOAD REPORT[0m from: hfmodel/jhu-clsp__mmBERT-small
 Key               | Status     | 
 ------------------+------------+-
-decoder.bias      | UNEXPECTED | 
 decoder.weight    | UNEXPECTED | 
+decoder.bias      | UNEXPECTED | 
 classifier.weight | MISSING    | 
 classifier.bias   | MISSING    | 
 
@@ -98,13 +99,14 @@ training rows=256 seed=1
 token lengths (max_length=128): train mean=52.5 p95=114 p99=149 max=156 truncated=1.95%
 CPU token cache: 256 rows tokenized once
 train batch=16, accumulation=1, effective=16, checkpointing=False, sort=True, pad_multiple=8, fused=False, freeze_embeddings=False
+mixed precision: mode=fp16 active=False fallback_to_fp32=True
 focal-loss experiment: gamma=1.5
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整だけ | 検証（一般） 正8.1% 誤15 不明121 重大2 その他見送り53/56 | 検証（業務） 正20.9% 誤3 不明152 重大3 その他見送り7/8 | 検証（業務2） 正14.4% 誤17 不明310 重大12 その他見送り30/33 | 検証（日本の調達） 正10.8% 誤0 不明58 重大0 その他見送り0/1 | 学習 65秒・
-| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・今の仕組みだけ | 検証（一般） 正85.8% 誤12 不明9 重大0 その他見送り52/56 | 検証（業務） 正93.9% 誤10 不明2 重大2 その他見送り8/8 | 検証（業務2） 正93.5% 誤9 不明16 重大3 その他見送り22/33 | 検証（日本の調達） 正96.9% 誤0 不明2 重大0 その他見送り1/1 | 学習 65秒・
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整だけ | 検証（一般） 正8.1% 誤15 不明121 重大2 その他見送り53/56 | 検証（業務） 正20.9% 誤3 不明152 重大3 その他見送り7/8 | 検証（業務2） 正14.4% 誤17 不明310 重大12 その他見送り30/33 | 検証（日本の調達） 正10.8% 誤0 不明58 重大0 その他見送り0/1 | 学習 64秒・
+| hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・今の仕組みだけ | 検証（一般） 正85.8% 誤12 不明9 重大0 その他見送り52/56 | 検証（業務） 正93.9% 誤10 不明2 重大2 その他見送り8/8 | 検証（業務2） 正93.5% 誤9 不明16 重大3 その他見送り22/33 | 検証（日本の調達） 正96.9% 誤0 不明2 重大0 その他見送り1/1 | 学習 64秒・
 | hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整＋今の仕組み（半々） | 検証（一般） 正73.6% 誤2 不明37 重大0 その他見送り54/56 | 検証（業務） 正83.7% 誤2 不明30 重大2 その他見送り8/8 | 検証（業務2） 正81.4% 誤2 不明69 重大1 その他見送り23/33 | 検証（日本の調達） 正90.8% 誤0 不明6 重大0 その他見送り1/1
 | hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整6割＋今の仕組み4割 | 検証（一般） 正23.6% 誤1 不明112 重大0 その他見送り53/56 | 検証（業務） 正42.9% 誤1 不明111 重大1 その他見送り8/8 | 検証（業務2） 正42.1% 誤0 不明221 重大0 その他見送り32/33 | 検証（日本の調達） 正35.4% 誤0 不明42 重大0 その他見送り1/1
 | hfmodel/jhu-clsp__mmBERT-small 微調整 1.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正13.5% 誤1 不明127 重大0 その他見送り53/56 | 検証（業務） 正34.2% 誤1 不明128 重大1 その他見送り8/8 | 検証（業務2） 正29.8% 誤0 不明268 重大0 その他見送り32/33 | 検証（日本の調達） 正23.1% 誤0 不明50 重大0 その他見送り1/1
-Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.79it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.78it/s]
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.93it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  6.92it/s]
 manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc861c1c611bcb2c1ef39024
 ```
 ## 検査・集計・記録
@@ -117,7 +119,7 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
   }
  },
  "timing": {
-  "eval_seconds": 66.4,
+  "eval_seconds": 65.6,
   "inference_rows": {
    "検証（一般）": 204,
    "検証（日本の調達）": 66,
@@ -125,14 +127,14 @@ manifest.json written; weights sha256 4ca77d90814661dd41bc5e9918df81c78f3322c1cc
    "検証（業務）": 204
   },
   "inference_seconds": {
-   "検証（一般）": 15.19,
-   "検証（日本の調達）": 4.93,
-   "検証（業務2）": 29.87,
-   "検証（業務）": 14.46
+   "検証（一般）": 14.87,
+   "検証（日本の調達）": 4.81,
+   "検証（業務2）": 29.7,
+   "検証（業務）": 14.34
   },
   "peak_gpu_gib": null,
-  "train_loop_seconds": 64.7,
-  "train_total_seconds": 65.2
+  "train_loop_seconds": 63.0,
+  "train_total_seconds": 63.5
  },
  "model_config": {
   "attn_implementation": "sdpa",
