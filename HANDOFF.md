@@ -1,20 +1,34 @@
-# 最新確認 2026-10-20 23:06 JST（Claude。オーナーの許可で、区切りに停止する）
+# 最新確認 2026-10-21 06:02 JST（Claude が「連絡箱」で復帰。mmBERT-small の学習率探索は完了、E5-base の同じ探索を実行中）
 
 オーナー決定（ChatGPT 経由で確認済み）：土台モデルを `jhu-clsp/mmBERT-small`（MIT）に切り替えて比べる。Claude が実装と調整。E5-base の道筋・結果・設定は基準として残す。**新しいモデルの利用者への配布はオーナー承認が要る（未実施）。**
 
+## 完了：mmBERT-small の学習率探索（Kaggle run 39435238999、commit 22144f0。4 本とも完了、依頼から約 19 分）
+検証モード（学習 50,491 行、検証 889 行＝うち未知の見出し 255 行）、seed 1、2 周。結果は `bench/lr_sweep_mmbert_small.md`、元データは `eval_reports/runs/39435238999/`。
+
+| 学習率 | 未知見出し macro-F1 | 未知見出し正解率 | 全体 macro-F1 | 全体の正解率 | 重大誤り | 誤断定 | 不明 |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5e-5 | 82.6% | 82.4% | 93.3% | 92.9% | 5 | 40 | 23 |
+| **1e-4** | **83.2%** | 80.0% | 93.6% | 92.1% | 3 | 48 | 22 |
+| 2e-4 | 81.1% | 80.4% | 93.3% | 91.9% | 4 | 45 | 27 |
+| 4e-4 | 77.9% | 75.7% | 92.1% | 90.3% | 8 | 51 | 35 |
+
+- **選んだ学習率：1e-4**（事前に固定した規則：未知見出し macro-F1 → 1.5 ポイント以内は同点 → 重大 → 誤断定 → 小さい学習率）。最良は探索の端ではないので再探索は不要。
+- 5e-5・1e-4・2e-4 の差は、検証の大きさ（未知見出し 255 行、正解率の標準誤差が約 2 ポイント）と 1 つの種子では区別できない。はっきり悪いのは 4e-4 だけ。**この数字は E5-base との優劣を示さない**（同じ検証セットで E5-base を測るのは下の探索）。
+- 実機（GPU・fp16）で初めて通った：4 本とも manifest の status は completed、fp32 への切り替え 0 回、.bin の置き直しは不要（Kaggle は torch 2.11.0+cu128・transformers 5.16.1・tokenizers 0.23.1、Tesla T4 2 枚）。学習ループ 428〜438 秒、GPU メモリ最大 3.31 GiB、検証 889 行の推論 4.1〜4.2 秒（T4・まとめて処理）。
+
 ## いま動いているもの
-- **Kaggle：mmBERT-small の学習率の探索**（検証モード `FT_VAL=1`・seed 1・4 本：`FT_LR` = 5e-5／1e-4／2e-4／4e-4）。依頼 commit 22144f0、GitHub Actions run 39435238999、Kaggle は 2026-10-20 23:01 JST に RUNNING。10 分ごとの定期実行（`kaggle.yml`）が状態を見て、終われば結果を `eval_reports/runs/<回収した実行の番号>/`（`job1_probs_val_*_ft.json`、`job1_manifest.json` など）に保存する。見積り：依頼から回収まで約 40〜60 分（4 本・T4 2 枚で 2 巡）。
-- GPU（fp16）での mmBERT の学習は**今回が初めてで未確認**。逃げ道を 2 つ入れてある：(a) torch が 2.6 未満で `.bin` を読めないときは safetensors に置き直す（`kaggle/run.py`。判断は `diag.txt` に残る）、(b) fp16 で損失が 3 回続けて有限でないときは fp32 に切り替えて続ける（`manifest.json` の `amp.fallback_step`。切り替わった仕事は候補から外す）。
+- **Kaggle：E5-base の学習率探索**（commit 47c7eac、run 39496935773、2026-10-21 06:01 JST 頃に依頼。検証モード・seed 1・4 本：`FT_LR` = 2e-5／3e-5／5e-5／1e-4）。見積り：依頼から回収まで約 30〜40 分。複数仕事の e5-base なので、仕事 1（2e-5）のモデルだけが自動で持ち帰られる（学習の計算は変わらない）。
 
 ## 次にやること（STATE.md の常設の依頼 S4。ChatGPT の毎時の確認が進めてよい）
-1. `tail -3 kaggle/KAGGLE_LOG.md`。最後の「状態：」が COMPLETE か確かめる。**ERROR／CANCEL なら、`kaggle/last_run_tail.txt` と KAGGLE_LOG の診断行（torch／transformers の版、置き直しの有無）を読んで原因を連絡箱に書く。自分で依頼し直さない。**
+1. `tail -3 kaggle/KAGGLE_LOG.md`。最後の「状態：」が COMPLETE か確かめる。**ERROR／CANCEL なら、`kaggle/last_run_tail.txt` と KAGGLE_LOG の診断行を読んで原因を連絡箱に書く。自分で依頼し直さない。**
 2. COMPLETE なら `git pull --rebase --autostash origin main` → `ls eval_reports/runs | tail -1` で最新の番号を得て、
-   `python sweep_pick.py eval_reports/runs/<番号> --jobs job1,job2,job3,job4 --title "mmBERT-small 学習率の探索（検証・seed 1）" --out bench/lr_sweep_mmbert_small.md`
-   規則は結果を見る前に固定済み（連絡箱 20261020-2259 の「5」、`sweep_pick.py` の冒頭）：検証 4 試験を合わせた未知の見出しの macro-F1 → 1.5 ポイント以内は同点 → 重大誤り → 誤断定 → 小さい学習率。最良が端なら外側へ 1 点足して再探索（E5 側にも同数まで）。fp32 切り替え・未完了の仕事は候補から外れる。
-3. 続けて **E5-base の同じ探索**を依頼する（別の依頼＝別のモデル。`kaggle/kaggle.request` が `done` になってから。依頼の前に見積りを【進捗】に書く）：
-   `train intfloat/multilingual-e5-base 2 FT_VAL=1 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=2e-5 ++ FT_LR=3e-5 ++ FT_LR=5e-5 ++ FT_LR=1e-4`
-   見積り：4 本・2 巡、1 本あたり学習約 10 分＋準備と評価で約 3 分、全体で約 40〜60 分。結果は同じ規則で `bench/lr_sweep_e5_base.md`。
-4. 最終比較：各モデルの選んだ学習率で seed 1・2・3（`FT_KEEP=1`、固定試験＝`FT_VAL` なし）。`compare_models.py` で見出し別・クラス別の P/R・重大・誤断定・不明・推論時間・GPU メモリを並べる（固定試験は回帰診断の別表。判定に使わない）。**最終判定は、新しい独立評価だけで行う**（ChatGPT が準備、Claude が独立にラベル。候補の第 1 号は連絡箱 20261020-2255／2306）。
+   `python sweep_pick.py eval_reports/runs/<番号> --jobs job1,job2,job3,job4 --title "E5-base 学習率の探索（検証・seed 1）" --out bench/lr_sweep_e5_base.md`
+   規則は mmBERT と同じ（結果を見る前に固定済み。`sweep_pick.py` の冒頭）。最良が端（2e-5 か 1e-4）なら外側へ 1 点足して再探索（mmBERT 側にも同数まで）。
+3. 最終比較（**モデルごとの 2 つの依頼**。`kaggle.request` が `done` になってから 1 つずつ。依頼の前に見積りを【進捗】に書く）。`FT_VAL` は付けない（学習は全 55,213 行・評価は固定試験＝回帰診断）。`FT_KEEP=1` を仕事 1 に書けば全仕事のモデルが持ち帰られる（独立評価で使う）：
+   - mmBERT：`train jhu-clsp/mmBERT-small 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=1e-4 FT_KEEP=1 ++ FT_SEED=2 ++ FT_SEED=3`
+   - E5-base：同じ形で `intfloat/multilingual-e5-base`、`FT_LR=<探索で選んだ値>`
+   - 並べ方：`python compare_models.py --group mmBERT-small=eval_reports/runs/<番号>:job1,job2,job3 --group E5-base=eval_reports/runs/<番号>:job1,job2,job3 --out bench/compare_mmbert_vs_e5base.md`（見出し別・クラス別 P/R・重大・誤断定・不明。固定試験は回帰診断の別表で、判定に使わない）。
+4. **最終判定は、新しい独立評価だけで行う**（ChatGPT が主セットを準備中、Claude が独立にラベルを付ける。HDB 8 列は予備セットで、独立ラベルは 8/8 一致）。モデルの重みを独立評価に当てる手順は、主セットが固定されてから決める（`checkpoint-evaluation.yml` を使う案）。
 
 ## 道具（どれも未見セットは読まない）
 `provenance.py`（学習の記録）、`val_split.py`（検証＝学習側の表の 1/8）、`slice_eval.py`（既知ペア／既知見出し・別ラベル／未知見出し）、`compare_models.py`（モデルの並べ方）、`sweep_pick.py`（学習率の選び方）、`check_trained_model.py`（取ったモデルの重みの SHA-256 の照合）、`model_setup.py`（ModernBERT の読み込み・.bin の置き直し・fp16→fp32 の切り替え判断）、`kaggle/hf_fetch.py`、`tests/mmbert_smoke.py`・`mmbert-smoke.yml`（CPU の試運転）。
