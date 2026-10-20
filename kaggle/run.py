@@ -56,7 +56,19 @@ except Exception as e: diag.write("torch error " + repr(e) + "\n")
 diag.flush()
 os.environ["HF_HUB_OFFLINE"] = "1"
 sys.path.insert(0, W)
-import jobs as J   # 「++」で区切ると GPU 1 枚につき 1 つの仕事を同時に流す。FT_ で始まる語はすべて環境変数として渡す
+# 重みが pytorch_model.bin だけの repo（mmBERT-small）：torch が 2.6 未満だと transformers が .bin の読み込みを断る。
+# そのときだけ、安全な読み方（weights_only=True）で safetensors に置き直す。並べて流す仕事が同じ置き場を使うので、仕事を流す前にここで 1 回だけ行う
+try:
+    import model_setup as _MS
+    if _MS.needs_bin_conversion(args[0], _ver("torch")):
+        _out, _n = _MS.convert_bin_to_safetensors(args[0])
+        diag.write("pytorch_model.bin → %s（テンソル %d 個。torch %s が 2.6 未満のため）\n" % (_out, _n, _ver("torch")))
+    else:
+        diag.write("重みの読み込み：置き直しなし（torch %s）\n" % _ver("torch"))
+except Exception as e:
+    diag.write("bin → safetensors の置き直しに失敗：" + repr(e) + "\n")
+diag.flush()
+import jobs as J  # 「++」で区切ると GPU 1 枚につき 1 つの仕事を同時に流す。FT_ で始まる語はすべて環境変数として渡す
 specs = J.split_jobs(args)
 kept = J.keep_cpu_lab_checkpoint(specs)
 if kept: diag.write("CPU lab checkpoint export: retained first e5-base job only; training settings unchanged\n")   # J.MAX_JOBS 個まで。同時に流すのは GPU の枚数まで、残りは空いた順に

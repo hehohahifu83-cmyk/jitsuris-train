@@ -258,7 +258,15 @@ else:
     steps = int(len(dl) * EPOCHS / ACC)
 opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(os.environ.get("FT_LR", "5e-5")), weight_decay=0.01, **({"fused": True} if FUSED else {}))
 sch = get_linear_schedule_with_warmup(opt, int(steps * 0.06), steps)
-scaler = torch.amp.GradScaler(enabled=DEV == "cuda")
+# --- 混合精度（既定は今までどおり fp16）。FT_AMP=off で fp32。ModernBERT 系は、fp16 で損失が有限にならない状態が続いたら fp32 に切り替えて続ける（切り替えた step を記録に残す）---
+AMP_MODE = os.environ.get("FT_AMP", "fp16")
+if AMP_MODE not in ("fp16", "off"):
+    raise ValueError(f"FT_AMP must be fp16 or off: {AMP_MODE}")
+AMP_ON = [DEV == "cuda" and AMP_MODE == "fp16"]
+AMP_FALLBACK = os.environ.get("FT_AMP_FALLBACK", "1" if MODEL_TYPE == "modernbert" else "0") == "1"
+amp_fallback_step = [None]
+scaler = torch.amp.GradScaler(enabled=AMP_ON[0])
+print(f"mixed precision: mode={AMP_MODE} active={AMP_ON[0]} fallback_to_fp32={AMP_FALLBACK}", flush=True)
 FOCAL_GAMMA_TEXT = os.environ.get("FT_FOCAL_GAMMA", "").strip()
 FOCAL_GAMMA = float(FOCAL_GAMMA_TEXT) if FOCAL_GAMMA_TEXT else None
 if FOCAL_GAMMA is not None and FOCAL_GAMMA <= 0:
@@ -275,9 +283,9 @@ if FOCAL_GAMMA is not None:
 trace_n = int(os.environ.get("FT_TRACE_LOSS", "0"))
 if DEV == "cuda": torch.cuda.reset_peak_memory_stats()
 t0 = time.time(); model.train(); step = 0; micro = 0
-_nonfinite = [0]
+_guard = model_setup.NonFiniteGuard(AMP_ON[0], AMP_FALLBACK)   # 100 step ごとの損失が有限でない状態が続いたときの扱い（fp16 → fp32 の切り替え、または停止）
 def finish_step(eff_loss):
-    global step
+    global step, scaler
     scaler.unscale_(opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
     scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad(); step += 1
     if step <= trace_n: print(f"step_loss {step} {eff_loss.item():.6f}", flush=True)
@@ -285,16 +293,17 @@ def finish_step(eff_loss):
         _lv = eff_loss.item()
         print(f"step {step}/{steps} loss {_lv:.3f} {time.time() - t0:.0f}s", flush=True)
         # 損失が有限でない状態が続いたら止める（fp16 の桁あふれなどで、何も学ばないまま結果だけ出るのを防ぐ）
-        _nonfinite[0] = 0 if math.isfinite(_lv) else _nonfinite[0] + 1
-        if _nonfinite[0] >= 3:
-            raise RuntimeError("損失が 3 回続けて有限でない（学習が壊れている）")
+        if _guard.observe(_lv, step) == "fallback":
+            # fp16 の桁あふれ。GradScaler が更新を飛ばしていたので重みは壊れていない。fp32 に切り替えて続ける
+            AMP_ON[0] = False; scaler = torch.amp.GradScaler(enabled=False); amp_fallback_step[0] = step
+            print(f"fp16 で損失が有限にならない状態が続いたので、step {step} から fp32 に切り替える", flush=True)
 while step < steps:
     if SORT:
         for micros, n in dl:
             eff_loss = torch.zeros((), device=DEV)
             for m in micros:
                 m = {k: v.to(DEV) for k, v in m.items()}
-                with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
+                with torch.autocast(DEV, dtype=torch.float16, enabled=AMP_ON[0]):
                     loss = training_loss(model(**m).logits, m["labels"]) * (m["labels"].shape[0] / n)  # 束の文数/実効バッチの文数で重みを付ける＝64文を一度に流したのと同じ勾配
                 scaler.scale(loss).backward(); eff_loss += loss.detach()
             finish_step(eff_loss)
@@ -303,7 +312,7 @@ while step < steps:
         eff_loss = torch.zeros((), device=DEV)
         for b in dl:
             b = {k: v.to(DEV) for k, v in b.items()}
-            with torch.autocast(DEV, dtype=torch.float16, enabled=DEV == "cuda"):
+            with torch.autocast(DEV, dtype=torch.float16, enabled=AMP_ON[0]):
                 loss = training_loss(model(**b).logits, b["labels"]) / ACC
             scaler.scale(loss).backward(); micro += 1; eff_loss += loss.detach()
             if micro % ACC: continue
@@ -403,6 +412,7 @@ open("FINETUNE_RESULTS.md", "w").write(prev + line + "\n" + ("\n" + "\n".join(no
 manifest["status"] = "completed"
 manifest["saved_model"] = {"files": provenance.small_files_digests("ft_out"), "weights": provenance.weights_digests("ft_out")}
 manifest["outputs"] = provenance.output_digests(".", ("probs_*.json", "errors_*.json", "progress_probe_results/*.json", "FINETUNE_RESULTS.md"))
+manifest["amp"] = {"mode": AMP_MODE, "fallback_enabled": AMP_FALLBACK, "fallback_step": amp_fallback_step[0], "active_at_end": AMP_ON[0]}
 manifest["timing"] = {"train_loop_seconds": round(train_loop_seconds, 1), "train_total_seconds": round(train_seconds, 1), "eval_seconds": round(time.time() - eval_start, 1),
                       "inference_seconds": infer_seconds, "inference_rows": {tn: len(te) for tn, te in tests.items()}, "peak_gpu_gib": None if peak_gpu_gib is None else round(peak_gpu_gib, 2)}
 manifest["model_config"] = {"model_type": MODEL_TYPE, "parameters": sum(p.numel() for p in model.parameters()), "hidden_size": getattr(model.config, "hidden_size", None),

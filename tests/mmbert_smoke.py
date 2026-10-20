@@ -7,7 +7,7 @@
  ★2 トークナイザ：日本語の入力文の分割、特殊トークン、token_type_ids の有無、128 での切り捨ての割合（学習データと試験データの実際の文で、E5 と並べる）。
  ★3 分類の頭：AutoModelForSequenceClassification(num_labels=15) に通る。pooling が cls / mean の両方で動く。
  ★4 学習の 1 ステップ：順伝播・逆伝播・AdamW・勾配と損失が有限。
- ★5 保存と読み込み：save_pretrained → from_pretrained → 同じ入力で logits が一致。
+ ★5 保存と読み込み：save_pretrained → from_pretrained → 同じ入力で logits が一致。.bin → safetensors の置き直し（torch が古いときの逃げ道）で読み込み結果が一致。
  ☆6 速度の目安（この CPU での値。端末での速さではない）。
  ☆7 ONNX への書き出し（--onnx）：通れば onnxruntime の logits が PyTorch と一致するか。
 列の値そのものは結果に出さない（件数と長さの統計だけ）。未見セット（blind_set*）は読まない。
@@ -190,6 +190,31 @@ def main():
         record("★5", "保存→読み込みで logits 一致・トークナイザの ID 一致", diff < 1e-5 and same_ids,
                f"最大差 {diff:.2e}／ID一致 {same_ids}／保存したファイル {files}／重み {wd_text}")
     save_load()
+
+    # ---- ★5b .bin → safetensors の置き直し（Kaggle の torch が 2.6 未満のときの逃げ道。ここでは強制して、読み込み結果が .bin と一致するかを確かめる）----
+    @guard("★5", ".bin → safetensors の置き直し（強制）")
+    def bin_convert():
+        names = os.listdir(a.model_dir)
+        if "pytorch_model.bin" not in names or any(n.endswith(".safetensors") for n in names):
+            record("★5", ".bin → safetensors の置き直し", True, "対象外（この置き場は .bin だけではない）")
+            return
+        enc = tok(["列名: 金額 | 値: 100, 200 | 同じ表の列: 日付", "列名: 取引先 | 値: 山田商事 | 同じ表の列: 金額"], padding=True, return_tensors="pt")
+        enc = {k: v for k, v in enc.items() if k in ("input_ids", "attention_mask")}
+        with tempfile.TemporaryDirectory() as d:
+            for n in names:   # 重い .bin は複製せずリンクにする
+                os.symlink(os.path.abspath(os.path.join(a.model_dir, n)), os.path.join(d, n))
+            decide = (model_setup.needs_bin_conversion(d, "2.5.1+cu124"), model_setup.needs_bin_conversion(d, torch.__version__), model_setup.needs_bin_conversion(d, "2.6.0"))
+            out, n_tensors = model_setup.convert_bin_to_safetensors(d)
+            size_mb = os.path.getsize(out) / 1e6
+            torch.manual_seed(0)
+            m_bin, _ = load_cls(a.model_dir)          # 頭は新しい重みなので、同じ種で作る
+            torch.manual_seed(0)
+            m_st, _ = load_cls(d)                     # d には model.safetensors と .bin の両方がある。transformers は safetensors を使う
+            with torch.no_grad():
+                diff = float((m_bin.eval()(**enc).logits - m_st.eval()(**enc).logits).abs().max())
+        record("★5", ".bin → safetensors の置き直し（強制）で読み込み結果が一致", diff < 1e-6 and decide[0] and not decide[2],
+               f"最大差 {diff:.2e}／テンソル {n_tensors} 個・{size_mb:.0f}MB／変換の要否（torch 2.5.1→{decide[0]}、この環境 {torch.__version__}→{decide[1]}、2.6.0→{decide[2]}）")
+    bin_convert()
 
     # ---- ☆6 速度の目安 ----
     @guard("☆6", "速度の目安（CPU）")
