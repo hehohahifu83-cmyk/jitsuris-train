@@ -158,8 +158,11 @@ def verify_frozen_plan():
         candidate_license = candidate.get("license") or {}
         if table.get("license_id") != candidate_license.get("id"):
             raise ValueError(f"dataset license changed after review: {tid}")
-        if candidate.get("sample_values_written") is not False or candidate.get("labels_written") is not False:
-            raise ValueError(f"discovery candidate safety flags are not clean: {tid}")
+        # The discovery artifact stores labels_written once at the top level,
+        # validated above; individual candidate records only carry the sample
+        # value safety flag.
+        if candidate.get("sample_values_written") is not False:
+            raise ValueError(f"discovery candidate sample-value safety flag is not clean: {tid}")
         if "[有償]" in str(candidate.get("title", "")) or re.search(r"\bpaid\b", str(candidate.get("title", "")), re.I):
             raise ValueError(f"paid candidate is blocked: {tid}")
 
@@ -517,3 +520,4 @@ if __name__ == "__main__":
         run_self_test()
     else:
         main(dry_run="--dry-run" in sys.argv)
+
