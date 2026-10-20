@@ -55,6 +55,8 @@ jobs:
           FT_CTX_UNIT: '1'
           FT_FOCAL_GAMMA: '1.5'
           FT_LR: '1e-4'
+          FT_MAX_LEN: '192'      # 2026-10-21：新しい設定（最大トークン数・dropout）が通ることの確認。manifest に残り、独立評価の経路が同じ値を読む
+          FT_DROPOUT: '0.1'
           HF_HUB_OFFLINE: '1'
         run: |
           exec > >(tee ft.log) 2>&1

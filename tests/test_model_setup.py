@@ -41,6 +41,52 @@ class ModernBertOverrideTests(unittest.TestCase):
         self.assertEqual(M.no_dropout_args("modernbert"), {})
 
 
+class DropoutOptionTests(unittest.TestCase):
+    def test_parse_dropout(self):
+        self.assertIsNone(M.parse_dropout(None))
+        self.assertIsNone(M.parse_dropout("  "))
+        self.assertEqual(M.parse_dropout("0.1"), 0.1)
+        self.assertEqual(M.parse_dropout("0"), 0.0)
+        for bad in ("-0.1", "0.6", "abc"):
+            with self.assertRaises(ValueError):
+                M.parse_dropout(bad)
+
+    def test_modernbert_dropout_sets_four_existing_attributes(self):
+        cfg = SimpleNamespace(attention_dropout=0.0, mlp_dropout=0.0, embedding_dropout=0.0, classifier_dropout=0.0, num_labels=2)
+        changes = M.apply_modernbert_overrides(cfg, num_labels=16, dropout=0.1)
+        self.assertEqual(changes, {"attention_dropout": 0.1, "mlp_dropout": 0.1, "embedding_dropout": 0.1, "classifier_dropout": 0.1, "num_labels": 16})
+        self.assertEqual((cfg.attention_dropout, cfg.classifier_dropout), (0.1, 0.1))
+
+    def test_default_leaves_dropout_alone_and_both_options_conflict(self):
+        cfg = SimpleNamespace(attention_dropout=0.0, mlp_dropout=0.0, num_labels=2)
+        self.assertEqual(M.apply_modernbert_overrides(cfg, num_labels=16), {"num_labels": 16})
+        self.assertEqual(cfg.attention_dropout, 0.0)
+        with self.assertRaises(ValueError):
+            M.apply_modernbert_overrides(cfg, no_dropout=True, dropout=0.1)
+
+    def test_xlmr_dropout_args_only_when_requested(self):
+        self.assertEqual(M.dropout_args("xlm-roberta", None), {})
+        self.assertEqual(M.dropout_args("xlm-roberta", 0.2), {"hidden_dropout_prob": 0.2, "attention_probs_dropout_prob": 0.2})
+        self.assertEqual(M.dropout_args("modernbert", 0.2), {})        # ModernBERT は config の上書きで行う
+
+
+class FinetuneSourceTests(unittest.TestCase):
+    """finetune_exp.py はスクリプトなので、読み込まずに文面で守る（最大トークン数の直書きが戻らない・既定が 128）。"""
+
+    def setUp(self):
+        here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(os.path.join(here, "finetune_exp.py"), encoding="utf-8") as fh:
+            self.source = fh.read()
+
+    def test_max_length_is_not_hard_coded_and_defaults_to_128(self):
+        self.assertNotIn("max_length=128", self.source)
+        self.assertIn('MAX_LEN = int(os.environ.get("FT_MAX_LEN", "128"))', self.source)
+        self.assertLess(self.source.index('MAX_LEN = int(os.environ.get("FT_MAX_LEN"'), self.source.index("def score_progress_probe"))
+
+    def test_dropout_override_is_recorded_in_the_manifest(self):
+        self.assertIn('"dropout_override": DROPOUT', self.source)
+
+
 class BinConversionTests(unittest.TestCase):
     def _dir(self, files):
         d = tempfile.mkdtemp()

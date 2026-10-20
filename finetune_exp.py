@@ -63,16 +63,20 @@ from transformers import AutoConfig
 import model_setup
 MODEL_TYPE = getattr(AutoConfig.from_pretrained(os.environ.get("FT_INIT_MODEL_PATH") or NAME), "model_type", "")
 NO_DROPOUT = os.environ.get("FT_NO_DROPOUT") == "1"
+DROPOUT = model_setup.parse_dropout(os.environ.get("FT_DROPOUT"))   # 空なら各モデルの既定のまま（E5 は 0.1、ModernBERT 系は 0）。数を入れると dropout をその値にする（2026-10-21）
+if NO_DROPOUT and DROPOUT is not None:
+    raise ValueError("FT_NO_DROPOUT and FT_DROPOUT cannot be used together")
+MAX_LEN = int(os.environ.get("FT_MAX_LEN", "128"))   # 入力の最大トークン数（既定 128。mmBERT は日本語が長く分かれ、実表で切れる割合が E5 の約 2 倍なので、192 などを試せるようにした。2026-10-21）
 config_changes = {}
 if MODEL_TYPE == "modernbert":
     tok.model_input_names = ["input_ids", "attention_mask"]   # ModernBERT は token_type_ids を受け取らない
     _mcfg = AutoConfig.from_pretrained(os.environ.get("FT_INIT_MODEL_PATH") or NAME)
-    config_changes = model_setup.apply_modernbert_overrides(_mcfg, num_labels=len(labels), pooling=os.environ.get("FT_POOLING", ""), no_dropout=NO_DROPOUT)
+    config_changes = model_setup.apply_modernbert_overrides(_mcfg, num_labels=len(labels), pooling=os.environ.get("FT_POOLING", ""), no_dropout=NO_DROPOUT, dropout=DROPOUT)
     # config を渡して読む（引数で渡すと transformers の版によって落ちる）。T4 では flash-attn は使えないので sdpa
     model_args = {"config": _mcfg, "attn_implementation": os.environ.get("FT_ATTN", "sdpa")}
     fresh_extra = {}
 else:
-    model_args = model_setup.no_dropout_args(MODEL_TYPE) if NO_DROPOUT else {}   # 何も指定しなければ、各モデルの既定のまま（E5 は dropout 0.1）
+    model_args = model_setup.no_dropout_args(MODEL_TYPE) if NO_DROPOUT else model_setup.dropout_args(MODEL_TYPE, DROPOUT)   # 何も指定しなければ、各モデルの既定のまま（E5 は dropout 0.1）
     fresh_extra = {"num_labels": len(labels)}
 init_model_path = os.environ.get("FT_INIT_MODEL_PATH")
 if init_model_path:
@@ -160,7 +164,7 @@ def score_progress_probe(stage):
         for start in range(0, len(progress_rows), 32):
             batch = progress_rows[start:start + 32]
             enc = tok([text((r["header"], r["values"], r["target"], r.get("context", []), r.get("unit_context", "")), PREFIX)
-                      for r in batch], truncation=True, max_length=128, padding=True, return_tensors="pt")
+                      for r in batch], truncation=True, max_length=MAX_LEN, padding=True, return_tensors="pt")
             enc = {k: v.to(DEV) for k, v in enc.items()}
             probs = torch.softmax(model(**enc).logits.float(), dim=-1).cpu().tolist()
             for row, p in zip(batch, probs):
@@ -183,7 +187,7 @@ if progress_rows:
 data = [(r, L[r[2]]) for r in train_rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in train_rows]
 print(f"training rows={len(train_rows)} seed={seed_text or 'default'}", flush=True)
 # --- 学習の記録（manifest.json）と、入力の長さ・切り捨ての割合（2026-10-20）---
-MAX_LEN = 128
+# MAX_LEN は上（FT_MAX_LEN）で定義済み
 token_stats = {}
 if os.environ.get("FT_TOKEN_STATS", "1") == "1":
     def _len_stats(rs):
@@ -202,7 +206,7 @@ manifest = provenance.build_manifest(
     model_name=NAME, hf_repo_id=provenance.hf_repo_id_from_path(NAME), epochs=EPOCHS, seed=seed_text or "default", labels=labels,
     train_rows=train_rows, replay_rows=replay_rows, tests={tn: provenance.rows_digest(te) for tn, te in tests.items()},
     source_model_dir=(init_model_path or (NAME if os.path.isdir(NAME) else None)),
-    extra={"model_type": MODEL_TYPE, "config_changes": config_changes, "no_dropout": NO_DROPOUT, "prefix": PREFIX, "max_length": MAX_LEN,
+    extra={"model_type": MODEL_TYPE, "config_changes": config_changes, "no_dropout": NO_DROPOUT, "dropout_override": DROPOUT, "prefix": PREFIX, "max_length": MAX_LEN,
            "token_stats": token_stats, "request_args": _args_txt, "device": DEV,
            "gpu": (torch.cuda.get_device_name(0) if DEV == "cuda" else None), "eval_mode": "validation" if os.environ.get("FT_VAL") == "1" else "fixed_tests"})
 manifest["status"] = "started"
@@ -211,7 +215,7 @@ random.shuffle(data)
 CPU_TOKEN_CACHE = DEV == "cpu" and not AUG and os.environ.get("FT_CPU_CACHE", "1") == "1"
 if CPU_TOKEN_CACHE:
     token_texts = [x for x, _ in data]
-    token_rows = tok(token_texts, truncation=True, max_length=128, padding=False)
+    token_rows = tok(token_texts, truncation=True, max_length=MAX_LEN, padding=False)
     data = [({k: token_rows[k][i] for k in token_rows.keys()}, y) for i, (_, y) in enumerate(data)]
     print(f"CPU token cache: {len(data)} rows tokenized once", flush=True)
 
@@ -219,7 +223,7 @@ def collate(b):
     if CPU_TOKEN_CACHE:
         enc = tok.pad([x for x, _ in b], padding=True, return_tensors="pt")
     else:
-        enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=128, padding=True, return_tensors="pt")
+        enc = tok([text_aug(x, PREFIX) if AUG else x for x, _ in b], truncation=True, max_length=MAX_LEN, padding=True, return_tensors="pt")
     enc["labels"] = torch.tensor([y for _, y in b]); return enc
 IS_LARGE = "large" in NAME.lower()
 DEFAULT_BS = 2 if DEV == "cuda" and IS_LARGE else (64 if DEV == "cuda" else 32)
@@ -243,7 +247,7 @@ def collate_eff(b):
     if CPU_TOKEN_CACHE: ids = [x["input_ids"] for x, _ in b]
     else:
         texts = [text_aug(x, PREFIX) if AUG else x for x, _ in b]
-        ids = tok(texts, truncation=True, max_length=128, padding=False)["input_ids"]
+        ids = tok(texts, truncation=True, max_length=MAX_LEN, padding=False)["input_ids"]
     ys = [y for _, y in b]; micros = []
     for idx in plan_micro_batches([len(s) for s in ids], BS):
         pids, pmask = pad_batch([ids[i] for i in idx], tok.pad_token_id, PAD_MULT)
@@ -330,7 +334,7 @@ def probs(rs):
     out = []
     with torch.no_grad():
         for i in range(0, len(rs), EVAL_BS):
-            enc = tok([text(r, PREFIX) for r in rs[i:i + EVAL_BS]], truncation=True, max_length=128, padding=True, return_tensors="pt")
+            enc = tok([text(r, PREFIX) for r in rs[i:i + EVAL_BS]], truncation=True, max_length=MAX_LEN, padding=True, return_tensors="pt")
             enc = {k: v.to(DEV) for k, v in enc.items()}
             out.append(torch.softmax(model(**enc).logits.float(), -1).cpu().numpy())
     return np.vstack(out)

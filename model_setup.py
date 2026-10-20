@@ -16,8 +16,26 @@ MODERNBERT_DROPOUTS = ("attention_dropout", "mlp_dropout", "embedding_dropout", 
 XLMR_DROPOUTS = {"hidden_dropout_prob": 0.0, "attention_probs_dropout_prob": 0.0}
 
 
-def apply_modernbert_overrides(cfg, num_labels=None, pooling="", no_dropout=False):
-    """config に上書きを行い、実際に変えた項目の辞書を返す（学習の記録に残す）。"""
+def parse_dropout(text):
+    """FT_DROPOUT の値（空なら None＝各モデルの既定のまま）。0〜0.5 の小数。"""
+    text = (text or "").strip()
+    if not text:
+        return None
+    value = float(text)
+    if not 0.0 <= value <= 0.5:
+        raise ValueError(f"FT_DROPOUT must be between 0 and 0.5: {text}")
+    return value
+
+
+def dropout_args(model_type, value):
+    """E5 など（XLM-R 系）で dropout を value にする from_pretrained の引数。ModernBERT 系は config の上書きで行う（apply_modernbert_overrides）。"""
+    return {} if model_type == "modernbert" or value is None else {"hidden_dropout_prob": value, "attention_probs_dropout_prob": value}
+
+
+def apply_modernbert_overrides(cfg, num_labels=None, pooling="", no_dropout=False, dropout=None):
+    """config に上書きを行い、実際に変えた項目の辞書を返す（学習の記録に残す）。dropout を渡すと 4 つの dropout をその値にする。"""
+    if no_dropout and dropout is not None:
+        raise ValueError("FT_NO_DROPOUT and FT_DROPOUT cannot be used together")
     changes = {}
     if hasattr(cfg, "reference_compile"):
         cfg.reference_compile = False
@@ -28,11 +46,12 @@ def apply_modernbert_overrides(cfg, num_labels=None, pooling="", no_dropout=Fals
             raise ValueError(f"FT_POOLING must be cls or mean: {pooling}")
         cfg.classifier_pooling = pooling
         changes["classifier_pooling"] = pooling
-    if no_dropout:
+    if no_dropout or dropout is not None:
+        value = 0.0 if no_dropout else float(dropout)
         for key in MODERNBERT_DROPOUTS:
             if hasattr(cfg, key):
-                setattr(cfg, key, 0.0)
-                changes[key] = 0.0
+                setattr(cfg, key, value)
+                changes[key] = value
     if num_labels is not None:
         cfg.num_labels = int(num_labels)
         changes["num_labels"] = int(num_labels)
