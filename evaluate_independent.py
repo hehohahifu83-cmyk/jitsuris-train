@@ -7,7 +7,7 @@
 
 使い方：
   python evaluate_independent.py predict --set <主セット.json> --checkpoint <ft_out_jobN> --out <予測.json> [--ledger eval_reports/independent/ledger.jsonl] [--device cpu] [--repeat-reason 理由]
-  python evaluate_independent.py score --preds <予測.json> --labels <ラベル.json> --out-dir <出力先> --run job1 [--dataset independent_main] [--seed 1]
+  python evaluate_independent.py score --preds <予測.json> --labels <ラベル.json> --out-dir <出力先> --run job1 [--dataset independent_main] [--seed 1] [--guard-version v9.1|v10]
 
 主セットの形（schema_version 1）：
   {"schema_version": 1, "set_id": "…", "columns": [{"id": "c001", "table": "t01", "source": "yokohama", "language": "ja",
@@ -31,6 +31,9 @@ from collections import Counter
 
 SCHEMA = 1
 EVAL_MAX_LENGTH = 128
+PRIMARY_GUARD_VERSION = "v9.1"
+import guard as guard_module
+AVAILABLE_GUARD_VERSIONS = (PRIMARY_GUARD_VERSION, guard_module.GUARD_VERSION)
 EXCLUDE_LABELS = ("unknown", "S")   # LABEL_GUIDE の「決められない」「学習に使わない」。採点から外し、件数と id を記録に残す
 
 
@@ -138,16 +141,28 @@ def infer_torch(checkpoint_dir, texts, info, device="cpu", batch_size=32):
 
 
 def make_predictions(set_data, rows, probs, labels):
-    """確率 → 守りを通した判断（train3.decide_with_details）。ラベルは使わない。"""
+    """確率 → 同じ入力から複数版の guard 判定。値・正解ラベルは出力に保存しない。"""
     import numpy as np
     from train3 import decide_with_details
-    details = decide_with_details(labels, probs, rows)
+    by_version = {
+        version: decide_with_details(labels, probs, rows, guard_version=version)
+        for version in AVAILABLE_GUARD_VERSIONS
+    }
     top = np.argsort(probs, axis=1)[:, ::-1][:, :3]
     out = []
-    for i, (col, detail) in enumerate(zip(set_data["columns"], details)):
+    for i, col in enumerate(set_data["columns"]):
+        decisions = {
+            version: {"guarded_prediction": details[i]["guarded_prediction"],
+                      "decision_reason": details[i]["decision_reason"]}
+            for version, details in by_version.items()
+        }
+        primary = decisions[PRIMARY_GUARD_VERSION]
         out.append({"id": col["id"], "column": normalized_header(col["header"]),
-                    "raw_prediction": detail["raw_prediction"], "guarded_prediction": detail["guarded_prediction"],
-                    "decision_reason": detail["decision_reason"],
+                    "raw_prediction": by_version[PRIMARY_GUARD_VERSION][i]["raw_prediction"],
+                    # Backward-compatible alias: the preregistered primary is v9.1.
+                    "guarded_prediction": primary["guarded_prediction"],
+                    "decision_reason": primary["decision_reason"],
+                    "guard_predictions": decisions,
                     "top3": [{"label": labels[int(j)], "probability": round(float(probs[i, j]), 6)} for j in top[i]]})
     return out
 
@@ -195,6 +210,9 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
     preds = make_predictions(set_data, rows, probs, info["labels"])
     created = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     doc = {"schema_version": SCHEMA, "set_id": set_data.get("set_id"), "set_sha256": set_sha, "created_utc": created,
+           "guard_version": PRIMARY_GUARD_VERSION,
+           "guard_implementation_version": guard_module.GUARD_VERSION,
+           "available_guard_versions": list(AVAILABLE_GUARD_VERSIONS),
            "checkpoint": {k: info[k] for k in ("weights_sha256", "model", "hf_revision", "model_type", "prefix", "max_length", "ctx_unit", "seed", "train_commit")},
            "labels": info["labels"], "device": device,
            "timing": {"columns": len(rows), "seconds": round(float(seconds), 3), "ms_per_column": round(1000 * float(seconds) / len(rows), 3)},
@@ -210,7 +228,7 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
 
 # ---------------------------------------------------------------- 採点
 
-def score(preds_path, labels_path, out_dir, run, dataset="independent_main", seed="1"):
+def score(preds_path, labels_path, out_dir, run, dataset="independent_main", seed="1", guard_version=PRIMARY_GUARD_VERSION):
     """予測にラベルを結びつけて、training と同じ形の記録を書く。ラベルがそろっていない・知らないラベルならエラー。"""
     from evaluation_records import assert_metrics_match, build_record, is_issue
     from llm_baseline import score_real
@@ -218,6 +236,19 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     doc = json.loads(raw.decode("utf-8"))
     label_raw = read_bytes(labels_path)
     truth = json.loads(label_raw.decode("utf-8"))
+    if guard_version not in AVAILABLE_GUARD_VERSIONS:
+        raise ValueError("unsupported guard version: " + str(guard_version))
+    available = set(doc.get("available_guard_versions") or [doc.get("guard_version")])
+    if guard_version not in available:
+        raise ValueError(f"予測ファイルに guard {guard_version} の判定がない")
+    def decision_for(row):
+        saved = (row.get("guard_predictions") or {}).get(guard_version)
+        if saved is not None:
+            return saved
+        if doc.get("guard_version") == guard_version:
+            return {"guarded_prediction": row["guarded_prediction"], "decision_reason": row.get("decision_reason")}
+        raise ValueError(f"予測行に guard {guard_version} の判定がない")
+    selected = {r["id"]: decision_for(r) for r in doc["rows"]}
     ids = [r["id"] for r in doc["rows"]]
     missing = [i for i in ids if i not in truth]
     extra = sorted(set(truth) - set(ids))
@@ -226,7 +257,7 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     excluded_ids = [r["id"] for r in doc["rows"] if truth[r["id"]] in EXCLUDE_LABELS]
     kept = [(i, r) for i, r in enumerate(doc["rows"]) if truth[r["id"]] not in EXCLUDE_LABELS]
     undecidable = [r for r in doc["rows"] if truth[r["id"]] == "unknown"]
-    asserted_ids = [r["id"] for r in undecidable if r["guarded_prediction"] != "unknown"]   # 正解が決められない列への言い切り
+    asserted_ids = [r["id"] for r in undecidable if selected[r["id"]]["guarded_prediction"] != "unknown"]   # 正解が決められない列への言い切り
     if not kept:
         raise ValueError("ラベルが unknown／S のものしかなく、採点できる列が 1 つもない")
     known = set(doc["labels"])
@@ -234,7 +265,8 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     if unknown_labels:
         raise ValueError(f"重みが知らないラベルがある：{unknown_labels}")
     records = [build_record(index=i, dataset=dataset, seed=seed, condition="微調整だけ", column=r["column"], truth=truth[r["id"]],
-                            guarded_prediction=r["guarded_prediction"], top3=r["top3"], decision_reason=r["decision_reason"])
+                            guarded_prediction=selected[r["id"]]["guarded_prediction"], top3=r["top3"],
+                            decision_reason=selected[r["id"]].get("decision_reason"))
                for i, r in kept]
     metrics = score_real([r["guarded_prediction"] for r in records], [r["truth"] for r in records])
     assert_metrics_match(records, metrics)
@@ -245,6 +277,7 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     with open(os.path.join(out_dir, f"{run}_errors_{dataset}_ft.json"), "w", encoding="utf-8") as fh:
         fh.write(json.dumps({**meta, "errors": [r for r in records if is_issue(r)]}, ensure_ascii=False, separators=(",", ":")) + "\n")
     link = {"run": run, "dataset": dataset, "set_id": doc.get("set_id"), "set_sha256": doc.get("set_sha256"),
+            "guard_version": guard_version, "prediction_guard_version": doc.get("guard_version"),
             "preds_sha256": sha256_bytes(raw), "labels_sha256": sha256_bytes(label_raw), "checkpoint": doc["checkpoint"],
             "timing": doc.get("timing"), "device": doc.get("device"), "counts": dict(Counter(r["outcome"] for r in records)),
             "n": len(records), "n_excluded": len(excluded_ids), "excluded_ids": excluded_ids,
@@ -272,12 +305,13 @@ def main(argv=None):
     s.add_argument("--run", required=True)
     s.add_argument("--dataset", default="independent_main")
     s.add_argument("--seed", default="1")
+    s.add_argument("--guard-version", choices=AVAILABLE_GUARD_VERSIONS, default=PRIMARY_GUARD_VERSION)
     a = ap.parse_args(argv)
     if a.cmd == "predict":
         doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason)
-        print(json.dumps({k: doc[k] for k in ("set_id", "set_sha256", "checkpoint", "timing")}, ensure_ascii=False, indent=1))
+        print(json.dumps({k: doc[k] for k in ("set_id", "set_sha256", "guard_version", "guard_implementation_version", "available_guard_versions", "checkpoint", "timing")}, ensure_ascii=False, indent=1))
     else:
-        print(json.dumps(score(a.preds, a.labels, a.out_dir, a.run, a.dataset, a.seed), ensure_ascii=False, indent=1))
+        print(json.dumps(score(a.preds, a.labels, a.out_dir, a.run, a.dataset, a.seed, a.guard_version), ensure_ascii=False, indent=1))
     return 0
 
 
