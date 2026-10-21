@@ -133,3 +133,21 @@ class SubOrganizationTests(unittest.TestCase):
             parent = parent_publisher(entry["publisher_id"])
             if parent in FIXED_ASSIGNMENTS:
                 self.assertEqual(entry["pool"], FIXED_ASSIGNMENTS[parent], entry["publisher_id"])
+
+
+class GeneralDepartmentTests(unittest.TestCase):
+    def test_departments_of_any_organization_share_its_pool(self):
+        r = add_assignment(empty_registry(), "chiba:dept-1", "2026-10-21")
+        r = add_assignment(r, "chiba:dept-2", "2026-10-21")
+        pools = {p["publisher_id"]: p["pool"] for p in r["publishers"]}
+        self.assertEqual(pools["chiba:dept-1"], pools["chiba:dept-2"])
+        self.assertEqual(pools["chiba:dept-1"], pool("chiba"))
+
+    def test_registered_organization_decides_department_pool(self):
+        reg = {"schema_version": 1, "aliases": {}, "publishers": [{"publisher_id": "chiba", "pool": "eval2", "date": "2026-10-21"}]}
+        self.assertEqual(assignment_for("chiba:dept-9", reg)["pool"], "eval2")
+        bad = {"schema_version": 1, "aliases": {}, "publishers": [
+            {"publisher_id": "chiba", "pool": "eval2", "date": "2026-10-21"},
+            {"publisher_id": "chiba:dept-9", "pool": "train", "date": "2026-10-21"}]}
+        with self.assertRaisesRegex(ValueError, "department pool must match"):
+            validate_allocation(bad)

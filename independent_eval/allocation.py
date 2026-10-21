@@ -121,6 +121,11 @@ def validate_allocation(allocation: dict[str, Any]) -> None:
         if not isinstance(record.get("date"), str):
             raise ValueError(f"missing registry date for {publisher_id}")
         date.fromisoformat(record["date"])
+    pools = {normalize_publisher_id(r["publisher_id"]): r["pool"] for r in publishers}
+    for child, child_pool in pools.items():
+        parent = parent_publisher(child)
+        if parent in pools and pools[parent] != child_pool:
+            raise ValueError(f"department pool must match its organization: {child} ({child_pool}) vs {parent} ({pools[parent]})")
     alias_conflicts = seen & normalized_aliases
     if alias_conflicts:
         raise ValueError(f"registered publisher cannot also be an alias: {sorted(alias_conflicts)[0]}")
@@ -141,6 +146,12 @@ def assignment_for(
     parent = parent_publisher(canonical)
     if parent in FIXED_ASSIGNMENTS:
         return {"publisher_id": canonical, "pool": FIXED_ASSIGNMENTS[parent]}
+    if parent is not None:
+        # 部署は組織と同じプール：組織が登録済みならそのプール、未登録なら組織の名前で pool() を引く（同じ組織の部署は必ず同じ側）
+        for record in allocation["publishers"]:
+            if normalize_publisher_id(record["publisher_id"]) == parent:
+                return {"publisher_id": canonical, "pool": record["pool"]}
+        return {"publisher_id": canonical, "pool": "hold" if ambiguous else pool(parent)}
     destination = "hold" if ambiguous else pool(canonical)
     return {"publisher_id": canonical, "pool": destination}
 
