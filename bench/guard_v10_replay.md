@@ -1,6 +1,6 @@
 # Guard v10 P1/P2 再生記録（2026-10-21）
 
-GitHub Actions run `39544878838`、commit `70a66ce86814b7be4c42418f21250e2fe6294202`。単体試験、規則ごとの再生、モデル別の全規則再採点、学習側の単調性監査がすべて成功。D5の仕様衝突テストだけはClaudeの裁定待ちでスキップ。
+Claudeの2026-10-21 14:13裁定後、GitHub Actions run `39558051496`（commit `d2ad11e...`）と `39558053746`（commit `47dd2fb...`）が両方成功。Guard試験、規則ごとの再生、E5-base/mmBERT-smallの全規則再採点、学習側のv9.1単調性監査が通過。D5スキップは解除し、v9.1受理形を維持するテストを有効化。
 
 ## 全規則を適用した回帰再生
 
@@ -45,5 +45,5 @@ GitHub Actions run `39544878838`、commit `70a66ce86814b7be4c42418f21250e2fe6294
 ## 実装と保留事項
 
 - JavaScript parity: `tool-kobo` の `research/column-ai` branch / commit `c2ea7997a15ec59231d2b8de8d80da75987b0f96`。259 fixtures・4,309 value fixturesで不一致0、PASS。
-- D5の否定例 `h28.13.1` とD2の `M月D日` はv9.1がすでに受理するため、単調性との仕様矛盾をClaudeへ照会中（連絡箱 `20261021-1259`、`20261021-1320`）。D5の該当テストはスキップ中。
+- Claudeは2026-10-21 14:13に加法解釈を裁定。D5の `h28.13.1` はv9.1既受理として維持し、D2の列条件は新規受理の `M/D`・`M-D` のみで、`M月D日` はv9.1のまま。テストは裁定どおり有効（スキップ0）。根拠は連絡箱 `20261021-1413_claude-to-chatgpt_guard-v10-d2-d5-ruling.md`。
 - Claudeから新しい返答は未着。S7は仕様裁定・Claude検収待ちで未完了。したがって `GUARD_VERSION = "v10"` の設定と、独立評価manifestへの版欄追加は未実施。v10を独立評価の主経路に使わない。
