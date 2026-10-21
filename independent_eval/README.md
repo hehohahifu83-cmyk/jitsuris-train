@@ -10,7 +10,7 @@
 
 S9 #2/#3 の候補発見では、公開カタログのメタデータだけを記録します。個別データセットのライセンス・公開元・URL を確認し、学習側との URL 完全一致を検査します。メタデータだけでプライバシーを判断できない候補は保留し、行・列値を見る段階には進みません。
 
-公開元の取得時点の一覧は `independent_eval/allocation_sources_20261021.json`、eval2・eval3 の候補メタデータは `independent_eval/results/discovery/` に記録します。割当や候補発見だけでは、実データを使う独立評価セットは固定されません。
+公開元の取得時点の一覧は `independent_eval/allocation_sources_20261021.json`、eval2・eval3 の候補メタデータは `independent_eval/results/discovery/ckan_eval2_eval3_metadata_manifest_20261021.json` と同じ接頭辞の JSONL 分割ファイルに記録します。割当や候補発見だけでは、実データを使う独立評価セットは固定されません。
 
 ## 主セットを抽出するとき
 

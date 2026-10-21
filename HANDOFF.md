@@ -1,3 +1,13 @@
+## 2026-10-21 UTC — ChatGPT: S9 metadata discovery after allocation commit
+
+- Allocation commit `c10dc68feb40329cd4f73804af65db03c5734344` was already on main before any `package_search` call. Queries covered only 119 eval2/eval3 publishers (Yokohama 12, Kobe 106, Sapporo 1); all 119 succeeded, returning metadata for 323 datasets and 6,319 resources.
+- Persisted only package name/title/license fields and resource format/URL fields, plus review flags. Descriptions, headers, rows and values were not inspected or stored; resource files were not downloaded.
+- Exact resource-URL overlap was 0. The comparison used 1,040 distinct training table URLs from six `materials/real_labels*.jsonl` corpora and `materials/real_corpus_jp2.jsonl` (11,286 records); only each record's `table` URL field was read.
+- License screen: 317 datasets use the source-approved `cc-by`; 6 use unlisted `CC-BY-ND-4.0`. Host screen: 5 resource URLs use hosts outside the manifest allowlist. Title-only privacy keyword screen flagged 17 datasets. Treat these as excluded/hold pending review; metadata-only checks do not clear privacy.
+- Metadata is stored in `independent_eval/results/discovery/ckan_eval2_eval3_metadata_manifest_20261021.json` and its JSONL parts. No candidate was extracted or frozen. Japanese-column share and dataset suitability remain unverified.
+
+---
+
 ## 2026-10-21 UTC — ChatGPT: S12 / S9 / S14 実装
 
 - S12: 修正 `FT_REAL_FRAC` の適用位置を、FT_VAL分割後の元の学習行（表IDあり）かつ単位文脈拡張前へ移した。既定1.0で全元行を保持するimport回帰試験を追加。focused unittest 14件成功。
