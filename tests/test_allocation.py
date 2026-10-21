@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 
 from independent_eval.allocation import (
     add_assignment,
@@ -6,6 +7,7 @@ from independent_eval.allocation import (
     normalize_publisher_id,
     pool,
     resolve_publisher_id,
+    load_allocation,
     validate_allocation,
 )
 
@@ -38,6 +40,30 @@ class AllocationTests(unittest.TestCase):
         }
         self.assertEqual(assignment_for("YOKOHAMA", registry)["pool"], "main")
         self.assertEqual(assignment_for("jp", registry)["pool"], "train")
+        with self.assertRaisesRegex(ValueError, "fixed publisher pool cannot change"):
+            validate_allocation(
+                {
+                    "schema_version": 1,
+                    "aliases": {},
+                    "publishers": [
+                        {"publisher_id": "yokohama", "pool": "train", "date": "2026-10-21"}
+                    ],
+                }
+            )
+
+    def test_persisted_registry_contains_all_protocol_fixed_sources(self):
+        registry = load_allocation(
+            Path(__file__).resolve().parents[1] / "independent_eval" / "allocation.json"
+        )
+        actual = {entry["publisher_id"]: entry["pool"] for entry in registry["publishers"]}
+        expected = {
+            "australia": "train", "canada": "train", "canada2": "train",
+            "datagov_uk": "train", "datagov_uk2": "train", "direct": "train",
+            "egov": "train", "egov_biz": "train", "egov_biz2": "train",
+            "gittables": "train", "ireland": "train", "jp": "train", "jp2": "train",
+            "kobe": "main", "nyc": "main", "sapporo": "main", "yokohama": "main",
+        }
+        self.assertEqual(actual, expected)
 
 
     def test_aliases_resolve_before_assignment(self):
