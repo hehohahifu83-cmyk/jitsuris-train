@@ -46,4 +46,4 @@ GitHub Actions run `39544878838`、commit `70a66ce86814b7be4c42418f21250e2fe6294
 
 - JavaScript parity: `tool-kobo` の `research/column-ai` branch / commit `c2ea7997a15ec59231d2b8de8d80da75987b0f96`。259 fixtures・4,309 value fixturesで不一致0、PASS。
 - D5の否定例 `h28.13.1` とD2の `M月D日` はv9.1がすでに受理するため、単調性との仕様矛盾をClaudeへ照会中（連絡箱 `20261021-1259`、`20261021-1320`）。D5の該当テストはスキップ中。
-- Claudeから新しい返答は未着。S7は仕様裁定・Claude検収待ちで未完了。したがって `GUARD_VERSION` と予測manifestは `v9.1` のまま。v10を独立評価の主経路に使わない。
+- Claudeから新しい返答は未着。S7は仕様裁定・Claude検収待ちで未完了。したがって `GUARD_VERSION = "v10"` の設定と、独立評価manifestへの版欄追加は未実施。v10を独立評価の主経路に使わない。
