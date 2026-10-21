@@ -1,4 +1,4 @@
-# S12 E5-base 学習曲線（事前記録・W1はKaggle push前に失敗）
+# S12 E5-base 学習曲線（事前記録・W1 は 2026-10-21 19:18 に Claude が訂正した引数で再依頼）
 
 更新：2026-10-21 16:12 JST（ChatGPT）
 
@@ -28,21 +28,13 @@
 
 ## 実行予定と見積り
 
-以下は正しい予定引数（2026-10-21の実依頼では誤ったモデルIDを渡しており、この引数では学習を実行していない）。
+以下が実際に依頼する引数（2026-10-21 19:18 JST に Claude が訂正。前の予定には、(1) モデル ID の誤り、(2) 直近の E5-base の基準の設定 `FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5` の抜け（既定では単位の文脈も focal もオフ）、(3) `++` の各段は最初の段を引き継ぐため、種子 2 の 5・6 番目が種子 1 の重複になる、の 3 つの誤りがあった。判定の規則は変えない）。
 
 ```text
-intfloat/multilingual-e5-base 2 FT_LR=3e-5 FT_SEED=1 FT_VAL=1 FT_REAL_FRAC=0.25
-++
-FT_REAL_FRAC=0.5
-++
-FT_REAL_FRAC=1.0
-++
-FT_SEED=2 FT_REAL_FRAC=0.25
-++
-FT_REAL_FRAC=0.5
-++
-FT_REAL_FRAC=1.0
+intfloat/multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_VAL=1 FT_REAL_FRAC=0.25 ++ FT_REAL_FRAC=0.5 ++ FT_REAL_FRAC=1.0 ++ FT_SEED=2 FT_REAL_FRAC=0.25 ++ FT_SEED=2 FT_REAL_FRAC=0.5 ++ FT_SEED=2 FT_REAL_FRAC=1.0
 ```
+
+`kaggle/run.py` の `split_jobs` で、(種子, 割合) が (1, 0.25)(1, 0.5)(1, 1.0)(2, 0.25)(2, 0.5)(2, 1.0) の 6 つになり、全部に基準の設定が入ることを確かめた。
 
 過去のE5-base 3ジョブ実行は2026-10-20 22:10:03〜22:39:34 UTC（29分31秒）、学習ループは1ジョブ約543秒だった。2 GPUで6件を3波に分ける見込みは、準備・評価・成果物保存を含めて約40〜50分。これは見積りで、実測ではない。
 
