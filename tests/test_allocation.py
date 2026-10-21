@@ -1,0 +1,74 @@
+import unittest
+
+from independent_eval.allocation import (
+    add_assignment,
+    assignment_for,
+    normalize_publisher_id,
+    pool,
+    resolve_publisher_id,
+    validate_allocation,
+)
+
+
+def empty_registry(aliases=None):
+    return {"schema_version": 1, "aliases": aliases or {}, "publishers": []}
+
+
+class AllocationTests(unittest.TestCase):
+    def test_normalization_uses_nfkc_lowercase_and_removes_all_whitespace(self):
+        self.assertEqual(normalize_publisher_id("  Ｃｉｔｙ　 OF\tTOKYO "), "cityoftokyo")
+
+
+    def test_pool_is_deterministic_and_matches_protocol_vectors(self):
+        self.assertEqual(pool("  ＪＰ "), "train")
+        self.assertEqual(pool("fixture-0"), "eval2")
+        self.assertEqual(pool("fixture-1"), "train")
+        self.assertEqual(pool("fixture-2"), "eval3")
+        self.assertEqual(pool("tokyo"), pool("tokyo"))
+
+
+    def test_protocol_fixed_assignments_override_hash_for_existing_sources(self):
+        registry = {
+            "schema_version": 1,
+            "aliases": {},
+            "publishers": [
+                {"publisher_id": "yokohama", "pool": "main", "date": "2026-10-21"},
+                {"publisher_id": "jp", "pool": "train", "date": "2026-10-21"},
+            ],
+        }
+        self.assertEqual(assignment_for("YOKOHAMA", registry)["pool"], "main")
+        self.assertEqual(assignment_for("jp", registry)["pool"], "train")
+
+
+    def test_aliases_resolve_before_assignment(self):
+        registry = empty_registry({"CITY PORTAL": "city"})
+        self.assertEqual(resolve_publisher_id("Ｃｉｔｙ　Portal", registry["aliases"]), "city")
+        self.assertEqual(assignment_for("CITY PORTAL", registry)["publisher_id"], "city")
+
+
+    def test_ambiguous_publisher_is_assigned_to_eval_side(self):
+        self.assertEqual(assignment_for("unclear org", empty_registry(), ambiguous=True)["pool"], "eval2")
+
+
+    def test_existing_assignment_is_immutable_and_add_is_idempotent(self):
+        registry = empty_registry()
+        assigned = add_assignment(registry, "publisher a", "2026-10-21")
+        repeated = add_assignment(assigned, "PUBLISHER A", "2026-10-22", ambiguous=True)
+        self.assertEqual(repeated, assigned)
+        self.assertEqual(repeated["publishers"][0]["date"], "2026-10-21")
+
+
+    def test_alias_cycles_and_duplicate_assignments_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "cycle"):
+            resolve_publisher_id("a", {"a": "b", "b": "a"})
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            validate_allocation(
+                {
+                    "schema_version": 1,
+                    "aliases": {},
+                    "publishers": [
+                        {"publisher_id": "a", "pool": "train", "date": "2026-10-21"},
+                        {"publisher_id": "A", "pool": "eval2", "date": "2026-10-21"},
+                    ],
+                }
+            )
