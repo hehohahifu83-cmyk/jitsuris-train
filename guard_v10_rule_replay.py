@@ -18,7 +18,7 @@ def replay(run_dir: str, rule: str, tests: dict) -> tuple[int, Counter]:
     totals = Counter()
     n = 0
     for _filename, doc, baseline in load_records(run_dir):
-        test_rows = tests.get(doc["dataset"])
+        test_rows = tests.get(doc["test"])
         if test_rows is None:
             continue
 
