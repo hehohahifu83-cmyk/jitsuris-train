@@ -69,5 +69,33 @@ for vals in BOUNDARY_DATE:
 for vals in BOUNDARY_NUM:
     for pred in ("amount", "quantity", "rate"):
         add(pred, vals, 0.99, ("text", 0.004))
+
+# v10 P1 deterministic columns. The generated values are synthetic; these cases
+# cover the column-level thresholds that random fixtures rarely exercise.
+V10_COLUMNS = [
+    ("date", ["2024/3/5(火)", "2024年3月5日(火曜日)", "3月5日(火)", "2024-03-05 tue", "2024/03/05 火"]),
+    ("date", ["10(日)", "10(日)", "10(日)"]),
+    ("date", ["9時00分", "午後3時", "午前9時30分", "10時", "13時45分30秒"]),
+    ("date", ["3時間", "2時間30分", "25時10分", "10時60分", "時"]),
+    ("date", ["第1四半期", "2024年度第1四半期", "4th quarter", "24q1", "2024年度下半期"]),
+    ("date", ["q1", "q1", "q1", "q1", "q1"]),
+    ("date", ["q1", "q1", "foo", "bar", "baz"]),
+    ("date", ["h28. 4. 1", "r 5.10.28", "s.46/03/01", "s62. 8.30", "r6.3.5"]),
+    ("date", ["r35", "h32", "s65", "r0", "x28", "s.46/13/01", "r06a"]),
+    ("date", ["r06", "h28", "s62", "m45", "t15"]),
+    ("date", ["march", "jan", "april", "may", "june"]),
+    ("date", ["march", "march", "march", "march", "march"]),
+    ("date", ["march", "march", "foo", "bar", "baz"]),
+    ("amount", ["1,234", "-", "n/a", "2,345", "…", "nil", "3,456"]),
+    ("amount", ["1,234", "-", "n/a", "...", "nil"]),
+    ("amount", ["-", "−", "–", "—", "―", "ー"]),
+    ("amount", ["220.00 」", "1.234,56 €", "100 usd", "1,000 yen", "5,000ドル"]),
+    ("amount", ["100 abc", "100 abc"]),
+    ("quantity", ["8,250円/1時間", "0円/1か月", "30分", "3,000㎡", "10.00 number"]),
+    ("quantity", ["100 numbering", "100 numbering"]),
+]
+for pred, vals in V10_COLUMNS:
+    add(pred, vals, 0.99, ("text", 0.004))
+
 if __name__ == "__main__":
     print(json.dumps(CASES, ensure_ascii=False, indent=0))
