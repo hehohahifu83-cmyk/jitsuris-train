@@ -17,7 +17,7 @@ Sherlock（KDD 2019）の「自信のないものは人に回す」の考え方�
 - 空白は『前後を落とす集合』を Python と JS で同じに決め（正規表現の空白の略記は使わない）、64 文字は文字（コードポイント）で数える。
 """
 
-"""2026-10-21 Guard v10 P1/P2（作業中。GUARD_VERSION は回帰検査完了後に設定）:
+"""2026-10-21 Guard v10 P1/P2（検収後に `GUARD_VERSION = "v10"` を固定）:
 - P1: D1・D3・D4・D5・D6 と N1・N2・N8、P2: D2・D7・D8・D9 と N3〜N7。
 - 規則は仕様の表記定義と学習側の集計から追加し、v9.1 が受け入れていた形は維持する。
 - `_enabled_rules` は規則単独の回帰寄与を測るときだけ使う。固定試験は規則づくりに使わず、再生で回帰だけを確認する。
@@ -27,6 +27,8 @@ import re
 import unicodedata
 
 from features import value_stats, STAT_NAMES, DATE_RES, DATETIME_RE, TIME_RE
+
+GUARD_VERSION = "v10"
 
 NUMERIC = {"date", "amount", "quantity", "rate", "id"}
 YEAR_CONFIDENCE = 0.9  # 年だけの列を日付と認めるときに要る、答えの確率
