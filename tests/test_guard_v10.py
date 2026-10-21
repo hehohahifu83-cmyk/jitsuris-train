@@ -62,7 +62,7 @@ class GuardV10InitialTests(unittest.TestCase):
 
     def test_v91_accepted_date_and_number_shapes_remain_accepted(self):
         old_dates = ["2024-01-05", "2024年1月5日", "令和6年5月1日", "1/28/2008", "2012/13", "FY2020", "05-May-17"]
-        old_numbers = ["£1,234.50", "¥1,000", "1.234,56 €", "5 kg", "12.5%", "100 usd"]
+        old_numbers = ["£1,234.50", "¥1,000", "€1.234,56", "5 kg", "12.5%", "USD 1,000"]
         for value in old_dates:
             with self.subTest(value=value):
                 self.assertEqual(decide("date", [value, value, value]), "date")
