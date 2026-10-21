@@ -61,6 +61,101 @@ MONTH_FULL = [re.compile(p) for p in [
 ]]
 
 
+
+# v10 P1 additions. New date and number spellings are additive to v9.1.
+MISSING_MARKERS = {
+    "-", "−", "–", "—", "―", "ー", "…", "‥", ".", "..", "...",
+    "*", "**", "***", "x", "n/a", "na", "n.a.", "nan", "nil", "null",
+    "none", "#n/a", "#div/0!", "#value!", "#ref!", "#name?", "(na)", "(x)",
+}
+_MD_SLASH = re.compile(r"^(0?[1-9]|1[0-2])([/-])(0?[1-9]|[12][0-9]|3[01])$")
+_MD_JP = re.compile(r"^(0?[1-9]|1[0-2])月(0?[1-9]|[12][0-9]|3[01])日$")
+_JP_TIME_BODY = r"(?:午前|午後)?(?:0?[0-9]|1[0-9]|2[0-4])時(?:[0-5]?[0-9]分(?:[0-5]?[0-9]秒)?)?"
+_JP_TIME = re.compile(r"^" + _JP_TIME_BODY + r"$")
+_JP_TIME_RANGE = re.compile(r"^" + _JP_TIME_BODY + r"(?:[ \t]*から[ \t]*" + _JP_TIME_BODY + r")?$")
+_MONTH_ONLY = re.compile(r"^" + _MONTH + r"\.?$")
+_ERA_DATE = re.compile(r"^([mtshr])[ \t]*\.?[ \t]*([0-9]{1,2})[ \t]*[./-][ \t]*(0?[1-9]|1[0-2])(?:[ \t]*[./-][ \t]*(0?[1-9]|[12][0-9]|3[01])(?:日)?)?$")
+_ERA_YEAR = re.compile(r"^([mtshr])[ \t]*([0-9]{1,2})(?:年度)?$")
+_ERA_LIMITS = {"m": 45, "t": 15, "s": 64, "h": 31, "r": 30}
+_AMBIGUOUS_QUARTER = re.compile(r"^(?:q[1-4]|[1-4]q)$")
+_QUARTER_FULL = [re.compile(p) for p in [
+    r"^(?:[0-9]{2}|(?:19|20)[0-9]{2})[ \t]*q[1-4]$",             # 24q1, 2024q1
+    r"^[1-4](?:st|nd|rd|th)[ \t]+quarter$",
+    r"^quarter[ \t]+[1-4]$",
+    r"^第[1-4]四半期$",
+    r"^(?:19|20)[0-9]{2}(?:年|年度)?第[1-4]四半期$",
+    r"^(?:19|20)[0-9]{2}(?:年|年度)(?:上期|下期|上半期|下半期)$",
+    r"^h[12]$",
+]]
+_WEEKDAY_NAME = r"(?:[月火水木金土日](?:曜日)?|mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)\.?"
+_WEEKDAY_SUFFIX = re.compile(r"^(?P<base>.*?)(?:\((?:" + _WEEKDAY_NAME + r")\)|" + _S + r"+(?:" + _WEEKDAY_NAME + r"))(?P<tail>.*)$")
+
+
+def _is_month_day(v):
+    """Validate M/D, M-D, and M月D日 with calendar month bounds."""
+    m = _MD_SLASH.match(v)
+    if m:
+        month, day = int(m.group(1)), int(m.group(3))
+    else:
+        m = _MD_JP.match(v)
+        if not m:
+            return False
+        month, day = int(m.group(1)), int(m.group(2))
+    return day <= (29 if month == 2 else 30 if month in (4, 6, 9, 11) else 31)
+
+
+def _is_era_date(v):
+    m = _ERA_DATE.match(v)
+    if not m:
+        return False
+    era, year, month, day = m.groups()
+    if not 1 <= int(year) <= _ERA_LIMITS[era]:
+        return False
+    return True
+
+
+def _is_era_year(v):
+    m = _ERA_YEAR.match(v)
+    return bool(m and 1 <= int(m.group(2)) <= _ERA_LIMITS[m.group(1)])
+
+
+def _is_quarter(v):
+    return not _AMBIGUOUS_QUARTER.match(v) and any(r.match(v) for r in _QUARTER_FULL)
+
+
+def _share_values(ne):
+    """For N1, omit missing markers only when at least two real values remain."""
+    usable = [v for v in ne if v not in MISSING_MARKERS]
+    return usable if len(usable) >= 2 else ne
+
+
+def _date_base_without_weekday(v):
+    return bool(
+        _is_month_day(v)
+        or _is_era_date(v)
+        or any(r.match(v) for r in DATE_RES)
+        or DATETIME_RE.match(v)
+        or TIME_RE.match(v)
+        or _JP_TIME.match(v)
+        or any(r.match(v) for r in DATE_EXTRA)
+        or is_year_range(v)
+        or any(r.match(v) for r in MONTH_FULL)
+        or _is_quarter(v)
+    )
+
+
+def _weekday_date(v):
+    m = _WEEKDAY_SUFFIX.match(v)
+    if not m:
+        return False
+    base = m.group("base").rstrip(_SC)
+    tail = m.group("tail").strip(_SC)
+    if not base or (tail and not _JP_TIME_RANGE.match(tail)):
+        return False
+    return _date_base_without_weekday(base)
+
+
+
 def is_year_range(v):
     """年度の範囲（2012/13・2023-24・1999/00・2012/2013）。後の年が前の年の次（2 桁）か、0〜30 年先（4 桁）のときだけ。2020-99 は日付にしない。"""
     m = _FY_RANGE.match(v)
@@ -81,7 +176,15 @@ _NUM_CORE = (r"(?:[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?"           # 1,234,567  
              r"|[0-9]{1,3}(?:\.[0-9]{3})+(?:,[0-9]+)?"                # 1.234.567  1.234,56（ヨーロッパ）
              r"|[0-9]{1,3}(?: [0-9]{3})+(?:[.,][0-9]+)?"              # 1 234 567  1 234,56（空白の区切り）
              r"|[0-9]+(?:[.,][0-9]+)?)")                              # 1234  12.5  12,5
-NUM_LOOSE = re.compile(r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE + _S + r"*(?:円|％|%|" + _UNIT + r"|円/[^0-9" + _SC + r"]{1,4}|" + _UNIT + r"/[^0-9" + _SC + r"]{1,4})?\.?\)?$")
+
+_UNIT_EXTRA = r"(?:分|秒|m2|m3|坪|畳|部|点|品|戸|棟|室|床|number|numbers|no)"
+_UNIT_V10 = r"(?:" + _UNIT + r"|" + _UNIT_EXTRA + r")"
+_PERIOD_UNIT = r"(?:か月|" + _UNIT_V10 + r")"
+_PER_UNIT = r"(?:円|" + _UNIT_V10 + r")/[0-9]*" + _PERIOD_UNIT
+_CURRENCY_WORD = r"(?:yen|dollars|euros|pounds|ドル|ユーロ|円)"
+_CURRENCY_SUFFIX = r"(?:" + _CODE + r"|" + _CURRENCY_WORD + r"|[" + _CUR + r"])"
+_NUM_SUFFIX = r"(?:円/[^0-9" + _SC + r"]{1,4}|" + _UNIT_V10 + r"/[^0-9" + _SC + r"]{1,4}|" + _PER_UNIT + r"|円|％|%|" + _UNIT_V10 + r"|" + _CURRENCY_SUFFIX + r")"
+NUM_LOOSE = re.compile(r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE + _S + r"*(?:" + _NUM_SUFFIX + r")?\.?\)?$")
 
 
 def _strip(v):
@@ -98,27 +201,42 @@ def _clean(values):
     return [v for v in vals if v]
 
 
+
 def is_date_value(v, strong_only=False):
-    """1 つの値（NFKC・小文字・前後の空白なし）が日付・時刻・年度などに読めるか。strong_only なら年だけ（2023）は含めない。"""
-    if any(r.match(v) for r in DATE_RES) or DATETIME_RE.match(v) or TIME_RE.match(v):
+    """1 つの値（NFKC・小文字・前後の空白なし）が日付・時刻・年度などに読めるか。"""
+    if _weekday_date(v):
         return True
-    if any(r.match(v) for r in DATE_EXTRA) or is_year_range(v) or any(r.match(v) for r in MONTH_FULL):
+    if any(r.match(v) for r in DATE_RES) or DATETIME_RE.match(v) or TIME_RE.match(v) or _JP_TIME.match(v):
+        return True
+    if _is_era_date(v):
+        return True
+    if any(r.match(v) for r in DATE_EXTRA) or is_year_range(v) or any(r.match(v) for r in MONTH_FULL) or _is_quarter(v):
         return True
     return False if strong_only else bool(YEAR_ONLY.match(v))
 
 
 def date_shares(values):
-    """(年だけを除いた日付の値の割合, 年だけの値の割合)。"""
-    ne = _clean(values)
+    """(年だけを除いた日付の値の割合, 年だけの値の割合)。N1 markers are ignored with >=2 usable values."""
+    ne = _share_values(_clean(values))
     if not ne:
         return 0.0, 0.0
-    strong = sum(is_date_value(v, True) for v in ne) / len(ne)
-    year = sum(bool(YEAR_ONLY.match(v)) for v in ne) / len(ne)
+    month_only = [v for v in ne if _MONTH_ONLY.match(v)]
+    quarter_only = [v for v in ne if _AMBIGUOUS_QUARTER.match(v)]
+    month_column = len(month_only) / len(ne) >= 0.8 and len(set(month_only)) >= 2
+    quarter_column = len(quarter_only) / len(ne) >= 0.8
+    strong = sum(
+        is_date_value(v, True)
+        or (month_column and bool(_MONTH_ONLY.match(v)))
+        or (quarter_column and bool(_AMBIGUOUS_QUARTER.match(v)))
+        for v in ne
+    ) / len(ne)
+    era_year_column = all(_is_era_year(v) for v in ne)
+    year = 1.0 if era_year_column else sum(bool(YEAR_ONLY.match(v)) for v in ne) / len(ne)
     return strong, year
 
 
 def num_loose_share(values):
-    ne = _clean(values)
+    ne = _share_values(_clean(values))
     return sum(bool(NUM_LOOSE.match(v)) for v in ne) / len(ne) if ne else 0.0
 
 
