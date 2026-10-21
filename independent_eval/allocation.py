@@ -18,6 +18,25 @@ from typing import Any
 
 ALLOWED_POOLS = frozenset({"train", "eval2", "eval3", "main"})
 ALLOCATABLE_POOLS = frozenset({"train", "eval2", "eval3"})
+FIXED_ASSIGNMENTS = {
+    "australia": "train",
+    "canada": "train",
+    "canada2": "train",
+    "datagov_uk": "train",
+    "datagov_uk2": "train",
+    "direct": "train",
+    "egov": "train",
+    "egov_biz": "train",
+    "egov_biz2": "train",
+    "gittables": "train",
+    "ireland": "train",
+    "jp": "train",
+    "jp2": "train",
+    "kobe": "main",
+    "nyc": "main",
+    "sapporo": "main",
+    "yokohama": "main",
+}
 
 
 def normalize_publisher_id(publisher_id: str) -> str:
@@ -85,6 +104,9 @@ def validate_allocation(allocation: dict[str, Any]) -> None:
         seen.add(publisher_id)
         if record.get("pool") not in ALLOWED_POOLS:
             raise ValueError(f"invalid pool for {publisher_id}")
+        expected_pool = FIXED_ASSIGNMENTS.get(publisher_id)
+        if expected_pool is not None and record["pool"] != expected_pool:
+            raise ValueError(f"fixed publisher pool cannot change: {publisher_id}")
         if not isinstance(record.get("date"), str):
             raise ValueError(f"missing registry date for {publisher_id}")
         date.fromisoformat(record["date"])
