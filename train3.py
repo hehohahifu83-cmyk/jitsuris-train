@@ -16,6 +16,7 @@ from eval_values import eval_column
 import features
 from features import DIM_CTX, vectorize
 from gen import CLASSES, column, make_train2, vary_case, to_fullwidth
+import guard as guard_module
 from guard import guard_with_reason
 from personal_set import PERSONAL
 from rules import rule_by_header, rule_by_values
@@ -151,8 +152,16 @@ class MLP:
 
 
 # ---------- 評価 ----------
-def decide_with_details(classes, P, rows, use_guard=True, thr=0.5, Ph=None):
-    """Return labels plus machine-readable reason codes without changing decisions."""
+def decide_with_details(classes, P, rows, use_guard=True, thr=0.5, Ph=None, guard_version=None):
+    """Return labels and reasons using the requested guard without changing probabilities."""
+    if guard_version is None:
+        guard_version = guard_module.GUARD_VERSION
+    if guard_version == "v9.1":
+        enabled_rules = frozenset()
+    elif guard_version == guard_module.GUARD_VERSION:
+        enabled_rules = None
+    else:
+        raise ValueError("unsupported guard version: " + str(guard_version))
     details = []
     for i, (row, p) in enumerate(zip(rows, P)):
         order = sorted(zip(classes, p), key=lambda x: -x[1])
@@ -164,7 +173,7 @@ def decide_with_details(classes, P, rows, use_guard=True, thr=0.5, Ph=None):
         else:
             lab = order[0][0]
             if use_guard:
-                lab, reason = guard_with_reason(lab, order, row[1])
+                lab, reason = guard_with_reason(lab, order, row[1], _enabled_rules=enabled_rules)
         if Ph is not None and lab in NUMERIC and row[0]:
             hl = classes[int(np.argmax(Ph[i]))]
             if hl in NUMERIC and hl != lab:
