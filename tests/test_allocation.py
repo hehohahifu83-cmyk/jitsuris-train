@@ -151,3 +151,12 @@ class GeneralDepartmentTests(unittest.TestCase):
             {"publisher_id": "chiba:dept-9", "pool": "train", "date": "2026-10-21"}]}
         with self.assertRaisesRegex(ValueError, "department pool must match"):
             validate_allocation(bad)
+
+
+class TwinIdTests(unittest.TestCase):
+    def test_colon_and_underscore_twins_must_share_pool(self):
+        bad = {"schema_version": 1, "aliases": {}, "publishers": [
+            {"publisher_id": "egov:org_0500", "pool": "train", "date": "2026-10-21"},
+            {"publisher_id": "egov_org_0500", "pool": "eval3", "date": "2026-10-21"}]}
+        with self.assertRaisesRegex(ValueError, "registered twice"):
+            validate_allocation(bad)

@@ -122,6 +122,12 @@ def validate_allocation(allocation: dict[str, Any]) -> None:
             raise ValueError(f"missing registry date for {publisher_id}")
         date.fromisoformat(record["date"])
     pools = {normalize_publisher_id(r["publisher_id"]): r["pool"] for r in publishers}
+    twins = {}
+    for pid, pool_name in pools.items():   # 区切りが「:」か「_」かだけ違う ID（egov:org_0100 と egov_org_0100）は同じ組織
+        key = pid.replace(":", "_", 1)
+        if key in twins and twins[key][1] != pool_name:
+            raise ValueError(f"same organization registered twice with different pools: {twins[key][0]} / {pid}")
+        twins.setdefault(key, (pid, pool_name))
     for child, child_pool in pools.items():
         parent = parent_publisher(child)
         if parent in pools and pools[parent] != child_pool:
