@@ -119,14 +119,25 @@ def build_rows(meta, fields, records, total):
     return out, reasons
 
 
-def http_json(url):
+def http_json(url, step="", tries=3):
+    """1 回ごとに間を空け、403・429・5xx は待って 2 回までやり直す（サーバーの連続アクセスの制限に合わせる）。失敗は段の名前つきで返す。"""
+    import time
+    from urllib.error import HTTPError
     host = urlparse(url).hostname or ""
     if urlparse(url).scheme != "https" or host not in ALLOWED_HOSTS:
         raise ValueError(f"host not allowed: {host}")
-    with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60) as resp:
-        if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
-            raise ValueError("redirected outside the allowed hosts")
-        return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
+    for attempt in range(tries):
+        time.sleep(1.0 + 4.0 * attempt)
+        try:
+            with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60) as resp:
+                if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
+                    raise ValueError("redirected outside the allowed hosts")
+                return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
+        except HTTPError as exc:
+            if exc.code in (403, 429) or exc.code >= 500:
+                if attempt < tries - 1:
+                    continue
+            raise RuntimeError(f"{step}: HTTP {exc.code}") from None
 
 
 def known_tables(exclude=None):
@@ -172,14 +183,14 @@ def main(argv=None):
                     raise ValueError("resource id not found in URL")
                 rid = m.group(1)
                 base = "https://data.bodik.jp/api/3/action/"
-                res = http_json(base + "resource_show?" + urlencode({"id": rid}))["result"]
-                pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}))["result"]
+                res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
+                pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
                 if pkg.get("license_id") != "cc-by-4.0" and "4.0" not in str(pkg.get("license_title", "")):
                     raise ValueError(f"license changed: {pkg.get('license_id')}")
                 download = res.get("url") or item["resource_url"]
                 if download in known or item["resource_url"] in known:
                     raise ValueError("URL overlaps the training corpus or the main set")
-                ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}))["result"]
+                ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
                 fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
                 meta = {"resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
                         "download_url": download, "license": pkg.get("license_id"),
