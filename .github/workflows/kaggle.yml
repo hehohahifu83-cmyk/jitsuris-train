@@ -14,6 +14,7 @@ jobs:
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
+        with: { ref: main }   # 順番待ちの後に動く run も、その時点の main を見る（古い commit の「fetch」で二重に回収しないため）
       - run: git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
