@@ -8,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 import gen
 from exp7 import load_real, split, perturb
 from encoder_context import attach_unit_context, format_encoder_text, real_train_rows_with_units, unit_context_map
+from real_fraction import parse_real_fraction, select_real_fraction
 from llm_baseline import score_real
 from train3 import build_train, mat, split_curriculum, decide
 from dev_eval import rows_of
@@ -27,7 +28,13 @@ if VAL_MODE:
     gtr, gval = split_val(gtr); btr, bval = split_val(btr); b2tr, b2val = split_val(b2tr); jtr, jval = split_val(jtr)
 unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
-rows = syn + real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
+real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
+REAL_FRAC = parse_real_fraction(os.environ.get("FT_REAL_FRAC"))
+selected_real_rows = select_real_fraction(real_rows, REAL_FRAC)
+real_tables = {str(r[4]) for r in real_rows}
+selected_tables = {str(r[4]) for r in selected_real_rows}
+print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_real_rows)}/{len(real_rows)} rows; synthetic rows unchanged", flush=True)
+rows = syn + selected_real_rows
 y = np.array([r[2] for r in rows])
 tests = {"開発用220": rows_of(), "本物（一般）": attach_unit_context(gte, unit_by_table), "本物（業務）": attach_unit_context(bte, unit_by_table)}
 if b2te:
