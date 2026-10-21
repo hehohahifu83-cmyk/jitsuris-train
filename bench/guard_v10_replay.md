@@ -1,6 +1,6 @@
 # Guard v10 P1/P2 再生記録（2026-10-21）
 
-Claudeの2026-10-21 14:13裁定後、GitHub Actions run `39558051496`（commit `d2ad11e...`）と `39558053746`（commit `47dd2fb...`）が両方成功。Guard試験、規則ごとの再生、E5-base/mmBERT-smallの全規則再採点、学習側のv9.1単調性監査が通過。D5スキップは解除し、v9.1受理形を維持するテストを有効化。
+Claudeの2026-10-21 14:13裁定後、GitHub Actions run `39558051496`（commit `d2ad11e4375b8ac6489f0c1c2b86b517b1b6b106`）と `39558053746`（commit `47dd2fbdaefe641dd52269a838adec4bc575cf27`）が両方成功。Guard試験、規則ごとの再生、E5-base/mmBERT-smallの全規則再採点、学習側のv9.1単調性監査が通過。D5スキップは解除し、v9.1受理形を維持するテストを有効化。
 
 ## 全規則を適用した回帰再生
 
