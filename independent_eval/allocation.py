@@ -16,8 +16,8 @@ from pathlib import Path
 from typing import Any
 
 
-ALLOWED_POOLS = frozenset({"train", "eval2", "eval3", "main"})
-ALLOCATABLE_POOLS = frozenset({"train", "eval2", "eval3"})
+ALLOWED_POOLS = frozenset({"train", "eval2", "eval3", "main", "hold"})
+ALLOCATABLE_POOLS = frozenset({"train", "eval2", "eval3", "hold"})
 FIXED_ASSIGNMENTS = {
     "australia": "train",
     "canada": "train",
@@ -93,7 +93,7 @@ def validate_allocation(allocation: dict[str, Any]) -> None:
     publishers = allocation.get("publishers")
     if not isinstance(aliases, dict) or not isinstance(publishers, list):
         raise ValueError("allocation must contain aliases and publishers")
-    _alias_map(aliases)
+    normalized_aliases = set(_alias_map(aliases))
     seen: set[str] = set()
     for record in publishers:
         if not isinstance(record, dict):
@@ -110,6 +110,9 @@ def validate_allocation(allocation: dict[str, Any]) -> None:
         if not isinstance(record.get("date"), str):
             raise ValueError(f"missing registry date for {publisher_id}")
         date.fromisoformat(record["date"])
+    alias_conflicts = seen & normalized_aliases
+    if alias_conflicts:
+        raise ValueError(f"registered publisher cannot also be an alias: {sorted(alias_conflicts)[0]}")
 
 
 def assignment_for(
@@ -117,15 +120,14 @@ def assignment_for(
 ) -> dict[str, str]:
     """Return an existing immutable assignment or calculate a new one.
 
-    Ambiguous identities are kept on the evaluation side; eval2 is the
-    conservative fixed destination until the publisher can be resolved.
+    Ambiguous identities stay on hold until their publisher identity is resolved.
     """
     validate_allocation(allocation)
     canonical = resolve_publisher_id(publisher_id, allocation["aliases"])
     for record in allocation["publishers"]:
         if normalize_publisher_id(record["publisher_id"]) == canonical:
             return {"publisher_id": canonical, "pool": record["pool"], "date": record["date"]}
-    destination = "eval2" if ambiguous else pool(canonical)
+    destination = "hold" if ambiguous else pool(canonical)
     return {"publisher_id": canonical, "pool": destination}
 
 
@@ -149,7 +151,7 @@ def add_assignment(
             raise ValueError(f"publisher already assigned to {existing['pool']}")
         return deepcopy(allocation)
     if candidate["pool"] not in ALLOCATABLE_POOLS:
-        raise ValueError("new publishers must use train, eval2, or eval3")
+        raise ValueError("new publishers must use train, eval2, eval3, or hold")
     updated = deepcopy(allocation)
     updated["publishers"].append(
         {"publisher_id": candidate["publisher_id"], "pool": candidate["pool"], "date": assigned_date}
@@ -180,7 +182,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--ambiguous",
         action="store_true",
-        help="conservatively assign unresolved publishers to eval2",
+        help="keep unresolved publishers on hold until their identity is resolved",
     )
     args = parser.parse_args(argv)
 

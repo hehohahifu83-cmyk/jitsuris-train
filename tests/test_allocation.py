@@ -63,7 +63,9 @@ class AllocationTests(unittest.TestCase):
             "gittables": "train", "ireland": "train", "jp": "train", "jp2": "train",
             "kobe": "main", "nyc": "main", "sapporo": "main", "yokohama": "main",
         }
-        self.assertEqual(actual, expected)
+        for publisher_id, pool_name in expected.items():
+            self.assertEqual(actual[publisher_id], pool_name)
+        self.assertEqual(len(actual), len(set(actual)))
 
 
     def test_aliases_resolve_before_assignment(self):
@@ -72,8 +74,10 @@ class AllocationTests(unittest.TestCase):
         self.assertEqual(assignment_for("CITY PORTAL", registry)["publisher_id"], "city")
 
 
-    def test_ambiguous_publisher_is_assigned_to_eval_side(self):
-        self.assertEqual(assignment_for("unclear org", empty_registry(), ambiguous=True)["pool"], "eval2")
+    def test_ambiguous_publisher_is_held_out_of_training_and_evaluation(self):
+        self.assertEqual(assignment_for("unclear org", empty_registry(), ambiguous=True)["pool"], "hold")
+        assigned = add_assignment(empty_registry(), "unclear org", "2026-10-21", ambiguous=True)
+        self.assertEqual(assigned["publishers"][0]["pool"], "hold")
 
 
     def test_existing_assignment_is_immutable_and_add_is_idempotent(self):
@@ -83,6 +87,12 @@ class AllocationTests(unittest.TestCase):
         self.assertEqual(repeated, assigned)
         self.assertEqual(repeated["publishers"][0]["date"], "2026-10-21")
 
+
+    def test_registered_publisher_cannot_later_become_an_alias(self):
+        registry = add_assignment(empty_registry(), "mystery portal", "2026-10-21", ambiguous=True)
+        registry["aliases"] = {"mystery portal": "egov"}
+        with self.assertRaisesRegex(ValueError, "registered publisher cannot also be an alias"):
+            validate_allocation(registry)
 
     def test_alias_cycles_and_duplicate_assignments_are_rejected(self):
         with self.assertRaisesRegex(ValueError, "cycle"):

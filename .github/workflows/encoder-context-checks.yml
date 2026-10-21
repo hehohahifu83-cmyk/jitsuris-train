@@ -7,6 +7,7 @@ on:
       - encoder_context.py
       - encoder_exp.py
       - tests/test_encoder_context.py
+      - tests/test_encoder_exp_import.py
       - .github/workflows/encoder-context-checks.yml
 permissions:
   contents: read
@@ -19,4 +20,4 @@ jobs:
         with:
           python-version: '3.11'
       - name: UNIT 文脈の単体テスト
-        run: python -m unittest tests.test_encoder_context -v
+        run: python -m unittest tests.test_encoder_context tests.test_encoder_exp_import -v
