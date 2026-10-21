@@ -42,7 +42,7 @@ jobs:
               print("One-time request and preregistration confirmed.")
               proceed = "true"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"proceed={proceed}\\n")
+              output.write(f"proceed={proceed}\n")
           PY
 
       - uses: actions/setup-python@v5
@@ -165,8 +165,8 @@ jobs:
                   doc = json.loads(output.read_text(encoding="utf-8"))
                   print(f"{tag}: complete; columns={doc['timing']['columns']}; guard={doc['guard_version']}; alternatives={','.join(doc['available_guard_versions'])}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"failed={1 if failures else 0}\\n")
-              output.write(f"failed_jobs={','.join(failures)}\\n")
+              output.write(f"failed={1 if failures else 0}\n")
+              output.write(f"failed_jobs={','.join(failures)}\n")
           if failures:
               raise SystemExit("One or more prediction attempts failed; do not rerun this request.")
           PY
@@ -214,6 +214,7 @@ jobs:
           else:
               detail = failed_jobs or f"workflow={job_status}; prediction_step={predict_outcome}"
               status = "ERROR independent-main-20261021-v1 (" + detail + ")"
+          Path("independent_eval/predictions").mkdir(parents=True, exist_ok=True)
           Path("independent_eval/predict.request").write_text(status + "\n", encoding="utf-8")
           PY
           git config user.name "github-actions[bot]"
