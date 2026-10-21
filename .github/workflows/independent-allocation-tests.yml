@@ -1,0 +1,32 @@
+name: Independent publisher allocation tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'independent_eval/allocation.py'
+      - 'independent_eval/allocation.json'
+      - 'independent_eval/README.md'
+      - 'tests/test_allocation.py'
+      - '.github/workflows/independent-allocation-tests.yml'
+  pull_request:
+    paths:
+      - 'independent_eval/allocation.py'
+      - 'independent_eval/allocation.json'
+      - 'independent_eval/README.md'
+      - 'tests/test_allocation.py'
+      - '.github/workflows/independent-allocation-tests.yml'
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile allocator and tests
+        run: python -m py_compile independent_eval/allocation.py tests/test_allocation.py
+      - name: Test deterministic assignments
+        run: python -m unittest discover -s tests -p 'test_allocation.py' -v
