@@ -1863,7 +1863,7 @@
 "#DIV/0!",
 "alpha"
 ],
-"expected": "unknown"
+"expected": "amount"
 },
 {
 "pred": "quantity",
@@ -2162,7 +2162,7 @@
 "#DIV/0!",
 "10160001"
 ],
-"expected": "unknown"
+"expected": "quantity"
 },
 {
 "pred": "rate",
@@ -2722,7 +2722,7 @@
 "ABC123",
 "10160001"
 ],
-"expected": "unknown"
+"expected": "rate"
 },
 {
 "pred": "amount",
@@ -3148,7 +3148,7 @@
 "90.2%",
 "#DIV/0!"
 ],
-"expected": "unknown"
+"expected": "amount"
 },
 {
 "pred": "quantity",
@@ -4471,6 +4471,423 @@
 "values": [
 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀1",
 "11111111111111111111111111111111111111111111111111111111111111😀😀"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"2024/3/5(火)",
+"2024年3月5日(火曜日)",
+"3月5日(火)",
+"2024-03-05 tue",
+"2024/03/05 火"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"10(日)",
+"10(日)",
+"10(日)"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"9時00分",
+"午後3時",
+"午前9時30分",
+"10時",
+"13時45分30秒"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"3時間",
+"2時間30分",
+"25時10分",
+"10時60分",
+"時"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"第1四半期",
+"2024年度第1四半期",
+"4th quarter",
+"24q1",
+"2024年度下半期"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"q1",
+"q1",
+"q1",
+"q1",
+"q1"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"q1",
+"q1",
+"foo",
+"bar",
+"baz"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"h28. 4. 1",
+"r 5.10.28",
+"s.46/03/01",
+"s62. 8.30",
+"r6.3.5"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"r35",
+"h32",
+"s65",
+"r0",
+"x28",
+"s.46/13/01",
+"r06a"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"r06",
+"h28",
+"s62",
+"m45",
+"t15"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"march",
+"jan",
+"april",
+"may",
+"june"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"march",
+"march",
+"march",
+"march",
+"march"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"march",
+"march",
+"foo",
+"bar",
+"baz"
+],
+"expected": "unknown"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1,234",
+"-",
+"n/a",
+"2,345",
+"…",
+"nil",
+"3,456"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1,234",
+"-",
+"n/a",
+"...",
+"nil"
+],
+"expected": "unknown"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"-",
+"−",
+"–",
+"—",
+"―",
+"ー"
+],
+"expected": "unknown"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"220.00 」",
+"1.234,56 €",
+"100 usd",
+"1,000 yen",
+"5,000ドル"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"100 abc",
+"100 abc"
+],
+"expected": "unknown"
+},
+{
+"pred": "quantity",
+"order": [
+[
+"quantity",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"8,250円/1時間",
+"0円/1か月",
+"30分",
+"3,000㎡",
+"10.00 number"
+],
+"expected": "quantity"
+},
+{
+"pred": "quantity",
+"order": [
+[
+"quantity",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"100 numbering",
+"100 numbering"
 ],
 "expected": "unknown"
 }
