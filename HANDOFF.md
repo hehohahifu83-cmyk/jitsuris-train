@@ -1,3 +1,13 @@
+## 2026-10-21 UTC — ChatGPT: W2/W6 validation-only experiments
+
+- Read W2/W6 probabilities from `eval_reports/runs/39496935773/job2` only: `FT_VAL=1`, E5-base, seed 1, LR 3e-5. Excluded `39506074807`, fixed evaluation, independent main, sealed, and blind sets. Reconstructed table grouping from the learning-side labels and verified all 889 rows (148 source tables) against saved labels and order; no cell values were used or recorded.
+- W2 grouped 5-fold reranker: unknown-header OK 203/255 (79.6%) baseline vs 202/255 (79.2%) reranked; critical errors 2 vs 2. It misses the preregistered +1.0 point gate, so do not forward it.
+- W6 top-1 binary temperature cross-fit: median T 1.039. ECE improved 4.13%→3.75%, while Brier 0.04478→0.04505 and log loss 0.15786→0.16156 worsened slightly; saved top-3 files do not support full 16-class temperature scaling.
+- Empirical OOF threshold 0.90 reduced the observed critical numeric confusions 2→0 and false numeric answers on `other` rows 14→4; overall unknown rose 2.59 points. This is not a formal risk guarantee. With 103 temperature-fit tables and 45 threshold-calibration tables, the conservative 95% table-group bound was 23.75% against a 5% target; no W6 candidate is certified.
+- Report: `bench/w2_w6_validation_20261021.md` and aggregate JSON. Focused tests (S9 allocation, S12 import/fraction, S14, W2/W6) pass 22/22. No Kaggle request has been modified yet; next step is to write the 6-job × 40–50-minute estimate to ai-bridge `【進捗】`, then confirm the current request/workflow state and submit the already-authorized W1 run.
+
+---
+
 ## 2026-10-21 UTC — ChatGPT: S9 metadata discovery after allocation commit
 
 - Allocation commit `c10dc68feb40329cd4f73804af65db03c5734344` was already on main before any `package_search` call. Queries covered only 119 eval2/eval3 publishers (Yokohama 12, Kobe 106, Sapporo 1); all 119 succeeded, returning metadata for 323 datasets and 6,319 resources.

@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-21",
+  "validation_run": "39496935773",
+  "job": "job2",
+  "scope": "training-side FT_VAL=1 only; fixed tests, independent main, sealed sets, and blind sets excluded",
+  "source_alignment": {
+    "checked": true,
+    "row_count": 889,
+    "table_groups": 148,
+    "datasets": {
+      "val_general": 204,
+      "val_business": 204,
+      "val_business2": 415,
+      "val_japan_procurement": 66
+    }
+  },
+  "w2_same_table_reranker": {
+    "method": "5-fold GroupKFold by (dataset, source table); LogisticRegression C=1 on base top-3 probabilities, same-table peer mean/max probabilities, normalized column position and table length",
+    "groups": 148,
+    "rows": 889,
+    "all_baseline_guarded": {
+      "n": 889,
+      "ok": 822,
+      "ok_rate": 0.9246344206974129,
+      "acc_known": 0.9393173198482933,
+      "answered_precision": 0.9624352331606217,
+      "wrong": 29,
+      "unknown": 19,
+      "other_ng": 19,
+      "critical": 2
+    },
+    "all_oof_reranker": {
+      "n": 889,
+      "ok": 826,
+      "ok_rate": 0.9291338582677166,
+      "acc_known": 0.9405815423514539,
+      "answered_precision": 0.9465648854961832,
+      "wrong": 42,
+      "unknown": 5,
+      "other_ng": 16,
+      "critical": 2
+    },
+    "unknown_header_rows": 255,
+    "unknown_header_baseline_guarded": {
+      "n": 255,
+      "ok": 203,
+      "ok_rate": 0.796078431372549,
+      "acc_known": 0.8223350253807107,
+      "answered_precision": 0.8617021276595744,
+      "wrong": 26,
+      "unknown": 9,
+      "other_ng": 17,
+      "critical": 2
+    },
+    "unknown_header_oof_reranker": {
+      "n": 255,
+      "ok": 202,
+      "ok_rate": 0.792156862745098,
+      "acc_known": 0.8020304568527918,
+      "answered_precision": 0.8229166666666666,
+      "wrong": 34,
+      "unknown": 5,
+      "other_ng": 14,
+      "critical": 2
+    },
+    "unknown_header_ok_delta_pp": -0.39215686274509665,
+    "critical_delta": 0
+  },
+  "w6_temperature": {
+    "method": "5-fold group cross-fit; binary one-vs-rest top-1 temperature from saved top-1 probability and correctness",
+    "rows": 889,
+    "group_count": 148,
+    "temperature_median": 1.0391217610570185,
+    "temperature_range": [
+      0.9463155343326458,
+      1.0929687053797439
+    ],
+    "raw_top1_calibration": {
+      "brier": 0.04478142348395162,
+      "log_loss": 0.1578631509866218,
+      "ece_10_equal_count": 0.04128990663667041
+    },
+    "oof_calibrated_top1": {
+      "brier": 0.045053318179379624,
+      "log_loss": 0.16156126556451011,
+      "ece_10_equal_count": 0.037470673727348205
+    },
+    "top1_accuracy_rate": 0.9403824521934758,
+    "full_16_class_temperature_available": false,
+    "reason": "saved artifacts contain only top-3 probabilities, not the complete 16-class vector/logits"
+  },
+  "w6_selective_threshold": {
+    "risk_target": 0.05,
+    "confidence_level": 0.95,
+    "risk_unit": "mean table-level selective loss among true critical-class rows; rows within a source table are kept together",
+    "calibration_split": {
+      "fit_tables": 103,
+      "threshold_calibration_tables": 45
+    },
+    "thresholds_tested": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.98,
+      0.99
+    ],
+    "table_level_certificate_candidates": [
+      {
+        "threshold": 0.5,
+        "answered_critical": 139,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.6,
+        "answered_critical": 139,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.7,
+        "answered_critical": 139,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.8,
+        "answered_critical": 139,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.9,
+        "answered_critical": 135,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.95,
+        "answered_critical": 122,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.98,
+        "answered_critical": 4,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      },
+      {
+        "threshold": 0.99,
+        "answered_critical": 0,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": null,
+        "mean_per_table_loss": 0.0,
+        "table_loss_ucb_95_bonferroni": 0.23746751392404128,
+        "certifies_target": false
+      }
+    ],
+    "selected_threshold": null,
+    "certified_policy_found": false,
+    "unconstrained_empirical_curve_on_oof_predictions": [
+      {
+        "threshold": 0.5,
+        "answered_critical": 403,
+        "wrong_answered_critical": 2,
+        "empirical_answered_error_rate": 0.004962779156327543,
+        "unknown_truth_numeric_false_answers": 14,
+        "overall_unknown_rate": 0.11023622047244094,
+        "unknown_increase_pp": 0.0
+      },
+      {
+        "threshold": 0.6,
+        "answered_critical": 402,
+        "wrong_answered_critical": 2,
+        "empirical_answered_error_rate": 0.004975124378109453,
+        "unknown_truth_numeric_false_answers": 14,
+        "overall_unknown_rate": 0.11136107986501688,
+        "unknown_increase_pp": 0.11248593925759359
+      },
+      {
+        "threshold": 0.7,
+        "answered_critical": 401,
+        "wrong_answered_critical": 1,
+        "empirical_answered_error_rate": 0.0024937655860349127,
+        "unknown_truth_numeric_false_answers": 13,
+        "overall_unknown_rate": 0.11473565804274466,
+        "unknown_increase_pp": 0.4499437570303716
+      },
+      {
+        "threshold": 0.8,
+        "answered_critical": 397,
+        "wrong_answered_critical": 1,
+        "empirical_answered_error_rate": 0.0025188916876574307,
+        "unknown_truth_numeric_false_answers": 12,
+        "overall_unknown_rate": 0.1203599550056243,
+        "unknown_increase_pp": 1.0123734533183355
+      },
+      {
+        "threshold": 0.9,
+        "answered_critical": 391,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "unknown_truth_numeric_false_answers": 4,
+        "overall_unknown_rate": 0.1361079865016873,
+        "unknown_increase_pp": 2.5871766029246346
+      },
+      {
+        "threshold": 0.95,
+        "answered_critical": 375,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "unknown_truth_numeric_false_answers": 4,
+        "overall_unknown_rate": 0.15410573678290213,
+        "unknown_increase_pp": 4.386951631046118
+      },
+      {
+        "threshold": 0.98,
+        "answered_critical": 130,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "unknown_truth_numeric_false_answers": 0,
+        "overall_unknown_rate": 0.4341957255343082,
+        "unknown_increase_pp": 32.39595050618672
+      },
+      {
+        "threshold": 0.99,
+        "answered_critical": 2,
+        "wrong_answered_critical": 0,
+        "empirical_answered_error_rate": 0.0,
+        "unknown_truth_numeric_false_answers": 0,
+        "overall_unknown_rate": 0.578177727784027,
+        "unknown_increase_pp": 46.7941507311586
+      }
+    ],
+    "baseline_overall_unknown_rate": 0.11023622047244094,
+    "limitation": "table-level bound is conservative and does not certify pooled per-column risk; saved probabilities are top-3 only"
+  }
+}
