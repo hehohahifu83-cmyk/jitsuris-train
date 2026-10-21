@@ -1,0 +1,29 @@
+name: Guard v10 regression replay
+on:
+  push:
+    paths:
+      - 'guard.py'
+      - 'guard_accounting.py'
+      - 'rescore_guard.py'
+      - 'guard_train_side.py'
+      - '.github/workflows/guard-v10-replay.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run Guard v10 tests
+        run: python -m unittest discover -s tests -p 'test_guard_v10.py' -v
+      - name: Rescore E5-base regression run
+        run: python guard_accounting.py eval_reports/runs/39506074807 --rescore --out /tmp/guard_v10_e5.md
+      - name: Rescore mmBERT-small regression run
+        run: python guard_accounting.py eval_reports/runs/39502740378 --rescore --out /tmp/guard_v10_mmbert.md
+      - name: Recheck training-side guard losses
+        run: python guard_train_side.py --out /tmp/guard_train_side_v10.md
