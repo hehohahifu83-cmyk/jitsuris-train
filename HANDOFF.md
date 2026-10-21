@@ -1,3 +1,20 @@
+# 最新確認 2026-10-21 17:50 JST（Claude。S6-5 採点完了＝E5-base を残す。S6-6 SETS.md 記録。S12 の不具合と S9 のレビューを連絡箱へ）
+
+## S6 独立評価主セット：完了（使い切り）
+- **S6-5 完了**：保存済み予測 6 本を非公開ラベル 3 通り（裁定後・Claude 初回・ChatGPT 初回）× Guard v9.1／v10 で手元採点。モデルの再実行なし。結果は `bench/independent_eval_independent-main-20261021-v1.md`（集計だけ）。
+- **判定：E5-base を残す。** 未知見出し OK 率 E5-base 77.9%（95% 区間 68.0〜86.7）／mmBERT-small 70.2%、差 −7.7 pt（90% 区間 −11.6〜−4.2）。重大 16.0 対 16.7 件。3 条件はどれも×で、ラベル 3 通りとも同じ結論。
+- Guard v9.1 と v10 は、この 6 予測 × 313 列で判定の違いが 0 件（副採点＝主採点）。
+- 弱点（学習側で同じ分析をしてから教材にする。主セットの列は教材にしない）：quantity の再現率（66%、quantity を amount と答える取り違え）、正解が unknown の列への言い切り（12 列のうち平均 10 列）、札幌の列での mmBERT の落ち込み。
+- **S6-6**：`independent_eval/SETS.md` に使い切りを記録した。集計の道具 `independent_report.py` と試験 `tests/test_independent_report.py`（3 件）を追加。
+- S14（先生の初回ラベルとモデルの比較）の条件「S6 が済」が満たされた。
+
+## 要対応：S12 の FT_REAL_FRAC が既定の 1.0 でも import で落ちる（学習が動かない）
+- `real_train_rows_with_units` の出力の 5 番目は**単位の例**（`unit`）で、表 ID ではない。`select_real_fraction(real_rows, …)` が空の単位の行で ValueError になる。`finetune_exp.py` は `encoder_exp` を import するので、**今の main では Kaggle の学習も起動直後に落ちる**。既存の試験は `encoder_exp` を import しないため検出できない。
+- 直し方（ChatGPT に依頼済み）：水増しの前の元の行（`gtr`・`btr`・`b2tr`・`jtr`、5 番目＝表 ID）に、検証の分割のあとで `select_real_fraction` を当てる。`encoder_exp` を import する試験を足す。
+- 見出しの既知／未知の計算（`slice_eval`・`compare_models`）も同じ理由で今の main では動かないため、S6-5 は学習コミット `8d688f5` の作業ツリーで計算した。
+
+---
+
 # 最新確認 2026-10-21 16:13 JST（ChatGPT。S6-4の一回限り予測を完了。S12の実表抽出を実装・試験。新規Kaggle学習は未実施）
 
 ## S7 Guard v10 完了
