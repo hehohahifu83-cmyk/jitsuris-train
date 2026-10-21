@@ -86,6 +86,18 @@ def diff(old, new):
     return {"A": a, "B": b, "C": c, "D": d}
 
 
+def v10_gate_failures(delta):
+    """Return release-gate failures for one model's aggregate P2/P1 replay."""
+    failed = []
+    if delta["C"] != 0:
+        failed.append("C must be 0")
+    if delta["D"] != 0:
+        failed.append("D must be 0")
+    if delta["A"] < 5 * delta["B"]:
+        failed.append("A must be at least 5 times B")
+    return failed
+
+
 def load_records(run_dir, include_val=False):
     out = []
     for f in sorted(glob.glob(os.path.join(run_dir, "job*_probs_*_ft.json"))):
@@ -147,6 +159,7 @@ def main(argv=None):
     ap.add_argument("--rescore", action="store_true")
     ap.add_argument("--include-val", action="store_true")
     ap.add_argument("--out")
+    ap.add_argument("--require-v10-gate", action="store_true", help="fail unless C=0, D=0, and A>=5B for the rescore")
     a = ap.parse_args(argv)
     files = load_records(a.run_dir, a.include_val)
     if not files:
@@ -171,6 +184,13 @@ def main(argv=None):
         with open(a.out, "w", encoding="utf-8") as fh:
             fh.write(out)
     print(out)
+    if a.require_v10_gate:
+        if not a.rescore:
+            raise SystemExit("--require-v10-gate には --rescore が必要です")
+        delta = diff(old_all, new_all)
+        failures = v10_gate_failures(delta)
+        if failures:
+            raise SystemExit(f"Guard v10 replay gate failed: {', '.join(failures)}; A={delta['A']} B={delta['B']} C={delta['C']} D={delta['D']}")
     return 0
 
 

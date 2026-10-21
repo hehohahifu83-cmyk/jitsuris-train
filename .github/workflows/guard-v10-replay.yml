@@ -17,18 +17,22 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install replay dependencies
         run: python -m pip install numpy scipy scikit-learn
       - name: Run Guard v10 tests
-        run: python -m unittest discover -s tests -p 'test_guard_v10.py' -v
-      - name: Replay each P1 rule independently
+        run: python -m unittest discover -s tests -p 'test_guard*.py' -v
+      - name: Replay each P1/P2 rule independently
         run: python guard_v10_rule_replay.py eval_reports/runs/39506074807 eval_reports/runs/39502740378
       - name: Rescore E5-base regression run
-        run: python guard_accounting.py eval_reports/runs/39506074807 --rescore --out /tmp/guard_v10_e5.md
+        run: python guard_accounting.py eval_reports/runs/39506074807 --rescore --require-v10-gate --out /tmp/guard_v10_e5.md
       - name: Rescore mmBERT-small regression run
-        run: python guard_accounting.py eval_reports/runs/39502740378 --rescore --out /tmp/guard_v10_mmbert.md
-      - name: Recheck training-side guard losses
-        run: python guard_train_side.py --out /tmp/guard_train_side_v10.md
+        run: python guard_accounting.py eval_reports/runs/39502740378 --rescore --require-v10-gate --out /tmp/guard_v10_mmbert.md
+      - name: Load immutable v9.1 baseline for monotonicity audit
+        run: git show 86b3af8b17c812fd16b99f0acd3d3460c9cd01e2:guard.py > /tmp/guard_v91_baseline.py
+      - name: Recheck training-side guard losses and v9.1 monotonicity
+        run: python guard_train_side.py --out /tmp/guard_train_side_v10.md --baseline /tmp/guard_v91_baseline.py

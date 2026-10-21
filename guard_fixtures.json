@@ -4890,5 +4890,518 @@
 "100 numbering"
 ],
 "expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"3/15",
+"4/20",
+"5/1",
+"6/30",
+"7/25"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"3-15",
+"4-20",
+"5-1",
+"6-30",
+"7-25"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1/2",
+"3/4",
+"5/6",
+"7/8",
+"9/10"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"3/15",
+"4/20",
+"junk",
+"junk",
+"junk"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"3/15(火)",
+"4-20(火)",
+"5/1(水)"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"2025年12月~2026年3月",
+"2025年12月~2026年3月"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"01/04/2016 - 30/06/2016",
+"01/04/2016 - 30/06/2016"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"2009/10-2011/12",
+"2009/10-2011/12"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"april 1 to june 30, 2024",
+"april 1 to june 30, 2024"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"april 2017 - march 2018",
+"april 2017 - march 2018"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1-2",
+"10~20",
+"a - b"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1333085198.0",
+"1709600000",
+"1709600000000",
+"946684800",
+"4102444800000"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1709600000",
+"1709600000",
+"99999999999"
+],
+"expected": "unknown"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"2024年3月分",
+"3月分",
+"令和6年3月分",
+"2024年分",
+"平成30年4月分"
+],
+"expected": "date"
+},
+{
+"pred": "date",
+"order": [
+[
+"date",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"分",
+"3分",
+"2時間分",
+"2024年13月分"
+],
+"expected": "unknown"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"約1,000",
+"1,000以上",
+"1,234円(税込)",
+"税込1,234円",
+">100",
+"100+"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"$236.7 million*",
+"$120 million*"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1.5万円",
+"3億2,000万円",
+"12億",
+"100万",
+"5千円",
+"1,234千円",
+"1,234百万円",
+"2.5兆円",
+"$1.2m",
+"1.2 million",
+"2bn",
+"3.4mn",
+"1.5k"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"万円",
+"1.5万万円",
+"億万",
+"3 b",
+"million"
+],
+"expected": "unknown"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1.2e+05",
+"1e6",
+"3e-4",
+"-2.3E5",
+"+5e0"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"e5",
+"1e",
+"1e+",
+"12e3x",
+"1ee3"
+],
+"expected": "unknown"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"1,234-",
+"1234-",
+"1,234.50-",
+"¥1,234-",
+"1 234−"
+],
+"expected": "amount"
+},
+{
+"pred": "amount",
+"order": [
+[
+"amount",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"-",
+"1-2",
+"12-34-56",
+"abc-",
+"1,234--"
+],
+"expected": "unknown"
+},
+{
+"pred": "rate",
+"order": [
+[
+"rate",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"35.0パーセント",
+"5.1ポイント",
+"12.5pt",
+"2.5倍",
+"3割",
+"12.5％ポイント",
+"25bps",
+"100ppm",
+"100‰"
+],
+"expected": "rate"
+},
+{
+"pred": "rate",
+"order": [
+[
+"rate",
+0.99
+],
+[
+"text",
+0.004
+]
+],
+"values": [
+"パーセント",
+"5ポイントカード",
+"12ptx",
+"3割引き",
+"ppm"
+],
+"expected": "unknown"
 }
 ]

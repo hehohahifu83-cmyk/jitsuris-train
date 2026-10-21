@@ -17,10 +17,10 @@ Sherlock（KDD 2019）の「自信のないものは人に回す」の考え方�
 - 空白は『前後を落とす集合』を Python と JS で同じに決め（正規表現の空白の略記は使わない）、64 文字は文字（コードポイント）で数える。
 """
 
-"""2026-10-21 Guard v10 P1（作業中。最終版番号は P2・検収後に設定）:
-- D1・D3・D4・D5・D6 と N1・N2・N8 を、仕様の表記定義と学習側の集計から追加。
-- v9.1 が受け入れていた形は維持する。`_enabled_rules` は規則単独の回帰寄与を測るときだけ使う。
-- 固定試験は規則づくりに使わず、再生で回帰だけを確認する。
+"""2026-10-21 Guard v10 P1/P2（作業中。GUARD_VERSION は回帰検査完了後に設定）:
+- P1: D1・D3・D4・D5・D6 と N1・N2・N8、P2: D2・D7・D8・D9 と N3〜N7。
+- 規則は仕様の表記定義と学習側の集計から追加し、v9.1 が受け入れていた形は維持する。
+- `_enabled_rules` は規則単独の回帰寄与を測るときだけ使う。固定試験は規則づくりに使わず、再生で回帰だけを確認する。
 """
 
 import re
@@ -69,7 +69,7 @@ MONTH_FULL = [re.compile(p) for p in [
 
 
 
-# v10 P1 additions. New date and number spellings are additive to v9.1.
+# v10 P1/P2 additions. New date and number spellings are additive to v9.1.
 MISSING_MARKERS = {
     "-", "−", "–", "—", "―", "ー", "…", "‥", ".", "..", "...",
     "*", "**", "***", "x", "n/a", "na", "n.a.", "nan", "nil", "null",
@@ -94,6 +94,15 @@ _QUARTER_FULL = [re.compile(p) for p in [
     r"^(?:19|20)[0-9]{2}(?:年|年度)(?:上期|下期|上半期|下半期)$",
     r"^h[12]$",
 ]]
+_DATE_PERIOD_SEP = re.compile(r"~|〜|～|" + _S + r"+-" + _S + r"+|–|—|から|" + _S + r"+to" + _S + r"+|" + _S + r"+au" + _S + r"+")
+_YEAR_MONTH_PERIOD = re.compile(r"^(?:19|20)[0-9]{2}/[0-9]{1,2}-(?:19|20)[0-9]{2}/[0-9]{1,2}$")
+_UNIX_TS = re.compile(r"^[1-9][0-9]*(?:\.[0-9]{1,6})?$")
+_DATE_MONTH_PART = [re.compile(p) for p in [
+    r"^(?:19|20)[0-9]{2}年$",
+    r"^(?:19|20)[0-9]{2}年(?:0?[1-9]|1[0-2])月$",
+    r"^(?:0?[1-9]|1[0-2])月$",
+    r"^(?:令和|平成|昭和|大正)[0-9元]+年(?:0?[1-9]|1[0-2])月$",
+]]
 _WEEKDAY_NAME = r"(?:[月火水木金土日](?:曜日)?|mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)\.?"
 _WEEKDAY_SUFFIX = re.compile(r"^(?P<base>.*?)(?:\((?:" + _WEEKDAY_NAME + r")\)|" + _S + r"+(?:" + _WEEKDAY_NAME + r"))(?P<tail>.*)$")
 
@@ -109,6 +118,11 @@ def _is_month_day(v):
             return False
         month, day = int(m.group(1)), int(m.group(2))
     return day <= (29 if month == 2 else 30 if month in (4, 6, 9, 11) else 31)
+
+
+def _month_day_ge_13(v):
+    m = _MD_SLASH.match(v) or _MD_JP.match(v)
+    return bool(m and int(m.groups()[-1]) >= 13)
 
 
 def _is_era_date(v):
@@ -136,7 +150,7 @@ def _share_values(ne):
     return usable if len(usable) >= 2 else ne
 
 
-V10_RULES = frozenset({"D1", "D3", "D4", "D5", "D6", "N1", "N2", "N8"})
+V10_RULES = frozenset({"D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8"})
 
 
 def _rule_enabled(rules, name):
@@ -167,6 +181,44 @@ def _weekday_date(v, rules):
     return _date_base_without_weekday(base, rules)
 
 
+def _is_date_month_part(v):
+    return v.endswith("分") and any(r.fullmatch(v[:-1]) for r in _DATE_MONTH_PART)
+
+
+def _is_unix_timestamp(v):
+    if not _UNIX_TS.fullmatch(v):
+        return False
+    number = float(v)
+    return 946684800 <= number <= 4102444800 or 946684800000 <= number <= 4102444800000
+
+
+def _strong_date_atom(v, rules):
+    return bool(
+        (_rule_enabled(rules, "D1") and _weekday_date(v, rules))
+        or any(r.match(v) for r in DATE_RES)
+        or DATETIME_RE.match(v)
+        or TIME_RE.match(v)
+        or (_rule_enabled(rules, "D3") and _JP_TIME.match(v))
+        or (_rule_enabled(rules, "D5") and _is_era_date(v))
+        or any(r.match(v) for r in DATE_EXTRA)
+        or is_year_range(v)
+        or any(r.match(v) for r in MONTH_FULL)
+        or (_rule_enabled(rules, "D4") and _is_quarter(v))
+        or (_rule_enabled(rules, "D9") and _is_date_month_part(v))
+    )
+
+
+def _is_date_period(v, rules):
+    for m in _DATE_PERIOD_SEP.finditer(v):
+        left, right = v[:m.start()].strip(_SC), v[m.end():].strip(_SC)
+        if left and right and _strong_date_atom(left, rules) and _strong_date_atom(right, rules):
+            return True
+    if _YEAR_MONTH_PERIOD.fullmatch(v):
+        left, right = v.split("-", 1)
+        return _strong_date_atom(left, rules) and _strong_date_atom(right, rules)
+    return False
+
+
 
 def is_year_range(v):
     """年度の範囲（2012/13・2023-24・1999/00・2012/2013）。後の年が前の年の次（2 桁）か、0〜30 年先（4 桁）のときだけ。2020-99 は日付にしない。"""
@@ -195,12 +247,30 @@ _PERIOD_UNIT = r"(?:か月|" + _UNIT_V10 + r")"
 _PER_UNIT = r"(?:円|" + _UNIT_V10 + r")/[0-9]*" + _PERIOD_UNIT
 _CURRENCY_WORD = r"(?:yen|dollars|euros|pounds|ドル|ユーロ|円)"
 _CURRENCY_SUFFIX = r"(?:" + _CODE + r"|" + _CURRENCY_WORD + r"|[" + _CUR + r"])"
-_NUM_SUFFIX = r"(?:円/[^0-9" + _SC + r"]{1,4}|" + _UNIT_V10 + r"/[^0-9" + _SC + r"]{1,4}|" + _PER_UNIT + r"|円|％|%|" + _UNIT_V10 + r"|" + _CURRENCY_SUFFIX + r")"
+_NUM_SUFFIX_V91 = r"(?:円/[^0-9" + _SC + r"]{1,4}|" + _UNIT + r"/[^0-9" + _SC + r"]{1,4}|円|％|%|" + _UNIT + r")"
+_MAG_JP = r"(?:千万|百万|千|万|億|兆)"
+_MAG_EN = r"(?:million|billion|thousand|trillion|bn|mn|k)"
+_MAG_CURRENCY_UNIT = r"(?:円|％|%|" + _UNIT_V10 + r"|" + _CURRENCY_SUFFIX + r")"
+_MAG_SUFFIX = r"(?:" + _MAG_JP + r"(?:" + _NUM_CORE + _MAG_JP + r")?(?:" + _MAG_CURRENCY_UNIT + r")?|" + _MAG_EN + r"(?:" + _MAG_CURRENCY_UNIT + r")?)"
+_RATE_SUFFIX = r"(?:％ポイント|パーセント|ポイント|bps|ppm|‰|pt|bp|割|倍)"
+_NUM_SUFFIX = r"(?:円/[^0-9" + _SC + r"]{1,4}|" + _UNIT_V10 + r"/[^0-9" + _SC + r"]{1,4}|" + _PER_UNIT + r"|" + _MAG_SUFFIX + r"|" + _RATE_SUFFIX + r"|%ポイント|円|％|%|" + _UNIT_V10 + r"|" + _CURRENCY_SUFFIX + r")"
 _NUM_PREFIX = r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE
 NUM_LOOSE_V91 = re.compile(r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE + _S + r"*(?:円|％|%|" + _UNIT + r"|円/[^0-9" + _SC + r"]{1,4}|" + _UNIT + r"/[^0-9" + _SC + r"]{1,4})?\.?\)?$")
 NUM_LOOSE_N2 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _CURRENCY_SUFFIX + r")\.?\)?$")
 NUM_LOOSE_N8 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _UNIT_EXTRA + r"|" + _PER_UNIT + r")\.?\)?$")
-NUM_LOOSE = re.compile(_NUM_PREFIX + _S + r"*(?:" + _NUM_SUFFIX + r")?\.?\)?$")
+_N3_PREFIX_ITEM = r"(?:>=|<=|>|<|≥|≤|約|およそ|概ね|≒|≈|~|税込|税抜|税別)" + _S + r"*"
+_N3_PREFIX = r"(?:" + _N3_PREFIX_ITEM + r")?"
+_N3_SUFFIX = r"(?:以上|以下|未満|超|程度|前後|強|弱|\(税込\)|\(税抜\)|税込|\*|※|†|\+)"
+NUM_LOOSE_N3 = re.compile(r"^(?:" + _N3_PREFIX_ITEM + _NUM_PREFIX[1:] + _S + r"*(?:" + _NUM_SUFFIX_V91 + r")?" + _S + r"*(?:" + _N3_SUFFIX + r")?|" + _NUM_PREFIX[1:] + _S + r"*(?:" + _NUM_SUFFIX_V91 + r")?" + _S + r"*" + _N3_SUFFIX + r")\.?\)?$")
+NUM_LOOSE_N4 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _MAG_SUFFIX + r")\.?\)?$")
+_CURRENCY_PREFIX = r"(?:[" + _CUR + r"]|" + _CODE + r")"
+NUM_LOOSE_N4_M = re.compile(r"^" + _CURRENCY_PREFIX + _S + r"*[+\-−]?" + _NUM_CORE + r"m$")
+NUM_LOOSE_N5 = re.compile(r"^[+\-]?[0-9]+(?:\.[0-9]+)?e[+\-]?[0-9]+$")
+NUM_LOOSE_N6 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _NUM_SUFFIX_V91 + r")?[-−]\)?$")
+NUM_LOOSE_N7 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _RATE_SUFFIX + r"|%ポイント)$")
+NUM_LOOSE_N3N4 = re.compile(r"^(?:" + _N3_PREFIX_ITEM + _NUM_PREFIX[1:] + _S + r"*" + _MAG_SUFFIX + _S + r"*(?:" + _N3_SUFFIX + r")?|" + _NUM_PREFIX[1:] + _S + r"*" + _MAG_SUFFIX + _S + r"*" + _N3_SUFFIX + r")\.?\)?$")
+_NUM_LOOSE_MAIN = re.compile(r"^" + _N3_PREFIX + _NUM_PREFIX[1:] + _S + r"*(?:" + _NUM_SUFFIX + r")?" + _S + r"*(?:[-−])?" + _S + r"*(?:" + _N3_SUFFIX + r")?\.?\)?$")
+NUM_LOOSE = re.compile(r"(?:" + _NUM_LOOSE_MAIN.pattern + r"|" + NUM_LOOSE_N5.pattern + r")")
 
 
 def _strip(v):
@@ -232,6 +302,10 @@ def is_date_value(v, strong_only=False, _enabled_rules=None):
         return True
     if _rule_enabled(_enabled_rules, "D4") and _is_quarter(v):
         return True
+    if _rule_enabled(_enabled_rules, "D7") and _is_date_period(v, _enabled_rules):
+        return True
+    if _rule_enabled(_enabled_rules, "D9") and _is_date_month_part(v):
+        return True
     return False if strong_only else bool(YEAR_ONLY.match(v))
 
 
@@ -244,16 +318,20 @@ def date_shares(values, _enabled_rules=None):
         return 0.0, 0.0
     month_only = [v for v in ne if _MONTH_ONLY.match(v)] if _rule_enabled(_enabled_rules, "D6") else []
     quarter_only = [v for v in ne if _AMBIGUOUS_QUARTER.match(v)] if _rule_enabled(_enabled_rules, "D4") else []
+    month_days = [v for v in ne if _is_month_day(v)] if _rule_enabled(_enabled_rules, "D2") else []
     month_column = bool(month_only) and len(month_only) / len(ne) >= 0.8 and len(set(month_only)) >= 2
     quarter_column = bool(quarter_only) and len(quarter_only) / len(ne) >= 0.8
+    month_day_column = bool(month_days) and len(month_days) / len(ne) >= 0.8 and any(_month_day_ge_13(v) for v in month_days)
     strong = sum(
         is_date_value(v, True, _enabled_rules)
         or (month_column and bool(_MONTH_ONLY.match(v)))
         or (quarter_column and bool(_AMBIGUOUS_QUARTER.match(v)))
+        or (month_day_column and _is_month_day(v))
         for v in ne
     ) / len(ne)
     era_year_column = _rule_enabled(_enabled_rules, "D5") and all(_is_era_year(v) for v in ne)
-    year = 1.0 if era_year_column else sum(bool(YEAR_ONLY.match(v)) for v in ne) / len(ne)
+    unix_timestamp_column = _rule_enabled(_enabled_rules, "D8") and all(_is_unix_timestamp(v) for v in ne)
+    year = 1.0 if era_year_column or unix_timestamp_column else sum(bool(YEAR_ONLY.match(v)) for v in ne) / len(ne)
     return strong, year
 
 
@@ -264,6 +342,12 @@ def _num_loose_match(v, _enabled_rules=None):
         NUM_LOOSE_V91.match(v)
         or (_rule_enabled(_enabled_rules, "N2") and NUM_LOOSE_N2.match(v))
         or (_rule_enabled(_enabled_rules, "N8") and NUM_LOOSE_N8.match(v))
+        or (_rule_enabled(_enabled_rules, "N3") and NUM_LOOSE_N3.match(v))
+        or (_rule_enabled(_enabled_rules, "N4") and (NUM_LOOSE_N4.match(v) or NUM_LOOSE_N4_M.match(v)))
+        or (_rule_enabled(_enabled_rules, "N3") and _rule_enabled(_enabled_rules, "N4") and NUM_LOOSE_N3N4.match(v))
+        or (_rule_enabled(_enabled_rules, "N5") and NUM_LOOSE_N5.match(v))
+        or (_rule_enabled(_enabled_rules, "N6") and NUM_LOOSE_N6.match(v))
+        or (_rule_enabled(_enabled_rules, "N7") and NUM_LOOSE_N7.match(v))
     )
 
 

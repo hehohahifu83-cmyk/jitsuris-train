@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import re
 import sys
 import unicodedata
@@ -73,6 +74,66 @@ def analyze(columns_by_stream, guard, value_stats, stat_names, first_n=5):
     return {"per": per, "cols_with": cols_with, "vals_with": vals_with, "example": example}
 
 
+def monotonicity(columns_by_stream, baseline_guard, current_guard, first_n=5):
+    """Compare v9.1 and current acceptance on every real date/number column's first values.
+
+    Only aggregate counts are returned; no source values or headers are emitted.
+    """
+    per = defaultdict(Counter)
+    for name, cols in columns_by_stream.items():
+        for c in cols:
+            values, label = list(c[1])[:first_n], c[2]
+            if label not in ("date", *NUMERIC_LABELS):
+                continue
+            old_values = baseline_guard._clean(values)
+            new_values = current_guard._clean(values)
+            per[name]["columns"] += 1
+            if old_values != new_values:
+                per[name]["cleaning_changes"] += 1
+            if label == "date":
+                for v in old_values:
+                    if baseline_guard.is_date_value(v, True):
+                        per[name]["date_strong_accepted_values"] += 1
+                        if not current_guard.is_date_value(v, True):
+                            per[name]["date_strong_losses"] += 1
+                    if baseline_guard.is_date_value(v, False):
+                        per[name]["date_accepted_values"] += 1
+                        if not current_guard.is_date_value(v, False):
+                            per[name]["date_value_losses"] += 1
+                rival = "org"
+            else:
+                for v in old_values:
+                    if baseline_guard.NUM_LOOSE.match(v):
+                        per[name]["numeric_accepted_values"] += 1
+                        if not current_guard.NUM_LOOSE.match(v):
+                            per[name]["numeric_value_losses"] += 1
+                rival = "text"
+            order = [(label, 0.99), (rival, 0.001)]
+            old_accept = baseline_guard.guard(label, order, values) == label
+            new_accept = current_guard.guard(label, order, values) == label
+            if old_accept:
+                per[name]["v91_accepted_columns"] += 1
+                if not new_accept:
+                    per[name]["column_losses"] += 1
+            if not old_accept and new_accept:
+                per[name]["newly_accepted_columns"] += 1
+    return per
+
+
+def render_monotonicity(per):
+    total = Counter()
+    lines = ["", "## v9.1 受理の単調性（学習側の実データ）", "",
+             "各学習列の先頭 5 値で、v9.1 の受理を v10 が失わないことを確認。値や見出しは出力しない。", "",
+             "| 系統 | v9.1 受理列 | 新規受理列 | 日付強値 loss | 日付値 loss | 数値 loss | 列判定 loss | 正規化差 |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    for name, c in per.items():
+        total.update(c)
+        lines.append(f"| {name} | {c['v91_accepted_columns']} | {c['newly_accepted_columns']} | {c['date_strong_losses']} | {c['date_value_losses']} | {c['numeric_value_losses']} | {c['column_losses']} | {c['cleaning_changes']} |")
+    lines.append(f"| **合計** | **{total['v91_accepted_columns']}** | **{total['newly_accepted_columns']}** | **{total['date_strong_losses']}** | **{total['date_value_losses']}** | **{total['numeric_value_losses']}** | **{total['column_losses']}** | **{total['cleaning_changes']}** |")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def render(res, top=30):
     per = res["per"]
     total = Counter()
@@ -94,17 +155,29 @@ def render(res, top=30):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
+    ap.add_argument("--baseline", help="v9.1 guard.py loaded from the recorded v9.1 commit")
     a = ap.parse_args(argv)
     sys.argv = sys.argv[:1]
     import encoder_exp as E
     import guard
     from features import STAT_NAMES, value_stats
     streams = {"general": E.gtr, "biz": E.btr, "biz2": E.b2tr, "jp": E.jtr}
-    text = render(analyze(streams, guard, value_stats, STAT_NAMES))
+    report = render(analyze(streams, guard, value_stats, STAT_NAMES))
+    failed = False
+    if a.baseline:
+        spec = importlib.util.spec_from_file_location("guard_v91_baseline", a.baseline)
+        if spec is None or spec.loader is None:
+            raise SystemExit("v9.1 guard baseline を読み込めません")
+        baseline = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(baseline)
+        mono = monotonicity(streams, baseline, guard)
+        report += render_monotonicity(mono)
+        failed = any(c[k] for c in mono.values() for k in ("date_strong_losses", "date_value_losses", "numeric_value_losses", "column_losses", "cleaning_changes"))
+    text = report
     with open(a.out, "w", encoding="utf-8") as fh:
         fh.write(text)
     print(text)
-    return 0
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

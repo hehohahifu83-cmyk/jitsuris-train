@@ -4,6 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import guard as G
+from guard_accounting import v10_gate_failures
 
 HI_DATE = [("date", 0.99), ("org", 0.005)]
 HI_AMOUNT = [("amount", 0.99), ("text", 0.005)]
@@ -84,7 +85,7 @@ class GuardV10InitialTests(unittest.TestCase):
 
 
     def test_d1_weekday_suffixes_require_a_date_before_the_day_name(self):
-        positive = ["2024/3/5(火)", "2024年3月5日(火曜日)", "3月5日(火)", "2024-03-05 tue", "2024/03/05 火"]
+        positive = ["2024/3/5(火)", "2024年3月5日(火曜日)", "3月5日(火)", "3/15(火)", "2024-03-05 tue", "2024/03/05 火"]
         negative = ["火", "(火)", "5(火)", "2024(火)", "月曜日"]
         for value in positive:
             with self.subTest(value=value):
@@ -155,15 +156,21 @@ class GuardV10P2Tests(unittest.TestCase):
     """P2 acceptance examples come from the written format definitions."""
 
     def test_d2_month_day_columns_need_a_day_at_least_thirteen(self):
-        self.assertEqual(decide("date", ["3/15", "4/20", "5/1", "6/30", "7/25"]), "date")
+        slash_column = ["3/15", "4/20", "5/1", "6/30", "7/25"]
+        dash_column = ["3-15", "4-20", "5-1", "6-30", "7-25"]
+        self.assertEqual(decide("date", slash_column), "date")
+        self.assertEqual(G.guard_with_reason("date", [("date", 0.99), ("text", 0.005)], slash_column, _enabled_rules={"D2"})[0], "date")
+        self.assertEqual(G.guard_with_reason("date", [("date", 0.99), ("text", 0.005)], dash_column, _enabled_rules={"D2"})[0], "date")
         self.assertEqual(decide("date", ["3月15日", "4月20日", "5月1日", "6月30日", "7月25日"]), "date")
+        self.assertTrue(G.is_date_value(G._clean(["3/15(火)"])[0]))  # D1 permits a weekday suffix without D2's column condition
         for values in (["1/2", "3/4", "5/6", "7/8", "9/10"],
                        ["1-2", "3-4", "5-6", "7-8", "9-10"],
                        ["13/5", "2/30", "4/31", "0/5", "3/0"],
-                       ["1月2日", "3月4日", "5月6日", "7月8日", "9月10日"],
                        ["3/15", "4/20", "junk", "junk", "junk"]):
             with self.subTest(values=values):
                 self.assertEqual(decide("date", values), "unknown")
+        # v9.1 already accepts M月D日 via DATE_EXTRA; the v10 rule is additive.
+        self.assertEqual(decide("date", ["1月2日", "3月4日", "5月6日", "7月8日", "9月10日"]), "date")
 
     def test_d7_date_periods_require_two_strong_endpoints(self):
         positive = [
@@ -206,6 +213,12 @@ class GuardV10P2Tests(unittest.TestCase):
     def test_n3_qualifiers_comparators_and_annotations_are_bounded(self):
         positive = ["約1,000", "1,000以上", "1,234円(税込)", "税込1,234円", ">100", "100+", "$236.7 million*"]
         self.assertEqual(decide("amount", positive), "amount")
+        probs = [("amount", 0.99), ("text", 0.005)]
+        for value in positive[:-1]:
+            with self.subTest(rule="N3", value=value):
+                self.assertEqual(G.guard_with_reason("amount", probs, [value], _enabled_rules={"N3"})[0], "amount")
+        self.assertEqual(G.guard_with_reason("amount", probs, [positive[-1]], _enabled_rules={"N3", "N4"})[0], "amount")
+        self.assertTrue(G.NUM_LOOSE_N3N4.match(G._clean([positive[-1]])[0]))
         negative = ["約", "以上", "約abc", "1,000以上abc", ">", "100++"]
         for value in negative:
             with self.subTest(value=value):
@@ -215,6 +228,8 @@ class GuardV10P2Tests(unittest.TestCase):
         positive = ["1.5万円", "3億2,000万円", "12億", "100万", "5千円",
                     "1,234千円", "1,234百万円", "2.5兆円", "$1.2m", "1.2 million", "2bn", "3.4mn", "1.5k"]
         self.assertEqual(decide("amount", positive), "amount")
+        self.assertTrue(G.NUM_LOOSE_N4_M.match(G._clean(["$1.2m"])[0]))
+        self.assertFalse(G.NUM_LOOSE_N4_M.match(G._clean(["1.2m"])[0]))
         negative = ["万円", "1.5万万円", "億万", "3 b", "million", "1e3x"]
         for value in negative:
             with self.subTest(value=value):
@@ -240,6 +255,11 @@ class GuardV10P2Tests(unittest.TestCase):
         positive = ["35.0パーセント", "5.1ポイント", "12.5pt", "2.5倍", "3割",
                     "12.5％ポイント", "25bps", "100ppm", "100‰"]
         self.assertEqual(decide("rate", positive), "rate")
+        self.assertEqual(decide("rate", ["12.5％ポイント"]), "rate")
+        probs = [("rate", 0.99), ("text", 0.005)]
+        for value in positive:
+            with self.subTest(rule="N7", value=value):
+                self.assertEqual(G.guard_with_reason("rate", probs, [value], _enabled_rules={"N7"})[0], "rate")
         negative = ["パーセント", "5ポイントカード", "12ptx", "3割引き", "ppm"]
         for value in negative:
             with self.subTest(value=value):
@@ -255,6 +275,14 @@ class GuardV10P2Tests(unittest.TestCase):
         for rule, value in (("N3", "約1,000"), ("N4", "1.2 million"), ("N5", "1e6"), ("N6", "1,234-"), ("N7", "12.5pt")):
             with self.subTest(rule=rule):
                 self.assertEqual(G.guard_with_reason("amount", amount_probs, [value], _enabled_rules={rule})[0], "amount")
+
+
+class GuardV10ReplayGateTests(unittest.TestCase):
+    def test_gate_requires_zero_critical_and_regression_counts_and_a_five_to_one_gain(self):
+        self.assertEqual(v10_gate_failures({"A": 10, "B": 2, "C": 0, "D": 0}), [])
+        self.assertEqual(v10_gate_failures({"A": 9, "B": 2, "C": 0, "D": 0}), ["A must be at least 5 times B"])
+        self.assertEqual(v10_gate_failures({"A": 10, "B": 2, "C": 1, "D": 0}), ["C must be 0"])
+        self.assertEqual(v10_gate_failures({"A": 10, "B": 2, "C": 0, "D": 1}), ["D must be 0"])
 
 
 if __name__ == "__main__":
