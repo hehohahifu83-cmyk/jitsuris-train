@@ -70,3 +70,24 @@ def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False):
     if ctx_unit and unit:
         base += f" | 同じ表の単位列の値: {str(unit)[:240]}"
     return base
+
+
+HEADER_MASK_TOKEN = "（なし）"
+
+
+def mask_headers(rows, fraction, salt="jitsuris-hmask-v1"):
+    """W4（S13）：学習の行のうち決まった割合の見出しを HEADER_MASK_TOKEN に替える（見出しへの頼りすぎを減らす）。
+    どの行を替えるかは行の中身と salt の SHA-256 だけで決める（種子・順番に依らない）。評価の行には使わない。"""
+    import hashlib
+    if not 0.0 <= fraction < 1.0:
+        raise ValueError("header mask fraction must be in [0, 1)")
+    if fraction == 0.0:
+        return list(rows)
+    threshold = int(fraction * (1 << 64))
+    out = []
+    for row in rows:
+        key = repr((row[0], tuple(map(str, row[1] or [])), row[2], tuple(map(str, row[3] or [])))).encode("utf-8")
+        if int.from_bytes(hashlib.sha256(salt.encode("utf-8") + b"|" + key).digest()[:8], "big") < threshold:
+            row = (HEADER_MASK_TOKEN,) + tuple(row[1:])
+        out.append(row)
+    return out

@@ -186,7 +186,16 @@ def score_progress_probe(stage):
 
 if progress_rows:
     score_progress_probe("before")
-data = [(r, L[r[2]]) for r in train_rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in train_rows]
+HMASK = float(os.environ.get("FT_HMASK", "0") or 0)   # W4：学習の行の見出しを決まった割合で「（なし）」に替える（既定 0＝替えない。評価の文は変えない）
+if HMASK:
+    if AUG:
+        raise SystemExit("FT_HMASK と FT_AUG は同時に使えない")
+    from encoder_context import mask_headers, HEADER_MASK_TOKEN
+    _text_rows = mask_headers(train_rows, HMASK)
+    print(f"FT_HMASK={HMASK:g}: masked {sum(r[0] == HEADER_MASK_TOKEN for r in _text_rows)}/{len(_text_rows)} training headers", flush=True)
+else:
+    _text_rows = train_rows
+data = [(r, L[r[2]]) for r in train_rows] if AUG else [(text(r, PREFIX), L[r[2]]) for r in _text_rows]
 print(f"training rows={len(train_rows)} seed={seed_text or 'default'}", flush=True)
 # --- 学習の記録（manifest.json）と、入力の長さ・切り捨ての割合（2026-10-20）---
 # MAX_LEN は上（FT_MAX_LEN）で定義済み
