@@ -174,6 +174,24 @@ class PredictAndScoreTests(unittest.TestCase):
         rows = S.load_records(out_dir, "ft")[("job1", "independent_main")]
         self.assertEqual([r["column"] for r in rows], ["date of sale"])
 
+    def test_score_counts_assertions_on_unknown_labeled_columns(self):
+        # fake_infer の答え：c1 → date、c2 → 不明（しきい値未満）、c3 → amount
+        E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
+        labels = os.path.join(self.d, "labels.json")
+        write(labels, {"c1": "unknown", "c2": "unknown", "c3": "amount"})
+        link = E.score(self.out, labels, os.path.join(self.d, "scored_u"), "job1")
+        self.assertEqual((link["n_unknown_labeled"], link["unknown_asserted"], link["unknown_asserted_ids"]), (2, 1, ["c1"]))
+        self.assertEqual((link["n"], link["n_excluded"]), (1, 2))
+        # S の列は「決められない列」に数えない（言い切っても数えない）
+        write(labels, {"c1": "S", "c2": "unknown", "c3": "amount"})
+        link = E.score(self.out, labels, os.path.join(self.d, "scored_s"), "job1")
+        self.assertEqual((link["n_unknown_labeled"], link["unknown_asserted"], link["unknown_asserted_ids"]), (1, 0, []))
+        self.assertEqual(link["n_excluded"], 2)
+        # unknown のラベルが無ければ 0 件
+        write(labels, {"c1": "date", "c2": "category", "c3": "amount"})
+        link = E.score(self.out, labels, os.path.join(self.d, "scored_n"), "job1")
+        self.assertEqual((link["n_unknown_labeled"], link["unknown_asserted"], link["unknown_asserted_ids"]), (0, 0, []))
+
     def test_score_refuses_when_nothing_is_left_to_evaluate(self):
         E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
         labels = os.path.join(self.d, "labels.json")

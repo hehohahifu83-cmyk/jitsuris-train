@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "decided_at": "2026-10-21",
+  "decided_by": "Claude（指示役）。根拠は specs/DATA_COLLECTION_PROTOCOL.md 第2章",
+  "per_class": {
+    "min_tables": 150,
+    "min_ja_tables": 80,
+    "min_datasets": 100,
+    "max_family_share": 0.15
+  },
+  "overrides": {
+    "person": {"min_tables": 100, "min_ja_tables": 60, "min_datasets": 60},
+    "email": {"min_tables": 100, "min_ja_tables": 60, "min_datasets": 60},
+    "phone": {"min_tables": 100, "min_ja_tables": 60, "min_datasets": 60}
+  },
+  "note": "表＝(source, table) の組。仕様由来の教材（spec:<ベンダー>）は、1 つの仕様書の 1 つの形式を 1 表と数える。目標は『足りない所を見つける物差し』で、数を満たすこと自体が目的ではない。"
+}

@@ -14,6 +14,8 @@
     "header": "…", "values": ["…", … 先頭の 5 件], "siblings": ["同じ表の他の列の見出し", …], "unit": "同じ表の単位列の短い例（無ければ空）"}]}
 ラベルの形：{"c001": "date", …}（id → ラベル。ラベルを付けた人ごとに別ファイル）
   ラベルが unknown（決められない）か S（学習に使わない：空・崩れた表）の列は採点から外す。外した件数と id は <run>_independent_manifest.json の n_excluded・excluded_ids に残る。
+  外した列のうち、ラベルが unknown の列に AI が「不明」以外を言い切った数も同じ manifest に残す（n_unknown_labeled・unknown_asserted・unknown_asserted_ids）。
+  決められない列に言い切るのは「正解が無い列への誤断定」で、採点の分母には入らないが、利用者には間違いとして見える。S の列は数えない。
 """
 from __future__ import annotations
 
@@ -223,6 +225,8 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
         raise ValueError(f"ラベルの id が予測と合わない：ラベルなし {missing[:5]}（{len(missing)} 件）／予測なし {extra[:5]}（{len(extra)} 件）")
     excluded_ids = [r["id"] for r in doc["rows"] if truth[r["id"]] in EXCLUDE_LABELS]
     kept = [(i, r) for i, r in enumerate(doc["rows"]) if truth[r["id"]] not in EXCLUDE_LABELS]
+    undecidable = [r for r in doc["rows"] if truth[r["id"]] == "unknown"]
+    asserted_ids = [r["id"] for r in undecidable if r["guarded_prediction"] != "unknown"]   # 正解が決められない列への言い切り
     if not kept:
         raise ValueError("ラベルが unknown／S のものしかなく、採点できる列が 1 つもない")
     known = set(doc["labels"])
@@ -243,7 +247,9 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     link = {"run": run, "dataset": dataset, "set_id": doc.get("set_id"), "set_sha256": doc.get("set_sha256"),
             "preds_sha256": sha256_bytes(raw), "labels_sha256": sha256_bytes(label_raw), "checkpoint": doc["checkpoint"],
             "timing": doc.get("timing"), "device": doc.get("device"), "counts": dict(Counter(r["outcome"] for r in records)),
-            "n": len(records), "n_excluded": len(excluded_ids), "excluded_ids": excluded_ids, "acc": metrics.get("acc_all")}
+            "n": len(records), "n_excluded": len(excluded_ids), "excluded_ids": excluded_ids,
+            "n_unknown_labeled": len(undecidable), "unknown_asserted": len(asserted_ids), "unknown_asserted_ids": asserted_ids,
+            "acc": metrics.get("acc_all")}
     with open(os.path.join(out_dir, f"{run}_independent_manifest.json"), "w", encoding="utf-8") as fh:
         fh.write(json.dumps(link, ensure_ascii=False, indent=1) + "\n")
     return link
