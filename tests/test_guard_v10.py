@@ -60,6 +60,13 @@ class GuardV10InitialTests(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertFalse(G.is_date_value(G._clean([value])[0]))
 
+    def test_d5_era_year_only_requires_a_consistent_column_and_high_confidence(self):
+        values = ["r06", "h28", "s62", "m45", "t15"]
+        self.assertEqual(G.guard("date", [("date", 0.99), ("amount", 0.005)], values), "date")
+        self.assertEqual(G.guard("date", [("date", 0.89), ("amount", 0.10)], values), "unknown")
+        self.assertEqual(G.guard("date", [("date", 0.99), ("amount", 0.005)], ["r06", "h28", "2023", "r05"]), "unknown")
+
+
     def test_v91_accepted_date_and_number_shapes_remain_accepted(self):
         old_dates = ["2024-01-05", "2024年1月5日", "令和6年5月1日", "1/28/2008", "2012/13", "FY2020", "05-May-17"]
         old_numbers = ["£1,234.50", "¥1,000", "€1.234,56", "5 kg", "12.5%", "USD 1,000"]
