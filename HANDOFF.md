@@ -1,3 +1,11 @@
+## 2026-10-21 UTC — ChatGPT: W1 Kaggle request failed before push
+
+- The authorized six-job W1 request reached GitHub Actions run `39579634852` and failed during Hugging Face model preparation. The request passed `hfmodel/intfloat__multilingual-e5-base` as the source model ID; that is the Kaggle-side destination path, not the Hugging Face ID. The API returned 401 for `/api/models/hfmodel/intfloat__multilingual-e5-base`.
+- Failure occurred before a Kaggle kernel push, so no training ran and no model/evaluation artifacts or W1 metrics exist. The later artifact-validation failure (missing `/tmp/eval_reports`) is downstream of the preparation failure.
+- Reset `kaggle/kaggle.request` to `done` in commit `c26d4e0c09f875c3593c2394e5c4d6b2262c37fe` to prevent automatic resubmission. The plan prohibits retry after ERROR/CANCEL; no retry was made. The correct Hugging Face ID is `intfloat/multilingual-e5-base`, but no corrected request has been submitted. W1 remains without results.
+
+---
+
 ## 2026-10-21 UTC — ChatGPT: W2/W6 validation-only experiments
 
 - Read W2/W6 probabilities from `eval_reports/runs/39496935773/job2` only: `FT_VAL=1`, E5-base, seed 1, LR 3e-5. Excluded `39506074807`, fixed evaluation, independent main, sealed, and blind sets. Reconstructed table grouping from the learning-side labels and verified all 889 rows (148 source tables) against saved labels and order; no cell values were used or recorded.

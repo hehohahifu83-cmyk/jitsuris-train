@@ -1,4 +1,4 @@
-# S12 E5-base 学習曲線（事前記録・学習未実行）
+# S12 E5-base 学習曲線（事前記録・W1はKaggle push前に失敗）
 
 更新：2026-10-21 16:12 JST（ChatGPT）
 
@@ -28,7 +28,7 @@
 
 ## 実行予定と見積り
 
-Kaggleの6ジョブ引数は次のとおり（依頼ファイルには投入していない）。
+以下は正しい予定引数（2026-10-21の実依頼では誤ったモデルIDを渡しており、この引数では学習を実行していない）。
 
 ```text
 intfloat/multilingual-e5-base 2 FT_LR=3e-5 FT_SEED=1 FT_VAL=1 FT_REAL_FRAC=0.25
@@ -46,6 +46,13 @@ FT_REAL_FRAC=1.0
 
 過去のE5-base 3ジョブ実行は2026-10-20 22:10:03〜22:39:34 UTC（29分31秒）、学習ループは1ジョブ約543秒だった。2 GPUで6件を3波に分ける見込みは、準備・評価・成果物保存を含めて約40〜50分。これは見積りで、実測ではない。
 
+## W1 依頼結果（2026-10-21 UTC）
+
+- 事前見積りは6ジョブ×約543秒＝約54 GPU分、2 GPUで3波、準備・評価・成果物保存込み約40〜50分。見積りであり、実測ではない。
+- 実依頼ではソースモデルIDに `hfmodel/intfloat__multilingual-e5-base` を渡してしまい、Hugging Face の `/api/models/hfmodel/intfloat__multilingual-e5-base` が401を返した。期待するIDは `intfloat/multilingual-e5-base`。失敗は学習準備中で、Kaggleへのkernel push前。学習、成果物、W1指標はない。
+- Actions run `39579634852` の後続成果物検査も `/tmp/eval_reports` 不在で失敗した。これは準備失敗に伴うもの。
+- 自動再投入を防ぐため `kaggle/kaggle.request` を `done` に戻した（commit `c26d4e0c09f875c3593c2394e5c4d6b2262c37fe`）。計画のERROR/CANCEL後の再試行禁止に従い、修正版の再依頼はしていない。したがって学習曲線の判定は保留。
+
 ## 実装・確認・状態
 
 - `real_fraction.py`：許可値の検査と、SHA-256による決定的な全表抽出を実装。
@@ -53,4 +60,4 @@ FT_REAL_FRAC=1.0
 - `tests/test_encoder_exp_import.py`：環境変数なし（既定1.0）で実際に import でき、従来と同じ全実表行が残る回帰試験。
 - `tests/test_real_fraction.py`：既定値、入力検査、全量保持、決定性、割合の入れ子、表単位の保持を検査。
 - ローカル確認：S12・S9・S14 の単体試験14件成功。`encoder_exp` の import 回帰試験は既定 `FT_REAL_FRAC=1.0` で全行保持を確認。
-- オーナーは 2026-10-21 17:57 JST に改善計画 v2 と Kaggle 学習再開を許可。現時点で学習は未実行、`kaggle/kaggle.request` は `done`。6ジョブ（2種子×3割合）の実行前に見積りを【進捗】へ記録し、実測・数値判定は別途記載する。
+- オーナーは 2026-10-21 17:57 JST に改善計画 v2 と Kaggle 学習再開を許可。実依頼は workflow run `39579634852` で失敗し、Hugging Face の準備段階で止まった。Kaggle への push と学習はなく、`kaggle/kaggle.request` は commit `c26d4e0` で `done` に戻した。計画の「ERROR/CANCEL 後は再試行しない」に従い、再依頼していない。学習曲線の実測値・数値判定はない。
