@@ -1,3 +1,18 @@
+# 最新確認 2026-10-21 19:52 JST（ChatGPT。W1 完了、集計競合は未解決）
+
+## 確認済み
+- W1 学習曲線の本実行 [GitHub Actions run 39583634509](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39583634509) は success。Kaggle は 2026-10-21 10:46:57 UTC に COMPLETE、`kaggle/kaggle.request` は `done`。訂正済み6条件（seed 1/2 × `FT_REAL_FRAC` 0.25/0.5/1.0）が実行され、学習行数は各seedで21,166 / 31,411 / 50,491。学習時間は seed 1 が214 / 308 / 520秒、seed 2 が204 / 307 / 517秒、peak GPU memory は5.4–5.5 GiB。
+- 評価artifact ID 12340011617（247ファイル、1,059,117 bytes）とモデルartifact ID 12339657023（851,810,283 bytes）が別々に回収済み。STATUS.md と FINETUNE_RESULTS.md は更新済み。
+- 固定試験・blind_set*・セット3/5/7はこの確認で読んでいない。今回のW1は `FT_VAL=1` の検証セットであり、ChatGPT/Claude同一課題比較の証拠ではない。
+
+## 未確認
+- 事前固定指標「未知見出し macro-F1」の6本分と Δ の正式集計は、現時点のmainに保存された要約を確認できていない。採否判断は役割分担どおりClaudeが行う。
+- 新しい教材・ラベルの有効性、誤り原因、ChatGPT/Claude同等以上は今回の完了事実だけからは確認できない。
+
+## 未完了・障害
+- 重複して状態回収した run 39584575659 は、先行runと同じ結果を保存しようとしてmain更新と競合し、`kaggle/KAGGLE_LOG.md`、`MONITOR.json`、`PROGRESS.md`、`STATUS.md` のrebase conflictで failure。学習run 39583634509 とそのartifactは成功済みなので、再学習はしない。
+- W1の6本分未知見出しmacro-F1の要約保存、Claudeの判定、必要なら許可された検証出力の誤り/重大/unknown監査が残る。進行中依頼は書き換えていない。
+
 # 最新確認 2026-10-21 19:19 JST（Claude。役割の変更と W1 の再依頼）
 - **オーナー指示（2026-10-21 19:19）**：重要な部分＝Claude（方針・判定・学習の依頼の中身・中核のコード・採点と検収）、簡単だが利用枠を使う作業＝ChatGPT（Actions・Kaggle の見張りと回収の確認、ログの要点、機械的な収集、記録の整理）。詳しくは ai-bridge README「役割の分担」。
 - W1（学習曲線 6 本）を、訂正した引数で Claude が依頼した（`bench/learning_curve_e5base.md` の訂正 927b88f、依頼 63eb31a、Actions run 39583634509）。前の失敗の原因は、モデル ID・基準の設定の抜け・種子 2 の段の引き継ぎの 3 つ。
