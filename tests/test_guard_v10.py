@@ -61,9 +61,13 @@ class GuardV10InitialTests(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertFalse(G.is_date_value(G._clean([value])[0]))
 
-    @unittest.skip("Claude consultation pending: h28.13.1 is accepted by v9.1, conflicting with D5's negative example and the v10 monotonicity requirement")
-    def test_d5_13th_month_negative_example_after_spec_adjudication(self):
-        self.assertFalse(G.is_date_value(G._clean(["h28.13.1"])[0]))
+    def test_v91_accepted_d5_shape_remains_accepted(self):
+        value = G._clean(["h28.13.1"])[0]
+        self.assertTrue(G.is_date_value(value))
+        self.assertEqual(G.guard("date", HI_DATE, ["h28.13.1"]), "date")
+
+    def test_guard_version_is_pinned_to_v10(self):
+        self.assertEqual(G.GUARD_VERSION, "v10")
 
 
     def test_d5_era_year_only_requires_a_consistent_column_and_high_confidence(self):
@@ -169,8 +173,8 @@ class GuardV10P2Tests(unittest.TestCase):
                        ["3/15", "4/20", "junk", "junk", "junk"]):
             with self.subTest(values=values):
                 self.assertEqual(decide("date", values), "unknown")
-        # v9.1 already accepts M月D日 via DATE_EXTRA; the v10 rule is additive.
-        self.assertEqual(decide("date", ["1月2日", "3月4日", "5月6日", "7月8日", "9月10日"]), "date")
+        # D2's column condition applies only to newly accepted M/D and M-D; v9.1's M月D日 remains accepted alone.
+        self.assertEqual(G.guard("date", HI_DATE, ["1月2日"]), "date")
 
     def test_d7_date_periods_require_two_strong_endpoints(self):
         positive = [
