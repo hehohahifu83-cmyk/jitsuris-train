@@ -7,6 +7,7 @@ on:
       - 'guard.py'
       - 'train3.py'
       - 'tests/test_guard.py'
+      - 'tests/test_guard_v10.py'
       - 'tests/test_decision_reasons.py'
       - 'evaluation_records.py'
       - 'tests/test_evaluation_records.py'
@@ -22,6 +23,7 @@ on:
       - 'guard.py'
       - 'train3.py'
       - 'tests/test_guard.py'
+      - 'tests/test_guard_v10.py'
       - 'tests/test_decision_reasons.py'
       - 'evaluation_records.py'
       - 'tests/test_evaluation_records.py'
@@ -40,6 +42,8 @@ jobs:
           python-version: '3.11'
       - name: Compile trainer and evaluation utilities
         run: python -m py_compile finetune_exp.py evaluation_records.py abstain_eval.py guard.py train3.py cpu_lab/self_learning.py cpu_lab/material_receipt.py cpu_lab/progress_probe.py cpu_lab/compare_replay_probe.py jobs.py kaggle/run.py
+      - name: Check Guard v10 value rules
+        run: python -m unittest discover -s tests -p 'test_guard_v10.py' -v
       - name: Check decision reason parity
         run: python -m unittest discover -s tests -p 'test_decision_reasons.py' -v
       - name: Check scored evaluation row contract
