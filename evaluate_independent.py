@@ -13,6 +13,7 @@
   {"schema_version": 1, "set_id": "…", "columns": [{"id": "c001", "table": "t01", "source": "yokohama", "language": "ja",
     "header": "…", "values": ["…", … 先頭の 5 件], "siblings": ["同じ表の他の列の見出し", …], "unit": "同じ表の単位列の短い例（無ければ空）"}]}
 ラベルの形：{"c001": "date", …}（id → ラベル。ラベルを付けた人ごとに別ファイル）
+  ラベルが unknown（決められない）か S（学習に使わない：空・崩れた表）の列は採点から外す。外した件数と id は <run>_independent_manifest.json の n_excluded・excluded_ids に残る。
 """
 from __future__ import annotations
 
@@ -28,6 +29,7 @@ from collections import Counter
 
 SCHEMA = 1
 EVAL_MAX_LENGTH = 128
+EXCLUDE_LABELS = ("unknown", "S")   # LABEL_GUIDE の「決められない」「学習に使わない」。採点から外し、件数と id を記録に残す
 
 
 def sha256_bytes(data):
@@ -219,13 +221,17 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     extra = sorted(set(truth) - set(ids))
     if missing or extra:
         raise ValueError(f"ラベルの id が予測と合わない：ラベルなし {missing[:5]}（{len(missing)} 件）／予測なし {extra[:5]}（{len(extra)} 件）")
+    excluded_ids = [r["id"] for r in doc["rows"] if truth[r["id"]] in EXCLUDE_LABELS]
+    kept = [(i, r) for i, r in enumerate(doc["rows"]) if truth[r["id"]] not in EXCLUDE_LABELS]
+    if not kept:
+        raise ValueError("ラベルが unknown／S のものしかなく、採点できる列が 1 つもない")
     known = set(doc["labels"])
-    unknown_labels = sorted({truth[i] for i in ids} - known)
+    unknown_labels = sorted({truth[r["id"]] for _, r in kept} - known)
     if unknown_labels:
         raise ValueError(f"重みが知らないラベルがある：{unknown_labels}")
     records = [build_record(index=i, dataset=dataset, seed=seed, condition="微調整だけ", column=r["column"], truth=truth[r["id"]],
                             guarded_prediction=r["guarded_prediction"], top3=r["top3"], decision_reason=r["decision_reason"])
-               for i, r in enumerate(doc["rows"])]
+               for i, r in kept]
     metrics = score_real([r["guarded_prediction"] for r in records], [r["truth"] for r in records])
     assert_metrics_match(records, metrics)
     meta = {"schema_version": 3, "test": dataset, "dataset": dataset, "seed": str(seed), "condition": "微調整だけ", "condition_id": "ft"}
@@ -237,7 +243,7 @@ def score(preds_path, labels_path, out_dir, run, dataset="independent_main", see
     link = {"run": run, "dataset": dataset, "set_id": doc.get("set_id"), "set_sha256": doc.get("set_sha256"),
             "preds_sha256": sha256_bytes(raw), "labels_sha256": sha256_bytes(label_raw), "checkpoint": doc["checkpoint"],
             "timing": doc.get("timing"), "device": doc.get("device"), "counts": dict(Counter(r["outcome"] for r in records)),
-            "n": len(records), "acc": metrics.get("acc_all")}
+            "n": len(records), "n_excluded": len(excluded_ids), "excluded_ids": excluded_ids, "acc": metrics.get("acc_all")}
     with open(os.path.join(out_dir, f"{run}_independent_manifest.json"), "w", encoding="utf-8") as fh:
         fh.write(json.dumps(link, ensure_ascii=False, indent=1) + "\n")
     return link

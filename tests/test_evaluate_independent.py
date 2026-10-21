@@ -163,6 +163,25 @@ class PredictAndScoreTests(unittest.TestCase):
         self.assertEqual(len(manifest["labels_sha256"]), 64)
         self.assertEqual(manifest["checkpoint"]["seed"], "2")
 
+    def test_score_leaves_out_unknown_and_S_columns_and_says_so(self):
+        E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
+        labels = os.path.join(self.d, "labels.json")
+        write(labels, {"c1": "date", "c2": "unknown", "c3": "S"})
+        out_dir = os.path.join(self.d, "scored_ex")
+        link = E.score(self.out, labels, out_dir, "job1")
+        self.assertEqual((link["n"], link["n_excluded"], sorted(link["excluded_ids"])), (1, 2, ["c2", "c3"]))
+        self.assertEqual(link["counts"], {"correct": 1})
+        rows = S.load_records(out_dir, "ft")[("job1", "independent_main")]
+        self.assertEqual([r["column"] for r in rows], ["date of sale"])
+
+    def test_score_refuses_when_nothing_is_left_to_evaluate(self):
+        E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
+        labels = os.path.join(self.d, "labels.json")
+        write(labels, {"c1": "unknown", "c2": "S", "c3": "unknown"})
+        with self.assertRaises(ValueError) as ctx:
+            E.score(self.out, labels, os.path.join(self.d, "o4"), "job1")
+        self.assertIn("1 つもない", str(ctx.exception))
+
     def test_score_refuses_mismatched_or_unknown_labels(self):
         E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
         labels = os.path.join(self.d, "labels.json")
