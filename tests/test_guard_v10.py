@@ -138,5 +138,18 @@ class GuardV10InitialTests(unittest.TestCase):
                 self.assertEqual(decide("quantity", [value, value]), "unknown")
 
 
+    def test_rules_can_be_replayed_one_at_a_time(self):
+        probs = [("date", 0.99), ("text", 0.005)]
+        self.assertEqual(G.guard_with_reason("date", probs, ["9時00分"], _enabled_rules=set())[0], "unknown")
+        self.assertEqual(G.guard_with_reason("date", probs, ["9時00分"], _enabled_rules={"D3"})[0], "date")
+        self.assertEqual(G.guard_with_reason("date", probs, ["r 5.10.28"], _enabled_rules={"D3"})[0], "unknown")
+        self.assertEqual(G.guard_with_reason("date", probs, ["r 5.10.28"], _enabled_rules={"D5"})[0], "date")
+        amount_probs = [("amount", 0.99), ("text", 0.005)]
+        self.assertEqual(G.guard_with_reason("amount", amount_probs, ["100 usd", "100 usd"], _enabled_rules={"N8"})[0], "unknown")
+        self.assertEqual(G.guard_with_reason("amount", amount_probs, ["100 usd", "100 usd"], _enabled_rules={"N2"})[0], "amount")
+        self.assertEqual(G.guard_with_reason("amount", amount_probs, ["30分", "30分"], _enabled_rules={"N2"})[0], "unknown")
+        self.assertEqual(G.guard_with_reason("amount", amount_probs, ["30分", "30分"], _enabled_rules={"N8"})[0], "amount")
+
+
 if __name__ == "__main__":
     unittest.main()
