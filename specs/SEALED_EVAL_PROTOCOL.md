@@ -24,7 +24,7 @@ def pool(publisher_id: str) -> str:
 - 新しく見つけた公開元は、**中身を見る前に** `pool()` で割り当て、`independent_eval/allocation.json`（公開元 ID・プール・日付）に追記する。後から付け替えない。
 - `eval2` `eval3` の公開元は、学習データに入れない。`train` の公開元は、評価セットに入れない。
 - 既存の学習の系統（egov・egov_biz・egov_biz2・jp・jp2・datagov_uk・datagov_uk2・canada・canada2・ireland・australia・gittables・direct）は `train` に固定。主セットの 4 出典（横浜・神戸・札幌・NYC）は `main`（以後、学習に入れない）。
-- 同じ組織の別名・別ポータルは同じ公開元に正規化する（表は `allocation.json` の `aliases`）。判断に迷う公開元は、割り当てを待たずに `eval` 側として扱う（安全側）。
+- 同じ組織の別名・別ポータルは同じ公開元に正規化する（表は `allocation.json` の `aliases`）。判断に迷う公開元は `hold`（学習にも評価セットにも使わない）として登録し、正体が分かってから `pool()` で割り当てる（2026-10-21 改訂。eval 側に入れると、正体が学習側の公開元だったときに評価が甘くなるため）。登録済みの公開元を後から別名にしない（`aliases` のキーは `publishers` に登録しない）。
 
 ## 3. セットの規格
 ### 封印セット #2・#3（それぞれ）

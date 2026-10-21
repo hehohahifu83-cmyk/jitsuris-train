@@ -1,4 +1,4 @@
-# 最新確認 2026-10-21 17:50 JST（Claude。S6-5 採点完了＝E5-base を残す。S6-6 SETS.md 記録。S12 の不具合と S9 のレビューを連絡箱へ）
+# 最新確認 2026-10-21 17:44 JST（Claude。S6-5 採点完了＝E5-base を残す。S6-6 SETS.md 記録。S12 の不具合と S9 のレビューを連絡箱へ）
 
 ## S6 独立評価主セット：完了（使い切り）
 - **S6-5 完了**：保存済み予測 6 本を非公開ラベル 3 通り（裁定後・Claude 初回・ChatGPT 初回）× Guard v9.1／v10 で手元採点。モデルの再実行なし。結果は `bench/independent_eval_independent-main-20261021-v1.md`（集計だけ）。

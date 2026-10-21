@@ -1,6 +1,6 @@
 # 独立評価 主セット #1（independent-main-20261021-v1）の採点・S6-5
 
-最終更新：2026-10-21 17:45（日本時間）Claude（指示役）。事前登録 `independent_eval/PREREG_independent-main-20261021-v1.md`（commit `4634e229a36db9f0c9102ca67ba7580d1526461b`、06:56 UTC）の規則で読んだ。
+最終更新：2026-10-21 17:44（日本時間）Claude（指示役）。事前登録 `independent_eval/PREREG_independent-main-20261021-v1.md`（commit `4634e229a36db9f0c9102ca67ba7580d1526461b`、06:56 UTC）の規則で読んだ。
 
 ## 要点
 - **判定：E5-base を残す。** mmBERT-small は未知見出しの OK 率が平均 7.7 ポイント低い（差の 90% 区間 −11.6〜−4.2）。重大も多い（16.7 件対 16.0 件）。3 条件のどれも満たさず、ラベル 3 通り（裁定後・Claude 初回・ChatGPT 初回）のどれでも結論は同じ。診断（学習側の試験）で E5-base が上だった結果とも合う。
