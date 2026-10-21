@@ -96,7 +96,7 @@ class GuardV10InitialTests(unittest.TestCase):
         self.assertEqual(decide("date", ["march", "jan", "april", "may", "june"]), "date")
         negative_columns = [
             ["may be", "may be", "may be", "may be", "may be"],
-            ["march 2020", "march 2020", "march 2020", "march 2020", "march 2020"],
+            ["march", "march 2020", "foo", "bar", "baz"],
             ["mar", "mar", "mar", "mar", "mar"],
             ["march", "march", "foo", "bar", "baz"],
             ["march", "jan", "foo", "bar", "baz"],
