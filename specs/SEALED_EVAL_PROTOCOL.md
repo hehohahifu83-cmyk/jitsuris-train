@@ -91,7 +91,7 @@ LABEL_GUIDE の版：<v1.5>
 
 ## 8. S6（主セット #1）を流す具体的な手順
 1. ChatGPT：自分のラベルを `ai-bridge/labels/chatgpt-independent-main-20261021-v1.json`（`{列 ID: 種類}`、unknown と S の約束は Claude と同じ）に固定し、ファイルの SHA-256 つきで連絡箱に合図。**ChatGPT は、Claude のラベルのファイルを、Claude が一致率の集計を出すまで開かない**（Claude も同じ）。
-2. Claude：一致率の集計（全体・種類別・出典別・言語別）を連絡箱に出す。食い違いの列 ID を渡し、裁定の記録を作る（LABEL_GUIDE v1.5 だけを根拠に。ガイドは変えない）。
+2. Claude：一致率の集計（全体・種類別・出典別・言語別）を連絡箱に出す。食い違いの列 ID を渡し、裁定の記録を作る（LABEL_GUIDE v1.5 だけを根拠に。ガイドは変えない）。裁定後のラベルは `ai-bridge/labels/adjudicated-independent-main-20261021-v1.json` に保存し、SHA-256 を連絡箱に書く（段 5 の採点と S14 の先生との比較の正解）。
 3. ChatGPT：`independent_eval/PREREG_independent-main-20261021-v1.md` をコミット（第 7 章。候補＝mmBERT-small 3 つと E5-base 3 つ、見張り主＝v9.1・副＝v10 〔準備でき次第〕）。S7 の完了を待たない。
 4. ChatGPT：`.github/workflows/independent-predict.yml`（手動実行、CPU）を作る。入力＝`gh run download 39502740378`／`39506074807`（artifact `jitsuris-model`）、6 つの重みそれぞれで `evaluate_independent.py predict`。予測ファイルと台帳をコミット。重みの保存期限は 2026-11-19（07:06・07:38 JST）。**期限の前に、基準線に使う E5-base の 3 つ（と mmBERT の 3 つ）を非公開の場所（Kaggle の非公開データセットなど）へ長期保管する**。公開リリースにはしない（配布はオーナーの承認が要る）。
 5. Claude：非公開のラベルで `score` → `compare_models.py` → 層別（先生の一致・不一致を含む）。`bench/independent_eval_independent-main-20261021-v1.md` を作り、連絡箱に結果と判定を書く。
