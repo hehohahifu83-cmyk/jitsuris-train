@@ -71,5 +71,60 @@ class GuardV10InitialTests(unittest.TestCase):
                 self.assertEqual(decide("amount", [value, value, value]), "amount")
 
 
+    def test_d1_weekday_suffixes_require_a_date_before_the_day_name(self):
+        positive = ["2024/3/5(火)", "2024年3月5日(火曜日)", "3月5日(火)", "2024-03-05 tue", "2024/03/05 火"]
+        negative = ["火", "(火)", "5(火)", "2024(火)", "月曜日"]
+        for value in positive:
+            with self.subTest(value=value):
+                self.assertEqual(decide("date", [value, value]), "date")
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.is_date_value(G._clean([value])[0]))
+
+    def test_d4_quarters_and_half_years_with_ambiguous_q1_column_condition(self):
+        positive = ["第1四半期", "2024年度第1四半期", "4th quarter", "24q1", "2024年度下半期"]
+        negative = ["q5", "第5四半期", "5th quarter", "quarterly", "1qa"]
+        self.assertEqual(decide("date", positive), "date")
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.is_date_value(G._clean([value])[0]))
+        self.assertFalse(G.is_date_value("q1"))
+        self.assertEqual(decide("date", ["q1", "abc", "xyz", "foo", "bar"]), "unknown")
+        self.assertEqual(decide("date", ["q1", "q1", "q1", "q1", "q1"]), "date")
+
+    def test_d6_standalone_english_month_names_need_two_months_and_eighty_percent(self):
+        self.assertEqual(decide("date", ["march", "jan", "april", "may", "june"]), "date")
+        negative_columns = [
+            ["may be", "may be", "may be", "may be", "may be"],
+            ["march 2020", "march 2020", "march 2020", "march 2020", "march 2020"],
+            ["mar", "mar", "mar", "mar", "mar"],
+            ["march", "march", "foo", "bar", "baz"],
+            ["march", "jan", "foo", "bar", "baz"],
+        ]
+        for values in negative_columns:
+            with self.subTest(values=values):
+                self.assertEqual(decide("date", values), "unknown")
+
+    def test_n2_trailing_currency_symbols_codes_and_words(self):
+        positive = ["220.00 」", "1.234,56 €", "100 usd", "1,000 yen", "5,000ドル"]
+        negative = ["100 abc", "100 $ 200", "$", "100 e", "5,000 cats"]
+        for value in positive:
+            with self.subTest(value=value):
+                self.assertEqual(decide("amount", [value, value]), "amount")
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertEqual(decide("amount", [value, value]), "unknown")
+
+    def test_n8_duration_and_unit_terms_are_bounded(self):
+        positive = ["8,250円/1時間", "0円/1か月", "30分", "3,000㎡", "10.00 number"]
+        negative = ["100 abc", "100 numbering", "円/", "5 unknown", "30 fans"]
+        for value in positive:
+            with self.subTest(value=value):
+                self.assertEqual(decide("quantity", [value, value]), "quantity")
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertEqual(decide("quantity", [value, value]), "unknown")
+
+
 if __name__ == "__main__":
     unittest.main()
