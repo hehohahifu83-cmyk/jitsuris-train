@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "collected_date": "2026-10-21",
+  "purpose": "S9/S11 source discovery; initial non-main organization batch only",
+  "method": "Organization identifiers and names from public CKAN organization_list APIs; assign with the existing allocation.py pool() hash rule. Tokyo portal's 25 department records are collapsed to its parent organization. No dataset metadata or values accessed.",
+  "portals": [
+    {
+      "portal_id": "egov",
+      "portal_url": "https://data.e-gov.go.jp/data/api_guide",
+      "organization_list_url": "https://data.e-gov.go.jp/data/api/3/action/organization_list?all_fields=true",
+      "records_seen": 25,
+      "registered": 25,
+      "notes": "23 ministries/agencies and two municipalities (Shizuoka City, Fukuoka City)."
+    },
+    {
+      "portal_id": "tokyo",
+      "portal_url": "https://catalog.data.metro.tokyo.lg.jp/",
+      "organization_list_url": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/organization_list?all_fields=true",
+      "records_seen": 25,
+      "registered": 1,
+      "notes": "25 bureaus/units grouped as one Tokyo Metropolitan Government publisher at organization level."
+    },
+    {
+      "portal_id": "bodik",
+      "portal_url": "https://odcs.bodik.jp/",
+      "organization_list_url": "https://data.bodik.jp/api/3/action/organization_list?all_fields=true&limit=100&offset=0",
+      "records_seen": 25,
+      "registered": 0,
+      "notes": "Pagination not completed; no BODIK IDs registered in this batch."
+    },
+    {
+      "portal_id": "digital_agency_registry",
+      "portal_url": "https://www.digital.go.jp/resources/data_local_governments",
+      "file_url": "https://www.digital.go.jp/assets/contents/node/basic_page/field_ref_resources/2b1128e2-c699-4aa0-9206-37169a6697c8/3d2142af/20260630_resources_opendata_lg_list_02.csv",
+      "records_seen": 1648,
+      "notes": "Official municipality catalog/source-list used to identify portal coverage; not treated as an organization allocation list."
+    }
+  ],
+  "publisher_ids": [
+    {
+      "publisher_id": "egov_org_2000",
+      "publisher_name": "環境省",
+      "pool": "eval3"
+    },
+    {
+      "publisher_id": "egov_org_1300",
+      "publisher_name": "外務省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0800",
+      "publisher_name": "金融庁",
+      "pool": "eval2"
+    },
+    {
+      "publisher_id": "egov_org_0500",
+      "publisher_name": "宮内庁",
+      "pool": "eval3"
+    },
+    {
+      "publisher_id": "egov_org_0700",
+      "publisher_name": "警察庁",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1800",
+      "publisher_name": "経済産業省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0600",
+      "publisher_name": "公正取引委員会",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1600",
+      "publisher_name": "厚生労働省",
+      "pool": "eval2"
+    },
+    {
+      "publisher_id": "egov_org_1900",
+      "publisher_name": "国土交通省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0950",
+      "publisher_name": "個人情報保護委員会",
+      "pool": "eval2"
+    },
+    {
+      "publisher_id": "egov_org_1400",
+      "publisher_name": "財務省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "jp_221007",
+      "publisher_name": "静岡市",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0900",
+      "publisher_name": "消費者庁",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0300",
+      "publisher_name": "人事院",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1100",
+      "publisher_name": "総務省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_2200",
+      "publisher_name": "デジタル庁",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0100",
+      "publisher_name": "内閣官房",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0400",
+      "publisher_name": "内閣府",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_0200",
+      "publisher_name": "内閣法制局",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1700",
+      "publisher_name": "農林水産省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "jp_401307",
+      "publisher_name": "福岡市",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1000",
+      "publisher_name": "復興庁",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1200",
+      "publisher_name": "法務省",
+      "pool": "eval2"
+    },
+    {
+      "publisher_id": "egov_org_2100",
+      "publisher_name": "防衛省",
+      "pool": "train"
+    },
+    {
+      "publisher_id": "egov_org_1500",
+      "publisher_name": "文部科学省",
+      "pool": "eval3"
+    },
+    {
+      "publisher_id": "tokyo",
+      "publisher_name": "東京都",
+      "pool": "train"
+    }
+  ],
+  "current_allocation_counts": {
+    "train": 32,
+    "eval3": 3,
+    "eval2": 4,
+    "main": 431
+  },
+  "unregistered_followup": "Continue pagination of BODIK and other public CKAN portals listed by the Digital Agency and search.ckan.jp; do not inspect dataset values. Re-run S11 only against train publishers and S9 metadata-only checks against eval2/eval3 publishers after the registry pass."
+}
