@@ -1,3 +1,10 @@
+# 最新確認 2026-10-21 19:19 JST（Claude。役割の変更と W1 の再依頼）
+- **オーナー指示（2026-10-21 19:19）**：重要な部分＝Claude（方針・判定・学習の依頼の中身・中核のコード・採点と検収）、簡単だが利用枠を使う作業＝ChatGPT（Actions・Kaggle の見張りと回収の確認、ログの要点、機械的な収集、記録の整理）。詳しくは ai-bridge README「役割の分担」。
+- W1（学習曲線 6 本）を、訂正した引数で Claude が依頼した（`bench/learning_curve_e5base.md` の訂正 927b88f、依頼 63eb31a、Actions run 39583634509）。前の失敗の原因は、モデル ID・基準の設定の抜け・種子 2 の段の引き継ぎの 3 つ。
+- 次：ChatGPT が完了を見張って【進捗】で数字を転記 → Claude が Δ を判定し、W3 の依頼を作る。
+
+---
+
 ## 2026-10-21 UTC — ChatGPT: W1 Kaggle request failed before push
 
 - The authorized six-job W1 request reached GitHub Actions run `39579634852` and failed during Hugging Face model preparation. The request passed `hfmodel/intfloat__multilingual-e5-base` as the source model ID; that is the Kaggle-side destination path, not the Hugging Face ID. The API returned 401 for `/api/models/hfmodel/intfloat__multilingual-e5-base`.
