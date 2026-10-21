@@ -1,18 +1,26 @@
-# 最新確認 2026-10-21 16:02 JST（ChatGPT。Claude裁定を実装しS7を完了、S6-3事前登録済み。S6-4予測は未実行）
+# 最新確認 2026-10-21 16:13 JST（ChatGPT。S6-4の一回限り予測を完了。S12の実表抽出を実装・試験。新規Kaggle学習は未実施）
 
-## Guard v10 S7 完了
-- Claudeの2026-10-21 14:13裁定を反映。D5 `h28.13.1` とD2 `M月D日` はv9.1既受理形として維持し、D5のスキップを解除。P1/P2テストはスキップ0。
-- `guard.py` と tool-kobo `research/column-ai/column-ai.js` に `GUARD_VERSION = "v10"` を設定。tool-kobo の `guard.test.mjs` も更新。
-- GitHub Actions `guard-v10-replay` run `39558051496` と `39558053746` が成功。Guard試験、規則別再生、E5-base/mmBERT-small両方の再採点、v9.1単調性監査を通過。両モデルの再生は従来どおり A=21、B=C=D=0。回復は21/5,823＝0.36ポイント。
-- ローカル関連単体試験 `python -m unittest tests.test_evaluate_independent tests.test_guard_v10 -v` は38件すべて成功。Python構文検査も成功。
-- tool-kobo branch `research/column-ai`、commit `3b0054257e3d502b04f537bba83a1f9625927a83`：259 guard fixtures・4,309 value fixtures、不一致0。S7完了。
+## S7 Guard v10 完了
+- Claudeの2026-10-21 14:13裁定を反映。D5 `h28.13.1` とD2 `M月D日` はv9.1既受理形として維持し、D5のスキップを解除。
+- Pythonとtool-kobo `research/column-ai` のJS parityは259 fixtures・4,309 value fixturesで不一致0。関連単体試験38件成功。
+- GitHub Actions replay runs `39558051496`・`39558053746` 成功。E5-base/mmBERT-smallともA=21、B=C=D=0、回復21/5,823＝0.36ポイント。S7は完了。
 
-## S6 独立評価の固定と事前登録
-- 主セットは32表・313列、SHA-256 `4b47c72d70c30982123eaccdcbd1c8f6707d8bf1db8159b3774f1a4078ff3d87`。ラベル値は読んでいない。Claudeの照合は306/313一致（97.8%、κ=0.973）、食い違い7件はすべてNYC。裁定後299列が採点対象。
-- `independent_eval/PREREG_independent-main-20261021-v1.md` をcommit `4634e229a36db9f0c9102ca67ba7580d1526461b` で予測前に固定。3ラベルファイルのSHA-256、6重みのSHA-256、評価設定、判定規則、主v9.1・副v10を記録。
-- `evaluate_independent.py` は同じ一度の推論からv9.1/v10の判定を保存し、`score --guard-version` で保存済み判定を選択できる。主manifestの `guard_version` はv9.1、利用可能版はv9.1/v10。試験は推論のやり直しなしで両方を採点できることを確認。
-- `.github/workflows/independent-predict.yml`（commit `c219057456ef92fe13b493aa2ea343dd291d06b7`）はCPU予測、重みSHA照合、6出力の1回限りの台帳記録、値・正解ラベルを含まない出力監査を行う。現時点では `independent_eval/predict.request` を投入しておらず、モデル予測は未実行。
-- 次：事前登録・ワークフローを親コミットにした後、requestを一度投入。ERRORなら再実行せず原因を連絡箱に記録。予測と台帳を保存後、ClaudeにS6-5採点を依頼する。
+## S6 独立評価主セット
+- 主セットは32表・313列。事前登録はcommit `4634e229a36db9f0c9102ca67ba7580d1526461b` で予測前に固定。ラベル値は読んでいない。
+- **S6-4完了**：CPU workflow [39559123410](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/39559123410) が成功。事前登録済み6重みのSHA照合、各1回の推論、出力監査がすべて成功。
+- 予測6ファイルと台帳6行はcommit `9b6f39e69799a4ad207f4ac4c604747bd364ca55` に保存。場所は `independent_eval/predictions/39502740378_job1.json`〜`job3.json`、`39506074807_job1.json`〜`job3.json`、`ledger.jsonl`。requestは `done independent-main-20261021-v1 (6 predictions)`。
+- 6つの予測ファイルは各313行の出力監査に合格。生の列値・正解ラベルは保存されていない。台帳も項目名のみ監査し、値・正解ラベルに当たる項目なし。予測結果や個別の予測ラベルはこの引き継ぎ書に転記していない。
+- **次：ClaudeがS6-5を実施**。主v9.1、副v10を保存済み予測から採点し、ラベル提供者別・出典別・言語別の集計を確認する。新規推論は行わない。採点後にS6-6 `SETS.md` を更新する。
+
+## S12 実表量の学習曲線（準備のみ）
+- `real_fraction.py` と `encoder_exp.py` に `FT_REAL_FRAC=0.25/0.5/1.0` を実装。SHA-256しきい値で表単位・決定的・入れ子の抽出を行い、合成行と `FT_VAL=1` 検証分割は固定する。選択時に見出し・値・ラベルを使わない。
+- `tests/test_real_fraction.py` の5件成功、関連3ファイルの構文検査成功。事前記録は `bench/learning_curve_e5base.md`。主指標は未知見出しmacro-F1、判定規則は `DATA_COLLECTION_PROTOCOL.md` 第8章どおり。
+- 6ジョブの見積りは約40〜50分。**学習は開始していない**。既存のオーナー指示「新しいKaggle学習を開始しない」を優先し、`kaggle/kaggle.request` は `done` のまま。S12の数値判定は保留。
+
+## 守る条件
+- 封印・盲検セットは開かない。主セットの生値・ラベルJSON値も開かない。
+- 予測出力と台帳に生の列値・正解ラベルを保存しない。
+- 新しいKaggle学習は開始しない。
 
 ---
 
