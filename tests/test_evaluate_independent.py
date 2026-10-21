@@ -48,6 +48,7 @@ def fake_infer(checkpoint_dir, texts, info):
     # c1 → date 0.9、c2 → category 0.3（しきい値より低い＝不明）、c3 → amount 0.8
     probs = np.array([[0.02, 0.05, 0.90, 0.03], [0.20, 0.30, 0.25, 0.25], [0.80, 0.10, 0.05, 0.05]])
     fake_infer.texts = texts
+    fake_infer.calls = getattr(fake_infer, "calls", 0) + 1
     return probs, 0.5
 
 
@@ -131,10 +132,36 @@ class PredictAndScoreTests(unittest.TestCase):
         self.assertNotIn("2024-01-01", text)                      # 値は出力に書かない
         self.assertNotIn('"truth"', text)                         # ラベルは読まない
         self.assertEqual(doc["timing"]["columns"], 3)
+        self.assertEqual(doc["guard_version"], "v9.1")
+        self.assertEqual(doc["guard_implementation_version"], "v10")
+        self.assertEqual(doc["available_guard_versions"], ["v9.1", "v10"])
+        self.assertEqual(doc["rows"][0]["guard_predictions"]["v9.1"]["guarded_prediction"], "date")
+        self.assertIn("v10", doc["rows"][0]["guard_predictions"])
         entries = E.ledger_entries(self.ledger)
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0]["weights_sha256"], doc["checkpoint"]["weights_sha256"])
         self.assertTrue(fake_infer.texts[0].startswith("query: 列名: Date Of Sale"))
+
+    def test_saved_prediction_scores_v91_and_v10_without_inference(self):
+        data = sample_set()
+        data["columns"][0]["values"] = ["3/15", "4/20", "5/1", "6/30", "7/25"]
+        write(self.set_path, data)
+        calls_before = getattr(fake_infer, "calls", 0)
+        doc = E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
+        self.assertEqual(doc["rows"][0]["guard_predictions"]["v9.1"]["guarded_prediction"], "unknown")
+        self.assertEqual(doc["rows"][0]["guard_predictions"]["v10"]["guarded_prediction"], "date")
+        calls_after_predict = fake_infer.calls
+        self.assertEqual(calls_after_predict, calls_before + 1)
+
+        labels = os.path.join(self.d, "labels.json")
+        write(labels, {"c1": "date", "c2": "category", "c3": "amount"})
+        score_v91 = E.score(self.out, labels, os.path.join(self.d, "scored_v91"), "job1", guard_version="v9.1")
+        score_v10 = E.score(self.out, labels, os.path.join(self.d, "scored_v10"), "job1", guard_version="v10")
+        self.assertEqual(fake_infer.calls, calls_after_predict)
+        self.assertEqual(score_v91["guard_version"], "v9.1")
+        self.assertEqual(score_v10["guard_version"], "v10")
+        self.assertEqual(score_v91["counts"], {"unknown": 2, "correct": 1})
+        self.assertEqual(score_v10["counts"], {"correct": 2, "unknown": 1})
 
     def test_same_pair_is_refused_twice_unless_reason_given(self):
         E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
