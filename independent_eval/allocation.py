@@ -49,6 +49,14 @@ def normalize_publisher_id(publisher_id: str) -> str:
     return normalized
 
 
+def parent_publisher(publisher_id: str) -> str | None:
+    """"kobe:040013010" のような「自治体:部署」の ID の親（自治体）。親が無ければ None。
+    部署・区・局は同じ組織なので、親が固定の公開元（main・train）なら親のプールに従う（SEALED_EVAL_PROTOCOL 第 2 章）。"""
+    canonical = normalize_publisher_id(publisher_id)
+    head, sep, _ = canonical.partition(":")
+    return head if sep and head != "vendor" else None
+
+
 def pool(publisher_id: str) -> str:
     """Return the stable protocol pool for a publisher identifier."""
     canonical = normalize_publisher_id(publisher_id)
@@ -105,6 +113,9 @@ def validate_allocation(allocation: dict[str, Any]) -> None:
         if record.get("pool") not in ALLOWED_POOLS:
             raise ValueError(f"invalid pool for {publisher_id}")
         expected_pool = FIXED_ASSIGNMENTS.get(publisher_id)
+        parent = parent_publisher(publisher_id)
+        if expected_pool is None and parent in FIXED_ASSIGNMENTS:
+            expected_pool = FIXED_ASSIGNMENTS[parent]
         if expected_pool is not None and record["pool"] != expected_pool:
             raise ValueError(f"fixed publisher pool cannot change: {publisher_id}")
         if not isinstance(record.get("date"), str):
@@ -127,6 +138,9 @@ def assignment_for(
     for record in allocation["publishers"]:
         if normalize_publisher_id(record["publisher_id"]) == canonical:
             return {"publisher_id": canonical, "pool": record["pool"], "date": record["date"]}
+    parent = parent_publisher(canonical)
+    if parent in FIXED_ASSIGNMENTS:
+        return {"publisher_id": canonical, "pool": FIXED_ASSIGNMENTS[parent]}
     destination = "hold" if ambiguous else pool(canonical)
     return {"publisher_id": canonical, "pool": destination}
 
@@ -150,7 +164,7 @@ def add_assignment(
         if existing["pool"] != candidate["pool"]:
             raise ValueError(f"publisher already assigned to {existing['pool']}")
         return deepcopy(allocation)
-    if candidate["pool"] not in ALLOCATABLE_POOLS:
+    if candidate["pool"] not in ALLOCATABLE_POOLS and parent_publisher(candidate["publisher_id"]) not in FIXED_ASSIGNMENTS:
         raise ValueError("new publishers must use train, eval2, eval3, or hold")
     updated = deepcopy(allocation)
     updated["publishers"].append(

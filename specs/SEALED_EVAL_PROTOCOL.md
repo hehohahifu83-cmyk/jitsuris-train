@@ -25,6 +25,7 @@ def pool(publisher_id: str) -> str:
 - `eval2` `eval3` の公開元は、学習データに入れない。`train` の公開元は、評価セットに入れない。
 - 既存の学習の系統（egov・egov_biz・egov_biz2・jp・jp2・datagov_uk・datagov_uk2・canada・canada2・ireland・australia・gittables・direct）は `train` に固定。主セットの 4 出典（横浜・神戸・札幌・NYC）は `main`（以後、学習に入れない）。
 - 同じ組織の別名・別ポータルは同じ公開元に正規化する（表は `allocation.json` の `aliases`）。判断に迷う公開元は `hold`（学習にも評価セットにも使わない）として登録し、正体が分かってから `pool()` で割り当てる（2026-10-21 改訂。eval 側に入れると、正体が学習側の公開元だったときに評価が甘くなるため）。登録済みの公開元を後から別名にしない（`aliases` のキーは `publishers` に登録しない）。
+- **【2026-10-21 20:54 追加】部署・区・局は所属する組織と同じ公開元**：`<組織>:<部署>` の ID（例 `kobe:040013010`）は、親の組織が固定（main・train）なら親と同じプール（`allocation.parent_publisher`、`validate_allocation` が検査）。S9 の初回の割り当てでは、主セットの 3 市（神戸・横浜・札幌）の部署 427 を別々の公開元として train・eval2・eval3 に割り当てていた（値は未取得）。すべて main に訂正し、各記録に `corrected` を残した。**封印セット #2・#3 と S11 の候補は、主セットの 4 出典（神戸・横浜・札幌・NYC）以外の自治体・省庁から探し直す。**
 
 ## 3. セットの規格
 ### 封印セット #2・#3（それぞれ）

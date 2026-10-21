@@ -108,3 +108,28 @@ class AllocationTests(unittest.TestCase):
                     ],
                 }
             )
+
+
+class SubOrganizationTests(unittest.TestCase):
+    def test_department_of_fixed_publisher_inherits_its_pool(self):
+        from independent_eval.allocation import parent_publisher
+        self.assertEqual(parent_publisher("Kobe:040013010"), "kobe")
+        self.assertIsNone(parent_publisher("vendor:freee"))
+        self.assertIsNone(parent_publisher("tokyo"))
+        self.assertEqual(assignment_for("kobe:999", empty_registry())["pool"], "main")
+        added = add_assignment(empty_registry(), "yokohama:o9999", "2026-10-21")
+        self.assertEqual(added["publishers"][0]["pool"], "main")
+
+    def test_department_of_fixed_publisher_cannot_be_train_or_eval(self):
+        for pool_name in ("train", "eval2", "eval3", "hold"):
+            with self.subTest(pool=pool_name), self.assertRaisesRegex(ValueError, "fixed publisher pool cannot change"):
+                validate_allocation({"schema_version": 1, "aliases": {}, "publishers": [
+                    {"publisher_id": "sapporo:org-0100", "pool": pool_name, "date": "2026-10-21"}]})
+
+    def test_persisted_registry_has_no_main_city_department_outside_main(self):
+        from independent_eval.allocation import FIXED_ASSIGNMENTS, parent_publisher
+        registry = load_allocation(Path(__file__).resolve().parents[1] / "independent_eval" / "allocation.json")
+        for entry in registry["publishers"]:
+            parent = parent_publisher(entry["publisher_id"])
+            if parent in FIXED_ASSIGNMENTS:
+                self.assertEqual(entry["pool"], FIXED_ASSIGNMENTS[parent], entry["publisher_id"])
