@@ -56,9 +56,10 @@ if VAL_MODE:   # 検証モードでは固定の試験を評価しない（検証
 
 
 CTX_UNIT = os.environ.get("FT_CTX_UNIT") == "1"  # 同じ表の UNIT / Unit / 単位の値を文脈に足す ablation（既定オフ）
+VAL_PROF = os.environ.get("FT_VALPROF") == "1"  # W3a：値の形（value_profile.py）を値の直後に足す（既定オフ。オフなら入力の文は従来と同じ）
 
 def text(r, prefix):
-    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT)
+    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT, val_profile=VAL_PROF)
 
 
 def run(model_name, prefix, out):

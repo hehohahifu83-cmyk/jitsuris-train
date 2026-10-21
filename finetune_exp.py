@@ -94,6 +94,8 @@ print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
 print(f"model_type={MODEL_TYPE} params={sum(p.numel() for p in model.parameters()):,} attn={getattr(model.config, '_attn_implementation', None)} "
       f"pooling={getattr(model.config, 'classifier_pooling', None)} config_changes={config_changes}", flush=True)
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
+if AUG and os.environ.get("FT_VALPROF") == "1":
+    raise SystemExit("FT_AUG=1 と FT_VALPROF=1 は同時に使えない（text_aug は値の形を入れない）")
 def text_aug(r, prefix):
     h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
     pick = random.random()

@@ -55,11 +55,17 @@ def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, pe
     return out
 
 
-def format_encoder_text(row, prefix="", ctx_unit=False):
-    """従来の encoder 入力。ctx_unit=True のときだけ UNIT 例を末尾に追加する。"""
+def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False):
+    """従来の encoder 入力。ctx_unit=True のときだけ UNIT 例を末尾に追加する。
+    val_profile=True（W3a、FT_VALPROF=1）のときだけ、値の直後に「値の形」（value_profile.py）を入れる。切り詰めで先に落ちるのが同じ表の列名になるよう、値の直後に置く。"""
     header, values = row[0], row[1]
     context = row[3] if len(row) > 3 and row[3] else []
-    base = f"{prefix}列名: {header} | 値: {', '.join(str(x)[:30] for x in values[:5])} | 同じ表の列: {', '.join(str(x)[:20] for x in context[:12])}"
+    shape = ""
+    if val_profile:
+        from value_profile import value_profile
+        prof = value_profile(values[:5])
+        shape = f" | 値の形: {prof}" if prof else ""
+    base = f"{prefix}列名: {header} | 値: {', '.join(str(x)[:30] for x in values[:5])}{shape} | 同じ表の列: {', '.join(str(x)[:20] for x in context[:12])}"
     unit = row[4] if len(row) > 4 else ""
     if ctx_unit and unit:
         base += f" | 同じ表の単位列の値: {str(unit)[:240]}"

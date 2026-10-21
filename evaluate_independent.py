@@ -107,6 +107,7 @@ def checkpoint_info(checkpoint_dir):
         "prefix": extra.get("prefix", ""),
         "max_length": int(extra.get("max_length") or EVAL_MAX_LENGTH),
         "ctx_unit": str(env.get("FT_CTX_UNIT", "")) == "1",
+        "val_profile": str(env.get("FT_VALPROF", "")) == "1",
         "seed": (manifest.get("run") or {}).get("seed"),
         "labels": labels,
         "train_commit": manifest.get("commit"),
@@ -116,7 +117,7 @@ def checkpoint_info(checkpoint_dir):
 def texts_of(rows, info):
     """モデルに入れる文字列（学習・評価と同じ encoder_context.format_encoder_text）。"""
     from encoder_context import format_encoder_text
-    return [format_encoder_text(r, info["prefix"], ctx_unit=info["ctx_unit"]) for r in rows]
+    return [format_encoder_text(r, info["prefix"], ctx_unit=info["ctx_unit"], val_profile=info.get("val_profile", False)) for r in rows]
 
 
 def infer_torch(checkpoint_dir, texts, info, device="cpu", batch_size=32):
