@@ -151,5 +151,111 @@ class GuardV10InitialTests(unittest.TestCase):
         self.assertEqual(G.guard_with_reason("amount", amount_probs, ["30分", "30分"], _enabled_rules={"N8"})[0], "amount")
 
 
+class GuardV10P2Tests(unittest.TestCase):
+    """P2 acceptance examples come from the written format definitions."""
+
+    def test_d2_month_day_columns_need_a_day_at_least_thirteen(self):
+        self.assertEqual(decide("date", ["3/15", "4/20", "5/1", "6/30", "7/25"]), "date")
+        self.assertEqual(decide("date", ["3月15日", "4月20日", "5月1日", "6月30日", "7月25日"]), "date")
+        for values in (["1/2", "3/4", "5/6", "7/8", "9/10"],
+                       ["1-2", "3-4", "5-6", "7-8", "9-10"],
+                       ["13/5", "2/30", "4/31", "0/5", "3/0"],
+                       ["1月2日", "3月4日", "5月6日", "7月8日", "9月10日"],
+                       ["3/15", "4/20", "junk", "junk", "junk"]):
+            with self.subTest(values=values):
+                self.assertEqual(decide("date", values), "unknown")
+
+    def test_d7_date_periods_require_two_strong_endpoints(self):
+        positive = [
+            "2025年12月~2026年3月", "01/04/2016 - 30/06/2016",
+            "2009/10-2011/12", "april 1 to june 30, 2024",
+            "april 2017 - march 2018",
+        ]
+        for value in positive:
+            with self.subTest(value=value):
+                self.assertEqual(decide("date", [value, value]), "date")
+        negative = ["1-2", "10~20", "2024/03/05 ~", "a - b", "2024/03/05 to"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.is_date_value(G._clean([value])[0]))
+
+    def test_d8_unix_seconds_and_milliseconds_need_all_values_and_high_confidence(self):
+        positive = ["1333085198.0", "1709600000", "1709600000000", "946684800", "4102444800000"]
+        self.assertEqual(decide("date", positive), "date")
+        self.assertEqual(G.guard("date", [("date", 0.89), ("text", 0.005)], positive), "unknown")
+        negative_columns = [
+            ["0312345678", "0312345678"], ["99999999999", "99999999999"],
+            ["-1709600000", "-1709600000"], ["1709600000000000", "1709600000000000"],
+            ["1709600000", "1709600000", "99999999999"],
+        ]
+        for values in negative_columns:
+            with self.subTest(values=values):
+                self.assertEqual(decide("date", values), "unknown")
+
+    def test_d9_month_and_year_period_suffix(self):
+        positive = ["2024年3月分", "3月分", "令和6年3月分", "2024年分", "平成30年4月分"]
+        for value in positive:
+            with self.subTest(value=value):
+                self.assertEqual(decide("date", [value, value]), "date")
+        negative = ["分", "3分", "2時間分", "2024年13月分", "令和年3月分"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.is_date_value(G._clean([value])[0]))
+        self.assertTrue(G.is_date_value(G._clean(["令和6年0月分"])[0]))  # accepted by v9.1's era prefix; monotonicity preserves it
+
+    def test_n3_qualifiers_comparators_and_annotations_are_bounded(self):
+        positive = ["約1,000", "1,000以上", "1,234円(税込)", "税込1,234円", ">100", "100+", "$236.7 million*"]
+        self.assertEqual(decide("amount", positive), "amount")
+        negative = ["約", "以上", "約abc", "1,000以上abc", ">", "100++"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.NUM_LOOSE.match(G._clean([value])[0]))
+
+    def test_n4_japanese_and_english_magnitude_words(self):
+        positive = ["1.5万円", "3億2,000万円", "12億", "100万", "5千円",
+                    "1,234千円", "1,234百万円", "2.5兆円", "$1.2m", "1.2 million", "2bn", "3.4mn", "1.5k"]
+        self.assertEqual(decide("amount", positive), "amount")
+        negative = ["万円", "1.5万万円", "億万", "3 b", "million", "1e3x"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.NUM_LOOSE.match(G._clean([value])[0]))
+
+    def test_n5_exponent_notation_is_strict(self):
+        positive = ["1.2e+05", "1e6", "3e-4", "-2.3E5", "+5e0"]
+        self.assertEqual(decide("amount", positive), "amount")
+        negative = ["e5", "1e", "1e+", "12e3x", "1ee3"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.NUM_LOOSE.match(G._clean([value])[0]))
+
+    def test_n6_trailing_minus_is_not_a_range_or_arbitrary_suffix(self):
+        positive = ["1,234-", "1234-", "1,234.50-", "¥1,234-", "1 234−"]
+        self.assertEqual(decide("amount", positive), "amount")
+        negative = ["-", "1-2", "12-34-56", "abc-", "1,234--"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.NUM_LOOSE.match(G._clean([value])[0]))
+
+    def test_n7_rate_words_and_units_are_bounded(self):
+        positive = ["35.0パーセント", "5.1ポイント", "12.5pt", "2.5倍", "3割",
+                    "12.5％ポイント", "25bps", "100ppm", "100‰"]
+        self.assertEqual(decide("rate", positive), "rate")
+        negative = ["パーセント", "5ポイントカード", "12ptx", "3割引き", "ppm"]
+        for value in negative:
+            with self.subTest(value=value):
+                self.assertFalse(G.NUM_LOOSE.match(G._clean([value])[0]))
+
+    def test_p2_rules_can_be_replayed_one_at_a_time(self):
+        probs = [("date", 0.99), ("text", 0.005)]
+        self.assertEqual(G.guard_with_reason("date", probs, ["3/15", "4/20", "5/1", "6/30", "7/25"], _enabled_rules={"D2"})[0], "date")
+        self.assertEqual(G.guard_with_reason("date", probs, ["2025年12月~2026年3月"], _enabled_rules={"D7"})[0], "date")
+        self.assertEqual(G.guard_with_reason("date", probs, ["1709600000", "1709600000"], _enabled_rules={"D8"})[0], "date")
+        self.assertEqual(G.guard_with_reason("date", probs, ["2024年3月分"], _enabled_rules={"D9"})[0], "date")
+        amount_probs = [("amount", 0.99), ("text", 0.005)]
+        for rule, value in (("N3", "約1,000"), ("N4", "1.2 million"), ("N5", "1e6"), ("N6", "1,234-"), ("N7", "12.5pt")):
+            with self.subTest(rule=rule):
+                self.assertEqual(G.guard_with_reason("amount", amount_probs, [value], _enabled_rules={rule})[0], "amount")
+
+
 if __name__ == "__main__":
     unittest.main()
