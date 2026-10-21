@@ -1,0 +1,230 @@
+name: Independent main prediction (CPU, once)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'independent_eval/predict.request'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: independent-main-20261021-v1-prediction
+  cancel-in-progress: false
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm the one-time request and preregistration
+        id: gate
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          request = Path("independent_eval/predict.request").read_text(encoding="utf-8").strip()
+          prereg = Path("independent_eval/PREREG_independent-main-20261021-v1.md")
+          dataset = Path("independent_eval/results/main/independent_main.json")
+          if request != "run independent-main-20261021-v1 once":
+              print("No active one-time request; prediction is skipped.")
+              proceed = "false"
+          elif not prereg.is_file() or not dataset.is_file():
+              raise SystemExit("Required preregistration or frozen main set is missing.")
+          else:
+              print("One-time request and preregistration confirmed.")
+              proceed = "true"
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"proceed={proceed}\\n")
+          PY
+
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.proceed == 'true'
+        with:
+          python-version: '3.11'
+
+      - name: Install pinned CPU inference dependencies
+        if: steps.gate.outputs.proceed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python - <<'PY'
+          import torch, transformers, tokenizers, safetensors
+          print("CPU runtime:", "torch", torch.__version__, "transformers", transformers.__version__, "tokenizers", tokenizers.__version__, "safetensors", safetensors.__version__)
+          PY
+
+      - name: Run independent evaluator unit tests
+        if: steps.gate.outputs.proceed == 'true'
+        run: python -m unittest tests.test_evaluate_independent -v
+
+      - name: Download the six retained model checkpoints
+        if: steps.gate.outputs.proceed == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: jitsuris-model
+          run-id: 39502740378
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/mmbert-model
+
+      - uses: actions/download-artifact@v4
+        if: steps.gate.outputs.proceed == 'true'
+        with:
+          name: jitsuris-model
+          run-id: 39506074807
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/e5-model
+
+      - name: Verify each retained weight against the preregistered SHA-256
+        if: steps.gate.outputs.proceed == 'true'
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          expected = {
+              "/tmp/mmbert-model": {
+                  1: "ed9a902d43b5f7a7fe0cbfca87660feefe04494805c8f47356f2705d30ce567c",
+                  2: "9201d775982decc971af65308de5782390ac47700e530595f1051d834a3b8eea",
+                  3: "284423e13cd745f300dc5b9b6849bbb55ff9d821e32513950eb158ae24890540",
+              },
+              "/tmp/e5-model": {
+                  1: "38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7",
+                  2: "80c11790ccbae558d6b01e40975da739a000696b2693537bb75b5766cfd04b71",
+                  3: "739dbc55dfe3c89acf5f91ec3d1ca8f83203148d77a0dea2c0c2012910b4fe70",
+              },
+          }
+          for root, by_seed in expected.items():
+              for seed, digest in by_seed.items():
+                  checkpoint = Path(root) / f"ft_out_job{seed}"
+                  manifest = json.loads((checkpoint / "manifest.json").read_text(encoding="utf-8"))
+                  weight_name, weight_meta = next(iter(manifest["saved_model"]["weights"].items()))
+                  weight_path = checkpoint / weight_name
+                  actual = hashlib.sha256(weight_path.read_bytes()).hexdigest()
+                  if actual != digest or weight_meta["sha256"] != digest:
+                      raise SystemExit(f"Checkpoint weight verification failed for seed {seed}.")
+          print("Verified all six retained checkpoint weights against the preregistration.")
+          PY
+
+      - name: Predict once per checkpoint without reading annotation labels
+        id: predict
+        if: steps.gate.outputs.proceed == 'true'
+        env:
+          TOKENIZERS_PARALLELISM: 'false'
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          dataset = "independent_eval/results/main/independent_main.json"
+          ledger = "independent_eval/predictions/ledger.jsonl"
+          jobs = [
+              ("mmbert-seed1", "/tmp/mmbert-model/ft_out_job1", "39502740378_job1"),
+              ("mmbert-seed2", "/tmp/mmbert-model/ft_out_job2", "39502740378_job2"),
+              ("mmbert-seed3", "/tmp/mmbert-model/ft_out_job3", "39502740378_job3"),
+              ("e5-seed1", "/tmp/e5-model/ft_out_job1", "39506074807_job1"),
+              ("e5-seed2", "/tmp/e5-model/ft_out_job2", "39506074807_job2"),
+              ("e5-seed3", "/tmp/e5-model/ft_out_job3", "39506074807_job3"),
+          ]
+          out_dir = Path("independent_eval/predictions")
+          out_dir.mkdir(parents=True, exist_ok=True)
+          failures = []
+          for tag, checkpoint, run_job in jobs:
+              output = out_dir / f"{run_job}.json"
+              command = [
+                  sys.executable, "evaluate_independent.py", "predict",
+                  "--set", dataset, "--checkpoint", checkpoint, "--out", str(output),
+                  "--ledger", ledger, "--device", "cpu",
+              ]
+              result = subprocess.run(command, capture_output=True, text=True)
+              if result.returncode:
+                  # Do not emit captured stdout/stderr; those streams may contain input context.
+                  lines = (result.stderr or result.stdout).splitlines()
+                  error_kind = "UnknownError"
+                  for line in reversed(lines):
+                      for kind in ("ValueError", "FileNotFoundError", "OSError", "RuntimeError", "ImportError", "AssertionError"):
+                          if kind in line:
+                              error_kind = kind
+                              break
+                      if error_kind != "UnknownError":
+                          break
+                  failures.append(tag)
+                  print(f"{tag}: ERROR {error_kind}, exit={result.returncode}")
+              else:
+                  doc = json.loads(output.read_text(encoding="utf-8"))
+                  print(f"{tag}: complete; columns={doc['timing']['columns']}; guard={doc['guard_version']}; alternatives={','.join(doc['available_guard_versions'])}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"failed={1 if failures else 0}\\n")
+              output.write(f"failed_jobs={','.join(failures)}\\n")
+          if failures:
+              raise SystemExit("One or more prediction attempts failed; do not rerun this request.")
+          PY
+
+      - name: Audit prediction files contain decisions only
+        if: always() && steps.gate.outputs.proceed == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("independent_eval/predictions")
+          forbidden = {"values", "raw_values", "column_values", "truth", "ground_truth"}
+          checked = 0
+          for path in sorted(root.glob("*.json")):
+              if path.name == "ledger.jsonl":
+                  continue
+              doc = json.loads(path.read_text(encoding="utf-8"))
+              if doc.get("set_id") != "independent-main-20261021-v1" or doc.get("guard_version") != "v9.1":
+                  raise SystemExit("Prediction manifest does not match the preregistration.")
+              if doc.get("available_guard_versions") != ["v9.1", "v10"] or len(doc.get("rows", [])) != 313:
+                  raise SystemExit("Prediction output schema does not match the preregistration.")
+              if any(forbidden.intersection(row.keys()) for row in doc["rows"]):
+                  raise SystemExit("Prediction output contains a forbidden value or truth field.")
+              if any(set(row.get("guard_predictions", {})) != {"v9.1", "v10"} for row in doc["rows"]):
+                  raise SystemExit("Both guard decisions must be saved for every row.")
+              checked += 1
+          print(f"Audited {checked} prediction files; annotation labels and source values are absent.")
+          PY
+
+      - name: Save prediction outputs, ledger, and one-time status
+        if: always() && steps.gate.outputs.proceed == 'true'
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PREDICT_OUTCOME: ${{ steps.predict.outcome }}
+          FAILED_JOBS: ${{ steps.predict.outputs.failed_jobs }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          job_status = os.environ.get("JOB_STATUS", "unknown")
+          predict_outcome = os.environ.get("PREDICT_OUTCOME", "skipped")
+          failed_jobs = os.environ.get("FAILED_JOBS", "")
+          if job_status == "success" and predict_outcome == "success":
+              status = "done independent-main-20261021-v1 (6 predictions)"
+          else:
+              detail = failed_jobs or f"workflow={job_status}; prediction_step={predict_outcome}"
+              status = "ERROR independent-main-20261021-v1 (" + detail + ")"
+          Path("independent_eval/predict.request").write_text(status + "\n", encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- independent_eval/predictions/ independent_eval/predict.request
+          if git diff --cached --quiet; then
+            echo "No prediction artifacts were produced."
+            exit 0
+          fi
+          git commit -m "独立評価主セットの一回限りの予測結果"
+          for i in 1 2 3; do
+            git push origin HEAD:main && break
+            git pull --rebase --autostash origin main
+          done
