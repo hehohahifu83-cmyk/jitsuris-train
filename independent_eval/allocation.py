@@ -6,6 +6,7 @@ records, dataset metadata, or table contents.
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import unicodedata
@@ -140,3 +141,39 @@ def load_allocation(path: str | Path) -> dict[str, Any]:
     allocation = json.loads(Path(path).read_text(encoding="utf-8"))
     validate_allocation(allocation)
     return allocation
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Register a publisher before opening dataset metadata or contents."
+    )
+    parser.add_argument("publisher_id", help="publisher identifier only; do not pass dataset values")
+    parser.add_argument("--date", required=True, help="registry entry date in YYYY-MM-DD form")
+    parser.add_argument(
+        "--registry",
+        type=Path,
+        default=Path(__file__).with_name("allocation.json"),
+        help="allocation registry path",
+    )
+    parser.add_argument(
+        "--ambiguous",
+        action="store_true",
+        help="conservatively assign unresolved publishers to eval2",
+    )
+    args = parser.parse_args(argv)
+
+    allocation = load_allocation(args.registry)
+    updated = add_assignment(
+        allocation, args.publisher_id, args.date, ambiguous=args.ambiguous
+    )
+    if updated != allocation:
+        args.registry.write_text(
+            json.dumps(updated, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+    assigned = assignment_for(args.publisher_id, updated, ambiguous=args.ambiguous)
+    print(f"{assigned['publisher_id']}\t{assigned['pool']}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
