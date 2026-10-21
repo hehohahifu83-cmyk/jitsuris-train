@@ -16,6 +16,13 @@ Sherlock（KDD 2019）の「自信のないものは人に回す」の考え方�
 - 数は区切りの形を見る（1,234 と 1,234.5、12,34,567、1.234,56、1 234、12.5。1,,2 や 1 2 3 は数にしない）。features.py の NUM_RE（『1,,2』も数にする）は見張りでは使わない（モデルの特徴としては変えない）。
 - 空白は『前後を落とす集合』を Python と JS で同じに決め（正規表現の空白の略記は使わない）、64 文字は文字（コードポイント）で数える。
 """
+
+"""2026-10-21 Guard v10 P1（作業中。最終版番号は P2・検収後に設定）:
+- D1・D3・D4・D5・D6 と N1・N2・N8 を、仕様の表記定義と学習側の集計から追加。
+- v9.1 が受け入れていた形は維持する。`_enabled_rules` は規則単独の回帰寄与を測るときだけ使う。
+- 固定試験は規則づくりに使わず、再生で回帰だけを確認する。
+"""
+
 import re
 import unicodedata
 
@@ -129,22 +136,27 @@ def _share_values(ne):
     return usable if len(usable) >= 2 else ne
 
 
-def _date_base_without_weekday(v):
+V10_RULES = frozenset({"D1", "D3", "D4", "D5", "D6", "N1", "N2", "N8"})
+
+
+def _rule_enabled(rules, name):
+    return rules is None or name in rules
+
+
+def _date_base_without_weekday(v, rules):
     return bool(
         _is_month_day(v)
-        or _is_era_date(v)
+        or (_rule_enabled(rules, "D5") and _is_era_date(v))
         or any(r.match(v) for r in DATE_RES)
         or DATETIME_RE.match(v)
-        or TIME_RE.match(v)
-        or _JP_TIME.match(v)
         or any(r.match(v) for r in DATE_EXTRA)
         or is_year_range(v)
         or any(r.match(v) for r in MONTH_FULL)
-        or _is_quarter(v)
+        or (_rule_enabled(rules, "D4") and _is_quarter(v))
     )
 
 
-def _weekday_date(v):
+def _weekday_date(v, rules):
     m = _WEEKDAY_SUFFIX.match(v)
     if not m:
         return False
@@ -152,7 +164,7 @@ def _weekday_date(v):
     tail = m.group("tail").strip(_SC)
     if not base or (tail and not _JP_TIME_RANGE.match(tail)):
         return False
-    return _date_base_without_weekday(base)
+    return _date_base_without_weekday(base, rules)
 
 
 
@@ -184,7 +196,11 @@ _PER_UNIT = r"(?:円|" + _UNIT_V10 + r")/[0-9]*" + _PERIOD_UNIT
 _CURRENCY_WORD = r"(?:yen|dollars|euros|pounds|ドル|ユーロ|円)"
 _CURRENCY_SUFFIX = r"(?:" + _CODE + r"|" + _CURRENCY_WORD + r"|[" + _CUR + r"])"
 _NUM_SUFFIX = r"(?:円/[^0-9" + _SC + r"]{1,4}|" + _UNIT_V10 + r"/[^0-9" + _SC + r"]{1,4}|" + _PER_UNIT + r"|円|％|%|" + _UNIT_V10 + r"|" + _CURRENCY_SUFFIX + r")"
-NUM_LOOSE = re.compile(r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE + _S + r"*(?:" + _NUM_SUFFIX + r")?\.?\)?$")
+_NUM_PREFIX = r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE
+NUM_LOOSE_V91 = re.compile(r"^[+\-−▲△]?\(?" + _S + r"*(?:" + _CODE + _S + r"?)?[" + _CUR + r"]?" + _S + r"*[+\-−]?" + _NUM_CORE + _S + r"*(?:円|％|%|" + _UNIT + r"|円/[^0-9" + _SC + r"]{1,4}|" + _UNIT + r"/[^0-9" + _SC + r"]{1,4})?\.?\)?$")
+NUM_LOOSE_N2 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _CURRENCY_SUFFIX + r")\.?\)?$")
+NUM_LOOSE_N8 = re.compile(_NUM_PREFIX + _S + r"*(?:" + _UNIT_EXTRA + r"|" + _PER_UNIT + r")\.?\)?$")
+NUM_LOOSE = re.compile(_NUM_PREFIX + _S + r"*(?:" + _NUM_SUFFIX + r")?\.?\)?$")
 
 
 def _strip(v):
@@ -202,42 +218,60 @@ def _clean(values):
 
 
 
-def is_date_value(v, strong_only=False):
+def is_date_value(v, strong_only=False, _enabled_rules=None):
     """1 つの値（NFKC・小文字・前後の空白なし）が日付・時刻・年度などに読めるか。"""
-    if _weekday_date(v):
+    if _rule_enabled(_enabled_rules, "D1") and _weekday_date(v, _enabled_rules):
         return True
-    if any(r.match(v) for r in DATE_RES) or DATETIME_RE.match(v) or TIME_RE.match(v) or _JP_TIME.match(v):
+    if any(r.match(v) for r in DATE_RES) or DATETIME_RE.match(v) or TIME_RE.match(v):
         return True
-    if _is_era_date(v):
+    if _rule_enabled(_enabled_rules, "D3") and _JP_TIME.match(v):
         return True
-    if any(r.match(v) for r in DATE_EXTRA) or is_year_range(v) or any(r.match(v) for r in MONTH_FULL) or _is_quarter(v):
+    if _rule_enabled(_enabled_rules, "D5") and _is_era_date(v):
+        return True
+    if any(r.match(v) for r in DATE_EXTRA) or is_year_range(v) or any(r.match(v) for r in MONTH_FULL):
+        return True
+    if _rule_enabled(_enabled_rules, "D4") and _is_quarter(v):
         return True
     return False if strong_only else bool(YEAR_ONLY.match(v))
 
 
-def date_shares(values):
+def date_shares(values, _enabled_rules=None):
     """(年だけを除いた日付の値の割合, 年だけの値の割合)。N1 markers are ignored with >=2 usable values."""
-    ne = _share_values(_clean(values))
+    ne = _clean(values)
+    if _rule_enabled(_enabled_rules, "N1"):
+        ne = _share_values(ne)
     if not ne:
         return 0.0, 0.0
-    month_only = [v for v in ne if _MONTH_ONLY.match(v)]
-    quarter_only = [v for v in ne if _AMBIGUOUS_QUARTER.match(v)]
-    month_column = len(month_only) / len(ne) >= 0.8 and len(set(month_only)) >= 2
-    quarter_column = len(quarter_only) / len(ne) >= 0.8
+    month_only = [v for v in ne if _MONTH_ONLY.match(v)] if _rule_enabled(_enabled_rules, "D6") else []
+    quarter_only = [v for v in ne if _AMBIGUOUS_QUARTER.match(v)] if _rule_enabled(_enabled_rules, "D4") else []
+    month_column = bool(month_only) and len(month_only) / len(ne) >= 0.8 and len(set(month_only)) >= 2
+    quarter_column = bool(quarter_only) and len(quarter_only) / len(ne) >= 0.8
     strong = sum(
-        is_date_value(v, True)
+        is_date_value(v, True, _enabled_rules)
         or (month_column and bool(_MONTH_ONLY.match(v)))
         or (quarter_column and bool(_AMBIGUOUS_QUARTER.match(v)))
         for v in ne
     ) / len(ne)
-    era_year_column = all(_is_era_year(v) for v in ne)
+    era_year_column = _rule_enabled(_enabled_rules, "D5") and all(_is_era_year(v) for v in ne)
     year = 1.0 if era_year_column else sum(bool(YEAR_ONLY.match(v)) for v in ne) / len(ne)
     return strong, year
 
 
-def num_loose_share(values):
-    ne = _share_values(_clean(values))
-    return sum(bool(NUM_LOOSE.match(v)) for v in ne) / len(ne) if ne else 0.0
+def _num_loose_match(v, _enabled_rules=None):
+    if _enabled_rules is None:
+        return bool(NUM_LOOSE.match(v))
+    return bool(
+        NUM_LOOSE_V91.match(v)
+        or (_rule_enabled(_enabled_rules, "N2") and NUM_LOOSE_N2.match(v))
+        or (_rule_enabled(_enabled_rules, "N8") and NUM_LOOSE_N8.match(v))
+    )
+
+
+def num_loose_share(values, _enabled_rules=None):
+    ne = _clean(values)
+    if _rule_enabled(_enabled_rules, "N1"):
+        ne = _share_values(ne)
+    return sum(_num_loose_match(v, _enabled_rules) for v in ne) / len(ne) if ne else 0.0
 
 
 def bad_ymd8(values):
@@ -250,7 +284,7 @@ def bad_ymd8(values):
     return ok < len(v8) / 2
 
 
-def guard_with_reason(pred, probs_sorted, values):
+def guard_with_reason(pred, probs_sorted, values, _enabled_rules=None):
     """Return (final label, reason code); reason is None when the label is retained."""
     if pred == "other":
         return "unknown", "other_class"
@@ -258,14 +292,14 @@ def guard_with_reason(pred, probs_sorted, values):
     has = s is not None and s["empty"] < 0.999
     if has:
         if pred == "date":
-            strong, year = date_shares(values)
+            strong, year = date_shares(values, _enabled_rules)
             old = s["date"] + s["datetime"]
             top = probs_sorted[0][1] if probs_sorted else 0.0
             if not (max(old, strong) >= 0.5 or (max(old, strong) + year >= 0.5 and top >= YEAR_CONFIDENCE)):
                 return "unknown", "date_value_evidence_low"
             if bad_ymd8(values):
                 return "unknown", "date_invalid_8digit"
-        loose = num_loose_share(values) if pred in ("amount", "quantity", "rate") else 0.0
+        loose = num_loose_share(values, _enabled_rules) if pred in ("amount", "quantity", "rate") else 0.0
         if pred in ("amount", "quantity", "rate") and loose < 0.5:
             return "unknown", "numeric_values_not_parseable"
     if len(probs_sorted) > 1:
