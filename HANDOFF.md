@@ -1,14 +1,14 @@
-# 最新確認 2026-10-23 08:13 JST（ChatGPT。b003独立ラベル継続・S11 3.4探索中）
+# 最新確認 2026-10-23 08:14 JST（ChatGPT。b003独立ラベル継続・S11 3.4探索中）
 
 ## 確認済み
-- b003 の取り出し run 39791544806 は success。`materials/pool/work/b003/corpus.jsonl` と `set.json` は各5,057列。`corpus_log.json` の top-level columns は5,077だが、status=ok 表の列合計は5,057で差20列は未解決。ChatGPTの独立ラベルは1,812/5,057列（先頭1,812行をcorpusと照合済み）。LABEL_GUIDE v1.5を使用し、予測ファイルは参照していない。
+- b003 の取り出し run 39791544806 は success。`materials/pool/work/b003/corpus.jsonl` と `set.json` は各5,057列。`corpus_log.json` の top-level columns は5,077だが、status=ok 表の列合計は5,057で差20列は未解決。ChatGPTの独立ラベルは1,912/5,057列（先頭1,912行をcorpusと照合済み）。LABEL_GUIDE v1.5を使用し、予測ファイルは参照していない。
 - Claudeには先頭500列の独立照合・裁定をai-bridge連絡箱経由で依頼済み。回答待ち。ラベル全件の確定前に学習へ進まない。
 - S11 3.5 BODIK広域探索 run 39784229292 は success。train割当済み254組織のうちpackage_search成功100、候補21表・11公開元・上限後206列。配布ファイル・行・セル値は取得していない。
 - 3.1は確認済み候補83表/42公開元。Claudeの採用記録83表はあるが、抽出・プール確定は未確認。3.3 v4は31表/16公開元・上限後292列。
 - 22,000確定列までは学習しない。学習依頼はなし。
 
 ## 実行中
-- S11 3.4：前回 run 39775090832 は cancelled。2026-10-23 07:39 JSTに依頼を再開。run 39866548228 は2026-10-23 08:13 JST時点で in_progress（step 7: in_progress、artifact 0）。候補ファイルは結果待ち。前回の21表は未更新
+- S11 3.4：前回 run 39775090832 は cancelled。2026-10-23 07:39 JSTに依頼を再開。run 39866548228 は2026-10-23 08:14 JST時点で in_progress（step 7: in_progress、artifact 0）。候補ファイルは結果待ち。前回の21表は未更新
 
 ## 次
 - run 39866548228 完了後、候補・除外理由・列数・公開元数・ライセンスIDを確認する。採用前の原文ライセンス確認は別工程。3.4の候補は3.5・既採用分と重複照合する。
