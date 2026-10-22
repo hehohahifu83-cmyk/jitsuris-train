@@ -2,7 +2,7 @@
   "schema_version": 1,
   "collected_date": "2026-10-22",
   "purpose": "S11 3.4 non-Japanese table candidate discovery; Singapore publisher registration only",
-  "method": "Official data.gov.sg dataset filter's agency menu (73 names and displayed acronyms). Registered all agency identifiers using the fixed allocation.py pool() rule before dataset metadata queries. No table contents queried. NEA is excluded from discovery because its filtered dataset listing was opened before allocation.",
+  "method": "Official data.gov.sg dataset filter agency menu (73 names and displayed acronyms). All identifiers were registered with the allocation.py pool() rule before inspecting dataset listings. A later browser fallback opened train-only agency result pages; no dataset metadata API was called, no files or row endpoints were requested, and no candidate list was saved. NEA was excluded because its filtered listing was seen before allocation.",
   "portal": {
     "portal_id": "sg",
     "portal_url": "https://data.gov.sg/",
@@ -456,6 +456,24 @@
         "pool": "train",
         "acronym": "YRSG"
       }
-    ]
+    ],
+    "dataset_metadata_api_queried": false,
+    "dataset_listing_metadata_accessed": true,
+    "dataset_listing_pages_viewed": [
+      "sg_lta",
+      "sg_acra",
+      "sg_singstat",
+      "sg_pub",
+      "sg_mof",
+      "sg_ecda"
+    ],
+    "candidate_metadata_saved": false,
+    "file_downloads_or_row_api_calls": 0,
+    "embedded_value_payload_observation": {
+      "publisher_id": "sg_ecda",
+      "title": "Pre-Schools Location",
+      "format": "GeoJSON",
+      "observation": "The catalogue page response contained embedded GeoJSON content in the server-rendered page payload. The values were not inspected or saved. The Singapore browser route was stopped and excluded from further candidate discovery."
+    }
   }
 }
