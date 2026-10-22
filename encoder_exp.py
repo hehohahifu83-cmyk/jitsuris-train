@@ -23,11 +23,18 @@ gtr, gte = split(g_all); btr, bte = split(b_all); b2tr, b2te = split(b2_all); jt
 # FT_JP3=1：S11 第 1 陣（日本の財務・調達、行をそろえて取り出し、先生＋モデル＋Claude の裁定。materials/real_labels_jp3.jsonl）を学習側だけに足す（2026-10-22）。
 # 試験・検証には入れない（検証の列は基準線と同じ）。既定はオフ＝従来どおり。
 JP3 = os.environ.get("FT_JP3") == "1"
-if JP3 and not os.path.exists("materials/real_labels_jp3.jsonl"):
-    raise SystemExit("FT_JP3=1 なのに materials/real_labels_jp3.jsonl が無い（Kaggle の束に入っているか確かめる）")
-j3_all = load_real(("materials/real_labels_jp3.jsonl",)) if JP3 else []
-if JP3 and not j3_all:
-    raise SystemExit("FT_JP3=1 なのに jp3 の行が 0")
+# FT_JPVAL=1（FT_VAL=1 のときだけ）：jp3 の表の 1/4 を検証「検証（jp3）」に回し、学習には使わない（2026-10-22）。
+# 日本の財務の表を足した効果を検証で見るため。比べる両方の群（FT_JP3 あり・なし）に付けて、同じ列で比べる。
+JPVAL = os.environ.get("FT_JPVAL") == "1" and os.environ.get("FT_VAL") == "1"
+if (JP3 or JPVAL) and not os.path.exists("materials/real_labels_jp3.jsonl"):
+    raise SystemExit("FT_JP3／FT_JPVAL なのに materials/real_labels_jp3.jsonl が無い（Kaggle の束に入っているか確かめる）")
+j3_all = load_real(("materials/real_labels_jp3.jsonl",)) if (JP3 or JPVAL) else []
+if (JP3 or JPVAL) and not j3_all:
+    raise SystemExit("FT_JP3／FT_JPVAL なのに jp3 の行が 0")
+j3tr, j3val = j3_all, []
+if JPVAL:
+    from val_split import split_val
+    j3tr, j3val = split_val(j3_all, salt="jitsuris-jpval-v1", mod=4)
 # FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
 VAL_MODE = os.environ.get("FT_VAL") == "1"
 gval = bval = b2val = jval = []
@@ -48,8 +55,8 @@ unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
 if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。種は別
-    real_rows += real_train_rows_with_units(j3_all, 6, 9, True, unit_by_table, perturb, per_table=60)
-    print(f"FT_JP3=1: +{len(j3_all)} jp3 source rows ({len({r[4] for r in j3_all})} tables)", flush=True)
+    real_rows += real_train_rows_with_units(j3tr, 6, 9, True, unit_by_table, perturb, per_table=60)
+    print(f"FT_JP3=1: +{len(j3tr)} jp3 source rows ({len({r[4] for r in j3tr})} tables)", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
 y = np.array([r[2] for r in rows])
@@ -60,7 +67,7 @@ if jte:
     tests["本物（日本の調達）"] = attach_unit_context(jte, unit_by_table)
 if VAL_MODE:   # 検証モードでは固定の試験を評価しない（検証だけ）。名前は試験側と同じ並び
     tests = {}
-    for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval)):
+    for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval), ("検証（jp3）", j3val)):
         if _vr:
             tests[_name] = attach_unit_context(_vr, unit_by_table)
     print("FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 " + ", ".join(f"{k} {len(v)}" for k, v in tests.items()), flush=True)
