@@ -23,7 +23,11 @@ gtr, gte = split(g_all); btr, bte = split(b_all); b2tr, b2te = split(b2_all); jt
 # FT_JP3=1：S11 第 1 陣（日本の財務・調達、行をそろえて取り出し、先生＋モデル＋Claude の裁定。materials/real_labels_jp3.jsonl）を学習側だけに足す（2026-10-22）。
 # 試験・検証には入れない（検証の列は基準線と同じ）。既定はオフ＝従来どおり。
 JP3 = os.environ.get("FT_JP3") == "1"
+if JP3 and not os.path.exists("materials/real_labels_jp3.jsonl"):
+    raise SystemExit("FT_JP3=1 なのに materials/real_labels_jp3.jsonl が無い（Kaggle の束に入っているか確かめる）")
 j3_all = load_real(("materials/real_labels_jp3.jsonl",)) if JP3 else []
+if JP3 and not j3_all:
+    raise SystemExit("FT_JP3=1 なのに jp3 の行が 0")
 # FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
 VAL_MODE = os.environ.get("FT_VAL") == "1"
 gval = bval = b2val = jval = []
