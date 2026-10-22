@@ -52,6 +52,8 @@ def _json_request(url: str, retries: int = 4, data: bytes | None = None, content
         raise ValueError("request host is outside the New Zealand catalogue allowlist")
     for attempt in range(retries):
         headers = {"User-Agent": "jitsuris-s11-metadata-discovery/1.0", "Accept": "application/json"}
+        headers["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        headers["Referer"] = "https://catalogue.data.govt.nz/"
         if data is not None:
             headers["Content-Type"] = content_type
         req = Request(url, data=data, headers=headers)
@@ -61,9 +63,10 @@ def _json_request(url: str, retries: int = 4, data: bytes | None = None, content
                 try:
                     return json.loads(raw.decode("utf-8-sig"))
                 except json.JSONDecodeError as exc:
+                    preview = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", raw[:800].decode("utf-8", "replace")))[:180]
                     raise RuntimeError(
                         f"non-JSON catalogue response: status={response.status}, bytes={len(raw)}, "
-                        f"content_type={response.headers.get('Content-Type', '')}, final_url={response.geturl()}"
+                        f"content_type={response.headers.get('Content-Type', '')}, final_url={response.geturl()}, preview={preview!r}"
                     ) from exc
         except HTTPError as exc:
             if exc.code not in {408, 425, 429, 500, 502, 503, 504} or attempt + 1 == retries:
