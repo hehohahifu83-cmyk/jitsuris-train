@@ -1,0 +1,57 @@
+name: S11 3.3 統計表候補のメタデータ調査
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "materials/s11_3_3_discovery.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: s11-3-3-metadata-discovery
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 自己テスト
+        run: python -I materials/s11_3_3_discover.py --self-test
+      - name: 調査依頼を確認
+        id: request
+        run: |
+          set -euo pipefail
+          read -r command run_date < materials/s11_3_3_discovery.request
+          test "$command" = "discover"
+          [[ "$run_date" =~ ^2026[0-9]{4}$ ]]
+          echo "run_date=$run_date" >> "$GITHUB_OUTPUT"
+      - name: train 公開元の統計表メタデータを調査
+        env:
+          RUN_DATE: ${{ steps.request.outputs.run_date }}
+        run: |
+          python -I materials/s11_3_3_discover.py \
+            --allocation independent_eval/allocation.json \
+            --sources independent_eval/allocation_sources_20261021.json \
+            --out-json "materials/s11_3_3_candidates_${RUN_DATE}.json" \
+            --out-md "materials/s11_3_3_candidates_${RUN_DATE}.md"
+      - name: 候補一覧と完了状態を保存
+        env:
+          RUN_DATE: ${{ steps.request.outputs.run_date }}
+        run: |
+          set -euo pipefail
+          echo "done $RUN_DATE" > materials/s11_3_3_discovery.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "materials/s11_3_3_candidates_${RUN_DATE}.json" "materials/s11_3_3_candidates_${RUN_DATE}.md" materials/s11_3_3_discovery.request
+          git commit -m "S11 3.3 統計表候補をメタデータで記録"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
