@@ -11,7 +11,7 @@
 ## 1 陣の流れと担当
 | 段 | 担当 | すること | できるもの |
 |---|---|---|---|
-| 1 候補 | ChatGPT | train の公開元だけで候補一覧（メタデータだけ。`selected` に publisher_id・resource_url・resource_id・license・datastore_available・safe_headers） | `materials/s11_*_candidates_*.json` |
+| 1 候補 | ChatGPT | train の公開元だけで候補一覧（メタデータだけ。`selected` か `candidates` に publisher_id・resource_url（Socrata は catalog_url）・resource_id・license・datastore_available・safe_headers・title、Socrata は `platform: "socrata"`） | `materials/s11_*_candidates_*.json` |
 | 2 採用 | Claude | `pipeline.py adopt --batch <陣> --candidates …`（規則：train・ライセンスの一覧・datastore・使っていない表・1 陣 1 公開元 3 表・教材庫 1 公開元 15 表・同じ見出しの組 3 表） | `work/<陣>/adopted.json` |
 | 3 取り出し | ChatGPT が依頼のファイルを書く → Actions | `materials/fetch_rows.request` に `fetch materials/pool/work/<陣>/adopted.json materials/pool/work/<陣>/corpus.jsonl` | `corpus.jsonl`・`set.json` |
 | 4 予測 | ChatGPT が依頼のファイルを書く → Actions | `materials/label_assist/predict.request` に `run materials/pool/work/<陣>/set.json materials/pool/work/<陣>/pred_e5base_seed1.json` | `pred_e5base_seed1.json` |
@@ -20,6 +20,12 @@
 | 7 裁定・確定 | Claude | `decisions.jsonl` を書き、`pipeline.py finalize`（抜き取りの誤りが 5% を超えたら止まる） | `batch_<陣>.jsonl`・台帳 |
 
 1 陣の大きさは 1,000〜2,000 列が目安（Claude の裁定は 1 陣 500 列まで）。陣の ID は `b001`、`b002` … の順。
+
+## 取り出せる場（2026-10-22）
+- BODIK の datastore（`data.bodik.jp`）
+- Socrata（SODA）：公開元の ID が `world_socrata_<ホストの . と - を _ にしたもの>` で、ホストが一致するもの。列の定義から表示名を取り、位置情報・URL・写真の列は落とす。ライセンスは公式の `licenseId` で確かめる（PUBLIC_DOMAIN・CC0_10・CC_30_BY・CC_40_BY・ODC_BY_10）
+- ほかの CKAN の datastore：`materials/pool/allowed_hosts.json` の `ckan` に Claude が足したホストだけ
+- 採用の道具は、題名が個人の記録になりやすい表（犯罪・逮捕・通報・選挙資金・許可・入学・職員など）を落とす。主セットの NYC（`data.cityofnewyork.us`）は main に固定
 
 ## 目標と学習
 - **第 1 目標：教材庫の学習に使える列 22,000**（既存の本物 約 11,000 列と合わせて約 3 倍。W1 の伸び方から＋4〜5 ポイントの見込み）。オーナーが変えてよい（`manifest.json` の `target_columns`）。
