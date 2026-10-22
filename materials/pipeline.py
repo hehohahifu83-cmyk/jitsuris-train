@@ -35,7 +35,9 @@ POOL = ROOT / "materials" / "pool"
 LABELS = ("account", "address", "amount", "category", "date", "email", "id", "org", "other", "person", "phone",
           "product", "quantity", "rate", "tax_class", "text")
 NOT_USED = ("unknown", "S")
-ALLOWED_LICENSES = {"cc-by-4.0", "cc-by-40-intl", "cc-by", "cc-zero", "cc0", "cc0-1.0", "odc-by", "ogl-uk-3.0"}
+# 再配布できる条件だけ（DATA_COLLECTION_PROTOCOL 第 2 章：CC0・CC BY・政府標準利用規約 2.0・PDL 1.0・OGL）。NC・SA・不明は入れない。
+# 政府標準利用規約の CKAN の ID は、カタログでの表記を確かめてから足す（2026-10-22 時点で未確認）。
+ALLOWED_LICENSES = {"cc-by-4.0", "cc-by-40-intl", "cc-by", "cc-by-21-jp", "cc-by-30", "cc-zero", "cc0", "cc0-1.0", "odc-by", "ogl-uk-3.0"}
 PER_PUBLISHER_BATCH = 3      # 1 陣で 1 公開元あたりの表
 PER_PUBLISHER_POOL = 15      # 教材庫全体で 1 公開元あたりの表（系統の偏りを抑える）
 SAME_HEADERS_PER_PUBLISHER = 3   # 同じ公開元で見出しの組が同じ表（DATA_COLLECTION_PROTOCOL 第 2 章）
