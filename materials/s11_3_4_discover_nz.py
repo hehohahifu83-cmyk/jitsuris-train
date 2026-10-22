@@ -498,8 +498,8 @@ def main(argv: list[str] | None = None) -> int:
         allocation = load_allocation(ROOT / "independent_eval/allocation.json")
         sources = json.loads((ROOT / "independent_eval/allocation_sources_20261022.json").read_text(encoding="utf-8"))
         report = discover(allocation, sources)
-        (ROOT / f"materials/s11_3_4_candidates_{args.run_date}.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        (ROOT / f"materials/s11_3_4_candidates_{args.run_date}.md").write_text(render_markdown(report), encoding="utf-8")
+        (ROOT / f"materials/s11_3_4_nz_candidates_{args.run_date}.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (ROOT / f"materials/s11_3_4_nz_candidates_{args.run_date}.md").write_text(render_markdown(report), encoding="utf-8")
         m = report["metrics"]
         print(f"S11 3.4 complete: publishers={m['train_publishers_searched']} candidates={m['datastore_ready_candidates']} selected={m['selected_tables']} columns={m['selected_columns_capped_at_10']}")
         return 0
