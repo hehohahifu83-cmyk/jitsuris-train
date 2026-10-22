@@ -1,0 +1,80 @@
+name: 教材のラベルの手伝い：今のモデルで予測（CPU）
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "materials/label_assist/predict.request"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: label-assist-predict
+  cancel-in-progress: false
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: 依頼を読む
+        id: req
+        run: |
+          set -eu
+          read -r cmd set_path out_path <<< "$(head -1 materials/label_assist/predict.request)"
+          if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          case "$set_path" in materials/label_assist/*_set.json) ;; *) echo "set の場所が違う"; exit 1;; esac
+          case "$out_path" in materials/label_assist/*_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; } >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: steps.req.outputs.proceed == 'true'
+        with: { python-version: '3.11' }
+      - name: CPU の推論の道具
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - uses: actions/download-artifact@v4
+        if: steps.req.outputs.proceed == 'true'
+        with:
+          name: jitsuris-model
+          run-id: 39506074807
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/e5-model
+      - name: 重みの SHA-256 を照合（E5-base 最終比較の種子 1）
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          ck = Path("/tmp/e5-model/ft_out_job1")
+          m = json.loads((ck / "manifest.json").read_text(encoding="utf-8"))
+          name, meta = next(iter(m["saved_model"]["weights"].items()))
+          want = "38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7"
+          got = hashlib.sha256((ck / name).read_bytes()).hexdigest()
+          if got != want or meta["sha256"] != want:
+              raise SystemExit("weight verification failed")
+          print("verified")
+          PY
+      - name: 予測（ラベルは読まない）
+        if: steps.req.outputs.proceed == 'true'
+        env: { TOKENIZERS_PARALLELISM: 'false' }
+        run: |
+          python evaluate_independent.py predict --set "${{ steps.req.outputs.set }}" --checkpoint /tmp/e5-model/ft_out_job1 \
+            --out "${{ steps.req.outputs.out }}" --ledger materials/label_assist/ledger.jsonl --device cpu
+          echo "done ${{ steps.req.outputs.set }} ${{ steps.req.outputs.out }}" > materials/label_assist/predict.request
+      - name: 予測と台帳だけを保存
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${{ steps.req.outputs.out }}" materials/label_assist/ledger.jsonl materials/label_assist/predict.request
+          git commit -m "ラベルの手伝い：今のモデル（E5-base 種子 1）の予測（自動）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
