@@ -1,4 +1,4 @@
-name: S11 3.4 US Socrata metadata discovery
+name: S11 3.4 world catalogue metadata discovery
 
 on:
   push:
@@ -35,24 +35,36 @@ jobs:
             echo "execute=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          [[ "$command" == "register" ]]
+          [[ "$command" == "register" || "$command" == "discover" ]]
           [[ "$run_date" =~ ^2026[0-9]{4}(-v[0-9]+)?$ ]]
           echo "execute=true" >> "$GITHUB_OUTPUT"
+          echo "command=$command" >> "$GITHUB_OUTPUT"
           echo "run_date=$run_date" >> "$GITHUB_OUTPUT"
-      - name: 公開元だけを登録（データセットメタデータ未照会）
-        if: steps.request.outputs.execute == 'true'
+      - name: 公開元を先に登録しデータセットを照会しない
+        if: steps.request.outputs.execute == 'true' && steps.request.outputs.command == 'register'
         run: python -I materials/s11_3_4_discover_us.py --mode register
-      - name: 登録結果と依頼状態を保存
+      - name: train 公開元だけのメタデータを探索
+        if: steps.request.outputs.execute == 'true' && steps.request.outputs.command == 'discover'
+        run: python -I materials/s11_3_4_discover_us.py --mode discover
+      - name: 結果と依頼状態を保存
         if: steps.request.outputs.execute == 'true'
         env:
+          COMMAND: ${{ steps.request.outputs.command }}
           RUN_DATE: ${{ steps.request.outputs.run_date }}
         run: |
           set -euo pipefail
-          echo "done register $RUN_DATE" > materials/s11_3_4_us_discovery.request
+          echo "done $COMMAND $RUN_DATE" > materials/s11_3_4_us_discovery.request
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add materials/s11_3_4_discover_us.py materials/s11_3_4_us_discovery.request
-          git add independent_eval/allocation.json independent_eval/allocation_sources_socrata_20261022.json materials/s11_3_4_us_registration_20261022.json
-          git commit -m "S11 3.4 米国 Socrata 公開元を登録"
+          if [[ "$COMMAND" == "register" ]]; then
+            git add independent_eval/allocation.json
+            git add independent_eval/allocation_sources_world_20261022.json
+            git add materials/s11_3_4_world_registration_20261022.json
+            git commit -m "S11 3.4 世界の公開元を登録"
+          else
+            git add materials/s11_3_4_candidates_20261022.json materials/s11_3_4_candidates_20261022.md
+            git commit -m "S11 3.4 非日本語候補を探索"
+          fi
           git pull --rebase --autostash origin main
           git push origin HEAD:main
