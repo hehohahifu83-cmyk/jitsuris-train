@@ -1,3 +1,17 @@
+# 最新確認 2026-10-22 17:01 JST（ChatGPT。S11 jp3 run 39716084425 完了）
+
+## 確認済み
+- `kaggle/KAGGLE_LOG.md` は 2026-10-22 03:43:49 UTC に COMPLETE。定期確認は `kaggle/PROGRESS.md` の 05:53:59 UTC。
+- job1〜3 の manifest はすべて completed、各 `train_rows.count=53,047`。学習行ハッシュも一致。
+- 先行 run 39715706982 は 50,491 行で jp3 を含まないため除外。最新の `kaggle/kaggle.request` は `done`。
+- `eval_reports/runs/39716084425/` に3つの manifest と検証確率・誤りファイルを確認。各 manifest に保存モデルの weight hash/size が記録されている。
+
+## 未確認・次
+- モデル間の採点・比較・採否判断は未実施。Claude が事前固定の `bench/s11_jp3_first_batch.md` に従って行う。
+- ChatGPT から学習の再依頼はしない。
+
+---
+
 # 最新確認 2026-10-21 19:52 JST（ChatGPT。W1 完了、集計競合は未解決）
 
 ## 確認済み
