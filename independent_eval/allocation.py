@@ -34,6 +34,7 @@ FIXED_ASSIGNMENTS = {
     "jp2": "train",
     "kobe": "main",
     "nyc": "main",
+    "world_socrata_data_cityofnewyork_us": "main",   # 主セットの NYC と同じ組織（Socrata の公開の場）
     "sapporo": "main",
     "yokohama": "main",
 }

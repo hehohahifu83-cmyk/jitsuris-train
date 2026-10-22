@@ -37,7 +37,8 @@ LABELS = ("account", "address", "amount", "category", "date", "email", "id", "or
 NOT_USED = ("unknown", "S")
 # 再配布できる条件だけ（DATA_COLLECTION_PROTOCOL 第 2 章：CC0・CC BY・政府標準利用規約 2.0・PDL 1.0・OGL）。NC・SA・不明は入れない。
 # 政府標準利用規約の CKAN の ID は、カタログでの表記を確かめてから足す（2026-10-22 時点で未確認）。
-ALLOWED_LICENSES = {"cc-by-4.0", "cc-by-40-intl", "cc-by", "cc-by-21-jp", "cc-by-30", "cc-zero", "cc0", "cc0-1.0", "odc-by", "ogl-uk-3.0"}
+ALLOWED_LICENSES = {"cc-by-4.0", "cc-by-40-intl", "cc-by", "cc-by-21", "cc-by-21-jp", "cc-by-30", "cc-zero", "cc0", "cc0-1.0", "odc-by",
+                    "ogl-uk-3.0", "pdl1.0", "public-domain"}   # pdl1.0・cc-by-21 は 2026-10-22 に内訳を見て追加。public-domain は CC0 と同じ扱い
 PER_PUBLISHER_BATCH = 3      # 1 陣で 1 公開元あたりの表
 PER_PUBLISHER_POOL = 15      # 教材庫全体で 1 公開元あたりの表（系統の偏りを抑える）
 SAME_HEADERS_PER_PUBLISHER = 3   # 同じ公開元で見出しの組が同じ表（DATA_COLLECTION_PROTOCOL 第 2 章）
@@ -121,9 +122,53 @@ def pool_header_sets():
     return sets
 
 
+def normalize_license(raw):
+    """カタログごとの書き方の違いをそろえる（Socrata の PUBLIC_DOMAIN・CC0_10・「name-public-domain-…」など）。"""
+    v = str(raw or "").strip().lower().replace("_", "-")
+    if "nc" in re.split(r"[^a-z0-9]+", v) or "sa" in re.split(r"[^a-z0-9]+", v):
+        return v   # 非営利・継承は一覧に無いので、そのまま返して落とす
+    if "public-domain" in v or v == "public domain":
+        return "public-domain"
+    if "cczero" in v or v.startswith("cc0") or "cc0-10" in v:
+        return "cc0"
+    if v in ("cc-30-by", "cc-by-3.0"):
+        return "cc-by-30"
+    if v in ("cc-40-by", "cc-by-40"):
+        return "cc-by-4.0"
+    return v
+
+
 def license_id(c):
     lic = c.get("license")
-    return str((lic.get("id") if isinstance(lic, dict) else lic) or c.get("license_id") or "").strip().lower()
+    return normalize_license((lic.get("id") if isinstance(lic, dict) else lic) or c.get("license_id"))
+
+
+# 題名で落とす（個人の記録が入りやすい表。列の検査だけに頼らない）
+TITLE_DENY = re.compile(r"(crime|arrest|police|incident|complaint|311|service request|campaign|contribut|donor|election|"
+                        r"permit|license holder|admission|student|patient|victim|offender|inmate|payroll|employee|salar|"
+                        r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員)", re.I)
+
+
+def platform_of(c):
+    """候補の取り出し方：bodik・ckan（許可のホスト）・socrata（公開元の ID とホストが一致するもの）。どれでもなければ None。"""
+    from urllib.parse import urlparse
+    url = c.get("resource_url") or c.get("catalog_url") or ""
+    host = (urlparse(url).hostname or "").lower()
+    if (c.get("platform") or "").lower() == "socrata":
+        pid = str(c.get("publisher_id", ""))
+        if pid.startswith("world_socrata_") and pid[len("world_socrata_"):] == re.sub(r"[.-]", "_", host) and re.fullmatch(r"[a-z0-9]{4}-[a-z0-9]{4}", str(c.get("resource_id", ""))):
+            return "socrata", host
+        return None, host
+    if host == "data.bodik.jp":
+        return "bodik", host
+    if host in allowed_ckan_hosts():
+        return "ckan", host
+    return None, host
+
+
+def allowed_ckan_hosts():
+    p = POOL / "allowed_hosts.json"
+    return set(json.load(open(p, encoding="utf-8")).get("ckan", [])) if p.exists() else set()
 
 
 def adopt(candidates, pools, known_urls, known_rids, pool_pub, pool_hsets):
@@ -133,7 +178,7 @@ def adopt(candidates, pools, known_urls, known_rids, pool_pub, pool_hsets):
     hsets = Counter(pool_hsets)
     seen = set()
     for c in candidates:
-        url = c.get("resource_url", "")
+        url = c.get("resource_url") or c.get("catalog_url") or ""
         m = re.search(r"/resource/([0-9a-f-]{36})", url)
         rid = c.get("resource_id") or (m.group(1) if m else None)
         pub = str(c.get("publisher_id", ""))
@@ -143,10 +188,12 @@ def adopt(candidates, pools, known_urls, known_rids, pool_pub, pool_hsets):
             reason = "公開元が train でない"
         elif license_id(c) not in ALLOWED_LICENSES:
             reason = "ライセンスが許可の一覧にない"
+        elif TITLE_DENY.search(f"{c.get('title', '')} {c.get('resource_name', '')}"):
+            reason = "題名が個人の記録になりやすい表"
         elif not c.get("datastore_available"):
-            reason = "datastore が無い（今の取り出しの道具は datastore だけ）"
-        elif not rid or not url.startswith("https://data.bodik.jp/"):
-            reason = "BODIK の resource でない（今の取り出しの道具は BODIK だけ）"
+            reason = "datastore が無い（今の取り出しの道具は datastore・SODA だけ）"
+        elif platform_of(c)[0] is None or not rid:
+            reason = "取り出せる場でない（BODIK・許可の CKAN・公開元と一致する Socrata だけ）"
         elif url in known_urls or rid in known_rids or rid in seen:
             reason = "もう使った表"
         elif per_pub[pub] >= PER_PUBLISHER_BATCH:
@@ -162,7 +209,9 @@ def adopt(candidates, pools, known_urls, known_rids, pool_pub, pool_hsets):
         per_pub[pub] += 1
         if heads:
             hsets[(pub, heads)] += 1
-        adopted.append({"n": len(adopted) + 1, "publisher_id": pub, "resource_url": url, "title": c.get("title", "")})
+        plat, host = platform_of(c)
+        adopted.append({"n": len(adopted) + 1, "publisher_id": pub, "resource_url": url, "title": c.get("title", ""),
+                        "platform": plat, "host": host, "resource_id": rid})
     return adopted, why
 
 

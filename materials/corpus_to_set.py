@@ -16,7 +16,7 @@ def convert(corpus_path, prefix):
     units = unit_context_map([(r["header"], r["values"], "", r.get("context") or [], r["table"]) for r in rows])
     cols = []
     for i, r in enumerate(rows, 1):
-        cols.append({"id": f"{prefix}-{i:04d}", "table": r["table"], "source": r.get("source", ""), "language": "ja",
+        cols.append({"id": f"{prefix}-{i:04d}", "table": r["table"], "source": r.get("source", ""), "language": r.get("language", "ja"),
                      "header": r["header"], "values": r["values"][:5] or [""], "siblings": r.get("context") or [],
                      "unit": units.get(r["table"], "")})
     return {"schema_version": 1, "set_id": f"label-assist-{prefix}", "columns": cols}

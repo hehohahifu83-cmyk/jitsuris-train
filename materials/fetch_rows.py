@@ -35,7 +35,7 @@ from discover import HEADER_DENY, normalize_header  # noqa: E402
 sys.path.insert(0, str(ROOT / "materials"))
 from pipeline import ALLOWED_LICENSES  # noqa: E402  採用の道具と同じライセンスの一覧
 
-ALLOWED_HOSTS = ("data.bodik.jp",)
+ALLOWED_HOSTS = {"data.bodik.jp"}   # 表ごとに、確かめたホストだけを足す（fetch_table）
 MAX_COLUMNS = 10
 MAX_ROWS = 20
 FETCH_LIMIT = 1000
@@ -104,7 +104,8 @@ def build_rows(meta, fields, records, total):
     out = []
     for name in kept:
         out.append({
-            "source": f"jp3:{meta['publisher_id']}",
+            "source": f"{meta.get('source_prefix', 'jp3')}:{meta['publisher_id']}",
+            "language": meta.get("language", "ja"),
             "table": meta["download_url"],
             "resource_page": meta["resource_url"],
             "publisher": meta["publisher_id"],
@@ -141,6 +142,65 @@ def http_json(url, step="", tries=3):
                     continue
             raise RuntimeError(f"{step}: HTTP {exc.code}") from None
 
+
+
+SOCRATA_LICENSES = {"PUBLIC_DOMAIN": "public-domain", "CC0_10": "cc0", "CC_30_BY": "cc-by-30", "CC_40_BY": "cc-by-4.0", "ODC_BY_10": "odc-by"}
+SOCRATA_SKIP_TYPES = {"location", "point", "multipoint", "line", "multiline", "polygon", "multipolygon", "url", "photo", "document", "blob"}
+
+
+def fetch_table(item, known):
+    """採用の 1 行 → (meta, 列名, 行の dict のリスト, 全体の行数)。取り出し方は item["platform"]（無ければ bodik）。"""
+    from pipeline import platform_of, normalize_license
+    plat = item.get("platform") or "bodik"
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    if plat in ("bodik", "ckan"):
+        m = re.search(r"/resource/([0-9a-f-]{36})", item["resource_url"])
+        if not m:
+            raise ValueError("resource id not found in URL")
+        rid = m.group(1)
+        if plat == "ckan":
+            check, host = platform_of({"resource_url": item["resource_url"]})
+            if check != "ckan":
+                raise ValueError(f"CKAN host not allowed: {host}")
+            ALLOWED_HOSTS.add(host)
+        base = item["resource_url"].split("/dataset/")[0] + "/api/3/action/"
+        res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
+        pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
+        lic = normalize_license(pkg.get("license_id"))
+        if lic not in ALLOWED_LICENSES:
+            raise ValueError(f"license not allowed: {pkg.get('license_id')}")
+        download = res.get("url") or item["resource_url"]
+        if download in known or item["resource_url"] in known:
+            raise ValueError("URL overlaps the training corpus or the main set")
+        ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
+        fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
+        meta = {"platform": plat, "resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
+                "download_url": download, "license": lic, "fetched_utc": now,
+                "source_prefix": "jp3" if plat == "bodik" else "world", "language": "ja" if plat == "bodik" else "en"}
+        return meta, fields, ds["records"], ds.get("total")
+    if plat == "socrata":
+        check, host = platform_of({"platform": "socrata", "publisher_id": item["publisher_id"], "resource_id": item.get("resource_id"),
+                                   "catalog_url": item["resource_url"]})
+        if check != "socrata":
+            raise ValueError("Socrata publisher and host do not match")
+        ALLOWED_HOSTS.add(host)
+        rid = item["resource_id"]
+        view = http_json(f"https://{host}/api/views/{rid}.json", "views")
+        lic = SOCRATA_LICENSES.get(str(view.get("licenseId") or "").upper()) or normalize_license((view.get("license") or {}).get("name"))
+        if lic not in ALLOWED_LICENSES:
+            raise ValueError(f"license not allowed: {view.get('licenseId') or (view.get('license') or {}).get('name')}")
+        download = f"https://{host}/resource/{rid}.json"
+        if download in known or item["resource_url"] in known:
+            raise ValueError("URL overlaps the training corpus or the main set")
+        cols = [c for c in view.get("columns", []) if c.get("fieldName") and not str(c["fieldName"]).startswith(":")
+                and str(c.get("dataTypeName", "")).lower() not in SOCRATA_SKIP_TYPES]
+        names = {c["fieldName"]: str(c.get("name") or c["fieldName"]).strip() for c in cols}
+        recs = http_json(download + "?" + urlencode({"$limit": FETCH_LIMIT, "$order": ":id"}), "resource")
+        records = [{names[k]: (v if isinstance(v, (str, int, float)) else "") for k, v in r.items() if k in names} for r in recs]
+        meta = {"platform": plat, "resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
+                "download_url": download, "license": lic, "fetched_utc": now, "source_prefix": "world", "language": "en"}
+        return meta, [names[c["fieldName"]] for c in cols], records, None
+    raise ValueError(f"unknown platform: {plat}")
 
 def known_tables(exclude=None):
     urls = set()
@@ -180,29 +240,13 @@ def main(argv=None):
             try:
                 if pools.get(item["publisher_id"]) != "train":
                     raise ValueError("publisher is not in the train pool")
-                m = re.search(r"/resource/([0-9a-f-]{36})", item["resource_url"])
-                if not m:
-                    raise ValueError("resource id not found in URL")
-                rid = m.group(1)
-                base = "https://data.bodik.jp/api/3/action/"
-                res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
-                pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
-                if str(pkg.get("license_id", "")).lower() not in ALLOWED_LICENSES:
-                    raise ValueError(f"license not allowed: {pkg.get('license_id')}")
-                download = res.get("url") or item["resource_url"]
-                if download in known or item["resource_url"] in known:
-                    raise ValueError("URL overlaps the training corpus or the main set")
-                ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
-                fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
-                meta = {"resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
-                        "download_url": download, "license": pkg.get("license_id"),
-                        "fetched_utc": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-                rows, reasons = build_rows(meta, fields, ds["records"], ds.get("total"))
+                meta, fields, records, total = fetch_table(item, known)
+                rows, reasons = build_rows(meta, fields, records, total)
                 for r in rows:
                     fh.write(json.dumps(r, ensure_ascii=False) + "\n")
                 n_cols += len(rows)
                 entry.update({"status": "ok" if rows else "skipped_too_small", "columns": len(rows), "dropped": reasons,
-                              "fields": len(fields), "records_read": len(ds["records"]), "total": ds.get("total")})
+                              "fields": len(fields), "records_read": len(records), "total": total, "platform": meta["platform"]})
             except Exception as exc:  # 1 つの表の失敗で全体を止めない。理由を記録する
                 entry.update({"status": "error", "error": f"{type(exc).__name__}: {str(exc)[:200]}"})
             log["tables"].append(entry)
