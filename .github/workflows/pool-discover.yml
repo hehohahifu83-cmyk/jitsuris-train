@@ -1,0 +1,44 @@
+name: 教材庫の候補を集める（メタデータだけ）
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "materials/pool/discover.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pool-discover
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 試験
+        run: python -m unittest tests.test_pool_discover tests.test_pipeline
+      - name: 集める
+        run: |
+          set -eu
+          read -r cmd out opts <<< "$(head -1 materials/pool/discover.request) "
+          test "$cmd" = "discover"
+          case "$out" in materials/pool/candidates_*.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+          python -I materials/pool_discover.py --out "$out" $opts
+          echo "done $out" > materials/pool/discover.request
+      - name: 保存
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add materials/pool/candidates_*.json materials/pool/discover.request
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "教材庫の候補を集めた（自動・メタデータだけ）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
