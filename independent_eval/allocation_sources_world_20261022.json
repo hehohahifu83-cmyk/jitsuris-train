@@ -1,0 +1,1898 @@
+{
+  "schema_version": 1,
+  "collected_date": "2026-10-22",
+  "purpose": "S11 3.4 non-Japanese table candidates; register catalog publishers before dataset metadata",
+  "method": "Pinned DataPortals.org active CKAN catalog registry plus pinned Socrata known-portal registry; CKAN organization_list(all_fields=false) only; no package_search or table metadata queried.",
+  "registry_sources": [
+    {
+      "url": "https://raw.githubusercontent.com/okfn/dataportals.org/3665762ef571ff0027b80842e8f62641c3a2292d/data/portals.csv",
+      "source_commit": "3665762ef571ff0027b80842e8f62641c3a2292d",
+      "license": "DataPortals.org public-domain portal registry"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/cyanheads/socrata-mcp-server/020153743c1d528a44b3d517f7e8bd59fa975db3/src/services/socrata/socrata-service.ts",
+      "source_commit": "020153743c1d528a44b3d517f7e8bd59fa975db3",
+      "license": "Socrata MCP server's curated portal membership list"
+    }
+  ],
+  "excluded_countries": [
+    "United Kingdom",
+    "Ireland",
+    "Canada",
+    "Australia",
+    "Japan"
+  ],
+  "dataset_metadata_queried": false,
+  "catalogues": [
+    {
+      "domain": "dados.al.gov.br",
+      "portal_url": "https://dados.al.gov.br/",
+      "api_root": "https://dados.al.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "alagoas-em-dados-e-informacoes",
+      "directory_title": "Alagoas em dados e informações",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "dados.df.gov.br",
+      "portal_url": "https://dados.df.gov.br/",
+      "api_root": "https://dados.df.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-abertos-distrito-federal",
+      "directory_title": "Dados abertos Distrito Federal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "dados.natal.br",
+      "portal_url": "https://dados.natal.br/",
+      "api_root": "https://dados.natal.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "portal-da-transparencia-e-mobilidade-urbana-de-natal",
+      "directory_title": "Portal da Transparência e Mobilidade Urbana de Natal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "dados.pbh.gov.br",
+      "portal_url": "https://dados.pbh.gov.br/",
+      "api_root": "https://dados.pbh.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-abertos-prefeitura-de-belo-horizonte",
+      "directory_title": "Portal de Dados Abertos – Prefeitura de Belo Horizonte",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "organization_id": "belotur",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_belotur",
+          "pool": "train"
+        },
+        {
+          "organization_id": "bhtrans",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_bhtrans",
+          "pool": "train"
+        },
+        {
+          "organization_id": "cmbh",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_cmbh",
+          "pool": "train"
+        },
+        {
+          "organization_id": "controladoria-geral-do-municipio",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_controladoria_geral_do_municipio",
+          "pool": "train"
+        },
+        {
+          "organization_id": "defesa-civil",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_defesa_civil",
+          "pool": "train"
+        },
+        {
+          "organization_id": "fpmzb",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_fpmzb",
+          "pool": "train"
+        },
+        {
+          "organization_id": "fundacao-municipal-de-cultura",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_fundacao_municipal_de_cultura",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "hospital-metropolitano-odilon-behrens",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_hospital_metropolitano_odilon_behrens",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "pbh-ativos",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_pbh_ativos",
+          "pool": "train"
+        },
+        {
+          "organization_id": "prodabel_pbh",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_prodabel_pbh",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smalog",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smalog",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smasac",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smasac",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smc",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smc",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "smde",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smde",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smed",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smed",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smel",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smel",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smfa",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smfa",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smma",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smma",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "smobi",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smobi",
+          "pool": "train"
+        },
+        {
+          "organization_id": "smpog",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smpog",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "smpu",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smpu",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "smsa",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_smsa",
+          "pool": "train"
+        },
+        {
+          "organization_id": "sudecap",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_sudecap",
+          "pool": "train"
+        },
+        {
+          "organization_id": "superintendencia-de-limpeza-urbana",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_superintendencia_de_limpeza_urbana",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "superintendencia-de-mobilidade",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_superintendencia_de_mobilidade",
+          "pool": "train"
+        },
+        {
+          "organization_id": "urbel",
+          "publisher_id": "world_ckan_dados_pbh_gov_br_urbel",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "organization IDs retrieved; no dataset metadata queried"
+    },
+    {
+      "domain": "dados.portoalegre.rs.gov.br",
+      "portal_url": "https://dados.portoalegre.rs.gov.br/",
+      "api_root": "https://www.datapoa.com.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "datapoa",
+      "directory_title": "Dados Abertos POA",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "dados.prefeitura.sp.gov.br",
+      "portal_url": "https://dados.prefeitura.sp.gov.br/",
+      "api_root": "https://dados.prefeitura.sp.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "portal-de-dados-abertos-da-cidade-de-sao-paulo",
+      "directory_title": "Portal de Dados Abertos da Cidade de São Paulo",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "dados.recife.pe.gov.br",
+      "portal_url": "https://dados.recife.pe.gov.br",
+      "api_root": "https://dados.recife.pe.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-recife",
+      "directory_title": "Dados Recife",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "organization_id": "comdica-conselho-municipal-de-defesa-e-promocao-dos-direitos-da-crianca-e-do-adolescente",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_comdica_conselho_municipal_de_defesa_e_promocao_dos_direitos_da_crianca_e_do_adolescente",
+          "pool": "train"
+        },
+        {
+          "organization_id": "companhia-de-transito-e-transporte-urbano-do-recife-cttu",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_companhia_de_transito_e_transporte_urbano_do_recife_cttu",
+          "pool": "train"
+        },
+        {
+          "organization_id": "controladoria-geral-do-municipio",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_controladoria_geral_do_municipio",
+          "pool": "train"
+        },
+        {
+          "organization_id": "conviva",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_conviva",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "emprel",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_emprel",
+          "pool": "train"
+        },
+        {
+          "organization_id": "empresa-de-manutencao-e-limpeza-urbana-emlurb",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_empresa_de_manutencao_e_limpeza_urbana_emlurb",
+          "pool": "train"
+        },
+        {
+          "organization_id": "fundacao-de-cultura",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_fundacao_de_cultura",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "gabinete-de-projetos-especiais-administracao-direta-gabpe",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_gabinete_de_projetos_especiais_administracao_direta_gabpe",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "instituto-da-cidade-pelopidas-silveira",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_instituto_da_cidade_pelopidas_silveira",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "ouvidoria",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_ouvidoria",
+          "pool": "train"
+        },
+        {
+          "organization_id": "procuradoria-geral-do-municipio",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_procuradoria_geral_do_municipio",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-administracao-e-gestao-de-pessoas",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_administracao_e_gestao_de_pessoas",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-articulacao-politica-e-social",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_articulacao_politica_e_social",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-assistencia-social-e-combate-a-fome",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_assistencia_social_e_combate_a_fome",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-cultura",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_cultura",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "secretaria-de-desenvolvimento-social-e-direitos-humanos",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_desenvolvimento_social_e_direitos_humanos",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-educacao",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_educacao",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "secretaria-de-esportes-recife",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_esportes_recife",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-financas",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_financas",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-governo",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_governo",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-habitacao",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_habitacao",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "secretaria-de-infraestrutura-e-servicos-urbanos",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_infraestrutura_e_servicos_urbanos",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-meio-ambiente-e-sustentabilidade",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_meio_ambiente_e_sustentabilidade",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "secretaria-de-ordem-publica-e-seguranca",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_ordem_publica_e_seguranca",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "secretaria-de-planejamento-gestao-e-transformacao-digital",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_planejamento_gestao_e_transformacao_digital",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-planejamento-urbano",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_planejamento_urbano",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-saude",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_saude",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-seguranca-urbana",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_seguranca_urbana",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-trabalho-e-qualificacao-profissional",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_trabalho_e_qualificacao_profissional",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-transformacao-digital-ciencia-e-tecnologia",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_transformacao_digital_ciencia_e_tecnologia",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-turismo-e-lazer",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_de_turismo_e_lazer",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-executiva-de-defesa-civil",
+          "publisher_id": "world_ckan_dados_recife_pe_gov_br_secretaria_executiva_de_defesa_civil",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "organization IDs retrieved; no dataset metadata queried"
+    },
+    {
+      "domain": "dados.rs.gov.br",
+      "portal_url": "https://dados.rs.gov.br/",
+      "api_root": "https://dados.rs.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-rs",
+      "directory_title": "Dados RS",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "organization_id": "cage",
+          "publisher_id": "world_ckan_dados_rs_gov_br_cage",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "detranrs",
+          "publisher_id": "world_ckan_dados_rs_gov_br_detranrs",
+          "pool": "train"
+        },
+        {
+          "organization_id": "fepam",
+          "publisher_id": "world_ckan_dados_rs_gov_br_fepam",
+          "pool": "train"
+        },
+        {
+          "organization_id": "ftsp",
+          "publisher_id": "world_ckan_dados_rs_gov_br_ftsp",
+          "pool": "train"
+        },
+        {
+          "organization_id": "jucisrs",
+          "publisher_id": "world_ckan_dados_rs_gov_br_jucisrs",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "secretaria-da-seguranca-publica",
+          "publisher_id": "world_ckan_dados_rs_gov_br_secretaria_da_seguranca_publica",
+          "pool": "train"
+        },
+        {
+          "organization_id": "secretaria-de-estado-de-educacao-do-rio-grande-do-sul",
+          "publisher_id": "world_ckan_dados_rs_gov_br_secretaria_de_estado_de_educacao_do_rio_grande_do_sul",
+          "pool": "train"
+        },
+        {
+          "organization_id": "ses",
+          "publisher_id": "world_ckan_dados_rs_gov_br_ses",
+          "pool": "train"
+        },
+        {
+          "organization_id": "sicdhas",
+          "publisher_id": "world_ckan_dados_rs_gov_br_sicdhas",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "sop",
+          "publisher_id": "world_ckan_dados_rs_gov_br_sop",
+          "pool": "train"
+        },
+        {
+          "organization_id": "spgg-dee",
+          "publisher_id": "world_ckan_dados_rs_gov_br_spgg_dee",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "organization IDs retrieved; no dataset metadata queried"
+    },
+    {
+      "domain": "dados.tce.rs.gov.br",
+      "portal_url": "https://dados.tce.rs.gov.br/",
+      "api_root": "https://dados.tce.rs.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-abertos-tce-rs",
+      "directory_title": "Dados Abertos TCE-RS",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "dadosabertos.senado.gov.br",
+      "portal_url": "https://dadosabertos.senado.gov.br/",
+      "api_root": "https://dadosabertos.senado.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-abertos-legislativos-senado-federal",
+      "directory_title": "Dados Abertos Legislativos – Senado Federal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; ValueError"
+    },
+    {
+      "domain": "data.austintexas.gov",
+      "portal_url": "https://data.austintexas.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-austin",
+      "directory_title": "data.austintexas.gov",
+      "registry_id": "cyanheads-known-portals",
+      "title": "City of Austin, TX",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_austintexas_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.boston.gov",
+      "portal_url": "https://data.boston.gov/",
+      "api_root": "https://data.boston.gov/api/3",
+      "platform": "ckan",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-boston",
+      "directory_title": "Analyze Boston",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "organization_id": "archives-and-record-management-org",
+          "publisher_id": "world_ckan_data_boston_gov_archives_and_record_management_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "assessing-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_assessing_department_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-311-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_311_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-centers-for-youth-families-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_centers_for_youth_families_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-ems-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_ems_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-fire-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_fire_department_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-licensing-board",
+          "publisher_id": "world_ckan_data_boston_gov_boston_licensing_board",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "boston-maps",
+          "publisher_id": "world_ckan_data_boston_gov_boston_maps",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "boston-planning-development-agency-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_planning_development_agency_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-police-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_police_department_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-public-library-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_public_library_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "boston-public-schools",
+          "publisher_id": "world_ckan_data_boston_gov_boston_public_schools",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "boston-transportation-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_transportation_department_org",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "boston-water-and-sewer-commission-org",
+          "publisher_id": "world_ckan_data_boston_gov_boston_water_and_sewer_commission_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "city-clerk",
+          "publisher_id": "world_ckan_data_boston_gov_city_clerk",
+          "pool": "train"
+        },
+        {
+          "organization_id": "city-of-boston-archaeology-program-org",
+          "publisher_id": "world_ckan_data_boston_gov_city_of_boston_archaeology_program_org",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "consumer-affairs-and-licensing-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_consumer_affairs_and_licensing_department_org",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "data-cityofboston-gov",
+          "publisher_id": "world_ckan_data_boston_gov_data_cityofboston_gov",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "department-of-innovation-and-technology-org",
+          "publisher_id": "world_ckan_data_boston_gov_department_of_innovation_and_technology_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "doit-data-analytics-org",
+          "publisher_id": "world_ckan_data_boston_gov_doit_data_analytics_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "election-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_election_department_org",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "environment-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_environment_department_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "equity-inclusion",
+          "publisher_id": "world_ckan_data_boston_gov_equity_inclusion",
+          "pool": "train"
+        },
+        {
+          "organization_id": "fair-housing-and-equity-org",
+          "publisher_id": "world_ckan_data_boston_gov_fair_housing_and_equity_org",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "inspectional-services-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_inspectional_services_department_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "intergovernmental-relations-org",
+          "publisher_id": "world_ckan_data_boston_gov_intergovernmental_relations_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "mayor-s-office-for-immigrant-advancement-org",
+          "publisher_id": "world_ckan_data_boston_gov_mayor_s_office_for_immigrant_advancement_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "mayor-s-office-of-emergency-management-services-org",
+          "publisher_id": "world_ckan_data_boston_gov_mayor_s_office_of_emergency_management_services_org",
+          "pool": "eval3"
+        },
+        {
+          "organization_id": "mayor-s-office-of-new-urban-mechanics",
+          "publisher_id": "world_ckan_data_boston_gov_mayor_s_office_of_new_urban_mechanics",
+          "pool": "train"
+        },
+        {
+          "organization_id": "mayor-s-office-org",
+          "publisher_id": "world_ckan_data_boston_gov_mayor_s_office_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "mayors-office-of-housing",
+          "publisher_id": "world_ckan_data_boston_gov_mayors_office_of_housing",
+          "pool": "train"
+        },
+        {
+          "organization_id": "neighborhood-services-org",
+          "publisher_id": "world_ckan_data_boston_gov_neighborhood_services_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "office-of-arts-culture-org",
+          "publisher_id": "world_ckan_data_boston_gov_office_of_arts_culture_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "office-of-budget-management",
+          "publisher_id": "world_ckan_data_boston_gov_office_of_budget_management",
+          "pool": "train"
+        },
+        {
+          "organization_id": "office-of-economic-development-org",
+          "publisher_id": "world_ckan_data_boston_gov_office_of_economic_development_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "office-of-human-resources-org",
+          "publisher_id": "world_ckan_data_boston_gov_office_of_human_resources_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "office-of-the-parking-clerk-org",
+          "publisher_id": "world_ckan_data_boston_gov_office_of_the_parking_clerk_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "parks-and-recreation",
+          "publisher_id": "world_ckan_data_boston_gov_parks_and_recreation",
+          "pool": "train"
+        },
+        {
+          "organization_id": "procurement-org",
+          "publisher_id": "world_ckan_data_boston_gov_procurement_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "property-management-org",
+          "publisher_id": "world_ckan_data_boston_gov_property_management_org",
+          "pool": "eval2"
+        },
+        {
+          "organization_id": "public-works-department-construction-management-org",
+          "publisher_id": "world_ckan_data_boston_gov_public_works_department_construction_management_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "public-works-department-org",
+          "publisher_id": "world_ckan_data_boston_gov_public_works_department_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "veterans-services-org",
+          "publisher_id": "world_ckan_data_boston_gov_veterans_services_org",
+          "pool": "train"
+        },
+        {
+          "organization_id": "vision-zero-boston-program",
+          "publisher_id": "world_ckan_data_boston_gov_vision_zero_boston_program",
+          "pool": "train"
+        },
+        {
+          "organization_id": "womens-advancement",
+          "publisher_id": "world_ckan_data_boston_gov_womens_advancement",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "organization IDs retrieved; no dataset metadata queried"
+    },
+    {
+      "domain": "data.brla.gov",
+      "portal_url": "https://data.brla.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-baton-rouge",
+      "directory_title": "Open Data BR",
+      "registry_id": "cyanheads-known-portals",
+      "title": "City of Baton Rouge, LA",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_brla_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.cambridgema.gov",
+      "title": "City of Cambridge, MA",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.cambridgema.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_cambridgema_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.cdc.gov",
+      "title": "Centers for Disease Control and Prevention",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.cdc.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_cdc_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.chattlibrary.org",
+      "portal_url": "https://data.chattlibrary.org/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "chattanooga-public-library",
+      "directory_title": "Chattanooga Open Data Portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_chattlibrary_org",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.cincinnati-oh.gov",
+      "title": "City of Cincinnati",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.cincinnati-oh.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_cincinnati_oh_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.cityofchicago.org",
+      "title": "City of Chicago",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.cityofchicago.org/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_cityofchicago_org",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.cityofmadison.com",
+      "portal_url": "https://data.cityofmadison.com/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-madison",
+      "directory_title": "City of Madison Data",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_cityofmadison_com",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.cityofnewyork.us",
+      "title": "City of New York",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.cityofnewyork.us/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_cityofnewyork_us",
+          "canonical_publisher_id": "nyc",
+          "pool": "main"
+        }
+      ],
+      "registry_status": "excluded_main_alias",
+      "catalog_access": "not queried",
+      "protected_alias": true
+    },
+    {
+      "domain": "data.colorado.gov",
+      "title": "State of Colorado",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.colorado.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_colorado_gov",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.ct.gov",
+      "title": "State of Connecticut",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.ct.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_ct_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.delaware.gov",
+      "title": "State of Delaware",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.delaware.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_delaware_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.detroitmi.gov",
+      "portal_url": "https://data.detroitmi.gov/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-detroit",
+      "directory_title": "Detroit Open Data",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_detroitmi_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.energystar.gov",
+      "title": "U.S. EPA ENERGY STAR",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.energystar.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_energystar_gov",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.hartford.gov",
+      "portal_url": "https://data.hartford.gov/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "data-hartford",
+      "directory_title": "Hartford Data",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_hartford_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.hawaii.gov",
+      "portal_url": "https://data.hawaii.gov",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "hawaii_gov",
+      "directory_title": "State of Hawaii",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_hawaii_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.honolulu.gov",
+      "portal_url": "https://data.honolulu.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-and-county-of-honolulu",
+      "directory_title": "data.honolulu.gov",
+      "registry_id": "cyanheads-known-portals",
+      "title": "City and County of Honolulu",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_honolulu_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.illinois.gov",
+      "title": "State of Illinois",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.illinois.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_illinois_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.kcmo.org",
+      "portal_url": "https://data.kcmo.org/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-kansas-city",
+      "directory_title": "Open Data KC",
+      "registry_id": "cyanheads-known-portals",
+      "title": "City of Kansas City, MO",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_kcmo_org",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.kingcounty.gov",
+      "title": "King County, WA",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.kingcounty.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_kingcounty_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.lacity.org",
+      "portal_url": "https://data.lacity.org/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-los-angeles",
+      "directory_title": "DataLA",
+      "registry_id": "cyanheads-known-portals",
+      "title": "City of Los Angeles",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_lacity_org",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.mesaaz.gov",
+      "title": "City of Mesa, AZ",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.mesaaz.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_mesaaz_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.michigan.gov",
+      "title": "State of Michigan",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.michigan.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_michigan_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.mo.gov",
+      "title": "State of Missouri",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.mo.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_mo_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.montgomerycountymd.gov",
+      "title": "Montgomery County, MD",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.montgomerycountymd.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_montgomerycountymd_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.nashville.gov",
+      "portal_url": "https://data.nashville.gov/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "metropolitan-government-of-nashville-and-davison-county",
+      "directory_title": "Nashville Open Data Portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_nashville_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.nj.gov",
+      "title": "State of New Jersey",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.nj.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_nj_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.nola.gov",
+      "title": "City of New Orleans",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.nola.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_nola_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.norfolk.gov",
+      "title": "City of Norfolk, VA",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.norfolk.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_norfolk_gov",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.ny.gov",
+      "title": "State of New York",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.ny.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_ny_gov",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.oaklandca.gov",
+      "title": "City of Oakland",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.oaklandca.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_oaklandca_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.oregon.gov",
+      "title": "State of Oregon",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.oregon.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_oregon_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.pa.gov",
+      "title": "Commonwealth of Pennsylvania",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.pa.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_pa_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.providenceri.gov",
+      "portal_url": "https://data.providenceri.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-providence",
+      "directory_title": "City of Providence Open Data Portal",
+      "registry_id": "cyanheads-known-portals",
+      "title": "City of Providence, RI",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_providenceri_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.richmondgov.com",
+      "portal_url": "https://data.richmondgov.com/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-richmond",
+      "directory_title": "City of Richmond Open Data Portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_richmondgov_com",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.rio",
+      "portal_url": "https://data.rio/",
+      "api_root": "https://data.rio/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "datario",
+      "directory_title": "data.rio",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; ValueError"
+    },
+    {
+      "domain": "data.sccgov.org",
+      "title": "County of Santa Clara, CA",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.sccgov.org/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_sccgov_org",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.seattle.gov",
+      "title": "City of Seattle",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.seattle.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_seattle_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.sf.gov",
+      "title": "City and County of San Francisco",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.sf.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_sf_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.smgov.net",
+      "portal_url": "https://data.smgov.net/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-santa-monica",
+      "directory_title": "Santa Monica Open Data",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_smgov_net",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.texas.gov",
+      "title": "State of Texas",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.texas.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_texas_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.vermont.gov",
+      "title": "State of Vermont",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.vermont.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_vermont_gov",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.wa.gov",
+      "title": "State of Washington",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://data.wa.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_wa_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "data.weho.org",
+      "portal_url": "https://data.weho.org/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "city-of-west-hollywood",
+      "directory_title": "City of West Hollywood Open Data",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_data_weho_org",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "datacatalog.cookcountyil.gov",
+      "title": "Cook County, IL",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://datacatalog.cookcountyil.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_datacatalog_cookcountyil_gov",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "daten.rlp.de",
+      "portal_url": "https://daten.rlp.de/",
+      "api_root": "https://www.daten.rlp.de/api",
+      "platform": "ckan",
+      "country": "DE",
+      "language": "de",
+      "directory_id": "rheinland-pfalz",
+      "directory_title": "Open-Government-Data-Portal Rheinland-Pfalz",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; ValueError"
+    },
+    {
+      "domain": "gisdata.mn.gov",
+      "portal_url": "https://gisdata.mn.gov/dataset",
+      "api_root": "https://gisdata.mn.gov/api",
+      "platform": "ckan",
+      "country": "US",
+      "language": "en",
+      "directory_id": "minnesota_geospatial_commons",
+      "directory_title": "Minnesota Geospatial Commons",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; ValueError"
+    },
+    {
+      "domain": "observa.gijon.es",
+      "portal_url": "https://observa.gijon.es/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "ES",
+      "language": "es en fr",
+      "directory_id": "ayuntamiento-de-gijon",
+      "directory_title": "Observa Gijón",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_observa_gijon_es",
+          "pool": "eval3"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "open.nrw",
+      "portal_url": "https://open.nrw",
+      "api_root": "https://open.nrw/api",
+      "platform": "ckan",
+      "country": "DE",
+      "language": "de",
+      "directory_id": "open_nrw",
+      "directory_title": "open NRW",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "opendata.cityofnewyork.us",
+      "portal_url": "https://opendata.cityofnewyork.us/",
+      "api_root": "https://data.cityofnewyork.us/api",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "nyc_gov",
+      "directory_title": "NYC Open Data",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_opendata_cityofnewyork_us",
+          "canonical_publisher_id": "nyc",
+          "pool": "main"
+        }
+      ],
+      "registry_status": "excluded_main_alias",
+      "catalog_access": "not queried",
+      "protected_alias": true
+    },
+    {
+      "domain": "opendata.maryland.gov",
+      "title": "State of Maryland",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://opendata.maryland.gov/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_opendata_maryland_gov",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "opendata.miamidade.gov",
+      "portal_url": "https://opendata.miamidade.gov/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "US",
+      "language": "en",
+      "directory_id": "miami-dade-county",
+      "directory_title": "Miami-Dade County’s Open Data Portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_opendata_miamidade_gov",
+          "pool": "eval2"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "opendata.swiss",
+      "portal_url": "https://opendata.swiss/",
+      "api_root": "https://ckan.opendata.swiss/api/3",
+      "platform": "ckan",
+      "country": "CH",
+      "language": "de fr it",
+      "directory_id": "data-catalogue-suisse-government",
+      "directory_title": "Offene Behördendaten der Schweiz",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; HTTPError"
+    },
+    {
+      "domain": "opendatanepal.com",
+      "portal_url": "https://opendatanepal.com/",
+      "api_root": "https://opendatanepal.com/api",
+      "platform": "ckan",
+      "country": "NP",
+      "language": "en",
+      "directory_id": "open-data-nepal",
+      "directory_title": "Open Data Nepal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; HTTPError"
+    },
+    {
+      "domain": "portaldados.ppgau.uff.br",
+      "portal_url": "https://portaldados.ppgau.uff.br/",
+      "api_root": "https://portaldados.ppgau.uff.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "portal-dados-urbanos-uff",
+      "directory_title": "Portal de Dados Urbanos PPGAU UFF - Open data portal for Urban Resarch",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "vulekamali.gov.za",
+      "portal_url": "https://vulekamali.gov.za/",
+      "api_root": "https://data.vulekamali.gov.za/api/3",
+      "platform": "ckan",
+      "country": "ZA",
+      "language": "en",
+      "directory_id": "southafrica_vulekamali",
+      "directory_title": "vulekamali – South Africa budget data portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "web.transparencia.pe.gov.br",
+      "portal_url": "https://web.transparencia.pe.gov.br/dados-abertos/",
+      "api_root": "https://web.transparencia.pe.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-abertos-portal-da-transparencia-de-pernambuco",
+      "directory_title": "Dados Abertos – Portal da Transparência de Pernambuco",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "www.dallasopendata.com",
+      "title": "City of Dallas",
+      "country": "US",
+      "platform": "socrata",
+      "registry_id": "cyanheads-known-portals",
+      "portal_url": "https://www.dallasopendata.com/",
+      "api_root": "https://api.us.socrata.com/api/catalog/v1",
+      "language": "en",
+      "directory_id": "",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_www_dallasopendata_com",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "www.dati.lombardia.it",
+      "portal_url": "https://www.dati.lombardia.it/",
+      "api_root": "",
+      "platform": "socrata",
+      "country": "IT",
+      "language": "it",
+      "directory_id": "dati-lombardia",
+      "directory_title": "Data Regione Lombardia",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [
+        {
+          "publisher_id": "world_socrata_www_dati_lombardia_it",
+          "pool": "train"
+        }
+      ],
+      "registry_status": "registered",
+      "catalog_access": "portal registered; no dataset metadata queried"
+    },
+    {
+      "domain": "www.europeandataportal.eu",
+      "portal_url": "https://www.europeandataportal.eu/",
+      "api_root": "https://www.europeandataportal.eu/data/en/api",
+      "platform": "ckan",
+      "country": "",
+      "language": "",
+      "directory_id": "european_dataportal",
+      "directory_title": "European Data Portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; ValueError"
+    },
+    {
+      "domain": "www.governoaberto.sp.gov.br",
+      "portal_url": "https://www.governoaberto.sp.gov.br/",
+      "api_root": "https://dados.portoalegre.rs.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "governo-aberto-sp",
+      "directory_title": "Governo Aberto SP",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; HTTPError"
+    },
+    {
+      "domain": "www.opendata.ps",
+      "portal_url": "https://www.opendata.ps/",
+      "api_root": "https://www.opendata.ps/api/3",
+      "platform": "ckan",
+      "country": "PS",
+      "language": "ajp",
+      "directory_id": "open_data_ps",
+      "directory_title": "Palestine Open Data Portal",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; URLError"
+    },
+    {
+      "domain": "www.transparencia.mg.gov.br",
+      "portal_url": "https://www.transparencia.mg.gov.br/dados-abertos",
+      "api_root": "https://www.transparencia.mg.gov.br/api/3",
+      "platform": "ckan",
+      "country": "BR",
+      "language": "pt",
+      "directory_id": "dados-abertos-estado-de-mg",
+      "directory_title": "Dados abertos – Estado de MG",
+      "registry_id": "okfn-dataportals",
+      "publisher_ids": [],
+      "registry_status": "organization_list_failed",
+      "catalog_access": "not searchable; HTTPError"
+    }
+  ]
+}
