@@ -535,6 +535,122 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
     }
 
 
+def license_breakdown(allocation: dict, source_map: dict) -> dict:
+    """Count rejected licenses from scoped CKAN package metadata only."""
+    publishers = train_publishers(allocation, source_map)
+    rejected: dict[tuple[str, str], int] = defaultdict(int)
+    errors: dict[str, int] = defaultdict(int)
+    error_types: dict[str, int] = defaultdict(int)
+    error_status_counts: dict[str, int] = defaultdict(int)
+    package_searches_by_catalog: dict[str, int] = defaultdict(int)
+    publishers_by_catalog: dict[str, int] = defaultdict(int)
+    packages_seen = 0
+    seen_packages: set[tuple[str, str]] = set()
+    for publisher in publishers:
+        portal_id = publisher["portal_id"]
+        pid = publisher["publisher_id"]
+        api_root = publisher["api_root"]
+        publishers_by_catalog[portal_id] += 1
+        queries = SEARCH_QUERIES if portal_id == "egov" else SEARCH_QUERIES[:1]
+        for query in queries:
+            try:
+                packages = _search_packages(api_root, publisher["organization_id"], query)
+                package_searches_by_catalog[portal_id] += 1
+            except Exception as exc:
+                errors["package_search_failed"] += 1
+                error_types[type(exc).__name__] += 1
+                status = getattr(exc, "code", None)
+                if status is not None:
+                    error_status_counts[str(status)] += 1
+                if portal_id != "egov":
+                    break
+                continue
+            packages_seen += len(packages)
+            for package in packages:
+                if str(package.get("state") or "active") != "active":
+                    errors["inactive"] += 1
+                    continue
+                package_name = str(package.get("name") or "").strip()
+                package_key = (pid, package_name or str(package.get("id") or ""))
+                if package_key in seen_packages:
+                    continue
+                seen_packages.add(package_key)
+                license_info = _license(package)
+                if not license_info["accepted_identifier_for_candidate_screen"]:
+                    rejected[(license_info["id"], license_info["title"])] += 1
+            time.sleep(0.15)
+        time.sleep(0.4)
+    pairs = [
+        {"license_id": license_id, "license_title": license_title, "count": count}
+        for (license_id, license_title), count in sorted(
+            rejected.items(), key=lambda item: (-item[1], item[0][0], item[0][1])
+        )
+    ]
+    return {
+        "schema_version": 1,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "stage": "license_metadata_breakdown_only",
+        "metrics": {
+            "train_publishers_searched": len(publishers),
+            "train_publishers_by_catalog": dict(sorted(publishers_by_catalog.items())),
+            "successful_package_searches_by_catalog": dict(sorted(package_searches_by_catalog.items())),
+            "packages_seen_from_scoped_queries": packages_seen,
+            "unique_active_packages_examined": len(seen_packages),
+            "license_not_in_candidate_allowlist": sum(rejected.values()),
+        },
+        "rejected_license_pairs": pairs,
+        "error_counts": dict(sorted(errors.items())),
+        "error_type_counts": dict(sorted(error_types.items())),
+        "error_http_status_counts": dict(sorted(error_status_counts.items())),
+        "metadata_only": {
+            "package_metadata_read": True,
+            "resource_metadata_read": False,
+            "resource_files_downloaded": False,
+            "datastore_rows_requested": 0,
+            "cell_values_saved": False,
+        },
+    }
+
+
+def render_license_breakdown(report: dict) -> str:
+    metrics = report["metrics"]
+    lines = [
+        "# S11 3.3 許可リスト外ライセンスの内訳（CKAN package metadata only）",
+        "",
+        f"作成日時 UTC: {report['created_at_utc']}",
+        "",
+        "- 対象は事前割当済み train 公開元の CKAN package metadata のみです。",
+        "- package_search のライセンス ID とタイトルを、同一公開元・同一 package 名で重複排除して集計しました。",
+        "- resource metadata、配布ファイル、datastore の行・セル値は取得していません。",
+        "",
+        f"- 検索した train 公開元: {metrics['train_publishers_searched']}（"
+        + "、".join(f"{k} {v}" for k, v in metrics["train_publishers_by_catalog"].items())
+        + ")",
+        f"- package_search の結果: {metrics['packages_seen_from_scoped_queries']} 件",
+        f"- ライセンス不許可の一意 package 数: {metrics['license_not_in_candidate_allowlist']} 件",
+        "",
+        "| license_id | license_title | 件数 |",
+        "|---|---|---:|",
+    ]
+    for item in report["rejected_license_pairs"]:
+        license_id = item["license_id"] or "（空欄）"
+        license_title = item["license_title"].replace("|", "／") or "（空欄）"
+        lines.append(f"| `{license_id}` | {license_title} | {item['count']} |")
+    if not report["rejected_license_pairs"]:
+        lines.append("| （なし） |  | 0 |")
+    lines.extend(["", "## package_search エラー", ""])
+    if report["error_counts"]:
+        lines.extend(f"- `{name}`: {count}" for name, count in report["error_counts"].items())
+        if report["error_type_counts"]:
+            lines.append("- エラー型: " + "、".join(f"{k} {v}" for k, v in report["error_type_counts"].items()))
+        if report["error_http_status_counts"]:
+            lines.append("- HTTP status: " + "、".join(f"{k} {v}" for k, v in report["error_http_status_counts"].items()))
+    else:
+        lines.append("- なし")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def render_markdown(report: dict) -> str:
     m = report["metrics"]
     lines = [
@@ -604,12 +720,13 @@ def render_markdown(report: dict) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
-    parser.add_argument("--mode", choices={"register-egov", "discover"})
+    parser.add_argument("--mode", choices={"register-egov", "discover", "license-breakdown"})
     parser.add_argument("--allocation", type=Path, default=ROOT / "independent_eval/allocation.json")
     parser.add_argument("--sources", type=Path, default=ROOT / "independent_eval/allocation_sources_20261021.json")
     parser.add_argument("--out-json", type=Path)
     parser.add_argument("--out-md", type=Path)
     parser.add_argument("--max-organizations", type=int)
+    parser.add_argument("--input-snapshot-ref", default="")
     args = parser.parse_args(argv)
     if args.self_test:
         run_self_test()
@@ -629,6 +746,19 @@ def main(argv: list[str] | None = None) -> int:
             "method": "e-Gov CKAN organization IDs only; registered under fixed train parent before package_search.",
         }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"e-Gov organization publishers registered={registration['organization_count']} pools={registration['pool_counts']}; dataset metadata not queried")
+        return 0
+    if args.mode == "license-breakdown":
+        if not args.out_json or not args.out_md:
+            parser.error("--out-json と --out-md はライセンス内訳の保存に必要です")
+        allocation = json.loads(args.allocation.read_text(encoding="utf-8"))
+        source_map = json.loads(args.sources.read_text(encoding="utf-8"))
+        report = license_breakdown(allocation, source_map)
+        report["input_snapshot_ref"] = args.input_snapshot_ref
+        args.out_json.parent.mkdir(parents=True, exist_ok=True)
+        args.out_json.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        args.out_md.parent.mkdir(parents=True, exist_ok=True)
+        args.out_md.write_text(render_license_breakdown(report), encoding="utf-8")
+        print(f"license breakdown complete: publishers={report['metrics']['train_publishers_searched']} rejected={report['metrics']['license_not_in_candidate_allowlist']}")
         return 0
     if args.mode not in {None, "discover"}:
         parser.error("--mode register-egov or --mode discover is required")
