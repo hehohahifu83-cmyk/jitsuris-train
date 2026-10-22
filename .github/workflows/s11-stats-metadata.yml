@@ -32,7 +32,7 @@ jobs:
           set -euo pipefail
           read -r command run_date < materials/s11_3_3_discovery.request
           test "$command" = "discover"
-          [[ "$run_date" =~ ^2026[0-9]{4}$ ]]
+          [[ "$run_date" =~ ^2026[0-9]{4}(-v[0-9]+)?$ ]]
           echo "run_date=$run_date" >> "$GITHUB_OUTPUT"
       - name: train 公開元の統計表メタデータを調査
         env:
