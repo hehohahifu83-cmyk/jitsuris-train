@@ -46,18 +46,25 @@ NAME_HEADER = re.compile(r"(?:name|title|description|label)", re.I)
 JAPANESE_SCRIPT = re.compile(r"[ぁ-んァ-ヶ一-龯々〆〤]")
 
 
-def _json_request(url: str, retries: int = 4, data: bytes | None = None) -> dict:
+def _json_request(url: str, retries: int = 4, data: bytes | None = None, content_type: str = "application/x-www-form-urlencoded") -> dict:
     parsed = urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != HOST:
         raise ValueError("request host is outside the New Zealand catalogue allowlist")
     for attempt in range(retries):
         headers = {"User-Agent": "jitsuris-s11-metadata-discovery/1.0", "Accept": "application/json"}
         if data is not None:
-            headers["Content-Type"] = "application/x-www-form-urlencoded"
+            headers["Content-Type"] = content_type
         req = Request(url, data=data, headers=headers)
         try:
             with urlopen(req, timeout=40) as response:
-                return json.loads(response.read(15_000_001).decode("utf-8-sig"))
+                raw = response.read(15_000_001)
+                try:
+                    return json.loads(raw.decode("utf-8-sig"))
+                except json.JSONDecodeError as exc:
+                    raise RuntimeError(
+                        f"non-JSON catalogue response: status={response.status}, bytes={len(raw)}, "
+                        f"content_type={response.headers.get('Content-Type', '')}, final_url={response.geturl()}"
+                    ) from exc
         except HTTPError as exc:
             if exc.code not in {408, 425, 429, 500, 502, 503, 504} or attempt + 1 == retries:
                 raise
@@ -69,9 +76,13 @@ def _json_request(url: str, retries: int = 4, data: bytes | None = None) -> dict
     raise RuntimeError("metadata request retries exhausted")
 
 
-def _action(action: str, params: dict | None = None, *, api_root: str = API, method: str = "GET"):
+def _action(action: str, params: dict | None = None, *, api_root: str = API, method: str = "GET", content_type: str = "application/x-www-form-urlencoded"):
     if method == "POST":
-        payload = _json_request(f"{api_root}/{action}", data=urlencode(params or {}).encode("utf-8"))
+        if content_type == "application/json":
+            data = json.dumps(params or {}).encode("utf-8")
+        else:
+            data = urlencode(params or {}).encode("utf-8")
+        payload = _json_request(f"{api_root}/{action}", data=data, content_type=content_type)
     else:
         query = f"?{urlencode(params)}" if params else ""
         payload = _json_request(f"{api_root}/{action}{query}")
@@ -89,9 +100,28 @@ def publisher_id(org_id: str) -> str:
 
 def register_publishers(allocation_path: Path, old_sources_path: Path, out_sources_path: Path) -> dict:
     allocation = load_allocation(allocation_path)
-    raw_orgs = _action("organization_list", {"all_fields": "false"}, api_root=LEGACY_API, method="POST")
-    if not isinstance(raw_orgs, list):
-        raise RuntimeError("organization_list did not return a list")
+    raw_orgs = None
+    errors = []
+    attempts = [
+        (API, "GET", "application/x-www-form-urlencoded"),
+        (LEGACY_API, "GET", "application/x-www-form-urlencoded"),
+        (API, "POST", "application/json"),
+        (LEGACY_API, "POST", "application/x-www-form-urlencoded"),
+    ]
+    for api_root, method, content_type in attempts:
+        try:
+            raw_orgs = _action(
+                "organization_list", {"all_fields": "false"},
+                api_root=api_root, method=method, content_type=content_type,
+            )
+            if isinstance(raw_orgs, list):
+                break
+            errors.append(f"{api_root} {method}: result was not a list")
+            raw_orgs = None
+        except Exception as exc:
+            errors.append(f"{api_root} {method}: {type(exc).__name__}: {exc}")
+    if raw_orgs is None:
+        raise RuntimeError("organization_list failed on documented CKAN endpoints: " + " | ".join(errors))
     orgs = sorted({str(x).strip() for x in raw_orgs if str(x).strip()})
     if not orgs:
         raise RuntimeError("organization_list returned no organization ids")
