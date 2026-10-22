@@ -20,7 +20,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from independent_eval.allocation import add_assignment, load_allocation, validate_allocation  # noqa: E402
+from independent_eval.allocation import load_allocation, normalize_publisher_id, pool, validate_allocation  # noqa: E402
 from independent_eval.discover import HEADER_DENY, TITLE_DENY, normalize_header  # noqa: E402
 
 DATE = "2026-10-22"
@@ -245,6 +245,29 @@ def register_publishers(allocation_path: Path, sources_path: Path, report_path: 
     ckan_orgs = 0
     socrata_sources = 0
     source_records = []
+    existing_pools = {
+        normalize_publisher_id(x["publisher_id"]): x["pool"]
+        for x in allocation["publishers"]
+    }
+    alias_names = {normalize_publisher_id(x) for x in allocation.get("aliases", {})}
+    pending_records: dict[str, dict] = {}
+
+    def reserve_publisher(publisher_id: str) -> str:
+        canonical = normalize_publisher_id(publisher_id)
+        if canonical in alias_names:
+            raise ValueError(f"world publisher collides with a registered alias: {canonical}")
+        if canonical in existing_pools:
+            return existing_pools[canonical]
+        if canonical in pending_records:
+            return pending_records[canonical]["pool"]
+        if not canonical.startswith("world_") or ":" in canonical:
+            raise ValueError("batch registration only accepts generated world publisher IDs")
+        assigned_pool = pool(canonical)
+        pending_records[canonical] = {
+            "publisher_id": canonical, "pool": assigned_pool, "date": DATE
+        }
+        return assigned_pool
+
     for source in sources:
         domain = source["domain"]
         platform = source["platform"]
@@ -263,9 +286,8 @@ def register_publishers(allocation_path: Path, sources_path: Path, report_path: 
                     raise RuntimeError("organization_list was not a string-id list")
                 for org_id in sorted({x.strip() for x in orgs if x.strip()}):
                     pid = _publisher_id("ckan", domain, org_id)
-                    allocation = add_assignment(allocation, pid, DATE)
-                    record = next(x for x in allocation["publishers"] if x["publisher_id"] == pid)
-                    assigned.append({"organization_id": org_id, "publisher_id": pid, "pool": record["pool"]})
+                    assigned_pool = reserve_publisher(pid)
+                    assigned.append({"organization_id": org_id, "publisher_id": pid, "pool": assigned_pool})
                 ckan_orgs += len(assigned)
                 source["catalog_access"] = "organization IDs retrieved; no dataset metadata queried"
                 source["registry_status"] = "registered"
@@ -275,13 +297,14 @@ def register_publishers(allocation_path: Path, sources_path: Path, report_path: 
         else:
             socrata_sources += 1
             pid = _publisher_id("socrata", domain)
-            allocation = add_assignment(allocation, pid, DATE)
-            record = next(x for x in allocation["publishers"] if x["publisher_id"] == pid)
-            assigned.append({"publisher_id": pid, "pool": record["pool"]})
+            assigned_pool = reserve_publisher(pid)
+            assigned.append({"publisher_id": pid, "pool": assigned_pool})
             source["catalog_access"] = "portal registered; no dataset metadata queried"
             source["registry_status"] = "registered"
         source["publisher_ids"] = assigned
         source_records.append(source)
+    allocation["publishers"].extend(pending_records.values())
+    allocation["publishers"].sort(key=lambda item: item["publisher_id"])
     validate_allocation(allocation)
     allocation_path.write_text(json.dumps(allocation, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     pools = Counter(x["pool"] for source in source_records for x in source["publisher_ids"])
