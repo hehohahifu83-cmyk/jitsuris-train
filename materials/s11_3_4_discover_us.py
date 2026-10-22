@@ -24,8 +24,9 @@ from independent_eval.allocation import load_allocation, normalize_publisher_id,
 from independent_eval.discover import HEADER_DENY, TITLE_DENY, normalize_header  # noqa: E402
 
 DATE = "2026-10-22"
-TARGET_TABLES = 67
-MAX_PER_PUBLISHER = 2
+DIAGNOSTICS: Counter = Counter()
+TARGET_TABLES = 130
+MAX_PER_PUBLISHER = 3
 MIN_SAFE_HEADERS = 8
 MAX_HEADERS = 10
 MAX_BYTES = 20_000_000
@@ -67,12 +68,18 @@ LICENSE_IDS = {
     "singapore-open-data-license", "singapore-open-data-license-1.0",
 }
 QUERY_TERMS = {
-    "en": ["statistics", "budget", "finance", "population", "employment", "trade", "education", "price", "tax"],
-    "pt": ["estatística", "orçamento", "despesa", "receita", "população", "emprego", "comércio", "educação"],
-    "es": ["estadística", "presupuesto", "gasto", "ingreso", "población", "empleo", "comercio", "educación"],
-    "de": ["statistik", "haushalt", "ausgaben", "einnahmen", "bevölkerung", "beschäftigung", "handel"],
-    "fr": ["statistique", "budget", "dépense", "recette", "population", "emploi", "commerce", "éducation"],
-    "it": ["statistica", "bilancio", "spesa", "entrate", "popolazione", "occupazione", "commercio"],
+    "en": ["statistics", "budget", "finance", "population", "employment", "trade", "education", "price", "tax",
+           "indicator", "survey", "housing", "transport"],
+    "pt": ["estatística", "orçamento", "despesa", "receita", "população", "emprego", "comércio", "educação",
+           "indicadores", "saúde", "transporte", "habitação"],
+    "es": ["estadística", "presupuesto", "gasto", "ingreso", "población", "empleo", "comercio", "educación",
+           "indicadores", "salud", "transporte", "vivienda"],
+    "de": ["statistik", "haushalt", "ausgaben", "einnahmen", "bevölkerung", "beschäftigung", "handel",
+           "indikatoren", "gesundheit", "verkehr", "wohnen"],
+    "fr": ["statistique", "budget", "dépense", "recette", "population", "emploi", "commerce", "éducation",
+           "indicateur", "santé", "transport", "logement"],
+    "it": ["statistica", "bilancio", "spesa", "entrate", "popolazione", "occupazione", "commercio",
+           "indicatori", "sanità", "trasporti", "abitazioni"],
 }
 
 
@@ -504,7 +511,7 @@ def _ckan_discover(source: dict, org: dict, candidates: list[dict],
     org_id = org["organization_id"]
     pid = org["publisher_id"]
     publisher_name = f"{source.get('directory_title') or source['domain']} / {org_id}"
-    terms = _language_terms(source.get("language"))
+    terms = _language_terms(source.get("language")) + ["*:*"]
     accepted_for_publisher = 0
     for term in terms:
         if accepted_for_publisher >= MAX_PER_PUBLISHER or len(candidates) >= TARGET_TABLES:
@@ -514,11 +521,15 @@ def _ckan_discover(source: dict, org: dict, candidates: list[dict],
                 "q": term, "fq": f"organization:{org_id}", "rows": 50, "start": 0,
                 "sort": "metadata_modified desc",
             })
-        except Exception:
+        except Exception as exc:
+            DIAGNOSTICS["ckan_package_search_failures"] += 1
+            DIAGNOSTICS[f"ckan_package_search_error_{type(exc).__name__}"] += 1
             continue
+        DIAGNOSTICS["ckan_package_search_successes"] += 1
         if not isinstance(result, dict):
             continue
         packages = result.get("results") if isinstance(result.get("results"), list) else []
+        DIAGNOSTICS["ckan_packages_seen"] += len(packages)
         for package in packages:
             if accepted_for_publisher >= MAX_PER_PUBLISHER or len(candidates) >= TARGET_TABLES:
                 break
@@ -528,6 +539,8 @@ def _ckan_discover(source: dict, org: dict, candidates: list[dict],
             if not title or TITLE_DENY.search(title) or JAPANESE_SCRIPT.search(title):
                 continue
             lic = license_info(package)
+            if not lic.get("candidate_allowlist_match"):
+                DIAGNOSTICS["ckan_unlicensed_packages"] += 1
             name = str(package.get("name") or "")
             page = str(package.get("url") or "")
             if not page and name:
@@ -563,11 +576,13 @@ def _ckan_discover(source: dict, org: dict, candidates: list[dict],
                     except (TypeError, ValueError):
                         total = None
                 except Exception:
+                    DIAGNOSTICS["ckan_schema_request_failures"] += 1
                     continue
                 if _add_schema_candidate(candidates, pid, publisher_name, source.get("country",""),
                                          source.get("language",""), title, page, "ckan", rid, headers,
                                          lic, fmt, total):
                     accepted_for_publisher += 1
+                    DIAGNOSTICS["ckan_candidates_added"] += 1
 
 
 def _socrata_schema(domain: str, resource_id: str) -> dict:
@@ -614,9 +629,13 @@ def _socrata_discover(source: dict, candidates: list[dict],
         url = f"{api}?{urlencode(params)}"
         try:
             payload = _json(url, api_host)
-        except Exception:
+            DIAGNOSTICS["socrata_catalog_search_successes"] += 1
+        except Exception as exc:
+            DIAGNOSTICS["socrata_catalog_search_failures"] += 1
+            DIAGNOSTICS[f"socrata_search_error_{type(exc).__name__}"] += 1
             continue
         results = payload.get("results") if isinstance(payload.get("results"), list) else []
+        DIAGNOSTICS["socrata_results_seen"] += len(results)
         for item in results:
             if accepted_for_publisher >= MAX_PER_PUBLISHER or len(candidates) >= TARGET_TABLES:
                 break
@@ -633,7 +652,9 @@ def _socrata_discover(source: dict, candidates: list[dict],
             page = str(item.get("link") or f"https://{domain}/d/{rid}")
             try:
                 view = _socrata_schema(domain, rid)
-            except Exception:
+            except Exception as exc:
+                DIAGNOSTICS["socrata_schema_failures"] += 1
+                DIAGNOSTICS[f"socrata_schema_error_{type(exc).__name__}"] += 1
                 continue
             columns = view.get("columns") if isinstance(view.get("columns"), list) else []
             headers = safe_headers(columns)
@@ -642,6 +663,7 @@ def _socrata_discover(source: dict, candidates: list[dict],
                                      source.get("language",""), title, page, "socrata", rid,
                                      headers, lic, "SODA datastore"):
                 accepted_for_publisher += 1
+                DIAGNOSTICS["socrata_candidates_added"] += 1
 
 
 def discover(allocation_path: Path, sources_path: Path, json_path: Path, md_path: Path) -> dict:
@@ -652,6 +674,7 @@ def discover(allocation_path: Path, sources_path: Path, json_path: Path, md_path
     # Stable order avoids favoring registries with many early rows.
     train_ckan.sort(key=lambda x: hashlib.sha256(x[1]["publisher_id"].encode()).hexdigest())
     train_socrata.sort(key=lambda x: hashlib.sha256(x["publisher_ids"][0]["publisher_id"].encode()).hexdigest())
+    DIAGNOSTICS.clear()
     candidates: list[dict] = []
     non_datastore: list[dict] = []
     seen: set[tuple[str, str]] = set()
@@ -666,6 +689,8 @@ def discover(allocation_path: Path, sources_path: Path, json_path: Path, md_path
         _socrata_discover(source, candidates, non_datastore, seen)
         time.sleep(0.06)
 
+    raw_candidate_count = len(candidates)
+    raw_publisher_count = len({x["publisher_id"] for x in candidates})
     candidates.sort(key=lambda x: (-x["priority_score"], x["publisher_id"], x["title"].casefold()))
     # Enforce the protocol's 3% publisher cap using the final candidate-list size.
     cap = max(1, math.floor(len(candidates) * 0.03))
@@ -693,18 +718,21 @@ def discover(allocation_path: Path, sources_path: Path, json_path: Path, md_path
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "source": "S11 3.4 world metadata discovery",
         "publisher_rule": "only train CKAN organizations and train Socrata portals were searched",
-        "target": {"tables": 60, "safe_columns": 450, "publishers": 20},
+        "target": {"tables": 125, "safe_columns": 1000, "publishers": 42},
         "protocol_cap": {"max_fraction_per_publisher": 0.03, "enforced_table_cap": max(1, math.floor(len(selected) * 0.03))},
+        "raw_schema_candidates_before_publisher_cap": raw_candidate_count,
+        "raw_distinct_publishers_before_publisher_cap": raw_publisher_count,
         "candidate_tables": len(selected),
         "safe_candidate_columns": headers_total,
         "distinct_train_publishers": len({x["publisher_id"] for x in selected}),
         "datastore_tables": sum(bool(x.get("datastore_available")) for x in selected),
         "non_datastore_leads": len(non_datastore),
         "candidate_targets_met": {
-            "tables_60": len(selected) >= 60,
-            "columns_450": headers_total >= 450,
-            "publishers_20": len({x["publisher_id"] for x in selected}) >= 20,
+            "tables_125": len(selected) >= 125,
+            "columns_1000": headers_total >= 1000,
+            "publishers_42": len({x["publisher_id"] for x in selected}) >= 42,
         },
+        "discovery_diagnostics": dict(sorted(DIAGNOSTICS.items())),
         "cell_values_saved": False,
         "rows_requested": 0,
         "candidates": selected,
@@ -719,6 +747,7 @@ def discover(allocation_path: Path, sources_path: Path, json_path: Path, md_path
     json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
         "# S11 3.4 非日本語公開表候補（メタデータのみ）", "",
+        f"- 公開元上限適用前: {raw_candidate_count} 表 / {raw_publisher_count} 公開元",
         f"- 候補: {len(selected)} 表 / 安全見出し {headers_total} 列 / 公開元 {report['distinct_train_publishers']} 件",
         f"- datastore/API schemaあり: {report['datastore_tables']} 表; datastoreなしの別枠候補: {len(non_datastore)} 件",
         "- 値の行・ファイルは取得していません。ライセンスの個別規約は採用段階で原文確認が必要です。",
@@ -737,8 +766,10 @@ def discover(allocation_path: Path, sources_path: Path, json_path: Path, md_path
     for x in non_datastore[:200]:
         lines.append(f"| {x['publisher_name']} | {x['title']} | {x['format']} | {x.get('license',{}).get('id','')} | {x['catalog_url']} |")
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return {k: report[k] for k in ("candidate_tables", "safe_candidate_columns", "distinct_train_publishers",
-                                    "datastore_tables", "non_datastore_leads", "candidate_targets_met")}
+    return {k: report[k] for k in ("raw_schema_candidates_before_publisher_cap", "raw_distinct_publishers_before_publisher_cap",
+                                    "candidate_tables", "safe_candidate_columns", "distinct_train_publishers",
+                                    "datastore_tables", "non_datastore_leads", "candidate_targets_met",
+                                    "discovery_diagnostics")}
 
 
 def self_test() -> None:
