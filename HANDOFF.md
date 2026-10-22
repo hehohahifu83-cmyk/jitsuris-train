@@ -1,3 +1,24 @@
+# 最新確認 2026-10-22 19:14 JST（ChatGPT。S11 jp3結果・全件監査）
+
+## 確認済み
+- Kaggle学習 run 39716084425 は COMPLETE。evaluation artifact 12400042015（507,171 bytes）とmodel artifact 12399962009（865,260,145 bytes）を別々に確認した。job1〜3は各53,047行。
+- 事前基準との比較: 固定255列平均OK率 81.4%→81.3%（-0.1ポイント、1.5ポイント未満で差なし）。889列での重大誤り平均 2.7→4.3。新モデルは不採用。
+- 許可された val_general / val_business / val_business2 / val_japan_procurement のft確率ファイル12個、合計2,667判定を再集計した。問題インスタンス186件（wrong 89、other_ng 57、unknown 40）、列名・正解ラベル単位75ケース、重大誤り5パターン。詳細は `cpu_lab/reports/error-analysis-run-39716084425.md`。
+- 3 seedすべてで再現した問題は46ケース。date guard棄却18件、numeric parse/top2 guard 8件を確認し、モデル誤りとguard由来unknownを分離した。
+- `kaggle/kaggle.request` は `done`。Kaggle学習は動いていない。Actions run 39759640805は「S11 3.4 world catalogue metadata discovery」であり学習ではなく、19:14 JST時点でin_progress。
+- 完了runの連絡箱投稿 `20261022-1701_chatgpt-to-claude_jp3-run-complete.md` は既に1件あり、重複投稿していない。監査結果を同メッセージへ追記した。
+- blind_set*、set 3・5・7は読んでいない。比較目標はChatGPT・Claudeとの同一課題同等以上で、Geminiは除外。
+
+## 原因仮説（未確定）
+- jp3追加は全体の約5%で、効果がseed分散に埋もれた可能性がある。
+- jp3のid 42列（小整数コードを含む）がdate/quantity/amount→idを増やした可能性がある。ただし相関段階で、直接因果は未証明。
+- 兄弟列・UNIT・元表ID・行別切り詰め情報が成果物にないため、個別の文脈原因は断定しない。
+
+## 未完了・次
+- P0: raw件数と最終指標の自動assert、source/table hash、UNIT/兄弟列有無、token長、guard前後を成果物へ保存。
+- P0: id小整数と非id小整数・日付番号・数量のhard negativeを均衡化し、一要因で再試験。
+- S11 3.3/3.4/3.1の監査済み教材をより大きな束にし、モデル条件を固定して再評価する。ラベル疑義は先生2人の独立確認まで変更しない。
+
 # 最新確認 2026-10-22 17:01 JST（ChatGPT。S11 jp3 run 39716084425 完了）
 
 ## 確認済み
