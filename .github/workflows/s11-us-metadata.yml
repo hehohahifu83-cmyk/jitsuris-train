@@ -1,4 +1,4 @@
-name: S11 3.4 US Data.gov metadata discovery
+name: S11 3.4 US Socrata metadata discovery
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,9 +36,8 @@ jobs:
             exit 0
           fi
           [[ "$command" == "register" ]]
-          [[ "$run_date" =~ ^2026[0-9]{4}$ ]]
+          [[ "$run_date" =~ ^2026[0-9]{4}(-v[0-9]+)?$ ]]
           echo "execute=true" >> "$GITHUB_OUTPUT"
-          echo "command=$command" >> "$GITHUB_OUTPUT"
           echo "run_date=$run_date" >> "$GITHUB_OUTPUT"
       - name: 公開元だけを登録（データセットメタデータ未照会）
         if: steps.request.outputs.execute == 'true'
@@ -53,7 +52,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add materials/s11_3_4_discover_us.py materials/s11_3_4_us_discovery.request
-          git add independent_eval/allocation.json independent_eval/allocation_sources_us_datagov_20261022.json materials/s11_3_4_us_registration_20261022.json
-          git commit -m "S11 3.4 米国公開元を登録"
+          git add independent_eval/allocation.json independent_eval/allocation_sources_socrata_20261022.json materials/s11_3_4_us_registration_20261022.json
+          git commit -m "S11 3.4 米国 Socrata 公開元を登録"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
