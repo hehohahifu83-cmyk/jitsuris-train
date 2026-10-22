@@ -12,7 +12,7 @@
 | 段 | 担当 | すること | できるもの |
 |---|---|---|---|
 | 1 候補 | ChatGPT | train の公開元だけで候補一覧（メタデータだけ。`selected` か `candidates` に publisher_id・resource_url（Socrata は catalog_url）・resource_id・license・datastore_available・safe_headers・title、Socrata は `platform: "socrata"`） | `materials/s11_*_candidates_*.json` |
-| 2 採用 | Claude | `pipeline.py adopt --batch <陣> --candidates …`（規則：train・ライセンスの一覧・datastore・使っていない表・1 陣 1 公開元 3 表・教材庫 1 公開元 15 表・同じ見出しの組 3 表） | `work/<陣>/adopted.json` |
+| 2 採用 | ChatGPT が道具を実行（規則は Claude が決め、変えてよいのは Claude だけ。2026-10-22 から） | `pipeline.py adopt --batch <陣> --candidates …`（規則：train・ライセンスの一覧・datastore・使っていない表・1 陣 1 公開元 3 表・教材庫 1 公開元 15 表・同じ見出しの組 3 表） | `work/<陣>/adopted.json` |
 | 3 取り出し | ChatGPT が依頼のファイルを書く → Actions | `materials/fetch_rows.request` に `fetch materials/pool/work/<陣>/adopted.json materials/pool/work/<陣>/corpus.jsonl` | `corpus.jsonl`・`set.json` |
 | 4 予測 | ChatGPT が依頼のファイルを書く → Actions | `materials/label_assist/predict.request` に `run materials/pool/work/<陣>/set.json materials/pool/work/<陣>/pred_e5base_seed1.json` | `pred_e5base_seed1.json` |
 | 5 ラベル | ChatGPT | LABEL_GUIDE だけで全列（予測を見ない）。corpus と同じ順に `{table, header, label, teacher}` | `labels_chatgpt.jsonl` |
