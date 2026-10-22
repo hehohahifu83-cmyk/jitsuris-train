@@ -755,7 +755,7 @@ def main(argv: list[str] | None = None) -> int:
         report = license_breakdown(allocation, source_map)
         report["input_snapshot_ref"] = args.input_snapshot_ref
         args.out_json.parent.mkdir(parents=True, exist_ok=True)
-        args.out_json.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        args.out_json.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         args.out_md.parent.mkdir(parents=True, exist_ok=True)
         args.out_md.write_text(render_license_breakdown(report), encoding="utf-8")
         print(f"license breakdown complete: publishers={report['metrics']['train_publishers_searched']} rejected={report['metrics']['license_not_in_candidate_allowlist']}")
