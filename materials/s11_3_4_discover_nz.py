@@ -16,7 +16,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from independent_eval.allocation import add_assignment, assignment_for, load_allocation  # noqa: E402
+from independent_eval.allocation import load_allocation, normalize_publisher_id, pool, validate_allocation  # noqa: E402
 from independent_eval.discover import HEADER_DENY, TITLE_DENY, normalize_header  # noqa: E402
 
 API = "https://catalogue.data.govt.nz/api/3/action"
@@ -128,8 +128,24 @@ def register_publishers(allocation_path: Path, old_sources_path: Path, out_sourc
     orgs = sorted({str(x).strip() for x in raw_orgs if str(x).strip()})
     if not orgs:
         raise RuntimeError("organization_list returned no organization ids")
+    existing_pools = {
+        normalize_publisher_id(x["publisher_id"]): x["pool"]
+        for x in allocation["publishers"]
+    }
+    alias_names = {normalize_publisher_id(x) for x in allocation.get("aliases", {})}
+    pending = {}
     for org in orgs:
-        allocation = add_assignment(allocation, publisher_id(org), "2026-10-22")
+        pid = normalize_publisher_id(publisher_id(org))
+        if pid in alias_names:
+            raise ValueError(f"New Zealand publisher collides with a registered alias: {pid}")
+        if pid in existing_pools or pid in pending:
+            continue
+        if not pid.startswith("nz_") or ":" in pid:
+            raise ValueError("batch registration only accepts New Zealand publisher IDs")
+        pending[pid] = {"publisher_id": pid, "pool": pool(pid), "date": "2026-10-22"}
+    allocation["publishers"].extend(pending.values())
+    allocation["publishers"].sort(key=lambda item: item["publisher_id"])
+    validate_allocation(allocation)
     allocation_path.write_text(json.dumps(allocation, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     sources = json.loads(old_sources_path.read_text(encoding="utf-8"))
@@ -148,8 +164,8 @@ def register_publishers(allocation_path: Path, old_sources_path: Path, out_sourc
     })
     sources["sources"].sort(key=lambda item: item["portal_id"])
     out_sources_path.write_text(json.dumps(sources, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    pools = {str(p["publisher_id"]): p["pool"] for p in allocation["publishers"]}
-    train = [o for o in orgs if pools.get(publisher_id(o)) == "train"]
+    pools = {normalize_publisher_id(p["publisher_id"]): p["pool"] for p in allocation["publishers"]}
+    train = [o for o in orgs if pools.get(normalize_publisher_id(publisher_id(o))) == "train"]
     return {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "catalogue": PORTAL,
@@ -167,10 +183,10 @@ def train_organizations(allocation: dict, sources: dict) -> list[str]:
     source = next((x for x in sources.get("sources", []) if x.get("portal_id") == "nz"), None)
     if not source or source.get("portal_url") != API or source.get("publisher_id_prefix") != "nz_":
         raise ValueError("New Zealand source map is missing the registered catalogue")
-    pools = {str(x.get("publisher_id")): x.get("pool") for x in allocation.get("publishers", [])}
+    pools = {normalize_publisher_id(x.get("publisher_id")): x.get("pool") for x in allocation.get("publishers", [])}
     return sorted(
         org for org in map(str, source.get("organization_names", []))
-        if pools.get(publisher_id(org)) == "train"
+        if pools.get(normalize_publisher_id(publisher_id(org))) == "train"
     )
 
 
