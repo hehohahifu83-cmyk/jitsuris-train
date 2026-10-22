@@ -20,6 +20,7 @@ from independent_eval.allocation import add_assignment, assignment_for, load_all
 from independent_eval.discover import HEADER_DENY, TITLE_DENY, normalize_header  # noqa: E402
 
 API = "https://catalogue.data.govt.nz/api/3/action"
+LEGACY_API = "https://catalogue.data.govt.nz/api/action"
 HOST = "catalogue.data.govt.nz"
 PORTAL = "https://catalogue.data.govt.nz"
 LICENSE_IDS = {
@@ -45,12 +46,15 @@ NAME_HEADER = re.compile(r"(?:name|title|description|label)", re.I)
 JAPANESE_SCRIPT = re.compile(r"[ぁ-んァ-ヶ一-龯々〆〤]")
 
 
-def _json_request(url: str, retries: int = 4) -> dict:
+def _json_request(url: str, retries: int = 4, data: bytes | None = None) -> dict:
     parsed = urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != HOST:
         raise ValueError("request host is outside the New Zealand catalogue allowlist")
     for attempt in range(retries):
-        req = Request(url, headers={"User-Agent": "jitsuris-s11-metadata-discovery/1.0", "Accept": "application/json"})
+        headers = {"User-Agent": "jitsuris-s11-metadata-discovery/1.0", "Accept": "application/json"}
+        if data is not None:
+            headers["Content-Type"] = "application/x-www-form-urlencoded"
+        req = Request(url, data=data, headers=headers)
         try:
             with urlopen(req, timeout=40) as response:
                 return json.loads(response.read(15_000_001).decode("utf-8-sig"))
@@ -65,9 +69,12 @@ def _json_request(url: str, retries: int = 4) -> dict:
     raise RuntimeError("metadata request retries exhausted")
 
 
-def _action(action: str, params: dict | None = None):
-    query = f"?{urlencode(params)}" if params else ""
-    payload = _json_request(f"{API}/{action}{query}")
+def _action(action: str, params: dict | None = None, *, api_root: str = API, method: str = "GET"):
+    if method == "POST":
+        payload = _json_request(f"{api_root}/{action}", data=urlencode(params or {}).encode("utf-8"))
+    else:
+        query = f"?{urlencode(params)}" if params else ""
+        payload = _json_request(f"{api_root}/{action}{query}")
     if not payload.get("success"):
         raise RuntimeError(f"CKAN action failed: {action}")
     return payload.get("result")
@@ -82,7 +89,7 @@ def publisher_id(org_id: str) -> str:
 
 def register_publishers(allocation_path: Path, old_sources_path: Path, out_sources_path: Path) -> dict:
     allocation = load_allocation(allocation_path)
-    raw_orgs = _action("organization_list", {"all_fields": "false"})
+    raw_orgs = _action("organization_list", {"all_fields": "false"}, api_root=LEGACY_API, method="POST")
     if not isinstance(raw_orgs, list):
         raise RuntimeError("organization_list did not return a list")
     orgs = sorted({str(x).strip() for x in raw_orgs if str(x).strip()})
