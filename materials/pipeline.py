@@ -223,7 +223,10 @@ def cmd_adopt(a):
     cands = []
     for f in a.candidates:
         d = json.load(open(f, encoding="utf-8"))
-        cands += d.get("selected", d) if isinstance(d, dict) else d
+        lst = (d.get("selected") or d.get("candidates")) if isinstance(d, dict) else d
+        if not isinstance(lst, list):
+            raise SystemExit(f"{f}：候補の一覧（selected か candidates）が無い")
+        cands += lst
     urls, rids = known_resources()
     adopted, why = adopt(cands, pools, urls, rids, pool_publisher_tables(), pool_header_sets())
     w.mkdir(parents=True, exist_ok=True)
