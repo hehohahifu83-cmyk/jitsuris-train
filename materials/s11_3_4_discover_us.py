@@ -352,8 +352,10 @@ def safe_headers(fields: list[dict]) -> list[str]:
     for item in fields:
         if not isinstance(item, dict):
             continue
-        name = str(item.get("id") or item.get("fieldName") or item.get("name") or "").strip().lstrip("\ufeff")
-        if not name or JAPANESE_SCRIPT.search(name) or HEADER_DENY.search(normalize_header(name)):
+        # Socrata's `id` is a numeric column identifier; `fieldName` is the usable header.
+        # CKAN commonly exposes the header as `id`, so keep it as the final fallback.
+        name = str(item.get("fieldName") or item.get("name") or item.get("id") or "").strip().lstrip("\ufeff")
+        if not name or re.fullmatch(r"\d+", name) or JAPANESE_SCRIPT.search(name) or HEADER_DENY.search(normalize_header(name)):
             continue
         headers.append(name[:100])
     return list(dict.fromkeys(headers))
@@ -789,6 +791,8 @@ def self_test() -> None:
     assert license_info({"license_id": "cc-by-40-intl"})["candidate_allowlist_match"]
     assert not _socrata_license({"license": "CC BY-NC 4.0"})["candidate_allowlist_match"]
     assert safe_headers([{"id": "amount"}, {"id": "email"}, {"id": "population"}, {"id": "人口"}]) == ["amount", "population"]
+    assert safe_headers([{"id": 593829, "fieldName": "total_amount", "name": "Total Amount"}]) == ["total_amount"]
+    assert safe_headers([{"id": 593829}]) == []
     print("S11 3.4 world publisher/discovery self-test passed")
 
 
