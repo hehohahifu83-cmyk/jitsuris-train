@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""S11 3.3: discover Japanese statistical-table candidates from BODIK metadata.
+"""S11 3.3: discover Japanese statistical-table candidates from CKAN metadata.
 
 This stage reads only CKAN package/resource metadata and datastore field schema.
 It never downloads a resource file or requests datastore rows (limit=0 only).
-Only already-registered BODIK publishers assigned to the train pool are queried.
+Only preassigned train publishers are queried. e-Gov organization IDs are registered
+under its fixed train publisher before any package metadata is searched.
 """
 from __future__ import annotations
 
@@ -22,11 +23,12 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from independent_eval.discover import HEADER_DENY, TITLE_DENY, normalize_header  # noqa: E402
+from independent_eval.allocation import add_assignment, validate_allocation  # noqa: E402
 
-API = "https://data.bodik.jp/api/3/action"
-ALLOWED_HOST = "data.bodik.jp"
+DATE = "2026-10-22"
+ALLOWED_API_HOSTS = {"data.bodik.jp", "data.e-gov.go.jp"}
 ACCEPTED_LICENSES = {"cc-by", "cc-by-40-intl", "cc-by-4.0", "cc-by-30", "cc-by-21-jp"}
-SEARCH_QUERY = "統計"  # CKAN treats the previous ungrouped OR string as an exact query and returns almost nothing.
+SEARCH_QUERIES = ("統計", "人口", "世帯", "事業所", "観光", "産業", "農林水産", "医療")
 TITLE_STATS = re.compile(
     r"統計|人口|世帯|年齢|就業|産業|事業所|観光|農業|農林|林業|漁業|水産|医療|保健|"
     r"福祉|教育|学校|指数|家計|生産|商業|工業|労働|国勢|出生|婚姻|地価|作物|収穫|"
@@ -54,17 +56,19 @@ class MetadataOnlyError(RuntimeError):
     pass
 
 
-def _json_request(url: str, *, retries: int = 4) -> dict:
+def _json_request(url: str, *, allowed_host: str, retries: int = 3) -> dict:
     parsed = urlparse(url)
-    if parsed.scheme != "https" or parsed.hostname != ALLOWED_HOST:
-        raise ValueError("request host is outside the BODIK metadata allowlist")
+    if parsed.scheme != "https" or parsed.hostname != allowed_host or allowed_host not in ALLOWED_API_HOSTS:
+        raise ValueError("request host is outside the CKAN metadata allowlist")
     for attempt in range(retries):
         req = Request(url, headers={"User-Agent": "jitsuris-s11-metadata-discovery/1.0", "Accept": "application/json"})
         try:
             with urlopen(req, timeout=30) as response:
+                if urlparse(response.geturl()).hostname != allowed_host:
+                    raise ValueError("CKAN response redirected outside the metadata allowlist")
                 return json.loads(response.read(10_000_001).decode("utf-8-sig"))
         except HTTPError as exc:
-            if exc.code not in {403, 408, 425, 429, 500, 502, 503, 504} or attempt + 1 == retries:
+            if exc.code not in {408, 425, 429, 500, 502, 503, 504} or attempt + 1 == retries:
                 raise
             time.sleep(1.0 + 2.0 * attempt)
         except (TimeoutError, URLError, OSError):
@@ -74,8 +78,8 @@ def _json_request(url: str, *, retries: int = 4) -> dict:
     raise RuntimeError("metadata request retries exhausted")
 
 
-def _action(url: str, action: str) -> dict:
-    payload = _json_request(url)
+def _action(url: str, action: str, *, allowed_host: str) -> dict:
+    payload = _json_request(url, allowed_host=allowed_host)
     if not payload.get("success"):
         raise RuntimeError(f"CKAN action failed: {action}")
     result = payload.get("result")
@@ -84,15 +88,53 @@ def _action(url: str, action: str) -> dict:
     return result
 
 
-def train_bodik_organizations(allocation: dict, sources: dict) -> list[str]:
+def register_egov_publishers(allocation: dict, sources: dict) -> dict:
+    egov = next((x for x in sources.get("sources", []) if x.get("portal_id") == "egov"), None)
+    if not egov or egov.get("portal_url") != "https://data.e-gov.go.jp/data/api/action":
+        raise ValueError("allocation source map is missing the expected e-Gov CKAN portal")
+    assignments = []
+    for org in sorted({str(x).strip() for x in egov.get("organization_names", []) if str(x).strip()}):
+        publisher_id = f"egov:{org}"
+        allocation = add_assignment(allocation, publisher_id, DATE)
+        record = next(x for x in allocation["publishers"] if x["publisher_id"] == publisher_id)
+        assignments.append({"organization_id": org, "publisher_id": publisher_id, "pool": record["pool"]})
+    egov["publisher_assignments"] = assignments
+    egov["assignment_method"] = "organization IDs only; registered with the fixed egov train parent before any dataset metadata search"
+    validate_allocation(allocation)
+    pools = defaultdict(int)
+    for record in assignments:
+        pools[record["pool"]] += 1
+    return {"allocation": allocation, "sources": sources, "organization_count": len(assignments), "pool_counts": dict(sorted(pools.items()))}
+
+
+def train_publishers(allocation: dict, sources: dict) -> list[dict]:
     pools = {str(x.get("publisher_id")): x.get("pool") for x in allocation.get("publishers", [])}
-    bodik = next((x for x in sources.get("sources", []) if x.get("portal_id") == "bodik"), None)
-    if not bodik or bodik.get("portal_url") != API:
-        raise ValueError("allocation source map is missing the expected BODIK portal")
-    return sorted({
-        str(org) for org in bodik.get("organization_names", [])
-        if str(org) in pools and pools[str(org)] == "train"
-    })
+    result = []
+    for source in sources.get("sources", []):
+        portal_id = source.get("portal_id")
+        if portal_id == "bodik":
+            if source.get("portal_url") != "https://data.bodik.jp/api/3/action":
+                raise ValueError("BODIK portal URL does not match the source allowlist")
+            entries = [
+                {"organization_id": str(org), "publisher_id": str(org)}
+                for org in source.get("organization_names", [])
+            ]
+        elif portal_id == "egov":
+            if source.get("portal_url") != "https://data.e-gov.go.jp/data/api/action":
+                raise ValueError("e-Gov portal URL does not match the source allowlist")
+            entries = source.get("publisher_assignments", [])
+            if not entries:
+                raise ValueError("e-Gov organization publishers must be allocated before discovery")
+        else:
+            continue
+        for entry in entries:
+            org = str(entry.get("organization_id") or "").strip()
+            pid = str(entry.get("publisher_id") or "").strip()
+            if org and pid and pools.get(pid) == "train":
+                result.append({"portal_id": portal_id, "api_root": source["portal_url"],
+                               "organization_id": org, "publisher_id": pid,
+                               "publisher_name": str(entry.get("name") or org)})
+    return sorted(result, key=lambda x: (x["portal_id"], x["publisher_id"]))
 
 
 def is_statistical_title(title: str, resource_name: str = "") -> bool:
@@ -155,30 +197,33 @@ def schema_signals(headers: list[str]) -> dict:
     }
 
 
-def _package_page(package_name: str) -> str:
-    return f"https://data.bodik.jp/dataset/{quote(package_name, safe='') }"
+def _package_page(api_root: str, package_name: str) -> str:
+    base = api_root.split("/api/", 1)[0].rstrip("/")
+    return f"{base}/dataset/{quote(package_name, safe='')}"
 
 
-def _resource_page(package_name: str, resource_id: str) -> str:
-    return f"{_package_page(package_name)}/resource/{quote(resource_id, safe='')}"
+def _resource_page(api_root: str, package_name: str, resource_id: str) -> str:
+    return f"{_package_page(api_root, package_name)}/resource/{quote(resource_id, safe='')}"
 
 
-def _search_packages(org: str, *, rows: int = 100) -> list[dict]:
+def _search_packages(api_root: str, org: str, query: str, *, rows: int = 100) -> list[dict]:
     params = {
-        "q": SEARCH_QUERY,
+        "q": query,
         "fq": f"organization:{org}",
         "rows": rows,
         "start": 0,
         "sort": "metadata_modified desc",
     }
-    result = _action(f"{API}/package_search?{urlencode(params)}", "package_search")
+    host = urlparse(api_root).hostname or ""
+    result = _action(f"{api_root.rstrip('/')}/package_search?{urlencode(params)}", "package_search", allowed_host=host)
     packages = result.get("results", [])
     return packages if isinstance(packages, list) else []
 
 
-def _schema(resource_id: str) -> tuple[list[dict], int]:
+def _schema(api_root: str, resource_id: str) -> tuple[list[dict], int]:
     params = {"resource_id": resource_id, "limit": 0}
-    result = _action(f"{API}/datastore_search?{urlencode(params)}", "datastore_search")
+    host = urlparse(api_root).hostname or ""
+    result = _action(f"{api_root.rstrip('/')}/datastore_search?{urlencode(params)}", "datastore_search", allowed_host=host)
     records = result.get("records") or []
     if records:
         # Do not inspect, print, or persist any returned cell values.
@@ -203,7 +248,7 @@ def _license(package: dict) -> dict:
     }
 
 
-def _stat_candidate(org: str, package: dict, resource: dict, fields: list[dict], total: int) -> dict | None:
+def _stat_candidate(publisher: dict, package: dict, resource: dict, fields: list[dict], total: int) -> dict | None:
     title = str(package.get("title") or package.get("name") or "").strip()
     resource_name = str(resource.get("name") or "").strip()
     headers = safe_headers(fields)
@@ -217,14 +262,16 @@ def _stat_candidate(org: str, package: dict, resource: dict, fields: list[dict],
     pkg_name = str(package.get("name") or "").strip()
     resource_id = str(resource.get("id") or "").strip()
     resource_url = str(resource.get("url") or "").strip()
-    catalog_url = _package_page(pkg_name) if pkg_name else ""
+    api_root = publisher["api_root"]
+    catalog_url = str(package.get("url") or (_package_page(api_root, pkg_name) if pkg_name else ""))[:700]
     return {
-        "publisher_id": org,
+        "publisher_id": publisher["publisher_id"],
         "pool": "train",
+        "catalogue": publisher["portal_id"],
         "title": title[:300],
         "resource_name": resource_name[:200],
         "catalog_url": catalog_url,
-        "resource_url": _resource_page(pkg_name, resource_id) if pkg_name and resource_id else "",
+        "resource_url": _resource_page(api_root, pkg_name, resource_id) if pkg_name and resource_id else "",
         "download_url_metadata": resource_url[:500],
         "resource_id": resource_id,
         "format": str(resource.get("format") or "").strip()[:40],
@@ -244,16 +291,19 @@ def _stat_candidate(org: str, package: dict, resource: dict, fields: list[dict],
     }
 
 
-def _non_datastore(org: str, package: dict, resource: dict) -> dict:
+def _non_datastore(publisher: dict, package: dict, resource: dict) -> dict:
     pkg_name = str(package.get("name") or "").strip()
     resource_id = str(resource.get("id") or "").strip()
+    api_root = publisher["api_root"]
+    catalog_url = str(package.get("url") or (_package_page(api_root, pkg_name) if pkg_name else ""))[:700]
     return {
-        "publisher_id": org,
+        "publisher_id": publisher["publisher_id"],
         "pool": "train",
+        "catalogue": publisher["portal_id"],
         "title": str(package.get("title") or pkg_name)[:300],
         "resource_name": str(resource.get("name") or "")[:200],
-        "catalog_url": _package_page(pkg_name) if pkg_name else "",
-        "resource_url": _resource_page(pkg_name, resource_id) if pkg_name and resource_id else "",
+        "catalog_url": catalog_url,
+        "resource_url": _resource_page(api_root, pkg_name, resource_id) if pkg_name and resource_id else "",
         "download_url_metadata": str(resource.get("url") or "")[:500],
         "resource_id": resource_id,
         "format": str(resource.get("format") or "").strip()[:40],
@@ -296,13 +346,23 @@ def choose_candidates(candidates: list[dict], target: int = MAX_SELECTED) -> lis
 
 
 def run_self_test() -> None:
-    allocation = {"publishers": [
-        {"publisher_id": "100001", "pool": "train"},
-        {"publisher_id": "100002", "pool": "eval3"},
+    allocation = {"schema_version": 1, "aliases": {}, "publishers": [
+        {"publisher_id": "egov", "pool": "train", "date": DATE},
+        {"publisher_id": "100001", "pool": "train", "date": DATE},
+        {"publisher_id": "100002", "pool": "eval3", "date": DATE},
     ]}
-    sources = {"sources": [{"portal_id": "bodik", "portal_url": API,
-                             "organization_names": ["100001", "100002", "999999"]}]}
-    assert train_bodik_organizations(allocation, sources) == ["100001"]
+    sources = {"sources": [
+        {"portal_id": "bodik", "portal_url": "https://data.bodik.jp/api/3/action",
+         "organization_names": ["100001", "100002", "999999"]},
+        {"portal_id": "egov", "portal_url": "https://data.e-gov.go.jp/data/api/action",
+         "organization_names": ["org_2000"]},
+    ]}
+    registration = register_egov_publishers(allocation, sources)
+    assert registration["pool_counts"] == {"train": 1}
+    publishers = train_publishers(registration["allocation"], registration["sources"])
+    assert {(x["portal_id"], x["publisher_id"]) for x in publishers} == {
+        ("bodik", "100001"), ("egov", "egov:org_2000")
+    }
     assert not is_statistical_title("人口統計", "患者名簿")
     headers = safe_headers([{"id": "コード"}, {"id": "名称"}, {"id": "20歳～29歳"},
                             {"id": "30歳～39歳"}, {"id": "氏名"}, {"id": "住所"},
@@ -322,86 +382,113 @@ def run_self_test() -> None:
     distinct = [dict(sample, resource_url=str(i), safe_headers=sample["safe_headers"] + [f"列{i}"])
                 for i in range(4)]
     assert len(choose_candidates(distinct)) == MAX_PER_PUBLISHER
-    print("S11 3.3 metadata discovery self-test passed")
+    assert _package_page("https://data.e-gov.go.jp/data/api/action", "stats") == "https://data.e-gov.go.jp/data/dataset/stats"
+    print("S11 3.3 CKAN metadata discovery self-test passed")
 
 
 def discover(allocation: dict, source_map: dict, *, max_organizations: int | None = None) -> dict:
-    organizations = train_bodik_organizations(allocation, source_map)
+    publishers = train_publishers(allocation, source_map)
     if max_organizations is not None:
-        organizations = organizations[:max_organizations]
+        publishers = publishers[:max_organizations]
     candidates: list[dict] = []
     no_datastore: list[dict] = []
     errors: dict[str, int] = defaultdict(int)
     error_types: dict[str, int] = defaultdict(int)
-    searched = 0
+    error_status_counts: dict[str, int] = defaultdict(int)
     packages_seen = 0
     schema_calls = 0
-    schema_calls_by_org: dict[str, int] = defaultdict(int)
-    for org in organizations:
-        searched += 1
-        try:
-            packages = _search_packages(org)
-        except Exception as exc:
-            errors["package_search_failed"] += 1
-            error_types[type(exc).__name__] += 1
-            time.sleep(0.8)
-            continue
-        packages_seen += len(packages)
-        for package in packages:
-            if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_org[org] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
-                if schema_calls >= MAX_SCHEMA_REQUESTS:
-                    errors["schema_request_budget_exhausted"] += 1
-                else:
-                    errors["publisher_schema_request_cap_reached"] += 1
+    schema_calls_by_publisher: dict[str, int] = defaultdict(int)
+    package_searches_by_catalog: dict[str, int] = defaultdict(int)
+    publishers_by_catalog: dict[str, int] = defaultdict(int)
+    seen_packages: set[tuple[str, str]] = set()
+    seen_resources: set[tuple[str, str]] = set()
+    for publisher in publishers:
+        portal_id = publisher["portal_id"]
+        pid = publisher["publisher_id"]
+        api_root = publisher["api_root"]
+        allowed_host = urlparse(api_root).hostname or ""
+        publishers_by_catalog[portal_id] += 1
+        queries = SEARCH_QUERIES if portal_id == "egov" else SEARCH_QUERIES[:1]
+        for query in queries:
+            if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_publisher[pid] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
                 break
-            if str(package.get("state") or "active") != "active":
-                errors["inactive"] += 1
-                continue
-            license_info = _license(package)
-            if not license_info["accepted_identifier_for_candidate_screen"]:
-                errors["license_not_in_candidate_allowlist"] += 1
-                continue
-            title = str(package.get("title") or package.get("name") or "")
-            if TITLE_DENY.search(title):
-                errors["title_privacy_screen"] += 1
-                continue
-            for resource in package.get("resources", []) or []:
-                if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_org[org] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
+            try:
+                packages = _search_packages(api_root, publisher["organization_id"], query)
+                package_searches_by_catalog[portal_id] += 1
+            except Exception as exc:
+                errors["package_search_failed"] += 1
+                error_types[type(exc).__name__] += 1
+                status = getattr(exc, "code", None)
+                if status is not None:
+                    error_status_counts[str(status)] += 1
+                # A failed BODIK query is not retried with synonyms; e-Gov tries the next term.
+                if portal_id != "egov":
                     break
-                resource_name = str(resource.get("name") or "")
-                if not is_statistical_title(title, resource_name):
+                continue
+            packages_seen += len(packages)
+            for package in packages:
+                if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_publisher[pid] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
+                    break
+                if str(package.get("state") or "active") != "active":
+                    errors["inactive"] += 1
                     continue
-                url = str(resource.get("url") or "")
-                if not url or urlparse(url).scheme != "https" or urlparse(url).hostname not in {ALLOWED_HOST}:
-                    errors["resource_host_not_allowed"] += 1
+                package_name = str(package.get("name") or "").strip()
+                package_key = (pid, package_name or str(package.get("id") or ""))
+                if package_key in seen_packages:
                     continue
-                resource_id = str(resource.get("id") or "").strip()
-                if not bool(resource.get("datastore_active")):
-                    if len(no_datastore) < MAX_NON_DATASTORE:
-                        no_datastore.append(_non_datastore(org, package, resource))
-                    errors["no_datastore"] += 1
+                seen_packages.add(package_key)
+                license_info = _license(package)
+                if not license_info["accepted_identifier_for_candidate_screen"]:
+                    errors["license_not_in_candidate_allowlist"] += 1
                     continue
-                if not resource_id:
-                    errors["missing_resource_id"] += 1
+                title = str(package.get("title") or package_name)
+                if TITLE_DENY.search(title):
+                    errors["title_privacy_screen"] += 1
                     continue
-                schema_calls += 1
-                schema_calls_by_org[org] += 1
-                try:
-                    fields, total = _schema(resource_id)
-                except MetadataOnlyError:
-                    errors["limit_zero_returned_rows_discarded"] += 1
-                    continue
-                except Exception as exc:
-                    errors["schema_request_failed"] += 1
-                    error_types[type(exc).__name__] += 1
-                    continue
-                item = _stat_candidate(org, package, resource, fields, total)
-                if item:
-                    candidates.append(item)
-                else:
-                    errors["schema_not_suitable_for_3_3_target"] += 1
-                time.sleep(0.2)
-        time.sleep(0.8)
+                for resource in package.get("resources", []) or []:
+                    if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_publisher[pid] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
+                        break
+                    resource_name = str(resource.get("name") or "")
+                    if not is_statistical_title(title, resource_name):
+                        continue
+                    url = str(resource.get("url") or "")
+                    if not url or urlparse(url).scheme != "https" or urlparse(url).hostname != allowed_host:
+                        errors["resource_host_not_allowed"] += 1
+                        continue
+                    resource_id = str(resource.get("id") or "").strip()
+                    resource_key = (pid, resource_id)
+                    if not resource_id or resource_key in seen_resources:
+                        if not resource_id:
+                            errors["missing_resource_id"] += 1
+                        continue
+                    seen_resources.add(resource_key)
+                    if not bool(resource.get("datastore_active")):
+                        if len(no_datastore) < MAX_NON_DATASTORE:
+                            no_datastore.append(_non_datastore(publisher, package, resource))
+                        errors["no_datastore"] += 1
+                        continue
+                    schema_calls += 1
+                    schema_calls_by_publisher[pid] += 1
+                    try:
+                        fields, total = _schema(api_root, resource_id)
+                    except MetadataOnlyError:
+                        errors["limit_zero_returned_rows_discarded"] += 1
+                        continue
+                    except Exception as exc:
+                        errors["schema_request_failed"] += 1
+                        error_types[type(exc).__name__] += 1
+                        status = getattr(exc, "code", None)
+                        if status is not None:
+                            error_status_counts[str(status)] += 1
+                        continue
+                    item = _stat_candidate(publisher, package, resource, fields, total)
+                    if item:
+                        candidates.append(item)
+                    else:
+                        errors["schema_not_suitable_for_3_3_target"] += 1
+                    time.sleep(0.15)
+            time.sleep(0.15)
+        time.sleep(0.4)
     chosen = choose_candidates(candidates)
     selected_columns = sum(x["candidate_columns_capped_at_10"] for x in chosen)
     return {
@@ -409,9 +496,9 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "stage": "metadata_candidates_only",
         "source_policy": {
-            "catalog": "BODIK CKAN only",
+            "catalogs": ["BODIK CKAN", "e-Gov CKAN"],
             "only_preassigned_train_publishers": True,
-            "new_publisher_assignments_created": False,
+            "egov_organization_publishers_registered_before_search": True,
             "dataset_license_ids_screened": sorted(ACCEPTED_LICENSES),
             "individual_license_text_reviewed": False,
             "e_stat_queried": False,
@@ -424,7 +511,9 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
             "title_denylist": "independent_eval/discover.py TITLE_DENY",
         },
         "metrics": {
-            "train_bodik_publishers_searched": searched,
+            "train_publishers_searched": len(publishers),
+            "train_publishers_by_catalog": dict(sorted(publishers_by_catalog.items())),
+            "successful_package_searches_by_catalog": dict(sorted(package_searches_by_catalog.items())),
             "packages_seen_from_scoped_queries": packages_seen,
             "datastore_schema_requests": schema_calls,
             "datastore_schema_request_budget": MAX_SCHEMA_REQUESTS,
@@ -440,6 +529,7 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
         },
         "exclusion_and_error_counts": dict(sorted(errors.items())),
         "error_type_counts": dict(sorted(error_types.items())),
+        "error_http_status_counts": dict(sorted(error_status_counts.items())),
         "selected": chosen,
         "non_datastore": no_datastore,
     }
@@ -454,15 +544,16 @@ def render_markdown(report: dict) -> str:
         "",
         "## 調査方法と制約",
         "",
-        "- allocation.json で事前に train と割り当て済みの BODIK 公開元だけを検索。新しい割当は作成していません。",
+        "- allocation.json で train のBODIK公開元と、egov（train固定）の下に事前登録した機関だけを検索しました。e-Gov機関の割当は検索前に保存しています。",
         "- CKAN package/resource metadata と datastore_search の `limit=0` による列スキーマ・総行数だけを取得しました。配布ファイル、行、セル値は取得・保存していません。",
         "- ライセンスは個別 CKAN metadata の ID を候補スクリーニングに使用。原文規約は未精査で、採用前の確認が必要です。",
         "- 横持ち・コード対等は列見出しからの候補ヒントで、表の値を確認していないため形式は未確定です。年だけの列が中心と推定される表は候補から外しました。",
-        "- e-Stat はこの調査では照会していません。非datastore候補は下段に分け、列数目標の計算に入れていません。",
+        "- e-Stat APIは照会していません。非datastore候補は下段に分け、列数目標の計算に入れていません。",
         "",
         "## 集計",
         "",
-        f"- 検索した train 公開元: {m['train_bodik_publishers_searched']}",
+        f"- 検索した train 公開元: {m['train_publishers_searched']}（" + "、".join(f"{k} {v}" for k, v in m["train_publishers_by_catalog"].items()) + ")",
+        "- 成功した package_search: " + "、".join(f"{k} {v}" for k, v in m["successful_package_searches_by_catalog"].items()),
         f"- datastore 対応候補: {m['datastore_ready_candidates']} 件（表スキーマを取得できたもの）",
         f"- 選定候補: {m['selected_tables']} 表 / {m['selected_publishers']} 公開元 / 上限適用後 {m['selected_columns_capped_at_10']} 列",
         f"- 横持ち構造の見出しヒントあり: {m['wide_header_hint_tables']} 表。コード＋名称の対ヒントあり: {m['code_name_pair_hint_tables']} 表。",
@@ -502,6 +593,8 @@ def render_markdown(report: dict) -> str:
             lines.append(f"- `{reason}`: {count}")
         if report.get("error_type_counts"):
             lines.append("- 取得エラー型: " + "、".join(f"{kind} {count}" for kind, count in report["error_type_counts"].items()))
+        if report.get("error_http_status_counts"):
+            lines.append("- HTTP status: " + "、".join(f"{code} {count}" for code, count in report["error_http_status_counts"].items()))
     else:
         lines.append("- なし")
     lines.extend(["", "## 次の手順", "", "Claude が採用する候補を決め、個別ライセンス原文とデータ内容のプライバシー条件を別段で確認してください。これは候補一覧であり、採用・抽出・学習用ラベル付けは行っていません。", ""])
@@ -511,6 +604,7 @@ def render_markdown(report: dict) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--mode", choices={"register-egov", "discover"})
     parser.add_argument("--allocation", type=Path, default=ROOT / "independent_eval/allocation.json")
     parser.add_argument("--sources", type=Path, default=ROOT / "independent_eval/allocation_sources_20261021.json")
     parser.add_argument("--out-json", type=Path)
@@ -520,6 +614,24 @@ def main(argv: list[str] | None = None) -> int:
     if args.self_test:
         run_self_test()
         return 0
+    if args.mode == "register-egov":
+        allocation = json.loads(args.allocation.read_text(encoding="utf-8"))
+        source_map = json.loads(args.sources.read_text(encoding="utf-8"))
+        registration = register_egov_publishers(allocation, source_map)
+        args.allocation.write_text(json.dumps(registration["allocation"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        args.sources.write_text(json.dumps(registration["sources"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        report_path = ROOT / "materials/s11_3_3_egov_registration_20261022.json"
+        report_path.write_text(json.dumps({
+            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+            "publisher_ids_registered": registration["organization_count"],
+            "pool_counts": registration["pool_counts"],
+            "dataset_metadata_queried": False,
+            "method": "e-Gov CKAN organization IDs only; registered under fixed train parent before package_search.",
+        }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"e-Gov organization publishers registered={registration['organization_count']} pools={registration['pool_counts']}; dataset metadata not queried")
+        return 0
+    if args.mode not in {None, "discover"}:
+        parser.error("--mode register-egov or --mode discover is required")
     if not args.out_json or not args.out_md:
         parser.error("--out-json と --out-md は候補調査の実行に必要です")
     allocation = json.loads(args.allocation.read_text(encoding="utf-8"))
@@ -531,7 +643,7 @@ def main(argv: list[str] | None = None) -> int:
     args.out_md.write_text(render_markdown(report), encoding="utf-8")
     m = report["metrics"]
     print("S11 3.3 metadata-only discovery complete")
-    print(f"publishers={m['train_bodik_publishers_searched']} datastore_candidates={m['datastore_ready_candidates']} selected={m['selected_tables']} columns={m['selected_columns_capped_at_10']}")
+    print(f"publishers={m['train_publishers_searched']} datastore_candidates={m['datastore_ready_candidates']} selected={m['selected_tables']} columns={m['selected_columns_capped_at_10']}")
     print(f"target_tables_100={m['target_tables_100_met']} target_columns_700={m['target_columns_700_met']}")
     return 0
 
