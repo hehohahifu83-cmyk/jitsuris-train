@@ -26,17 +26,14 @@ from independent_eval.discover import HEADER_DENY, TITLE_DENY, normalize_header 
 API = "https://data.bodik.jp/api/3/action"
 ALLOWED_HOST = "data.bodik.jp"
 ACCEPTED_LICENSES = {"cc-by", "cc-by-40-intl", "cc-by-4.0", "cc-by-30", "cc-by-21-jp"}
-SEARCH_QUERY = (
-    "統計 OR 人口 OR 世帯 OR 年齢 OR 産業 OR 事業所 OR 観光 OR 農業 OR 農林 OR "
-    "漁業 OR 水産 OR 医療 OR 保健 OR 福祉 OR 教育 OR 学校 OR 指数 OR 就業 OR 生産"
-)
+SEARCH_QUERY = "統計"  # CKAN treats the previous ungrouped OR string as an exact query and returns almost nothing.
 TITLE_STATS = re.compile(
     r"統計|人口|世帯|年齢|就業|産業|事業所|観光|農業|農林|林業|漁業|水産|医療|保健|"
     r"福祉|教育|学校|指数|家計|生産|商業|工業|労働|国勢|出生|婚姻|地価|作物|収穫|"
     r"港湾|交通|市勢|診療科|推移|構成比|分布|統計書|統計年鑑|統計表",
     re.I,
 )
-YEAR_ONLY = re.compile(r"^(?:19|20)[0-9０-９]{2}(?:年度|年)?$")
+YEAR_ONLY = re.compile(r"^(?:(?:19|20)[0-9０-９]{2}|(?:昭和|平成|令和)(?:元|[0-9０-９]{1,2}))(?:年度|年)?$")
 AGE_BAND = re.compile(r"[0-9０-９]+\s*(?:歳|才)\s*(?:[〜～~\-－–]|以上|以下|未満)")
 CODE_WORD = re.compile(r"(?:コード|code|分類番号|地域番号)", re.I)
 NAME_WORD = re.compile(r"(?:名称|名称.*|項目名|分類名|区分名|label|title)", re.I)
@@ -49,6 +46,8 @@ MAX_COLUMNS_PER_TABLE = 10
 MIN_SAFE_HEADERS = 7
 MAX_PER_PUBLISHER = 3
 MAX_NON_DATASTORE = 200
+MAX_SCHEMA_REQUESTS = 1200
+MAX_SCHEMA_REQUESTS_PER_PUBLISHER = 6
 
 
 class MetadataOnlyError(RuntimeError):
@@ -118,16 +117,17 @@ def schema_signals(headers: list[str]) -> dict:
     index = sum(bool(INDEX_WORD.search(x)) for x in headers)
     answer = any(ANSWER_CODE.search(x) for x in headers)
     wide_category = sum(bool(WIDE_CATEGORY.search(x)) for x in headers)
+    month_header = sum(bool(re.fullmatch(r"(?:0?[1-9]|1[0-2])月", normalize_header(x))) for x in headers)
     years_only = sum(bool(YEAR_ONLY.fullmatch(normalize_header(x))) for x in headers)
     code_name_pair = code and label
-    wide_hint = age >= 2 or (wide_category >= 3 and len(headers) >= 10) or len(headers) >= 15
+    wide_hint = age >= 2 or month_header >= 3 or (wide_category >= 3 and len(headers) >= 10)
     hints = []
     if age >= 2:
         hints.append("年齢階級見出しが複数")
     if wide_category >= 3 and len(headers) >= 10:
         hints.append("分類・階層見出しが複数")
-    if len(headers) >= 15:
-        hints.append("安全な列見出しが15以上（横持ちかは未確認）")
+    if month_header >= 3:
+        hints.append("月見出しが複数")
     if code_name_pair:
         hints.append("コード列と名称列の対候補")
     if hierarchy:
@@ -136,7 +136,7 @@ def schema_signals(headers: list[str]) -> dict:
         hints.append("指数・率・割合の見出し")
     if answer:
         hints.append("回答コード関連の見出し")
-    if years_only and years_only >= max(2, len(headers) * 0.6) and not (age or code_name_pair or hierarchy or index):
+    if years_only and years_only >= max(2, len(headers) * 0.6) and not (age or code_name_pair or hierarchy >= 2 or index or answer):
         hints.append("年だけの見出しが多く要確認")
     score = (5 if wide_hint else 0) + (4 if age >= 2 else 0) + (3 if code_name_pair else 0)
     score += min(hierarchy, 3) + min(index, 3) + (2 if answer else 0)
@@ -312,6 +312,8 @@ def run_self_test() -> None:
     signals = schema_signals(headers)
     assert signals["code_name_pair_hint"] and signals["age_band_header_count"] == 2
     assert signals["wide_hint"]
+    year_only = schema_signals(["区分", "平成30年", "令和元年", "令和2年", "令和3年", "令和4年"])
+    assert "年だけの見出しが多く要確認" in year_only["hints"]
     sample = {"publisher_id": "100001", "priority_score": 8,
               "candidate_columns_capped_at_10": 7, "title": "統計", "resource_url": "u",
               "safe_headers": ["コード", "名称", "A", "B", "C", "D", "E"]}
@@ -330,19 +332,28 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
     candidates: list[dict] = []
     no_datastore: list[dict] = []
     errors: dict[str, int] = defaultdict(int)
+    error_types: dict[str, int] = defaultdict(int)
     searched = 0
     packages_seen = 0
     schema_calls = 0
+    schema_calls_by_org: dict[str, int] = defaultdict(int)
     for org in organizations:
         searched += 1
         try:
             packages = _search_packages(org)
-        except Exception:
+        except Exception as exc:
             errors["package_search_failed"] += 1
-            time.sleep(0.08)
+            error_types[type(exc).__name__] += 1
+            time.sleep(0.8)
             continue
         packages_seen += len(packages)
         for package in packages:
+            if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_org[org] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
+                if schema_calls >= MAX_SCHEMA_REQUESTS:
+                    errors["schema_request_budget_exhausted"] += 1
+                else:
+                    errors["publisher_schema_request_cap_reached"] += 1
+                break
             if str(package.get("state") or "active") != "active":
                 errors["inactive"] += 1
                 continue
@@ -355,6 +366,8 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
                 errors["title_privacy_screen"] += 1
                 continue
             for resource in package.get("resources", []) or []:
+                if schema_calls >= MAX_SCHEMA_REQUESTS or schema_calls_by_org[org] >= MAX_SCHEMA_REQUESTS_PER_PUBLISHER:
+                    break
                 resource_name = str(resource.get("name") or "")
                 if not is_statistical_title(title, resource_name):
                     continue
@@ -372,21 +385,23 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
                     errors["missing_resource_id"] += 1
                     continue
                 schema_calls += 1
+                schema_calls_by_org[org] += 1
                 try:
                     fields, total = _schema(resource_id)
                 except MetadataOnlyError:
                     errors["limit_zero_returned_rows_discarded"] += 1
                     continue
-                except Exception:
+                except Exception as exc:
                     errors["schema_request_failed"] += 1
+                    error_types[type(exc).__name__] += 1
                     continue
                 item = _stat_candidate(org, package, resource, fields, total)
                 if item:
                     candidates.append(item)
                 else:
                     errors["schema_not_suitable_for_3_3_target"] += 1
-                time.sleep(0.04)
-        time.sleep(0.04)
+                time.sleep(0.2)
+        time.sleep(0.8)
     chosen = choose_candidates(candidates)
     selected_columns = sum(x["candidate_columns_capped_at_10"] for x in chosen)
     return {
@@ -412,6 +427,7 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
             "train_bodik_publishers_searched": searched,
             "packages_seen_from_scoped_queries": packages_seen,
             "datastore_schema_requests": schema_calls,
+            "datastore_schema_request_budget": MAX_SCHEMA_REQUESTS,
             "datastore_ready_candidates": len(candidates),
             "selected_tables": len(chosen),
             "selected_publishers": len({x["publisher_id"] for x in chosen}),
@@ -423,6 +439,7 @@ def discover(allocation: dict, source_map: dict, *, max_organizations: int | Non
             "target_columns_700_met": selected_columns >= 700,
         },
         "exclusion_and_error_counts": dict(sorted(errors.items())),
+        "error_type_counts": dict(sorted(error_types.items())),
         "selected": chosen,
         "non_datastore": no_datastore,
     }
@@ -483,6 +500,8 @@ def render_markdown(report: dict) -> str:
     if report["exclusion_and_error_counts"]:
         for reason, count in report["exclusion_and_error_counts"].items():
             lines.append(f"- `{reason}`: {count}")
+        if report.get("error_type_counts"):
+            lines.append("- 取得エラー型: " + "、".join(f"{kind} {count}" for kind, count in report["error_type_counts"].items()))
     else:
         lines.append("- なし")
     lines.extend(["", "## 次の手順", "", "Claude が採用する候補を決め、個別ライセンス原文とデータ内容のプライバシー条件を別段で確認してください。これは候補一覧であり、採用・抽出・学習用ラベル付けは行っていません。", ""])
