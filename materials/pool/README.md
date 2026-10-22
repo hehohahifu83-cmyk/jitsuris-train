@@ -21,6 +21,10 @@
 
 1 陣の大きさは 1,000〜2,000 列が目安（Claude の裁定は 1 陣 500 列まで）。陣の ID は `b001`、`b002` … の順。
 
+## 候補を速く集める（2026-10-22 Claude）
+- `materials/pool_discover.py`（Actions `pool-discover.yml`、依頼は `materials/pool/discover.request` に `discover materials/pool/candidates_<日付>.json --bodik --socrata`）。BODIK は train の組織ごとに検索 1 回で全データセットを見て datastore のあるリソースを選ぶ。Socrata はカタログ API。年度違いの同じ表は重ねない。
+- 1 回目（2026-10-22）：2,201 表・272 公開元。1 陣 1 公開元 3 表までなので、b003 に 716 表、残りは b004 以降へ（同じ候補の一覧を `adopt` にもう一度渡せば、使った表は自動で外れる）。
+
 ## 取り出せる場（2026-10-22）
 - BODIK の datastore（`data.bodik.jp`）
 - Socrata（SODA）：公開元の ID が `world_socrata_<ホストの . と - を _ にしたもの>` で、ホストが一致するもの。列の定義から表示名を取り、位置情報・URL・写真の列は落とす。ライセンスは公式の `licenseId` で確かめる（PUBLIC_DOMAIN・CC0_10・CC_30_BY・CC_40_BY・ODC_BY_10）
