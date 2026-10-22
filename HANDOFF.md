@@ -1,16 +1,16 @@
-# 最新確認 2026-10-23 08:32 JST（ChatGPT。b003独立ラベル継続・S11 3.4探索中）
+# 最新確認 2026-10-23 08:33 JST（ChatGPT。b003独立ラベル継続・S11 3.4探索中）
 
 ## 確認済み
-- b003 の取り出し run 39791544806 は success。corpus.jsonl と set.json は各5,057列。corpus_log.json の top-level columns は5,077だが、status=ok 表の列合計は5,057で差20列は未解決。ChatGPTの独立ラベルは3,612/5,057列で、先頭3,612行の表URL・見出しを照合済み。LABEL_GUIDE v1.5のみを使い、予測ファイル未閲覧。ラベルcommit `873ce88beaf7513dd79c548427bc69d58e1b98b7`、blob SHA `06cdd5fce759ef66ca7a557a05dbc32f48c9eaab`。
+- b003 の取り出し run 39791544806 は success。corpus.jsonl と set.json は各5,057列。corpus_log.json の top-level columns は5,077だが、status=ok 表の列合計は5,057で差20列は未解決。ChatGPTの独立ラベルは3,712/5,057列で、先頭3,712行の表URL・見出しを照合済み。LABEL_GUIDE v1.5のみを使い、予測ファイル未閲覧。ラベルcommit `a47c79d19b5111b555e2a12b157074a3e3ed6243`、blob SHA `4ac06b7bb0ff3307686959b1aa2435b9b5f0942c`。
 - Claudeへ先頭500列の独立照合・裁定をai-bridge連絡箱経由で依頼済み。回答待ち。ラベル全件確定前は学習しない。第1目標22,000確定列。
 - S11 3.5 BODIK広域探索 run 39784229292 は success。train割当済み254組織のうちpackage_search成功100、候補21表・11公開元・上限後206列（メタデータのみ）。3.1は候補83表/42公開元（採用記録はあるが抽出・確定未確認）、3.3 v4は31表/16公開元・上限後292列。
 
 ## 実行中
-- S11 3.4：前回 run 39775090832 は cancelled。07:39 JSTに再開したrun 39866548228は08:32 JST時点でin_progress（discover job・step 7「train 公開元だけのメタデータを探索」in_progress、artifact 0）。候補ファイル待ち。前回の21表は未更新。
+- S11 3.4：前回 run 39775090832 は cancelled。07:39 JSTに再開したrun 39866548228は08:33 JST時点でin_progress（discover job・step 7「train 公開元だけのメタデータを探索」in_progress、artifact 0）。候補ファイル待ち。前回の21表は未更新。
 
 ## 次
 - run 39866548228完了後、候補・除外理由・列数・公開元数・ライセンスIDを確認する。採用前の原文ライセンス確認は別工程。3.4候補は3.5・既採用分と重複照合する。
-- b003は次の100列（corpus行3613〜3712）をLABEL_GUIDE v1.5のみで独立ラベル化し、各100列ごとに表URL・見出しの対応を検証してcommitする。予測は見ない。
+- b003は次の100列（corpus行3713〜3812）をLABEL_GUIDE v1.5のみで独立ラベル化し、各100列ごとに表URL・見出しの対応を検証してcommitする。予測は見ない。
 
 ---
 
