@@ -22,3 +22,7 @@
 intfloat/multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_VAL=1 FT_REAL_FRAC=1.0 FT_JP3=1 ++ FT_SEED=2 ++ FT_SEED=3
 ```
 3 本。1 本 約 9〜10 分、2 GPU で 2 波、**約 25〜30 分**（見積り）。
+
+## 依頼のやり直し（2026-10-22 Claude）
+- 最初の依頼（c99bcb7、Actions run 39715577031）は、Kaggle に送る束（`kaggle/kaggle.sh` の決め打ちの一覧）に `materials/real_labels_jp3.jsonl` が入っていなかった。`load_real` は無いファイルを黙って飛ばすので、そのままでは jp3 を 0 行足した学習（＝基準線と同じ）になる。Actions を取り消し、依頼を `done` に戻した。束の一覧に足し、`FT_JP3=1` でファイルが無い・0 行なら止めるようにした。
+- Kaggle に古い束がすでに送られていた可能性がある。その学習が COMPLETE になってから（動いている学習を置き換えない）、上と同じ依頼の行で出し直す。古い束の学習の結果は使わない。
