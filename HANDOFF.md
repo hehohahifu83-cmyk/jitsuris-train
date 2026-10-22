@@ -1,17 +1,19 @@
-# 最新確認 2026-10-23 07:41 JST（ChatGPT。S11 3.4探索を再開）
+# 最新確認 2026-10-23 08:11 JST（ChatGPT。b003独立ラベル継続・S11 3.4探索中）
 
 ## 確認済み
-- b003 の取り出し run 39791544806 は success。`materials/pool/work/b003/corpus.jsonl` は5,077列、`corpus_log.json` と `set.json` も保存済み。ChatGPTの独立ラベルは100列で、LABEL_GUIDE v1.5を使用し予測ファイルは参照していない。
+- b003 の取り出し run 39791544806 は success。`materials/pool/work/b003/corpus.jsonl` と `set.json` は各5,057列。`corpus_log.json` の top-level columns は5,077だが、status=ok 表の列合計は5,057で差20列は未解決。ChatGPTの独立ラベルは1,612/5,057列（先頭1,612行をcorpusと照合済み）。LABEL_GUIDE v1.5を使用し、予測ファイルは参照していない。
+- Claudeには先頭500列の独立照合・裁定をai-bridge連絡箱経由で依頼済み。回答待ち。ラベル全件の確定前に学習へ進まない。
 - S11 3.5 BODIK広域探索 run 39784229292 は success。train割当済み254組織のうちpackage_search成功100、候補21表・11公開元・上限後206列。配布ファイル・行・セル値は取得していない。
 - 3.1は確認済み候補83表/42公開元。Claudeの採用記録83表はあるが、抽出・プール確定は未確認。3.3 v4は31表/16公開元・上限後292列。
 - 22,000確定列までは学習しない。学習依頼はなし。
 
 ## 実行中
-- S11 3.4 world catalogue metadata discovery run 39775090832 は cancelled。依頼を `discover 20261023-v6` に更新し、run 39866548228 を開始。自己テスト・依頼検査は成功し、現在train公開元のメタデータ探索中。候補ファイルは結果待ち。既存の21表は前回分のまま。
+- S11 3.4 world catalogue metadata discovery run 39775090832 は cancelled。依頼を `discover 20261023-v6` に更新し、run 39866548228 を再開。2026-10-23 08:11 JST時点で `in_progress`、metadata discovery step 7。自己テスト・依頼検査は成功、artifact 0。候補ファイルは結果待ち。既存の21表は未更新。
 
 ## 次
 - run 39866548228 完了後、候補・除外理由・列数・公開元数・ライセンスIDを確認する。採用前の原文ライセンス確認は別工程。3.4の候補は3.5・既採用分と重複照合する。
-- b003はLABEL_GUIDE v1.5のみを用いcorpus順に全5,077列を独立ラベル化する（予測を見ない）。完了後Claudeが突き合わせ・裁定・確定。1陣の目安は約1,000列だが固定保存条件ではない。
+- b003はLABEL_GUIDE v1.5のみを用いcorpus順に全5,057列を独立ラベル化する（予測を見ない）。完了後Claudeが突き合わせ・裁定・確定。次の100列を続ける。
+
 ---
 
 # 最新確認 2026-10-22 22:30 JST（ChatGPT。S11 3.5完了・3.4待ち）
