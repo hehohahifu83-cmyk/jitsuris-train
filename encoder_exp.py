@@ -20,6 +20,10 @@ b_all = load_real(("materials/real_labels_biz.jsonl",))
 b2_all = load_real(("materials/real_labels_biz2.jsonl", "materials/real_labels_direct.jsonl")) if os.path.exists("materials/real_labels_biz2.jsonl") else []
 j_all = load_real(tuple(f for f in ("materials/real_labels_jp.jsonl", "materials/real_labels_jp2.jsonl") if os.path.exists(f))) if os.path.exists("materials/real_labels_jp.jsonl") else []
 gtr, gte = split(g_all); btr, bte = split(b_all); b2tr, b2te = split(b2_all); jtr, jte = split(j_all)
+# FT_JP3=1：S11 第 1 陣（日本の財務・調達、行をそろえて取り出し、先生＋モデル＋Claude の裁定。materials/real_labels_jp3.jsonl）を学習側だけに足す（2026-10-22）。
+# 試験・検証には入れない（検証の列は基準線と同じ）。既定はオフ＝従来どおり。
+JP3 = os.environ.get("FT_JP3") == "1"
+j3_all = load_real(("materials/real_labels_jp3.jsonl",)) if JP3 else []
 # FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
 VAL_MODE = os.environ.get("FT_VAL") == "1"
 gval = bval = b2val = jval = []
@@ -36,9 +40,12 @@ selected_splits = tuple(select_real_fraction(source_rows, REAL_FRAC) for source_
 gtr, btr, b2tr, jtr = selected_splits
 selected_source_rows = [row for source_rows in selected_splits for row in source_rows]
 selected_tables = {str(row[4]) for row in selected_source_rows}
-unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all)
+unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
+if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。種は別
+    real_rows += real_train_rows_with_units(j3_all, 6, 9, True, unit_by_table, perturb, per_table=60)
+    print(f"FT_JP3=1: +{len(j3_all)} jp3 source rows ({len({r[4] for r in j3_all})} tables)", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
 y = np.array([r[2] for r in rows])
