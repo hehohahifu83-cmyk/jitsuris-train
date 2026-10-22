@@ -373,7 +373,7 @@ def normalized_header(value):
 
 def safe_test_name(name):
     names = {"開発用220": "dev220", "本物（一般）": "general", "本物（業務）": "business", "本物（業務2）": "business2", "本物（日本の調達）": "japan_procurement",
-             "検証（一般）": "val_general", "検証（業務）": "val_business", "検証（業務2）": "val_business2", "検証（日本の調達）": "val_japan_procurement", "検証（jp3）": "val_jp3"}   # 検証＝学習から除いた表（FT_VAL=1）
+             "検証（一般）": "val_general", "検証（業務）": "val_business", "検証（業務2）": "val_business2", "検証（日本の調達）": "val_japan_procurement", "検証（jp3）": "val_jp3", "検証（教材庫）": "val_pool"}   # 検証＝学習から除いた表（FT_VAL=1）
     return names.get(name, "test")
 
 lines = []

@@ -35,6 +35,25 @@ j3tr, j3val = j3_all, []
 if JPVAL:
     from val_split import split_val
     j3tr, j3val = split_val(j3_all, salt="jitsuris-jpval-v1", mod=4)
+# FT_POOL=1：教材庫（materials/pool/batch_*.jsonl、pipeline.py で陣ごとに確定した教材）をまとめて学習に足す（2026-10-22。オーナー指示「少しずつ教材を貯めて一気に学習させたい」）。
+# FT_VAL=1 のときは教材庫の表の 1/8 を「検証（教材庫）」に回す。水増しの倍率は FT_POOL_COPIES（既定 3）、表あたり 60 列まで。jp3 は教材庫の陣 jp3 として入っているので FT_JP3 と一緒に使わない。
+POOL = os.environ.get("FT_POOL") == "1"
+POOL_COPIES = int(os.environ.get("FT_POOL_COPIES", "3") or 3)
+if POOL and (JP3 or JPVAL):
+    raise SystemExit("FT_POOL と FT_JP3／FT_JPVAL は同時に使えない（jp3 が二重に入る）")
+pool_all = []
+if POOL:
+    import glob as _glob
+    _pool_files = sorted(_glob.glob("materials/pool/batch_*.jsonl"))
+    if not _pool_files:
+        raise SystemExit("FT_POOL=1 なのに materials/pool/batch_*.jsonl が無い（Kaggle の束に入っているか確かめる）")
+    pool_all = load_real(tuple(_pool_files))
+    if not pool_all:
+        raise SystemExit("FT_POOL=1 なのに教材庫の行が 0")
+pooltr, poolval = pool_all, []
+if POOL and os.environ.get("FT_VAL") == "1":
+    from val_split import split_val
+    pooltr, poolval = split_val(pool_all, salt="jitsuris-poolval-v1", mod=8)
 # FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
 VAL_MODE = os.environ.get("FT_VAL") == "1"
 gval = bval = b2val = jval = []
@@ -51,12 +70,15 @@ selected_splits = tuple(select_real_fraction(source_rows, REAL_FRAC) for source_
 gtr, btr, b2tr, jtr = selected_splits
 selected_source_rows = [row for source_rows in selected_splits for row in source_rows]
 selected_tables = {str(row[4]) for row in selected_source_rows}
-unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all)
+unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all + pool_all)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
 if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。種は別
     real_rows += real_train_rows_with_units(j3tr, 6, 9, True, unit_by_table, perturb, per_table=60)
     print(f"FT_JP3=1: +{len(j3tr)} jp3 source rows ({len({r[4] for r in j3tr})} tables)", flush=True)
+if POOL:
+    real_rows += real_train_rows_with_units(pooltr, POOL_COPIES, 10, True, unit_by_table, perturb, per_table=60)
+    print(f"FT_POOL=1: +{len(pooltr)} pool source rows ({len({r[4] for r in pooltr})} tables) x{POOL_COPIES}; validation {len(poolval)}", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
 y = np.array([r[2] for r in rows])
@@ -67,7 +89,7 @@ if jte:
     tests["本物（日本の調達）"] = attach_unit_context(jte, unit_by_table)
 if VAL_MODE:   # 検証モードでは固定の試験を評価しない（検証だけ）。名前は試験側と同じ並び
     tests = {}
-    for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval), ("検証（jp3）", j3val)):
+    for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval), ("検証（jp3）", j3val), ("検証（教材庫）", poolval)):
         if _vr:
             tests[_name] = attach_unit_context(_vr, unit_by_table)
     print("FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 " + ", ".join(f"{k} {len(v)}" for k, v in tests.items()), flush=True)

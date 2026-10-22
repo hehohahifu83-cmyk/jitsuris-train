@@ -28,8 +28,8 @@ jobs:
           set -eu
           read -r cmd set_path out_path <<< "$(head -1 materials/label_assist/predict.request)"
           if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          case "$set_path" in materials/label_assist/*_set.json) ;; *) echo "set の場所が違う"; exit 1;; esac
-          case "$out_path" in materials/label_assist/*_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+          case "$set_path" in materials/label_assist/*_set.json|materials/pool/work/*/set.json) ;; *) echo "set の場所が違う"; exit 1;; esac
+          case "$out_path" in materials/label_assist/*_e5base_seed1.json|materials/pool/work/*/pred_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
           { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.req.outputs.proceed == 'true'

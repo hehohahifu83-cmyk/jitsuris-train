@@ -31,15 +31,18 @@ jobs:
           set -eu
           read -r cmd adopted out <<< "$(head -1 materials/fetch_rows.request)"
           test "$cmd" = "fetch"
-          case "$adopted" in materials/s11_*_adopted_*.json) ;; *) echo "採用の記録ではない"; exit 1;; esac
-          case "$out" in materials/real_corpus_jp3*.jsonl) ;; *) echo "出力の名前が違う"; exit 1;; esac
+          case "$adopted" in materials/s11_*_adopted_*.json|materials/pool/work/*/adopted.json) ;; *) echo "採用の記録ではない"; exit 1;; esac
+          case "$out" in materials/real_corpus_jp3*.jsonl|materials/pool/work/*/corpus.jsonl) ;; *) echo "出力の名前が違う"; exit 1;; esac
           python -I materials/fetch_rows.py --adopted "$adopted" --out "$out" --log "${out%.jsonl}_log.json"
+          case "$out" in materials/pool/work/*/corpus.jsonl)
+            d="$(dirname "$out")"; python -I materials/corpus_to_set.py "$out" "$d/set.json" "$(basename "$d")";;
+          esac
           echo "done $adopted $out" > materials/fetch_rows.request
       - name: 出力と記録だけを保存
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add materials/real_corpus_jp3*.jsonl materials/real_corpus_jp3*_log.json materials/fetch_rows.request
+          git add -A materials/real_corpus_jp3* materials/pool/work materials/fetch_rows.request
           if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
           git commit -m "S11：行をそろえた教材の値を取り出した（自動）"
           git pull --rebase --autostash origin main

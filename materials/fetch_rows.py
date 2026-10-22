@@ -32,6 +32,8 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "independent_eval"))
 from discover import HEADER_DENY, normalize_header  # noqa: E402
+sys.path.insert(0, str(ROOT / "materials"))
+from pipeline import ALLOWED_LICENSES  # noqa: E402  採用の道具と同じライセンスの一覧
 
 ALLOWED_HOSTS = ("data.bodik.jp",)
 MAX_COLUMNS = 10
@@ -142,7 +144,7 @@ def http_json(url, step="", tries=3):
 
 def known_tables(exclude=None):
     urls = set()
-    for f in glob.glob(str(ROOT / "materials" / "real_*.jsonl")):
+    for f in glob.glob(str(ROOT / "materials" / "real_*.jsonl")) + glob.glob(str(ROOT / "materials" / "pool" / "batch_*.jsonl")):
         if exclude and Path(f).resolve() == Path(exclude).resolve():
             continue   # 作り直すときに自分の出力と重なりと見なさない
         for line in open(f, encoding="utf-8"):
@@ -185,8 +187,8 @@ def main(argv=None):
                 base = "https://data.bodik.jp/api/3/action/"
                 res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
                 pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
-                if pkg.get("license_id") != "cc-by-4.0" and "4.0" not in str(pkg.get("license_title", "")):
-                    raise ValueError(f"license changed: {pkg.get('license_id')}")
+                if str(pkg.get("license_id", "")).lower() not in ALLOWED_LICENSES:
+                    raise ValueError(f"license not allowed: {pkg.get('license_id')}")
                 download = res.get("url") or item["resource_url"]
                 if download in known or item["resource_url"] in known:
                     raise ValueError("URL overlaps the training corpus or the main set")
