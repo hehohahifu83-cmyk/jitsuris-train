@@ -263,7 +263,7 @@ def self_test():
     assert sensitive_value("〒100-0001") and sensitive_value("100-0001")
     for ok in ("2021/04/01", "2021-04-01", "令和3年4月1日", "12345", "1,234,567", "20210401", "3.5%", "R3.4.1", "123-45"):
         assert not sensitive_value(ok), ok
-    assert blocked_header("担当者名") and blocked_header("電話番号") and not blocked_header("契約金額（円）")
+    assert blocked_header("担当者名") and blocked_header("電話番号") and blocked_header("開設者名") and blocked_header("代表者氏名") and not blocked_header("代表者役職") and not blocked_header("設置者") and not blocked_header("契約金額（円）")
     recs = [{"a": str(i), "b": "" if i % 3 else str(i * 10), "c": f"x{i}"} for i in range(40)]
     meta = {"resource_id": "r1", "publisher_id": "142018", "resource_url": "u", "download_url": "d", "license": "cc-by-4.0", "fetched_utc": "t"}
     rows, reasons = build_rows(meta, ["a", "b", "c", "電話番号"], recs, 40)
