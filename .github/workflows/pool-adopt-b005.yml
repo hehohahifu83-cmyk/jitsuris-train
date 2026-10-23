@@ -1,0 +1,46 @@
+name: b005 採用（候補ルールをそのまま実行）
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "materials/pool/adopt_b005.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pool-adopt-b005
+  cancel-in-progress: false
+
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: パイプライン試験
+        run: python -m unittest tests.test_pipeline
+      - name: 規則どおり採用
+        shell: bash
+        run: |
+          set -euo pipefail
+          read -r cmd batch candidates <<< "$(head -n 1 materials/pool/adopt_b005.request)"
+          test "$cmd" = "adopt"
+          test "$batch" = "b005"
+          test "$candidates" = "materials/pool/candidates_20261022.json"
+          test -s "$candidates"
+          test ! -e materials/pool/work/b005/adopted.json
+          python materials/pipeline.py adopt --batch "$batch" --candidates "$candidates"
+      - name: 保存
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add materials/pool/work/b005/adopted.json
+          git diff --cached --quiet && { echo "採用結果がありません"; exit 1; }
+          git commit -m "教材庫 b005 の候補を採用"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
