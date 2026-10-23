@@ -282,11 +282,27 @@ def reconcile(corpus, labels, preds, seed):
     return {"agree": agree, "disagree": dis, "to_review": to_review, "audit": audit, "dropped": dropped}, rows
 
 
+def align_preds(set_columns, pred_rows):
+    """予測を set.json の id の順に並べる。予測の後に列を消した（個人情報の除去など）ときも、
+    予測を作り直さずに残った列だけを使える。set にあって予測に無い列があれば止める。"""
+    by_id = {r["id"]: r for r in pred_rows}
+    missing = [c["id"] for c in set_columns if c["id"] not in by_id]
+    if missing:
+        raise ValueError(f"予測に無い列：{missing[:5]}（{len(missing)} 件）。予測を依頼し直す")
+    return [by_id[c["id"]] for c in set_columns]
+
+
+def load_preds(w):
+    preds = json.load(open(w / "pred_e5base_seed1.json", encoding="utf-8"))["rows"]
+    cols = json.load(open(w / "set.json", encoding="utf-8"))["columns"]
+    return align_preds(cols, preds)
+
+
 def cmd_reconcile(a):
     w = work(a.batch)
     corpus = read_jsonl(w / "corpus.jsonl")
     labels = read_jsonl(w / "labels_chatgpt.jsonl")
-    preds = json.load(open(w / "pred_e5base_seed1.json", encoding="utf-8"))["rows"]
+    preds = load_preds(w)
     split, rows = reconcile(corpus, labels, preds, seed=f"jitsuris-pool-audit|{a.batch}")
     write_jsonl(w / "review.jsonl", rows)
     print(f"agree {len(split['agree'])} disagree {len(split['disagree'])} → review {len(split['to_review'])}, "
@@ -339,7 +355,7 @@ def cmd_finalize(a):
         raise SystemExit(f"{final} がもうある")
     corpus = read_jsonl(w / "corpus.jsonl")
     labels = read_jsonl(w / "labels_chatgpt.jsonl")
-    preds = json.load(open(w / "pred_e5base_seed1.json", encoding="utf-8"))["rows"]
+    preds = load_preds(w)
     review = read_jsonl(w / "review.jsonl")
     decisions = read_jsonl(w / "decisions.jsonl")
     teacher = (labels[0].get("teacher") if labels else "chatgpt") or "chatgpt"

@@ -73,6 +73,14 @@ class ReconcileFinalizeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             P.reconcile(self.c, bad, self.p, seed="s")
 
+    def test_align_preds_by_id_after_columns_removed(self):
+        cols = [{"id": "b-1"}, {"id": "b-3"}]
+        preds = [{"id": "b-1", "guarded_prediction": "amount"}, {"id": "b-2", "guarded_prediction": "phone"},
+                 {"id": "b-3", "guarded_prediction": "date"}]
+        self.assertEqual([r["guarded_prediction"] for r in P.align_preds(cols, preds)], ["amount", "date"])
+        with self.assertRaisesRegex(ValueError, "予測に無い列"):
+            P.align_preds(cols + [{"id": "b-4"}], preds)
+
 
 if __name__ == "__main__":
     unittest.main()

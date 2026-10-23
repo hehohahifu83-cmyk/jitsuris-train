@@ -1,3 +1,20 @@
+# 最新確認 2026-10-23 18:30 JST（Claude。b003 を突き合わせ・裁定・確定）
+
+## 確認済み
+- b003 を確定：**4,464 列を教材庫へ**（`materials/pool/batch_b003.jsonl`、599 表・257 公開元）。教材庫は **5,189 列**／第 1 目標 22,000（残り 16,811）。`bench/pool_status.md`
+- 突き合わせ：5,057 列のうち一致 4,108・食い違い 949 → 優先度順に 500 列を Claude が裁定、449 列は捨てた。一致の抜き取り 205 列の誤り 2（1.0%、5% 未満で合格）。使わない（unknown・S）144 列。裁定の記録 `materials/pool/adjudication_b003.jsonl`、`work/b003/decisions.jsonl`（722 行）
+- 予測は個人情報の除去（`1d0d901`）の前の 5,077 列で作られていたので、`pipeline.py` に `align_preds`（set.json の id で予測を並べ直す）を足して使った。消えた 20 列は予測から外れ、残る 5,057 列はすべて id と見出しが一致。試験 `tests/test_pipeline.py` に 1 件追加
+- ChatGPT のラベルは **622〜664 行が 1 行ずれていた**（各ラベルが 1 行後ろの列のもの）。ラベルのファイルは独立の記録として書き換えず、この 43 列は Claude が全部決めた
+- 値を個人情報として消して空になった 4 列（b003-1054・2828・4350・4355）は学習に入れていない（S または捨てた）
+- `LABEL_GUIDE.md` を v1.6 に：施設の「名称」は組織として活動する施設なら org、場所そのものなら address。自治体名だけの「設置者」「団体名」は address など
+- 試験：`python3 -m unittest discover -s tests` 320 件のうち、scipy が無いための 9 件以外は成功（変更の前も同じ 9 件）
+
+## 次
+- b004：`candidates_20261022.json` の残り（約 1,400 表）から採用（`pipeline.py adopt --batch b004 --candidates materials/pool/candidates_20261022.json`。使った表は自動で外れる）→ 取り出し → 予測 → ChatGPT のラベル → Claude の裁定
+- 22,000 列までは学習しない
+
+---
+
 # 最新確認 2026-10-23（ChatGPT。b003ラベル完了・Claude引継ぎ）
 
 ## 確認済み
