@@ -1,15 +1,15 @@
-# 最新確認 2026-10-23（ChatGPT。b003独立ラベル継続）
+# 最新確認 2026-10-23（ChatGPT。b003独立ラベル完了）
 
 ## 確認済み
-- b003 の `corpus.jsonl`／`set.json` は各5,057行。実ラベルファイル `materials/pool/work/b003/labels_chatgpt.jsonl` は **5,012/5,057行**（残り45行）。今回、corpus行4913〜5012の100列を追加した。
-- 追加前の境界3行（4910〜4912）とcorpusの表URL・見出しが一致し、追加100行も同じ順で照合済み。今回の内訳はdate 15、quantity 5、id 29、org 2、person 1、amount 5、category 19、text 1、address 18、other 5（unknown・Sなし）。commit `4cdbf8c4a4f8908d6507a1f5ac908efe8e46e621`、ラベルblob SHA `43919638090d8cbcd68fde67e6d75b24a805c369`。
+- b003 の `corpus.jsonl`／`set.json` は各5,057行。実ラベルファイル `materials/pool/work/b003/labels_chatgpt.jsonl` は **5,057/5,057行**。今回、corpus行5013〜5057の45列を追加し、送信前JSONLの件数と保存範囲の表URL・見出し対応を検証した。
+- 最終45列の内訳はcategory 7、other 5、id 17、date 8、S 1、org 2、quantity 5。commit `8d21ec6a7f8d14f0fbc69ed7ea5567e9eb15a9b7`、ラベルblob SHA `16c50c477cc3b748ff0efd0d3c81f8058afd5065`。GitHub再取得でも同じblob SHAを確認した。
 - 判断根拠は `LABEL_GUIDE.md` v1.5のみ。予測ファイルは開いていない。
+- 一時workflow `.github/workflows/b003-label-slice-4513-end-temp.yml` とslice `materials/pool/work/b003/label_slice_4510_5057.tmp.jsonl` は削除し、両方とも404/NOT_FOUNDを確認済み。
 - `corpus_log.json` の総列数5,077とstatus=ok表の合計5,057の差20列は未解決。Claudeへの先頭500列の照合・裁定依頼は前回記録で回答待ち（今回未確認）。
-- 一時ファイル `.github/workflows/b003-label-slice-4513-end-temp.yml` と `materials/pool/work/b003/label_slice_4510_5057.tmp.jsonl` は残り45列の保存後に削除・未存在確認する。
-- 学習・reconcile・finalizeは実行していない。第1目標22,000確定列までは学習しない。
+- 学習・reconcile・finalizeは実行していない。第1目標22,000確定列に達するまでは学習しない。
 
 ## 次
-- corpus行5013〜5057の45列を同じ独立手順でラベル化し、表URL・見出しの対応を検証して保存する。その後、一時workflowとsliceを削除し、ラベル件数5,057件とHANDOFFを最終確認する。
+- b003の現有5,057列はすべて独立ラベル済み。次の工程は既存ゲート（corpus_log差分とClaude照合）の状況を確認してから判断する。学習・reconcile・finalizeは未実施。
 
 ---
 
