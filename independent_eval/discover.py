@@ -41,7 +41,7 @@ HEADER_DENY = re.compile(
     r"account|member|licensee|complainant|requestor|reporter|url|free.?text|comment|"
     r"narrative|description|remark|note|detail|memo|ssn|dob|birth.?date|"
     r"住所|所在地|番地|町名|丁目|街区|郵便|氏名|名前|担当者|申請者|利用者|"
-    r"連絡先|メール|電話|携帯|患者|児童|生徒|職員|従業員|生年月日|座標|緯度|経度)"
+    r"連絡先|メール|電話|携帯|患者|児童|生徒|職員|従業員|生年月日|座標|緯度|経度|開設者名|開設者|設置者情報|設置者名|代表者名|代表者氏名|管理者名|所有者名|責任者名|運営者名|経営者名|理事長名|院長名|園長名|校長名|施設長名|所長名|店長名|医師名|議員名|選手名|船員名|運転手名|著者名|作者名|個人名|名義人)"
     r"($|[^a-z])",
     re.I,
 )
