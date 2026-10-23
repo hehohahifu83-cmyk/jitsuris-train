@@ -23,12 +23,12 @@ jobs:
           from pathlib import Path
           source = Path("materials/pool/work/b003/corpus.jsonl")
           lines = source.read_text(encoding="utf-8").splitlines(keepends=True)
-          chunk = lines[4012:4112]
-          if len(chunk) != 100:
-              raise SystemExit(f"expected 100 rows, got {len(chunk)}")
-          for n, line in enumerate(chunk, 4013):
+          chunk = lines[4309:4412]
+          if len(chunk) != 103:
+              raise SystemExit(f"expected 103 rows, got {len(chunk)}")
+          for n, line in enumerate(chunk, 4310):
               json.loads(line)
-          target = Path("materials/pool/work/b003/label_slice_4013_4112.tmp.jsonl")
+          target = Path("materials/pool/work/b003/label_slice_4310_4412.tmp.jsonl")
           target.write_text("".join(chunk), encoding="utf-8")
           print(f"created {target}: {len(chunk)} rows")
           PY
@@ -36,6 +36,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add materials/pool/work/b003/label_slice_4013_4112.tmp.jsonl
+          git add materials/pool/work/b003/label_slice_4310_4412.tmp.jsonl
           git commit -m "Temporary b003 label slice"
           git push origin HEAD:main
