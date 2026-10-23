@@ -1,0 +1,37 @@
+name: b003 temporary slice 4413
+on:
+  push:
+    paths:
+      - '.github/workflows/b003-label-slice-4413-temp.yml'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Slice requested corpus rows
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source = Path("materials/pool/work/b003/corpus.jsonl")
+          lines = source.read_text(encoding="utf-8").splitlines()
+          block = lines[4409:4512]
+          assert len(block) == 103, f"expected 103 rows, got {len(block)}"
+          for row_number, line in enumerate(block, start=4410):
+              try:
+                  json.loads(line)
+              except Exception as exc:
+                  raise SystemExit(f"invalid JSON at corpus row {row_number}: {exc}")
+          target = Path("materials/pool/work/b003/label_slice_4410_4512.tmp.jsonl")
+          target.write_text("\n".join(block) + "\n", encoding="utf-8")
+          print(f"Wrote {len(block)} rows to {target}")
+          PY
+      - name: Commit slice
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add materials/pool/work/b003/label_slice_4410_4512.tmp.jsonl
+          git commit -m "Temp: extract b003 corpus rows 4410-4512"
+          git push
