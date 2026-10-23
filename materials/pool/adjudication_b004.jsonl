@@ -1,0 +1,650 @@
+{"i": 19, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 21, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 33, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 49, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 53, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 59, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 60, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 62, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 76, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 78, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 79, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 80, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 81, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 82, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 83, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 85, "kind": "to_review", "teacher": "category", "model": "id", "label": "quantity", "reason": "図書の分類ごとの冊数・貸出数は quantity"}
+{"i": 94, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 98, "kind": "to_review", "teacher": "account", "model": "unknown", "label": "account", "reason": "款・項の名前（国庫支出金・市税など）は費目なので account"}
+{"i": 119, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 128, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "幅・長さ・口径などの測定値は other"}
+{"i": 130, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "幅・長さ・口径などの測定値は other"}
+{"i": 131, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "幅・長さ・口径などの測定値は other"}
+{"i": 134, "kind": "to_review", "teacher": "S", "model": "text", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 141, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "方書（住所の建物名の部分）は address（建物名）"}
+{"i": 148, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "地点・投票所・避難空間の名前は address（地点名）"}
+{"i": 149, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 151, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 162, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 164, "kind": "to_review", "teacher": "product", "model": "category", "label": "product", "reason": "備蓄品の品名・AED の型式は product"}
+{"i": 165, "kind": "to_review", "teacher": "text", "model": "product", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 166, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 176, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 180, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 185, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 188, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 204, "kind": "to_review", "teacher": "text", "model": "product", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 205, "kind": "to_review", "teacher": "text", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 206, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 211, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 231, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 232, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 233, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 234, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 235, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 236, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 237, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 238, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 239, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 240, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 241, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 242, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 243, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 244, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 245, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 246, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 247, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 248, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 249, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 250, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 254, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 281, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 283, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 284, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 285, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 294, "kind": "audit", "teacher": "phone", "model": "phone", "label": "phone", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 296, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 297, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 298, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 304, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 308, "kind": "to_review", "teacher": "text", "model": "address", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 317, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 318, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 321, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "Wi-Fi の SSID は id（v1.6）"}
+{"i": 345, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 346, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 352, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 361, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 368, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 369, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 370, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 372, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 373, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 374, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 375, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 376, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 377, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 380, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 381, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 382, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 383, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 384, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 385, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 390, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 391, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 392, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 393, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 394, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 395, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 396, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 403, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 408, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 409, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 410, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 411, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 412, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 413, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 414, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 415, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 416, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 417, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 420, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 421, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 422, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 424, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 430, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 431, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 432, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 460, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 491, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 492, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 507, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "方書・番地（建物名・部屋・〜内）は住所の一部なので address"}
+{"i": 520, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 525, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 526, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 538, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 539, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 540, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 541, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 542, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 543, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 544, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 545, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 546, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 555, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 556, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 581, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 582, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読みの列は同じ表の「防災行政無線_名称」（address）に合わせる"}
+{"i": 583, "kind": "to_review", "teacher": "category", "model": "org", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 586, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 608, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 609, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 610, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "Wi-Fi の SSID は id（v1.6）"}
+{"i": 629, "kind": "to_review", "teacher": "org", "model": "address", "label": "address", "reason": "地点・投票所・避難空間の名前は address（地点名）"}
+{"i": 630, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "方書・番地（建物名・部屋・〜内）は住所の一部なので address"}
+{"i": 668, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 669, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 670, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 671, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 672, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 674, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 675, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 676, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 677, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 678, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 684, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 727, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 728, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 738, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 739, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 740, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 741, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 746, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 749, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 750, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 754, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 755, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 757, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 759, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 760, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 762, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 764, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 765, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 766, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 767, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 784, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 786, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 787, "kind": "to_review", "teacher": "amount", "model": "unknown", "label": "amount", "reason": "駐輪場の一時利用料金（〇〇円）なので amount"}
+{"i": 788, "kind": "to_review", "teacher": "amount", "model": "unknown", "label": "text", "reason": "料金の説明文（区分ごとの値段を文章で書いた列）は text（b003 と同じ）"}
+{"i": 789, "kind": "to_review", "teacher": "amount", "model": "unknown", "label": "amount", "reason": "駐輪場の一時利用料金（〇〇円）なので amount"}
+{"i": 796, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 804, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 807, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 808, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 820, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1・v1.6）"}
+{"i": 821, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "値が役所の課の名前（〜課）なので account（v1.6）"}
+{"i": 827, "kind": "to_review", "teacher": "category", "model": "id", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 829, "kind": "to_review", "teacher": "S", "model": "product", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 830, "kind": "to_review", "teacher": "S", "model": "product", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 834, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 851, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 852, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 861, "kind": "to_review", "teacher": "text", "model": "address", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 863, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 874, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 880, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 898, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 901, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 915, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 917, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 924, "kind": "to_review", "teacher": "text", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 925, "kind": "to_review", "teacher": "text", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 926, "kind": "to_review", "teacher": "text", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 932, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 938, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 939, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 944, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 945, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 946, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 959, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 969, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 980, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 986, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 990, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 993, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1006, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1014, "kind": "to_review", "teacher": "category", "model": "product", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 1023, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1026, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1034, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1043, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1058, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1074, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1081, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1083, "kind": "to_review", "teacher": "category", "model": "id", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 1087, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1088, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 1089, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 1090, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 1096, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1100, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1110, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1135, "kind": "to_review", "teacher": "id", "model": "address", "label": "address", "reason": "都道府県名・郡名・選挙区の名前は address"}
+{"i": 1143, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1189, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1190, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1197, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1201, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1202, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1204, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "方書・番地（建物名・部屋・〜内）は住所の一部なので address"}
+{"i": 1213, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "タイム（かかった時間の長さ）は quantity（決まりの表「時間数」）"}
+{"i": 1214, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "順位（ランク）は category"}
+{"i": 1215, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "タイム（かかった時間の長さ）は quantity（決まりの表「時間数」）"}
+{"i": 1216, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "順位（ランク）は category"}
+{"i": 1217, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "タイム（かかった時間の長さ）は quantity（決まりの表「時間数」）"}
+{"i": 1228, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1229, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 1230, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "値が役所の課の名前（〜課）なので account（v1.6）"}
+{"i": 1234, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1240, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1244, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1245, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1246, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1247, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1248, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1249, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1250, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1252, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1259, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1260, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1263, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1264, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1265, "kind": "to_review", "teacher": "unknown", "model": "id", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1266, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1267, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1268, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1277, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1280, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1283, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1287, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1290, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1301, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1304, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1308, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1345, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1362, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 1363, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 1373, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 1375, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1381, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1385, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1391, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1395, "kind": "to_review", "teacher": "date", "model": "id", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 1402, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1404, "kind": "to_review", "teacher": "text", "model": "address", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 1405, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "text", "reason": "駐車場の説明は text（v1.6）"}
+{"i": 1406, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1412, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1427, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 1447, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1449, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1461, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1475, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1483, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 1484, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 1485, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 1493, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 1532, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1538, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 1554, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1561, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1563, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1568, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1575, "kind": "to_review", "teacher": "account", "model": "unknown", "label": "account", "reason": "款・項の名前（国庫支出金・市税など）は費目なので account"}
+{"i": 1597, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1613, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 1614, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 1615, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1616, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1618, "kind": "to_review", "teacher": "S", "model": "text", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1620, "kind": "to_review", "teacher": "S", "model": "org", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1633, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1634, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 1635, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1652, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "駐車場の説明は text（v1.6）"}
+{"i": 1656, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1657, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1658, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1659, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1660, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1661, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1662, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1663, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1664, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1665, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1666, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1667, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1668, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1669, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1670, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1671, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1672, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1673, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1674, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1680, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 1697, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 1698, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 1700, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 1701, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 1702, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 1703, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 1705, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 1715, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1722, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "other", "reason": "幅・長さ・口径などの測定値は other"}
+{"i": 1761, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 1772, "kind": "to_review", "teacher": "product", "model": "id", "label": "product", "reason": "備蓄品の品名・AED の型式は product"}
+{"i": 1773, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1783, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1785, "kind": "to_review", "teacher": "S", "model": "rate", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 1795, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "停留所・観測所・温泉地などの地点名は address（決まりの表「地点名」）"}
+{"i": 1799, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1809, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1819, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "方書（住所の建物名の部分）は address（建物名）"}
+{"i": 1820, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 1829, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "方書・番地（建物名・部屋・〜内）は住所の一部なので address"}
+{"i": 1830, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1833, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 1834, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 1835, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 1840, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "文化財（墓・跡・住宅・郷土芸能などが混ざる）の名前は15種類のどれとも決めにくいので unknown（b003 と同じ）"}
+{"i": 1841, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "文化財（墓・跡・住宅・郷土芸能などが混ざる）の名前は15種類のどれとも決めにくいので unknown（b003 と同じ）"}
+{"i": 1844, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 1873, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 1874, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 1876, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "値が役所の課の名前（〜課）なので account（v1.6）"}
+{"i": 1885, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "値が役所の課の名前（〜課）なので account（v1.6）"}
+{"i": 1909, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1929, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1933, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 1936, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 1938, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 1941, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 1942, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 1952, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1960, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1961, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 1966, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 1989, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1991, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1995, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1996, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 1997, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 1998, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 1999, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2027, "kind": "to_review", "teacher": "category", "model": "org", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 2062, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2071, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "キーワード・タグの羅列は text（決まりの表）"}
+{"i": 2080, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2081, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "Wi-Fi の SSID は id（v1.6）"}
+{"i": 2086, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2087, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2088, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2108, "kind": "audit", "teacher": "org", "model": "org", "label": "address", "reason": "場所そのもの（道の駅・観音・岩・寺院）の名前が多いので address（v1.6）。先生・モデルとも org だったが誤り"}
+{"i": 2126, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2135, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2142, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2160, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2161, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2162, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2171, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 2173, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2180, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2181, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2189, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 2191, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "キーワード・タグの羅列は text（決まりの表）"}
+{"i": 2193, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 2195, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2199, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2202, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 2203, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2204, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2243, "kind": "to_review", "teacher": "amount", "model": "text", "label": "text", "reason": "料金の説明文（区分ごとの値段を文章で書いた列）は text（b003 と同じ）"}
+{"i": 2246, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2248, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2249, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2250, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2251, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2252, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2253, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2259, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2268, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 2270, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2273, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 2329, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2331, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "文化財（墓・跡・住宅・郷土芸能などが混ざる）の名前は15種類のどれとも決めにくいので unknown（b003 と同じ）"}
+{"i": 2332, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "文化財（墓・跡・住宅・郷土芸能などが混ざる）の名前は15種類のどれとも決めにくいので unknown（b003 と同じ）"}
+{"i": 2335, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 2352, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2356, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 2358, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2389, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 2406, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2413, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2420, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 2421, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 2423, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2447, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 2453, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2478, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2502, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "文化財（墓・跡・住宅・郷土芸能などが混ざる）の名前は15種類のどれとも決めにくいので unknown（b003 と同じ）"}
+{"i": 2505, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 2510, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2511, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2513, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2515, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2531, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2549, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2552, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 2554, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "キーワード・タグの羅列は text（決まりの表）"}
+{"i": 2555, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 2563, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2571, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 2572, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "駐車場の説明は text（v1.6）"}
+{"i": 2573, "kind": "to_review", "teacher": "phone", "model": "id", "label": "S", "reason": "値が「-」「なし」だけで空の列は学習に使わない（S）"}
+{"i": 2598, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 2604, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2620, "kind": "to_review", "teacher": "org", "model": "text", "label": "address", "reason": "場所（空き地・公園・お宮の上など）の名前は address（v1.6）"}
+{"i": 2632, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 2638, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2640, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "Wi-Fi の SSID は id（v1.6）"}
+{"i": 2648, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2655, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2662, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2663, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2664, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 2666, "kind": "to_review", "teacher": "amount", "model": "text", "label": "text", "reason": "料金の説明文（区分ごとの値段を文章で書いた列）は text（b003 と同じ）"}
+{"i": 2669, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 2672, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2674, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 2678, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 2679, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 2681, "kind": "to_review", "teacher": "date", "model": "text", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 2682, "kind": "to_review", "teacher": "date", "model": "text", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 2684, "kind": "to_review", "teacher": "amount", "model": "category", "label": "amount", "reason": "列名がお金（料金）。「無料」も金額の列（v1.0）"}
+{"i": 2714, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2718, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 2719, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 2720, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 2721, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2728, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "方書・番地（建物名・部屋・〜内）は住所の一部なので address"}
+{"i": 2729, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 2739, "kind": "to_review", "teacher": "category", "model": "product", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 2741, "kind": "to_review", "teacher": "text", "model": "org", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 2764, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "地点・投票所・避難空間の名前は address（地点名）"}
+{"i": 2765, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "地点・投票所・避難空間の名前は address（地点名）"}
+{"i": 2766, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "地点・投票所・避難空間の名前は address（地点名）"}
+{"i": 2771, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2773, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2796, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2799, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2801, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 2802, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 2803, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 2821, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2827, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2839, "kind": "to_review", "teacher": "S", "model": "org", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2840, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2841, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2842, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2843, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2845, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 2856, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2857, "kind": "to_review", "teacher": "date", "model": "text", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 2884, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2899, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2904, "kind": "to_review", "teacher": "date", "model": "text", "label": "text", "reason": "時間の幅・休みの日・アクセス・利用の条件・開催の時期・題名などの説明文は text"}
+{"i": 2909, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2919, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2920, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "方書（住所の建物名の部分）は address（建物名）"}
+{"i": 2926, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 2927, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 2929, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 2936, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 2947, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2948, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2949, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2950, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2951, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2952, "kind": "to_review", "teacher": "date", "model": "amount", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 2957, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 2958, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2970, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 2974, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2975, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "文字コード・版・種別・品目・区分・決まった語の繰り返しは category"}
+{"i": 2976, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "公営住宅・団地の名前は建物名なので address（b003 の団地と同じ）"}
+{"i": 2990, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 2999, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "学校・公民館・センター・図書館の分館・清掃工場など、施設の名前は org（v1.6）"}
+{"i": 3000, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "値が役所の課の名前（〜課）なので account（v1.6）"}
+{"i": 3006, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 3007, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 3017, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "公営住宅・団地の名前は建物名なので address（b003 の団地と同じ）"}
+{"i": 3037, "kind": "audit", "teacher": "phone", "model": "phone", "label": "phone", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3054, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "Wi-Fi の SSID は id（v1.6）"}
+{"i": 3059, "kind": "to_review", "teacher": "unknown", "model": "product", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 3060, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "文化財（像・芸能・古墳・木などが混ざる）の名前は unknown（b003 と同じ）"}
+{"i": 3062, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3075, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 3076, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 3077, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 3101, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 3103, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 3107, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3109, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3128, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3162, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 3167, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3168, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3169, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3170, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3171, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3172, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3173, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3174, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3175, "kind": "to_review", "teacher": "date", "model": "quantity", "label": "unknown", "reason": "単位も文脈もない年度・年・月・時間帯・区分ごとの数は、金額か数量か決められない（v1.4）ので unknown"}
+{"i": 3179, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3180, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3188, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3192, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 3200, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "値が「-」「なし」だけで空の列は学習に使わない（S）"}
+{"i": 3203, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3209, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 3210, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 3211, "kind": "to_review", "teacher": "S", "model": "org", "label": "S", "reason": "値が「-」「なし」だけで空の列は学習に使わない（S）"}
+{"i": 3214, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3222, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "値が「-」「なし」だけで空の列は学習に使わない（S）"}
+{"i": 3223, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "値が「-」「なし」だけで空の列は学習に使わない（S）"}
+{"i": 3224, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "自治体名だけが並ぶ列は address（v1.1「都道府県名だけが並ぶ団体名」と同じ）"}
+{"i": 3229, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 3237, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3269, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3274, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3280, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "値が町名・地区名だけの自治会名は address（b003 と同じ）"}
+{"i": 3282, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3284, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3292, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3293, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 3295, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3303, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが値・数、または値に見出しや注が混ざる）ので学習に使わない（S）"}
+{"i": 3304, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3306, "kind": "agree", "teacher": "date", "model": "date", "label": "S", "reason": "「年代」の見出しの下に年・「年度」が並び、周りの列は年齢区分。見出しと値がずれた表なので S（ChatGPT の監査の指摘 3307）"}
+{"i": 3308, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3310, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3328, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3330, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3331, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3334, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3353, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "方書・番地（建物名・部屋・〜内）は住所の一部なので address"}
+{"i": 3354, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "駐車場の説明は text（v1.6）"}
+{"i": 3367, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3380, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "組織として活動する施設（学校・公民館・センター・役所など）の名前が多い列は org（決まりの表「施設・駅の名前」、v1.6）"}
+{"i": 3381, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "読み・英語・通称の列は同じ表の「名称」の列（org）に合わせる"}
+{"i": 3388, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3405, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・浜・史跡・橋・神社など）の名前が多い列は address（v1.6）"}
+{"i": 3406, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 3407, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "読み・英語・通称の列は同じ表の「名称」の列（address）に合わせる"}
+{"i": 3420, "kind": "to_review", "teacher": "phone", "model": "id", "label": "phone", "reason": "内線番号は phone（v1.6）"}
+{"i": 3427, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "イベントの題名（読み）は text"}
+{"i": 3446, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3447, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "場所そのもの（公園・広場・展望所・渓谷・海水浴場・観光地・避難空間・トイレや待合所などの建物）の名前が多いので address（v1.6）"}
+{"i": 3457, "kind": "to_review", "teacher": "category", "model": "id", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3461, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3465, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3469, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3472, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3484, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3485, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3486, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3487, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3488, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3489, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3490, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3491, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3492, "kind": "to_review", "teacher": "rate", "model": "unknown", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3494, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3495, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3497, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3498, "kind": "to_review", "teacher": "rate", "model": "unknown", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3499, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3500, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3501, "kind": "to_review", "teacher": "rate", "model": "quantity", "label": "rate", "reason": "年齢層・年ごとの率（人口当たり）は rate"}
+{"i": 3507, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3534, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 3535, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3538, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3543, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "category", "reason": "順位（ランク）は category"}
+{"i": 3545, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3561, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3562, "kind": "to_review", "teacher": "amount", "model": "id", "label": "other", "reason": "平均（MEAN）は統計値なので other（v1.4「最小・平均・最大の統計値は other」）"}
+{"i": 3564, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 3568, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "quantity", "reason": "小売・倉庫の販売・移動の量（ケース数）なので quantity"}
+{"i": 3569, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "quantity", "reason": "小売・倉庫の販売・移動の量（ケース数）なので quantity"}
+{"i": 3570, "kind": "to_review", "teacher": "amount", "model": "quantity", "label": "quantity", "reason": "小売・倉庫の販売・移動の量（ケース数）なので quantity"}
+{"i": 3583, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3584, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3595, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3596, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "日付・時刻・年度・月・日・四半期は date"}
+{"i": 3597, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "category", "reason": "年齢の区切り（10 to 14 years）は category"}
+{"i": 3598, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3613, "kind": "to_review", "teacher": "id", "model": "address", "label": "address", "reason": "都道府県名・郡名・選挙区の名前は address"}
+{"i": 3617, "kind": "to_review", "teacher": "id", "model": "address", "label": "address", "reason": "都道府県名・郡名・選挙区の名前は address"}
+{"i": 3618, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3620, "kind": "to_review", "teacher": "id", "model": "address", "label": "id", "reason": "地区・選挙区・番号・連番・行列の番号は id"}
+{"i": 3637, "kind": "to_review", "teacher": "amount", "model": "unknown", "label": "amount", "reason": "郡ごとの売上額（Sales）なので amount"}
+{"i": 3652, "kind": "audit", "teacher": "account", "model": "account", "label": "account", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 3680, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3681, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3682, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3683, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3684, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3686, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
+{"i": 3687, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "人口・世帯・人数・定員・件数・量（トン・m3・g）・交通量・在庫は quantity"}
