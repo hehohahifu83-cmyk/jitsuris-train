@@ -1,0 +1,41 @@
+name: Temporary b003 label slice
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/b003-label-slice-temp.yml"
+permissions:
+  contents: write
+jobs:
+  slice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Create the requested corpus slice
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source = Path("materials/pool/work/b003/corpus.jsonl")
+          lines = source.read_text(encoding="utf-8").splitlines(keepends=True)
+          chunk = lines[4012:4112]
+          if len(chunk) != 100:
+              raise SystemExit(f"expected 100 rows, got {len(chunk)}")
+          for n, line in enumerate(chunk, 4013):
+              json.loads(line)
+          target = Path("materials/pool/work/b003/label_slice_4013_4112.tmp.jsonl")
+          target.write_text("".join(chunk), encoding="utf-8")
+          print(f"created {target}: {len(chunk)} rows")
+          PY
+      - name: Save the temporary slice
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add materials/pool/work/b003/label_slice_4013_4112.tmp.jsonl
+          git commit -m "Temporary b003 label slice"
+          git push origin HEAD:main
