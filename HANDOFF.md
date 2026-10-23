@@ -1,3 +1,20 @@
+# 最新確認 2026-10-23 19:46 JST（ChatGPT。b004取得・予測完了、ラベル1,500列）
+
+## 確認済み
+- b004の値取得 run 39933098082 はsuccess。採用509表のうち453表を取得し、45表は列不足、11表はerror。corpus/setは3,688列で、`corpus_log.json` の全体値と表別合計が一致する。
+- CPUモデル予測 run 39938616066 はsuccess。出力 `materials/pool/work/b004/pred_e5base_seed1.json` と台帳を確認。set SHA-256 `50cdcd4659c32fa19304102f1b292a52d44f2de9069fb107fdfe63f74691e42f`、予測SHA-256 `400ae041460d18eb7dbe96071258aa6da2120244c2a3a3adba3fdcfb4c706ed3`。
+- ChatGPT独立ラベルは `labels_chatgpt.jsonl` に1,500列保存済み。1〜1,500列を100列スライス15本と照合し、table URL・headerの不一致は0。残りは2,188列。
+- ラベル分布は category 219、quantity 241、id 283、address 234、date 74、text 47、org 189、other 39、rate 3、account 17、amount 16、product 3、S 99、unknown 28、phone 6、person 2。
+- KaggleはCOMPLETE、`kaggle.request=done`。進行中・待機中のActionsは0で、学習は動いていない。教材庫は確定5,189列のまま（b004は未裁定なので未加算）。
+- blind_set*、set 3・5・7は読んでいない。最終目標はGeminiを除外し、表の列種類判定でChatGPT・Claudeと同一課題の同等以上を実証して実用化すること。
+
+## 障害・未確認
+- `labels_chatgpt.jsonl` は1,500列で終わる一方、`label_slice.request` は `1601 1700`。1501〜1600と1601〜1700のcorpusスライス各100列は存在するが、対応ラベルは未保存。ワークフローが依頼位置だけ先行した可能性があり、原因は未確定。
+- 欠落を埋める前に1701以降へ進めると行ずれ・重複の危険がある。次は1501〜1600を再度独立ラベルし、保存後に行数とURL/headerの連続性を検証してから1601以降へ進む。
+- b004はまだClaudeとの突き合わせ・裁定・一致抜き取り監査・教材庫への確定登録が未完了。学習は22,000確定列まで行わない。
+
+---
+
 # 最新確認 2026-10-23 18:39 JST（ChatGPT。b003 main確認・b004採用済み・値取得中）
 
 ## 確認済み
