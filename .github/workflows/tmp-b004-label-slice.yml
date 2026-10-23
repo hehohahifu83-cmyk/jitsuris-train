@@ -1,0 +1,36 @@
+name: temporary b004 label slice
+on:
+  push:
+    branches: [main]
+    paths:
+      - "materials/pool/work/b004/label_slice.request"
+permissions:
+  contents: write
+jobs:
+  slice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: Slice corpus rows without reading predictions
+        run: |
+          set -euo pipefail
+          read start end < materials/pool/work/b004/label_slice.request
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          start, end = map(int, Path("materials/pool/work/b004/label_slice.request").read_text().split())
+          src = Path("materials/pool/work/b004/corpus.jsonl")
+          rows = src.read_text(encoding="utf-8").splitlines()
+          if start < 1 or end < start or end > len(rows):
+              raise SystemExit(f"invalid range {start}-{end}; total={len(rows)}")
+          out = Path(f"materials/pool/work/b004/corpus_slice_{start:06d}_{end:06d}.tmp.jsonl")
+          out.write_text("\n".join(rows[start-1:end]) + "\n", encoding="utf-8")
+          print(f"wrote rows {start}-{end} of {len(rows)}")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add materials/pool/work/b004/corpus_slice_*.tmp.jsonl
+          git commit -m "一時的な b004 ラベル確認用スライス"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
