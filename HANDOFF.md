@@ -1,15 +1,15 @@
-# 最新確認 2026-10-23（ChatGPT。b003独立ラベル完了）
+# 最新確認 2026-10-23（ChatGPT。b003ラベル完了・Claude引継ぎ）
 
 ## 確認済み
-- b003 の `corpus.jsonl`／`set.json` は各5,057行。実ラベルファイル `materials/pool/work/b003/labels_chatgpt.jsonl` は **5,057/5,057行**。今回、corpus行5013〜5057の45列を追加し、送信前JSONLの件数と保存範囲の表URL・見出し対応を検証した。
-- 最終45列の内訳はcategory 7、other 5、id 17、date 8、S 1、org 2、quantity 5。commit `8d21ec6a7f8d14f0fbc69ed7ea5567e9eb15a9b7`、ラベルblob SHA `16c50c477cc3b748ff0efd0d3c81f8058afd5065`。GitHub再取得でも同じblob SHAを確認した。
-- 判断根拠は `LABEL_GUIDE.md` v1.5のみ。予測ファイルは開いていない。
+- b003 の `corpus.jsonl`／`set.json`／`labels_chatgpt.jsonl` は各5,057行。ChatGPTの独立ラベル付けは全件完了。ラベルSHA-256 `ebaa4c13317134a9d9dfa351698a26fdabf9e26632d6960b6a01856f7fb74759`、Git blob SHA `16c50c477cc3b748ff0efd0d3c81f8058afd5065`、ラベルcommit `8d21ec6a7f8d14f0fbc69ed7ea5567e9eb15a9b7`。
+- 20列差の原因を特定：個人情報除去commit `1d0d9013db57fed3bdaf26d6d781330ab9fe4160` でcorpusが5,077行から5,057行へ減り、表別列数も5,057に更新された一方、`corpus_log.json` の全体 `columns` だけ5,077のまま残った。除去前のログでは全体値・表別合計とも5,077。全体値を5,057へ修正し、再取得で表別合計5,057・ok 629表・error 22表・skipped_too_small 65表と一致することを確認。修正commit `d7b90859c1c50124d8654a5cf8cdce071e8163af`、blob SHA `602d25497a8e6db4c14067dec17ad413a80ef8a9`。旧値はGit履歴に残る。
+- Claudeへ突き合わせ・最大500列の裁定を依頼する引継ぎを連絡箱に作成：`hehohahifu83-cmyk/ai-bridge/messages/20261023-1813_chatgpt-to-claude_b003-label-handoff.md`（message commit `7969c78dd92f508b727139d44c0c55b2cb4d89ee`）。`STATE.md` も更新済み。連絡箱のINBOX再生成とClaude側の受領・処理は未確認。
+- 判断根拠は `LABEL_GUIDE.md` v1.5のみ。ChatGPTは予測ファイルを開いていない。学習・reconcile・finalizeは実行していない。
 - 一時workflow `.github/workflows/b003-label-slice-4513-end-temp.yml` とslice `materials/pool/work/b003/label_slice_4510_5057.tmp.jsonl` は削除し、両方とも404/NOT_FOUNDを確認済み。
-- `corpus_log.json` の総列数5,077とstatus=ok表の合計5,057の差20列は未解決。Claudeへの先頭500列の照合・裁定依頼は前回記録で回答待ち（今回未確認）。
-- 学習・reconcile・finalizeは実行していない。第1目標22,000確定列に達するまでは学習しない。
+- 学習の第1目標22,000列には未到達。別途Claudeが突き合わせ・裁定を行うまで学習しない。
 
 ## 次
-- b003の現有5,057列はすべて独立ラベル済み。次の工程は既存ゲート（corpus_log差分とClaude照合）の状況を確認してから判断する。学習・reconcile・finalizeは未実施。
+- Claudeは連絡箱の依頼を読み、b003の予測と全ラベルを既定手順で突き合わせ、優先度順で最大500列を裁定する。結果と一致・不一致件数を既定の研究ファイルへ記録する。
 
 ---
 
