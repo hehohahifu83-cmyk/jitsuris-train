@@ -1,18 +1,17 @@
-# 最新確認 2026-10-23 18:30 JST（Claude。b003 を突き合わせ・裁定・確定）
+# 最新確認 2026-10-23 18:39 JST（ChatGPT。b003 main確認・b004採用済み・値取得中）
 
 ## 確認済み
-- b003 を確定：**4,464 列を教材庫へ**（`materials/pool/batch_b003.jsonl`、599 表・257 公開元）。教材庫は **5,189 列**／第 1 目標 22,000（残り 16,811）。`bench/pool_status.md`
-- 突き合わせ：5,057 列のうち一致 4,108・食い違い 949 → 優先度順に 500 列を Claude が裁定、449 列は捨てた。一致の抜き取り 205 列の誤り 2（1.0%、5% 未満で合格）。使わない（unknown・S）144 列。裁定の記録 `materials/pool/adjudication_b003.jsonl`、`work/b003/decisions.jsonl`（722 行）
-- 予測は個人情報の除去（`1d0d901`）の前の 5,077 列で作られていたので、`pipeline.py` に `align_preds`（set.json の id で予測を並べ直す）を足して使った。消えた 20 列は予測から外れ、残る 5,057 列はすべて id と見出しが一致。試験 `tests/test_pipeline.py` に 1 件追加
-- ChatGPT のラベルは **622〜664 行が 1 行ずれていた**（各ラベルが 1 行後ろの列のもの）。ラベルのファイルは独立の記録として書き換えず、この 43 列は Claude が全部決めた
-- 値を個人情報として消して空になった 4 列（b003-1054・2828・4350・4355）は学習に入れていない（S または捨てた）
-- `LABEL_GUIDE.md` を v1.6 に：施設の「名称」は組織として活動する施設なら org、場所そのものなら address。自治体名だけの「設置者」「団体名」は address など
-- 試験：`python3 -m unittest discover -s tests` 320 件のうち、scipy が無いための 9 件以外は成功（変更の前も同じ 9 件）
+- b003 は確定済み：4,464 列・599 表・257 公開元。教材庫は 5,189 列／第 1 目標 22,000（残り 16,811）。一致 4,108・食い違い 949 のうち Claude が 500 列を裁定し、449 列を除外。抜き取りの誤り 2/205（1.0%）。ラベルのずれ（622〜664 行）は Claude が裁定し、LABEL_GUIDE v1.6 を確定。commit `1c7590c` は `main` と一致。
+- b004 は `pipeline.py adopt --batch b004 --candidates materials/pool/candidates_20261022.json` で採用済み。2,201 候補中 509 表。除外は既採用 757、1 陣 1 公開元 3 表の上限 928、題名スクリーニング 7。記録 `materials/pool/work/b004/adopted.json`、Actions run 39933003143 success（出力 commit `71dd33e`）。
+- 509 表の値取得 run 39933098082 は実行中（2026-10-23 18:36 JST 時点）。取得・`corpus_to_set.py` の完了前。予測と ChatGPT の独立ラベルはまだ始めていない。
+- S11 3.4 run 39866548228 は 2026-10-23 11:40 JST に cancelled（job step 7、artifact 0）。候補ファイルは未更新で、以前の21表のまま。Claude の依頼どおり再実行せず、キャンセルを記録した。
 
 ## 次
-- b004：`candidates_20261022.json` の残り（約 1,400 表）から採用（`pipeline.py adopt --batch b004 --candidates materials/pool/candidates_20261022.json`。使った表は自動で外れる）→ 取り出し → 予測 → ChatGPT のラベル → Claude の裁定
-- 22,000 列までは学習しない
+- run 39933098082 が終わったら、corpus・set・取得ログの行数と個人情報除去を確認する。次に `materials/label_assist/predict.request` で b004 の予測を依頼する。
+- ChatGPT は LABEL_GUIDE v1.6 だけで全列を独立ラベル付けし、100行ごとに table URL・header を確認する。加えて各表の最初と最後の行で、header と label の対応を確認する。予測は見ない。Claude に照合・裁定を引き継ぐ。
+- 教材庫が 22,000 確定列に達するまでは学習しない。
 
+---
 ---
 
 # 最新確認 2026-10-23（ChatGPT。b003ラベル完了・Claude引継ぎ）
