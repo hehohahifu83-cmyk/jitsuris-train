@@ -1,14 +1,14 @@
 # 最新確認 2026-10-23（ChatGPT。b003独立ラベル継続）
 
 ## 確認済み
-- b003 の `corpus.jsonl`／`set.json` は各5,057行。実ラベルファイル `materials/pool/work/b003/labels_chatgpt.jsonl` は **4,612/5,057行**（残り445行）。今回、corpus行4513〜4612の100列を追加した。
-- 追加前の境界3行（4510〜4512）とcorpusの表URL・見出しが一致し、追加100行も同じ順で照合済み。今回の内訳はcategory 12、id 21、quantity 37、address 24、date 3、org 3（S・unknownなし）。commit `f4e7e6a81a4f3d3050bc1abd8c54aa423ee6110f`、ラベルblob SHA `95175c2db5feeae84ec8c4f56ea3ea3b5bf9a18e`。
+- b003 の `corpus.jsonl`／`set.json` は各5,057行。実ラベルファイル `materials/pool/work/b003/labels_chatgpt.jsonl` は **4,712/5,057行**（残り345行）。今回、corpus行4613〜4712の100列を追加した。
+- 追加前の境界3行（4610〜4612）とcorpusの表URL・見出しが一致し、追加100行も同じ順で照合済み。今回の内訳はaddress 28、other 3、id 19、category 19、org 10、date 4、quantity 15、text 2（S・unknownなし）。commit `f1ec0e36b29a56c66a5fcda7fc590f32ec9bdb0e`、ラベルblob SHA `2dc31d9a9deb8098d73064105e1608654bafd53f`。
 - 判断根拠は `LABEL_GUIDE.md` v1.5のみ。予測ファイルは開いていない。
 - `corpus_log.json` の総列数5,077とstatus=ok表の合計5,057の差20列は未解決。Claudeへの先頭500列の照合・裁定依頼は前回記録で回答待ち（今回未確認）。
 - 学習・reconcile・finalizeは実行していない。第1目標22,000確定列までは学習しない。
 
 ## 次
-- corpus行4613〜4712を同じ独立手順でラベル化し、各100列後に表URL・見出しの対応を検証して記録する。
+- corpus行4713〜4812を同じ独立手順でラベル化し、各100列後に表URL・見出しの対応を検証して記録する。
 ---
 
 # 最新確認 2026-10-23 12:06 JST（ChatGPT。b003独立ラベル継続・S11 3.4探索中）
