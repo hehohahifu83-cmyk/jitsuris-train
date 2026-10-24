@@ -278,9 +278,10 @@ def fetch_table(item, known):
         base = item["resource_url"].split("/dataset/")[0] + "/api/3/action/"
         res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
         pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
-        lic = normalize_license(pkg.get("license_id"))
+        from pipeline import license_from_pkg, csv_domains, host_in
+        lic = license_from_pkg(pkg)
         if lic not in ALLOWED_LICENSES:
-            raise ValueError(f"license not allowed: {pkg.get('license_id')}")
+            raise ValueError(f"license not allowed: {pkg.get('license_id') or pkg.get('license_title')}")
         download = res.get("url") or item["resource_url"]
         if download in known or item["resource_url"] in known:
             raise ValueError("URL overlaps the training corpus or the main set")
@@ -290,8 +291,10 @@ def fetch_table(item, known):
                 "source_prefix": "jp3" if plat == "bodik" else "world", "language": language_of(host, plat)}
         if item.get("access") == "csv" or not res.get("datastore_active"):
             # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
-            if urlparse(download).scheme != "https" or (urlparse(download).hostname or "") != host:
-                raise ValueError("csv: download is not on the catalog host")
+            dl_host = urlparse(download).hostname or ""
+            if urlparse(download).scheme != "https" or not host_in(dl_host, csv_domains(host)):
+                raise ValueError("csv: download is not on the catalog host or its organization's domain")
+            ALLOWED_HOSTS.add(dl_host)
             if str(res.get("format") or "").lower() not in ("csv", "text/csv") and not download.lower().split("?")[0].endswith(".csv"):
                 raise ValueError(f"csv: not a CSV resource ({res.get('format')})")
             raw, truncated = http_bytes(download, "csv")

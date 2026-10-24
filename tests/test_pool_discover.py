@@ -142,6 +142,15 @@ class PoolDiscoverTests(unittest.TestCase):
         self.assertEqual(calls, [])
         self.assertEqual(stats["stopped_by_budget"], 2)
 
+    def test_license_title_and_org_domain_csv(self):
+        import pipeline as P
+        self.assertEqual(P.license_from_pkg({"license_id": "", "license_title": "政府標準利用規約（第2.0版）"}), "cc-by-4.0")
+        self.assertEqual(P.license_from_pkg({"license_id": "cc-by-4.0", "license_title": "x"}), "cc-by-4.0")
+        self.assertNotIn(P.license_from_pkg({"license_id": "", "license_title": "CC BY-NC 4.0"}), P.ALLOWED_LICENSES)
+        self.assertTrue(D.csv_on_host({"format": "CSV", "url": "https://www.fukushihoken.metro.tokyo.lg.jp/a.csv"}, "https://catalog.data.metro.tokyo.lg.jp"))
+        self.assertFalse(D.csv_on_host({"format": "CSV", "url": "https://metro.tokyo.lg.jp.example.com/a.csv"}, "https://catalog.data.metro.tokyo.lg.jp"))
+        self.assertFalse(D.csv_on_host({"format": "CSV", "url": "https://www.city.example.lg.jp/a.csv"}, "https://data.bodik.jp"))
+
 
 if __name__ == "__main__":
     unittest.main()

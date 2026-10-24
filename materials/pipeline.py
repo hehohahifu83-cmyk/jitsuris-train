@@ -25,6 +25,7 @@ import hashlib
 import json
 import random
 import re
+import unicodedata
 import sys
 from collections import Counter
 from datetime import datetime, timezone
@@ -138,6 +139,32 @@ def normalize_license(raw):
     if v in ("cc-40-by", "cc-by-40"):
         return "cc-by-4.0"
     return v
+
+
+def license_from_pkg(pkg):
+    """CKAN のデータセットのライセンス。license_id が空なら license_title を読む（e-Gov は名前だけを書く。2026-10-24）。
+    政府標準利用規約（第2.0版）は CC BY 4.0 と互換と規約に明記されているので cc-by-4.0 と同じ扱い。"""
+    lid = normalize_license(pkg.get("license_id"))
+    if lid and lid not in ("notspecified", "none"):
+        return lid
+    title = unicodedata.normalize("NFKC", str(pkg.get("license_title") or "")).strip()
+    if re.search(r"政府標準利用規約.*(2\.0|第2)", title) or re.search(r"(CC|クリエイティブ・?コモンズ)\s*(BY|表示)\s*4\.0", title, re.I):
+        return "cc-by-4.0"
+    if re.search(r"(CC|クリエイティブ・?コモンズ)\s*(BY|表示)(?![-\s]*(NC|SA|非営利|継承))", title, re.I):
+        return "cc-by"
+    return normalize_license(title) if title else lid
+
+
+def csv_domains(catalog_host):
+    """カタログのホストごとに、CSV を取ってよい組織のドメイン（allowed_hosts.json の csv_domains）。カタログのホストは常に含む。"""
+    p = POOL / "allowed_hosts.json"
+    extra = json.load(open(p, encoding="utf-8")).get("csv_domains", {}).get(catalog_host, []) if p.exists() else []
+    return [catalog_host] + list(extra)
+
+
+def host_in(host, domains):
+    host = (host or "").lower()
+    return any(host == d or host.endswith("." + d) for d in domains)
 
 
 def license_id(c):

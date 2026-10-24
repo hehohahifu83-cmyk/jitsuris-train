@@ -27,6 +27,11 @@
 - 国のポータルに **e-Gov（data.e-gov.go.jp、府省）** と **東京都（catalog.data.metro.tokyo.lg.jp、部局）** を足した（`--national --only-national <ホスト>`）。egov は FIXED_ASSIGNMENTS で train、tokyo は train に登録済みなので、部局も train になる
 - 候補集めはホストごとに途中の結果を書き出し、Actions は「集める」が時間切れ（100 分）でも「保存」で途中までの候補と allocation.json を残す
 
+## 組織のドメインの CSV・e-Gov のライセンス（2026-10-24 Claude）
+- 10/24 の候補集め（candidates_20261024c）：東京都は datastore の 351 表のほか、**別のホストの CSV が 3,179**（都の各局のサイト）。e-Gov は **12,908 件すべて license_id が空**で落ちた
+- `allowed_hosts.json` の `csv_domains`：カタログごとに CSV を取ってよい組織のドメイン（東京都 → `metro.tokyo.lg.jp`、e-Gov → `go.jp`）。カタログのホストか、そのドメインの下のホストの https の CSV だけ（似た名前の別ドメインは通らない）
+- `pipeline.license_from_pkg`：license_id が空なら license_title を読む。政府標準利用規約（第2.0版）は CC BY 4.0 と互換と規約に明記されているので cc-by-4.0。CC BY（表示）も読む。NC・SA は通さない
+
 ## ラベル用シート（2026-10-24 Claude。b006 から）
 ChatGPT が大きな `corpus.jsonl`（1 陣 3〜5MB）を読まずにラベルを付けるための道具。`materials/label_sheets.py`
 - Claude：`python materials/label_sheets.py make --batch b00N` → `work/b00N/sheets/` に `sheet_001.md` …（1 枚 120 グループ・約 40KB）と `groups.json`

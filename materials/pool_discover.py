@@ -26,18 +26,19 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "materials"))
-from pipeline import ALLOWED_LICENSES, PER_PUBLISHER_POOL, TITLE_DENY, allowed_ckan_hosts, normalize_license  # noqa: E402
+from pipeline import (ALLOWED_LICENSES, PER_PUBLISHER_POOL, TITLE_DENY, allowed_ckan_hosts, csv_domains, host_in,  # noqa: E402
+                      license_from_pkg, normalize_license)
 
 PER_PUBLISHER = PER_PUBLISHER_POOL
 # 国のポータル（2026-10-24）。親の公開元は allocation.py の FIXED_ASSIGNMENTS で train に固定されているので、
 # 組織は「親:組織」で登録すれば必ず train になる（parent_publisher の決まり）。データセットを見る前に組織だけ登録する
 NATIONAL = [
+    # 日本（2026-10-24）。egov は FIXED_ASSIGNMENTS で train、tokyo は train に登録済みなので、部局も train になる。先に探す
+    {"parent": "egov", "host": "data.e-gov.go.jp", "site": "https://data.e-gov.go.jp/data"},
+    {"parent": "tokyo", "host": "catalog.data.metro.tokyo.lg.jp", "site": "https://catalog.data.metro.tokyo.lg.jp"},
     {"parent": "australia", "host": "data.gov.au", "site": "https://data.gov.au/data"},
     {"parent": "ireland", "host": "data.gov.ie", "site": "https://data.gov.ie"},
     {"parent": "canada", "host": "open.canada.ca", "site": "https://open.canada.ca/data"},
-    # 日本（2026-10-24）。egov は FIXED_ASSIGNMENTS で train、tokyo は train に登録済みなので、部局も train になる
-    {"parent": "egov", "host": "data.e-gov.go.jp", "site": "https://data.e-gov.go.jp/data"},
-    {"parent": "tokyo", "host": "catalog.data.metro.tokyo.lg.jp", "site": "https://catalog.data.metro.tokyo.lg.jp"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
@@ -76,10 +77,11 @@ def bodik_candidates(train_orgs, limit=None):
 
 
 def csv_on_host(res, site):
+    """カタログと同じホスト、または allowed_hosts.json の csv_domains に書いた組織のドメインの https の CSV。"""
     url = str(res.get("url") or "")
     fmt = str(res.get("format") or "").lower()
     return (fmt in ("csv", "text/csv") or url.lower().split("?")[0].endswith(".csv")) and \
-        urlparse(url).scheme == "https" and (urlparse(url).hostname or "") == (urlparse(site).hostname or "")
+        urlparse(url).scheme == "https" and host_in(urlparse(url).hostname, csv_domains(urlparse(site).hostname or ""))
 
 
 def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
@@ -109,7 +111,7 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
         for pkg in sorted(packages, key=lambda p: p.get("metadata_modified") or "", reverse=True):
             if picked >= PER_PUBLISHER:
                 break
-            lic = normalize_license(pkg.get("license_id"))
+            lic = license_from_pkg(pkg)
             title = str(pkg.get("title") or "")
             if lic not in ALLOWED_LICENSES:
                 stats["license"] += 1
