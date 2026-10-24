@@ -206,6 +206,8 @@ TITLE_DENY = re.compile(r"(crime|arrest|police|incident|complaint|311|service re
                         r"permit|licens|inspection|violation|calls for service|councillor|parliamentarian|heads of mission|convict|wills|baby names|auditor|liquidator|"
                         r"snap send solve|hard rubbish|planning permission|freedom of information|disclosure log|property price register|"
                         r"fraud reporting|tenancy survey|parking ticket|expiation|unclaimed|line list|政治団体名簿|"
+                        r"cadastro [uú]nico|credit representative|financial adviser|planning application|development application|covid-19 (?:cases|tests)|"
+                        r"remuneration|rental bond|prisoner|deceased estate|"
                         r"admission|enrol+ment|allegation|internal affairs|student|patient|victim|offender|inmate|payroll|employee|salar|"
                         r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員|在籍者|入学者|"
                         r"crime|ocorr[eê]ncia|den[uú]ncia|reclama[cç]|elei[cç]|servidor|sal[aá]rio|remunera[cç]|folha de pagamento|"

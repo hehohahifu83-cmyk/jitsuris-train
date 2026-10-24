@@ -66,7 +66,10 @@ class LicenseTitleTests(unittest.TestCase):
                   "Relação de Estudantes das Instituições da Rede Parceira", "Relação de Profissionais das Instituições da Rede Parceira",
                   "Resultado Concurso PBH Ativos 001/2018", "HRCC Councillors 2025-26", "Convict Indexes",
                   "DAFM Freedom of Information Disclosure Logs", "PSRA - Dublin Residential Property Price Register",
-                  "政治団体名簿_都道府県知事・議会議員", "Queensland COVID-19 Case Line List"):
+                  "政治団体名簿_都道府県知事・議会議員", "Queensland COVID-19 Case Line List",
+                  "Famílias no Cadastro Único", "ASIC – Credit Representative Dataset", "Ballarat Planning Applications Currently on Advertising",
+                  "Development Application Register", "NSW COVID-19 tests by result (discontinued)", "Governance Board Member Remuneration 2017 - Roscommon",
+                  "Rental Bond and Rental Data Tasmania", "Tasmanian Prisoners (1877-1938)", "Deceased Estate Files, 1880-1923"):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
 
