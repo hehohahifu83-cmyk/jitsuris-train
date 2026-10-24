@@ -1,3 +1,13 @@
+# 最新確認 2026-10-24 18:54 JST（Claude。カナダの州のライセンス）
+
+## 確認済み
+- b009 の取り出し run 40081207535 は実行中（600 表、上限 180 分）
+- カナダの州・準州の Open Government Licence（ab-ogla・bc-oglbc・on-oglo・ns-oglns・nb-oglnb・nl-oglnl・pei-oglpei・yk-oglyk・mb-omb・nwt-tno）とサスカチュワンの sk-suudl を ogl-canada-2.0 と同じ扱いにした（どれも OGL-UK を元にした出典表示だけのライセンス。連邦の OGL-Canada と同じ判断。Claude の判断）。試験を更新
+- 候補集めを依頼：カナダ（州のライセンス）→ 豪州（州のサイトの CSV が gov.au で通るようになった。前回 csv_other_host 1,329）、持ち時間 95 分、`candidates_20261024g.json`
+- 22,000 列に達しても、オーナーの許可が出るまで学習しない
+
+---
+
 # 最新確認 2026-10-24 18:15 JST（Claude。豪州のファイルは州のサイト・b009 を作り直し）
 
 ## 確認済み

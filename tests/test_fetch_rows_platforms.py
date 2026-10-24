@@ -70,9 +70,10 @@ class LicenseTitleTests(unittest.TestCase):
 
     def test_license_spellings(self):
         for raw in ("https://creativecommons.org/licenses/by/4.0", "cc-by-2.5", "cc-by-3.0-au", "Creative Commons CC-BY 4.0",
-                    "creative commons attribution 3.0 australia", "ca-ogl-lgo", "qc-cc-by"):
+                    "creative commons attribution 3.0 australia", "ca-ogl-lgo", "qc-cc-by",
+                    "ab-ogla", "bc-oglbc", "on-oglo", "sk-suudl", "yk-oglyk"):
             self.assertIn(P.normalize_license(raw), P.ALLOWED_LICENSES, raw)
-        for raw in ("cc-by-sa-4.0", "cc-by-nc-3.0-au", "cc-by-nd", "cc-nc-nd", "https://creativecommons.org/licenses/by-nc/4.0", "ab-ogla", "notspecified"):
+        for raw in ("cc-by-sa-4.0", "cc-by-nc-3.0-au", "cc-by-nd", "cc-nc-nd", "https://creativecommons.org/licenses/by-nc/4.0", "ca-ogl-xx", "notspecified"):
             self.assertNotIn(P.normalize_license(raw), P.ALLOWED_LICENSES, raw)
         self.assertEqual(P.normalize_license("cc-by-4.0"), "cc-by-4.0")
 

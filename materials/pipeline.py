@@ -138,6 +138,10 @@ def normalize_license(raw):
         return v if v in ("cc-by-4.0", "cc-by-30", "cc-by-21") else "cc-by"
     if v in ("ca-ogl-lgo", "qc-cc-by"):   # カナダ連邦の Open Government Licence、ケベック州の CC BY（open.canada.ca の ID）
         return "ogl-canada-2.0" if v == "ca-ogl-lgo" else "cc-by"
+    # カナダの州・準州の Open Government Licence（OGL-UK を元にした出典表示だけのライセンス）とサスカチュワンの
+    # Standard Unrestricted Use Data Licence（出典表示だけ）。連邦の OGL-Canada と同じ扱い（2026-10-24 Claude の判断）
+    if v in ("ab-ogla", "bc-oglbc", "on-oglo", "ns-oglns", "nb-oglnb", "nl-oglnl", "pei-oglpei", "yk-oglyk", "mb-omb", "nwt-tno", "sk-suudl"):
+        return "ogl-canada-2.0"
     if "public-domain" in v or v == "public domain" or v in ("odc-pddl", "pddl"):   # PDDL は公有の宣言（CC0 と同じ扱い）
         return "public-domain"
     if "cczero" in v or v.startswith("cc0") or "cc0-10" in v:
