@@ -162,6 +162,100 @@ def http_json(url, step="", tries=3):
 
 
 
+CSV_MAX_BYTES = 3_000_000   # CSV は先頭 3MB だけ読む（行を 1,000 行まで使うので足りる）
+
+
+def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
+    """CSV のダウンロード（許可のホストだけ・リダイレクト先も確かめる）。先頭 limit バイトと、途中で切ったかを返す。"""
+    import time
+    from urllib.error import HTTPError
+    host = urlparse(url).hostname or ""
+    if urlparse(url).scheme != "https" or host not in ALLOWED_HOSTS:
+        raise ValueError(f"host not allowed: {host}")
+    for attempt in range(tries):
+        time.sleep(1.0 + 4.0 * attempt)
+        try:
+            with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=90) as resp:
+                if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
+                    raise ValueError("redirected outside the allowed hosts")
+                raw = resp.read(limit + 1)
+                return raw[:limit], len(raw) > limit
+        except HTTPError as exc:
+            if exc.code in (403, 429) or exc.code >= 500:
+                if attempt < tries - 1:
+                    continue
+            raise RuntimeError(f"{step}: HTTP {exc.code}") from None
+
+
+def parse_csv(raw, truncated=False, limit=FETCH_LIMIT):
+    """CSV のバイト列 → (列名, 行の dict のリスト, 読めた行の数)。読めなければ ValueError。
+    文字コードは UTF-8（BOM あり・なし）→ CP932 の順に試す。先頭 10 行の中で、2 つ以上の異なる文字の列名が並び、
+    その次の行からも同じ数の列が続く最初の行を見出しとする（表題・注の前置きの行を飛ばすため）。"""
+    import csv
+    import io
+    text = None
+    for enc in ("utf-8-sig", "cp932"):
+        try:
+            text = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            if truncated and enc == "utf-8-sig":
+                try:   # 途中で切ったせいで最後の文字が欠けたとき
+                    text = raw[: max(0, len(raw) - 4)].decode("utf-8-sig", errors="strict")
+                    break
+                except UnicodeDecodeError:
+                    pass
+            continue
+    if text is None:
+        raise ValueError("csv: unknown encoding")
+    if truncated:
+        text = text[: text.rfind("\n") + 1]   # 切れた最後の行を捨てる
+    sample = text[:8192]
+    try:
+        delim = csv.Sniffer().sniff(sample, delimiters=",\t;").delimiter
+    except csv.Error:
+        delim = ","
+    try:
+        rows = list(csv.reader(io.StringIO(text), delimiter=delim))
+    except csv.Error as exc:
+        raise ValueError(f"csv: {exc}") from None
+    head = None
+    for i, row in enumerate(rows[:10]):
+        cells = [c.strip().lstrip("\ufeff") for c in row]
+        named = [c for c in cells if c]
+        if len(named) < 2 or len(set(named)) < len(named) or all(re.fullmatch(r"[-0-9.,%]+", c) for c in named):
+            continue
+        nxt = rows[i + 1: i + 6]
+        if nxt and sum(1 for r in nxt if len(r) >= len(named)) >= max(1, len(nxt) - 1):
+            head = (i, cells)
+            break
+    if head is None:
+        raise ValueError("csv: header row not found")
+    i, cells = head
+    fields, idx = [], []
+    for j, c in enumerate(cells):
+        if c:
+            fields.append(c)
+            idx.append(j)
+    records = []
+    for r in rows[i + 1:]:
+        if not any(x.strip() for x in r):
+            continue
+        records.append({f: (r[j].strip() if j < len(r) else "") for f, j in zip(fields, idx)})
+        if len(records) >= limit:
+            break
+    return fields, records, len(records)
+
+
+def language_of(host, plat):
+    host = host or ""
+    if plat == "bodik" or host.endswith(".jp"):
+        return "ja"
+    if host.endswith(".br"):
+        return "pt"
+    return "en"
+
+
 SOCRATA_LICENSES = {"PUBLIC_DOMAIN": "public-domain", "CC0_10": "cc0", "CC_30_BY": "cc-by-30", "CC_40_BY": "cc-by-4.0", "ODC_BY_10": "odc-by"}
 SOCRATA_SKIP_TYPES = {"location", "point", "multipoint", "line", "multiline", "polygon", "multipolygon", "url", "photo", "document", "blob"}
 
@@ -190,11 +284,22 @@ def fetch_table(item, known):
         download = res.get("url") or item["resource_url"]
         if download in known or item["resource_url"] in known:
             raise ValueError("URL overlaps the training corpus or the main set")
-        ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
-        fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
+        host = urlparse(item["resource_url"]).hostname or ""
         meta = {"platform": plat, "resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
                 "download_url": download, "license": lic, "fetched_utc": now,
-                "source_prefix": "jp3" if plat == "bodik" else "world", "language": "ja" if plat == "bodik" else "en"}
+                "source_prefix": "jp3" if plat == "bodik" else "world", "language": language_of(host, plat)}
+        if item.get("access") == "csv" or not res.get("datastore_active"):
+            # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
+            if urlparse(download).scheme != "https" or (urlparse(download).hostname or "") != host:
+                raise ValueError("csv: download is not on the catalog host")
+            if str(res.get("format") or "").lower() not in ("csv", "text/csv") and not download.lower().split("?")[0].endswith(".csv"):
+                raise ValueError(f"csv: not a CSV resource ({res.get('format')})")
+            raw, truncated = http_bytes(download, "csv")
+            fields, records, total = parse_csv(raw, truncated)
+            meta["access"] = "csv"
+            return meta, fields, records, total
+        ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
+        fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
         return meta, fields, ds["records"], ds.get("total")
     if plat == "socrata":
         check, host = platform_of({"platform": "socrata", "publisher_id": item["publisher_id"], "resource_id": item.get("resource_id"),
@@ -295,6 +400,10 @@ def self_test():
     assert rows2 == rows   # 決定的
     rows3, reasons3 = build_rows(meta, ["a", "tel"], [{"a": "1", "tel": "03-1234-5678"}] * 6, 6)
     assert rows3 == [] and reasons3["sensitive_value"] == 1   # 残る列が 1 つなら表ごと使わない
+    f, r, n = parse_csv("表1 人口\n注：単位は人\n地区,人口,世帯\n東,10,4\n西,20,8\n南,30,9\n北,40,12\n中,50,20\n".encode("cp932"))
+    assert f == ["地区", "人口", "世帯"] and n == 5 and r[0] == {"地区": "東", "人口": "10", "世帯": "4"}, (f, r)
+    f, r, n = parse_csv("a,b\n1,2\n3,4\n5,6\n7,8\n9,1".encode("utf-8"), truncated=True)
+    assert f == ["a", "b"] and n == 4   # 切れた最後の行は捨てる
     print("self-test ok")
     return 0
 

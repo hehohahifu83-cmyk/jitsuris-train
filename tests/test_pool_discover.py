@@ -99,6 +99,37 @@ class PoolDiscoverTests(unittest.TestCase):
         self.assertIn(normalize_license("odc-pddl"), ALLOWED_LICENSES)
         self.assertNotIn(normalize_license("odc-odbl"), ALLOWED_LICENSES)
 
+    def test_csv_on_same_host_is_a_candidate_when_no_datastore(self):
+        pkgs = [
+            {"name": "p1", "title": "予算", "license_id": "cc-by-4.0", "metadata_modified": "2024",
+             "resources": [{"id": "r1", "datastore_active": False, "format": "CSV", "url": "https://data.bodik.jp/dataset/p1/resource/r1/download/a.csv"}]},
+            {"name": "p2", "title": "決算", "license_id": "cc-by-4.0", "metadata_modified": "2023",
+             "resources": [{"id": "r2", "datastore_active": False, "format": "CSV", "url": "https://www.city.example.jp/a.csv"}]},
+            {"name": "p3", "title": "人口", "license_id": "cc-by-4.0", "metadata_modified": "2022",
+             "resources": [{"id": "r3", "datastore_active": False, "format": "CSV", "url": "http://data.bodik.jp/x.csv"}]},
+        ]
+        orig = D.get_json
+        D.get_json = lambda url, tries=4: {"result": {"count": len(pkgs), "results": pkgs}}
+        try:
+            out, stats = D.bodik_candidates({"111111"})
+        finally:
+            D.get_json = orig
+        self.assertEqual([(x["resource_id"], x["access"], x["datastore_available"]) for x in out], [("r1", "csv", False)])
+        self.assertEqual(stats["csv"], 1)
+        self.assertEqual(stats["csv_other_host"], 2)   # 別のホスト・http は使わない
+        import pipeline as P
+        from collections import Counter
+        adopted, why = P.adopt([dict(out[0], pool="train")], {"111111": "train"}, set(), set(), Counter(), Counter())
+        self.assertEqual([a["access"] for a in adopted], ["csv"])
+
+    def test_parse_csv_finds_header_after_title_rows(self):
+        import fetch_rows as F
+        f, r, n = F.parse_csv("令和5年 歳出\n単位：千円\n款,予算額,決算額\n議会費,100,98\n総務費,200,190\n民生費,300,280\n衛生費,90,85\n土木費,80,70\n".encode("cp932"))
+        self.assertEqual(f, ["款", "予算額", "決算額"])
+        self.assertEqual(n, 5)
+        with self.assertRaises(ValueError):
+            F.parse_csv(b"1,2,3\n4,5,6\n")
+
 
 if __name__ == "__main__":
     unittest.main()

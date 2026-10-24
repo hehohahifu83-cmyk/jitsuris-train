@@ -35,6 +35,9 @@ NATIONAL = [
     {"parent": "australia", "host": "data.gov.au", "site": "https://data.gov.au/data"},
     {"parent": "ireland", "host": "data.gov.ie", "site": "https://data.gov.ie"},
     {"parent": "canada", "host": "open.canada.ca", "site": "https://open.canada.ca/data"},
+    # 日本（2026-10-24）。egov は FIXED_ASSIGNMENTS で train、tokyo は train に登録済みなので、部局も train になる
+    {"parent": "egov", "host": "data.e-gov.go.jp", "site": "https://data.e-gov.go.jp/data"},
+    {"parent": "tokyo", "host": "catalog.data.metro.tokyo.lg.jp", "site": "https://catalog.data.metro.tokyo.lg.jp"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
@@ -65,6 +68,13 @@ def title_key(title):
 
 def bodik_candidates(train_orgs, limit=None):
     return ckan_candidates("data.bodik.jp", {org: org for org in train_orgs}, "bodik", limit)
+
+
+def csv_on_host(res, site):
+    url = str(res.get("url") or "")
+    fmt = str(res.get("format") or "").lower()
+    return (fmt in ("csv", "text/csv") or url.lower().split("?")[0].endswith(".csv")) and \
+        urlparse(url).scheme == "https" and (urlparse(url).hostname or "") == (urlparse(site).hostname or "")
 
 
 def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
@@ -105,19 +115,27 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
                 stats["same_title"] += 1
                 continue
             res = next((r for r in pkg.get("resources", []) if r.get("datastore_active")), None)
+            access = "datastore"
             if not res:
-                stats["no_datastore"] += 1
-                continue
+                # datastore が無ければ、カタログと同じホストの https の CSV（2026-10-24）
+                res = next((r for r in pkg.get("resources", []) if csv_on_host(r, site)), None)
+                access = "csv"
+                if not res:
+                    stats["no_datastore"] += 1
+                    if any(str(r.get("format") or "").lower() == "csv" for r in pkg.get("resources", [])):
+                        stats["csv_other_host"] += 1
+                    continue
+                stats["csv"] += 1
             seen_titles.add(key)
             picked += 1
             out.append({"publisher_id": pid, "pool": "train", "platform": platform, "title": title, "resource_name": res.get("name", ""),
                         "resource_url": f"{site}/dataset/{pkg.get('name')}/resource/{res['id']}", "resource_id": res["id"],
-                        "license": {"id": lic}, "datastore_available": True, "safe_headers": []})
+                        "license": {"id": lic}, "datastore_available": access == "datastore", "access": access, "safe_headers": []})
         stats["tables"] = len(out)
     return out, stats
 
 
-def register_national_orgs(alloc_path, today, limit=None):
+def register_national_orgs(alloc_path, today, limit=None, only=()):
     """国のポータルの組織の一覧（organization_list：名前だけ）を取り、「親:組織」で allocation.json に登録する。
     データセットの中身は見ない。登録は allocation.py の決まりだけで決まる（親が train に固定）。"""
     sys.path.insert(0, str(ROOT / "independent_eval"))
@@ -125,6 +143,8 @@ def register_national_orgs(alloc_path, today, limit=None):
     alloc = A.load_allocation(alloc_path)
     found, stats = {}, {}
     for nat in NATIONAL:
+        if only and nat["host"] not in only:
+            continue
         try:
             names = get_json(f"{nat['site']}/api/3/action/organization_list")["result"]
         except Exception as exc:
@@ -190,6 +210,7 @@ def main(argv=None):
     ap.add_argument("--bodik", action="store_true")
     ap.add_argument("--ckan", action="store_true")
     ap.add_argument("--national", action="store_true")
+    ap.add_argument("--only-national", action="append", default=[], help="--national で探すホストを絞る")
     ap.add_argument("--only-host", action="append", default=[], help="--ckan で探すホストを絞る（取り直し用）")
     ap.add_argument("--socrata", action="store_true")
     ap.add_argument("--limit-publishers", type=int)
@@ -197,10 +218,18 @@ def main(argv=None):
     pubs = json.load(open(ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]
     train = {p["publisher_id"] for p in pubs if p["pool"] == "train"}
     selected, stats = [], {}
+
+    def save(partial=True):
+        """途中でも書き出す（Actions の時間切れで全部を失わないため）。partial は途中かどうかの印"""
+        doc = {"schema_version": 1, "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "tool": "materials/pool_discover.py",
+               "metadata_only": True, "values_saved": False, "partial": partial, "stats": stats, "selected": selected}
+        Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.out).write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     if a.bodik:
         orgs = {p for p in train if re.fullmatch(r"\d{6}", p)}
         c, stats["bodik"] = bodik_candidates(orgs, a.limit_publishers)
         selected += c
+        save()
     if a.ckan:
         src = json.load(open(ROOT / "independent_eval" / "allocation_sources_world_20261022.json", encoding="utf-8"))
         allowed = allowed_ckan_hosts()
@@ -215,13 +244,15 @@ def main(argv=None):
                 continue
             c, stats["ckan"][cat["domain"]] = ckan_candidates(cat["domain"], orgs, "ckan", a.limit_publishers, rows=200)
             selected += c
+            save()
     if a.national:
         today = datetime.now(timezone.utc).date().isoformat()
-        found, stats["national_registration"] = register_national_orgs(ROOT / "independent_eval" / "allocation.json", today, a.limit_publishers)
+        found, stats["national_registration"] = register_national_orgs(ROOT / "independent_eval" / "allocation.json", today, a.limit_publishers, a.only_national)
         stats["national"] = {}
         for host, (nat, orgs) in found.items():
             c, stats["national"][host] = ckan_candidates(host, orgs, "ckan", None, site=nat["site"], rows=200)
             selected += c
+            save()
     if a.socrata:
         hosts = set()
         for p in train:
@@ -231,10 +262,7 @@ def main(argv=None):
         real_hosts = {h.replace("_", ".") for h in hosts}
         c, stats["socrata"] = socrata_candidates(real_hosts, a.limit_publishers)
         selected += [x for x in c if x["publisher_id"] in train]
-    doc = {"schema_version": 1, "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "tool": "materials/pool_discover.py",
-           "metadata_only": True, "values_saved": False, "stats": stats, "selected": selected}
-    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(a.out).write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    save(partial=False)
     print(f"selected {len(selected)} tables from {len({x['publisher_id'] for x in selected})} publishers; {json.dumps(stats, ensure_ascii=False)}")
     return 0
 

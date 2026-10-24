@@ -194,8 +194,8 @@ def adopt(candidates, pools, known_urls, known_rids, pool_pub, pool_hsets):
             reason = "ライセンスが許可の一覧にない"
         elif TITLE_DENY.search(f"{c.get('title', '')} {c.get('resource_name', '')}"):
             reason = "題名が個人の記録になりやすい表"
-        elif not c.get("datastore_available"):
-            reason = "datastore が無い（今の取り出しの道具は datastore・SODA だけ）"
+        elif not c.get("datastore_available") and c.get("access") != "csv":
+            reason = "datastore も CSV も無い（取り出しの道具は datastore・SODA・同じホストの CSV）"
         elif platform_of(c)[0] is None or not rid:
             reason = "取り出せる場でない（BODIK・許可の CKAN・公開元と一致する Socrata だけ）"
         elif url in known_urls or rid in known_rids or rid in seen:
@@ -215,7 +215,7 @@ def adopt(candidates, pools, known_urls, known_rids, pool_pub, pool_hsets):
             hsets[(pub, heads)] += 1
         plat, host = platform_of(c)
         adopted.append({"n": len(adopted) + 1, "publisher_id": pub, "resource_url": url, "title": c.get("title", ""),
-                        "platform": plat, "host": host, "resource_id": rid})
+                        "platform": plat, "host": host, "resource_id": rid, "access": c.get("access") or ("datastore" if plat != "socrata" else "soda")})
     return adopted, why
 
 

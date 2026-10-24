@@ -21,6 +21,12 @@
 
 1 陣の大きさは 1,000〜2,000 列が目安（Claude の裁定は 1 陣 500 列まで）。陣の ID は `b001`、`b002` … の順。
 
+## CSV のファイルも取り出す・日本の府省と東京都（2026-10-24 Claude）
+- これまでは CKAN の datastore（API で行を読める表）だけを使い、BODIK だけで 918 表を「datastore が無い」で落としていた。**datastore が無くても、カタログと同じホストの https の CSV なら候補にする**（`pool_discover.py`、候補に `access: "csv"`）。採用（`pipeline.py adopt`）も CSV の候補を通す
+- 取り出し（`fetch_rows.py`）：CSV は先頭 3MB だけ読む（切れた最後の行は捨てる）。文字コードは UTF-8 → CP932。先頭 10 行から見出しの行を探す（表題・注の行を飛ばす）。個人情報の列・値の落とし方は datastore と同じ。別のホストの CSV・http の CSV は使わない（候補集めの `stats` に `csv_other_host` で数を残す）
+- 国のポータルに **e-Gov（data.e-gov.go.jp、府省）** と **東京都（catalog.data.metro.tokyo.lg.jp、部局）** を足した（`--national --only-national <ホスト>`）。egov は FIXED_ASSIGNMENTS で train、tokyo は train に登録済みなので、部局も train になる
+- 候補集めはホストごとに途中の結果を書き出し、Actions は「集める」が時間切れ（100 分）でも「保存」で途中までの候補と allocation.json を残す
+
 ## ラベル用シート（2026-10-24 Claude。b006 から）
 ChatGPT が大きな `corpus.jsonl`（1 陣 3〜5MB）を読まずにラベルを付けるための道具。`materials/label_sheets.py`
 - Claude：`python materials/label_sheets.py make --batch b00N` → `work/b00N/sheets/` に `sheet_001.md` …（1 枚 120 グループ・約 40KB）と `groups.json`
