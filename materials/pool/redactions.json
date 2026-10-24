@@ -337,5 +337,11 @@
    "reason": "license_roster（個人の免許の一覧。表ごと）",
    "redacted_utc": "2026-10-24"
   }
- ]
+ ],
+ "history_decision": {
+  "date": "2026-10-24",
+  "by": "Claude（オーナー「好きにしろ」）",
+  "decision": "git の履歴は書き換えない",
+  "reason": "消した値はもともと自治体などが公開データとして出している名前で、害は小さい。履歴を書き換えても他人の写し・fork からは消えない一方、動いている Actions の run が失敗し作業を壊すおそれがある。今のファイルからは消し、今後は教材庫に入れない（finalize・redact_person.py）"
+ }
 }
