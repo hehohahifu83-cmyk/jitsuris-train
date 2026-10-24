@@ -1,17 +1,24 @@
 {
  "schema_version": 1,
  "batch": "b009",
- "decided_by": "Claude",
- "decided_utc": "2026-10-24",
+ "decided_by": "pipeline.py adopt（Claude の規則）",
+ "decided_utc": "2026-10-24T09:14:41+00:00",
  "candidates": [
+  "materials/pool/candidates_20261024f.json",
+  "materials/pool/candidates_20261024e.json",
   "materials/pool/candidates_20261024d.json",
   "materials/pool/candidates_20261024c.json",
   "materials/pool/candidates_20261024.json",
   "materials/pool/candidates_20261022.json"
  ],
- "candidate_count": 183,
- "dropped": {},
- "size_note": "b008 で datastore_search が HTTP 302 で読めなかった豪州の表（data.gov.au）を、CSV に切り替えた fetch_rows で取り直す陣（2026-10-24 Claude）。採用の規則は b008 で確かめ済み",
+ "candidate_count": 11086,
+ "dropped": {
+  "もう使った表": 6336,
+  "この陣で 1 公開元 3 表まで": 3439,
+  "題名が個人の記録になりやすい表": 88,
+  "教材庫で 1 公開元 15 表まで": 68,
+  "この陣の大きさ（約 600 表まで。残りは次の陣へ）": 738
+ },
  "adopted": [
   {
    "n": 1,
@@ -2025,6 +2032,4177 @@
    "resource_id": "1e541c8a-a932-42d8-bfc5-f55554fac7f9",
    "access": "datastore",
    "retry_of": "b008:428"
+  },
+  {
+   "n": 184,
+   "publisher_id": "australia:abares",
+   "resource_url": "https://data.gov.au/data/dataset/fires-in-australia-s-forests-2016-21-2024/resource/c8488f85-73ba-4cb5-8b50-fe70902b5671",
+   "title": "Fires in Australia's forests 2016–21 (2024)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c8488f85-73ba-4cb5-8b50-fe70902b5671",
+   "access": "datastore"
+  },
+  {
+   "n": 185,
+   "publisher_id": "australia:accc",
+   "resource_url": "https://data.gov.au/data/dataset/accc-mobile-infrastructure-report-data-release/resource/b6f770d5-9b93-4cb0-8786-0f9714a4f7cd",
+   "title": "ACCC Mobile Infrastructure Report – data release",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b6f770d5-9b93-4cb0-8786-0f9714a4f7cd",
+   "access": "datastore"
+  },
+  {
+   "n": 186,
+   "publisher_id": "australia:accountability-and-oversight-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/de-2024-25-annual-report-department-objectives-progress/resource/8f62050f-7ab4-49e7-ae4a-07ad2514a739",
+   "title": "DE 2024-25 Annual Report Department Objectives Progress",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8f62050f-7ab4-49e7-ae4a-07ad2514a739",
+   "access": "datastore"
+  },
+  {
+   "n": 187,
+   "publisher_id": "australia:acnc",
+   "resource_url": "https://data.gov.au/data/dataset/acnc-register/resource/eb1e6be4-5b13-4feb-b28e-388bf7c26f93",
+   "title": "ACNC Registered Charities",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "eb1e6be4-5b13-4feb-b28e-388bf7c26f93",
+   "access": "datastore"
+  },
+  {
+   "n": 188,
+   "publisher_id": "australia:agriculture",
+   "resource_url": "https://data.gov.au/data/dataset/mdb-water-recovery-programs/resource/02623ce1-811b-40d6-afa4-2b64a537fd6b",
+   "title": "Australian Government Water Recovery Programs in the Murray-Darling Basin - 2010-2019",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "02623ce1-811b-40d6-afa4-2b64a537fd6b",
+   "access": "datastore"
+  },
+  {
+   "n": 189,
+   "publisher_id": "australia:aiatsis",
+   "resource_url": "https://data.gov.au/data/dataset/awb-nsw-map/resource/30096cbe-e2a7-48ec-9761-c5564ece85bd",
+   "title": "The NSW Aborigines Protection/Welfare Board 1883-1969 Map",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "30096cbe-e2a7-48ec-9761-c5564ece85bd",
+   "access": "csv"
+  },
+  {
+   "n": 190,
+   "publisher_id": "australia:aihw",
+   "resource_url": "https://data.gov.au/data/dataset/mort-books/resource/a5de4e7e-d062-4356-9d1b-39f44b1961dc",
+   "title": "Mortality Over Regions and Time (MORT) books",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a5de4e7e-d062-4356-9d1b-39f44b1961dc",
+   "access": "datastore"
+  },
+  {
+   "n": 191,
+   "publisher_id": "australia:alpine-resorts-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/victorian-alpine-resorts-winter-visitor-numbers/resource/ad9928ba-311b-4809-be6e-7be7d658bbec",
+   "title": "Victorian Alpine Resorts - Winter visitor numbers",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ad9928ba-311b-4809-be6e-7be7d658bbec",
+   "access": "datastore"
+  },
+  {
+   "n": 192,
+   "publisher_id": "australia:ambulance-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/ambulance-victoria-lga-response-time-performance/resource/80bf90b5-731f-46d5-a9e6-2876b29226fc",
+   "title": "Ambulance Victoria LGA Response Time Performance",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "80bf90b5-731f-46d5-a9e6-2876b29226fc",
+   "access": "datastore"
+  },
+  {
+   "n": 193,
+   "publisher_id": "australia:artsvictoria",
+   "resource_url": "https://data.gov.au/data/dataset/arts-organisations-victoria/resource/67b1aa56-e2fd-4470-aa9a-890a7abd0db6",
+   "title": "Arts Organisations (Victoria)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "67b1aa56-e2fd-4470-aa9a-890a7abd0db6",
+   "access": "datastore"
+  },
+  {
+   "n": 194,
+   "publisher_id": "australia:attorney-general-s-department-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/public-trustee-annual-report-data-executive-employment/resource/1e4a2a5a-cbee-4a68-b92c-173d9722bc58",
+   "title": "Public Trustee Annual Report Data - Executive employment",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1e4a2a5a-cbee-4a68-b92c-173d9722bc58",
+   "access": "datastore"
+  },
+  {
+   "n": 195,
+   "publisher_id": "australia:attorneygeneralsdepartment",
+   "resource_url": "https://data.gov.au/data/dataset/disaster-events-with-category-impact-and-location/resource/ad5c6594-571e-4874-994c-a9f964d789df",
+   "title": "Disaster Events with Category Impact and Location",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ad5c6594-571e-4874-994c-a9f964d789df",
+   "access": "datastore"
+  },
+  {
+   "n": 196,
+   "publisher_id": "australia:australian-financial-security-authority",
+   "resource_url": "https://data.gov.au/data/dataset/monthly-personal-insolvency-statistics/resource/02f20e25-1107-4401-afa8-e037a6bd806c",
+   "title": "Monthly Personal Insolvency Statistics",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "02f20e25-1107-4401-afa8-e037a6bd806c",
+   "access": "datastore"
+  },
+  {
+   "n": 197,
+   "publisher_id": "australia:australian-fisheries-management-authority",
+   "resource_url": "https://data.gov.au/data/dataset/reported-annual-fishing-effort-from-commonwealth-fisheries-logbooks/resource/13a637a3-886a-4ead-8897-68628eebb2fe",
+   "title": "Reported annual fishing effort from Commonwealth fisheries logbooks",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "13a637a3-886a-4ead-8897-68628eebb2fe",
+   "access": "datastore"
+  },
+  {
+   "n": 198,
+   "publisher_id": "australia:australian-radiation-protection-and-nuclear-safety-agency-arpansa",
+   "resource_url": "https://data.gov.au/data/dataset/ultraviolet-radiation-index-townsville/resource/eb4dded0-e7b2-4e7a-b12d-806381f96f8b",
+   "title": "Ultraviolet Radiation Index - Townsville",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "eb4dded0-e7b2-4e7a-b12d-806381f96f8b",
+   "access": "datastore"
+  },
+  {
+   "n": 199,
+   "publisher_id": "australia:australian-securities-and-investments-commission-asic",
+   "resource_url": "https://data.gov.au/data/dataset/asic-registered-auditor/resource/0f2e41ec-6f49-4d35-8e6d-ebcd4a0e3e27",
+   "title": "ASIC - Registered Auditor Dataset",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0f2e41ec-6f49-4d35-8e6d-ebcd4a0e3e27",
+   "access": "datastore"
+  },
+  {
+   "n": 200,
+   "publisher_id": "australia:australianantarcticdivision",
+   "resource_url": "https://data.gov.au/data/dataset/aad-aspas-asmas-aat/resource/8e454da9-4391-4342-beb8-4f7c87b1733c",
+   "title": "Antarctic Specially Protected Areas and Antarctic Specially Managed Areas in the Australian Antarctic Territory - GIS polygon dataset.",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8e454da9-4391-4342-beb8-4f7c87b1733c",
+   "access": "datastore"
+  },
+  {
+   "n": 201,
+   "publisher_id": "australia:australianbroadcastingcorporation",
+   "resource_url": "https://data.gov.au/data/dataset/vote-compass-2013-self-placement/resource/fe4a364c-d832-4e88-8589-98ba57fcce51",
+   "title": "Vote Compass 2013 - Self Placement",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "fe4a364c-d832-4e88-8589-98ba57fcce51",
+   "access": "datastore"
+  },
+  {
+   "n": 202,
+   "publisher_id": "australia:australianbureauofstatistics-geography",
+   "resource_url": "https://data.gov.au/data/dataset/asgs-edition-3-2021-coding-indexes/resource/cb659d81-5bd2-41f5-a3d0-67257c9a5893",
+   "title": "ASGS Coding Indexes (2021) Edition 3",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "cb659d81-5bd2-41f5-a3d0-67257c9a5893",
+   "access": "csv"
+  },
+  {
+   "n": 203,
+   "publisher_id": "australia:australiantaxationoffice",
+   "resource_url": "https://data.gov.au/data/dataset/taxation-statistics-2023-24/resource/f2a67902-edba-4b89-b0a1-2c87ada7036f",
+   "title": "Taxation Statistics 2023-24",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f2a67902-edba-4b89-b0a1-2c87ada7036f",
+   "access": "datastore"
+  },
+  {
+   "n": 204,
+   "publisher_id": "australia:brisbane-organising-committee-for-the-2032-olympic-and-paralympic-games-brisbane-2032-queensland-gov",
+   "resource_url": "https://data.gov.au/data/dataset/overseas-travel-brisbane-organising-committee-for-the-2032-olympic-and-paralympic-games/resource/6b8aad11-69ba-47cf-8b7c-4f6b5aea09b5",
+   "title": "Overseas Travel - Brisbane Organising Committee for the 2032 Olympic and Paralympic Games (Brisbane 2032)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6b8aad11-69ba-47cf-8b7c-4f6b5aea09b5",
+   "access": "datastore"
+  },
+  {
+   "n": 205,
+   "publisher_id": "australia:bureauofinfrastructuretransportandregionaleconomics",
+   "resource_url": "https://data.gov.au/data/dataset/airport-traffic-data/resource/38bdc971-cb22-4894-b19a-814afc4e8164",
+   "title": "Airport traffic data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "38bdc971-cb22-4894-b19a-814afc4e8164",
+   "access": "datastore"
+  },
+  {
+   "n": 206,
+   "publisher_id": "australia:cameras-save-lives-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/road-safety-camera-network-trends-in-fines-citylink-new/resource/17cfb1c8-cea9-4a47-8dd7-3d463727c9c1",
+   "title": "Road Safety Camera Network - Trends in Fines CityLink",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "17cfb1c8-cea9-4a47-8dd7-3d463727c9c1",
+   "access": "datastore"
+  },
+  {
+   "n": 207,
+   "publisher_id": "australia:central-queensland-university-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/cquniversity-australia-contract-disclosure-report-2020-2021/resource/d93ef124-b9dc-40ac-91ad-f9f86eb9b2ef",
+   "title": "CQUniversity Australia - Contract Disclosure Report 2020",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "d93ef124-b9dc-40ac-91ad-f9f86eb9b2ef",
+   "access": "datastore"
+  },
+  {
+   "n": 208,
+   "publisher_id": "australia:city-of-adelaide-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/parking-expiations/resource/2fa85b1b-4701-4015-a571-257320c02891",
+   "title": "Parking Expiations Issued by Adelaide City Council",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2fa85b1b-4701-4015-a571-257320c02891",
+   "access": "datastore"
+  },
+  {
+   "n": 209,
+   "publisher_id": "australia:city-of-ballarat",
+   "resource_url": "https://data.gov.au/data/dataset/ballarat-cultural-facilities/resource/24f05226-c4c0-4620-b1f5-0f012e61fa9d",
+   "title": "Ballarat Cultural Facilities",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "24f05226-c4c0-4620-b1f5-0f012e61fa9d",
+   "access": "datastore"
+  },
+  {
+   "n": 210,
+   "publisher_id": "australia:city-of-burnside-local-council-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/burnside-bike-racks/resource/8a392dfa-6de0-41be-8ddf-c395cc3083e3",
+   "title": "Burnside Bike Racks",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8a392dfa-6de0-41be-8ddf-c395cc3083e3",
+   "access": "datastore"
+  },
+  {
+   "n": 211,
+   "publisher_id": "australia:city-of-canning-western-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/street_seat/resource/0def6e48-221a-4257-91ba-e0724bd18898",
+   "title": "Street Seat",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0def6e48-221a-4257-91ba-e0724bd18898",
+   "access": "datastore"
+  },
+  {
+   "n": 212,
+   "publisher_id": "australia:city-of-casey",
+   "resource_url": "https://data.gov.au/data/dataset/coctransport/resource/9486fcc4-ade8-4422-963f-26da353fc131",
+   "title": "City of Casey Transport Data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9486fcc4-ade8-4422-963f-26da353fc131",
+   "access": "datastore"
+  },
+  {
+   "n": 213,
+   "publisher_id": "australia:city-of-gold-coast",
+   "resource_url": "https://data.gov.au/data/dataset/sewer-pipes-non-pressurised/resource/3ca54619-0323-40c8-b86a-99b0fcc929e3",
+   "title": "Sewer Pipes Non-Pressurised",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3ca54619-0323-40c8-b86a-99b0fcc929e3",
+   "access": "datastore"
+  },
+  {
+   "n": 214,
+   "publisher_id": "australia:city-of-greater-dandenong",
+   "resource_url": "https://data.gov.au/data/dataset/dandenong-registered-cats/resource/2e57d92d-2e6d-4dd4-a974-9aa7d9ce2019",
+   "title": "Registered Cats - Greater Dandenong",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2e57d92d-2e6d-4dd4-a974-9aa7d9ce2019",
+   "access": "csv"
+  },
+  {
+   "n": 215,
+   "publisher_id": "australia:city-of-greater-geelong",
+   "resource_url": "https://data.gov.au/data/dataset/geelong-street-lights/resource/41139bf8-6c28-48c2-a423-ca61a3b3da36",
+   "title": "Street Lights Managed by Council - City of Greater Geelong",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "41139bf8-6c28-48c2-a423-ca61a3b3da36",
+   "access": "datastore"
+  },
+  {
+   "n": 216,
+   "publisher_id": "australia:city-of-ipswich",
+   "resource_url": "https://data.gov.au/data/dataset/city-of-ipswich-administrative-boundary/resource/9aaf9321-7af6-4761-93a7-eb964d7a3fb2",
+   "title": "City of Ipswich Administrative Boundary",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9aaf9321-7af6-4761-93a7-eb964d7a3fb2",
+   "access": "datastore"
+  },
+  {
+   "n": 217,
+   "publisher_id": "australia:city-of-onkaparinga-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/number-of-properties-by-suburb-and-planning-zone-csv/resource/6ca89d16-85e9-424f-af45-73d76c899439",
+   "title": "Number of Properties by Suburb and Planning Zone",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6ca89d16-85e9-424f-af45-73d76c899439",
+   "access": "datastore"
+  },
+  {
+   "n": 218,
+   "publisher_id": "australia:city-of-playford-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/register-of-roads-city-of-playford/resource/51673b03-203e-4243-a3be-10b4c025171b",
+   "title": "Register of Roads - City of Playford",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "51673b03-203e-4243-a3be-10b4c025171b",
+   "access": "datastore"
+  },
+  {
+   "n": 219,
+   "publisher_id": "australia:city-of-port-phillip",
+   "resource_url": "https://data.gov.au/data/dataset/transport/resource/de0daa66-2ee3-45cb-b035-5ff946366973",
+   "title": "Transport covering Bikes, Pedestrians and Traffic including speed and volume",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "de0daa66-2ee3-45cb-b035-5ff946366973",
+   "access": "datastore"
+  },
+  {
+   "n": 220,
+   "publisher_id": "australia:city-of-yarra",
+   "resource_url": "https://data.gov.au/data/dataset/yarra-traffic-counts/resource/9e26683b-6b30-424e-ace7-59047d811d1c",
+   "title": "City of Yarra traffic counts",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9e26683b-6b30-424e-ace7-59047d811d1c",
+   "access": "datastore"
+  },
+  {
+   "n": 221,
+   "publisher_id": "australia:colac-otway-shire",
+   "resource_url": "https://data.gov.au/data/dataset/colac-otway-shire-waste-collection-areas/resource/9036d8e4-ebd2-4001-9f27-c86125c424ce",
+   "title": "Colac Otway Shire Waste Collection Areas",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9036d8e4-ebd2-4001-9f27-c86125c424ce",
+   "access": "datastore"
+  },
+  {
+   "n": 222,
+   "publisher_id": "australia:commission-on-excellence-and-innovation-in-health-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/work-health-safety-commission-on-excellence-and-innovation-in-health/resource/85780736-2c7e-420b-8132-1c0a03d05bff",
+   "title": "Work Health and Safety and Return to Work Performance - Commission on Excellence and Innovation in Health",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "85780736-2c7e-420b-8132-1c0a03d05bff",
+   "access": "datastore"
+  },
+  {
+   "n": 223,
+   "publisher_id": "australia:communities-housing-and-digital-economy-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2025-26-annual-report-consultancy-spending-stadiums-queensland/resource/f919ee3d-549d-4532-8558-ef99cfdc36eb",
+   "title": "2025-26 Annual Report - Consultancy spending - Stadiums Queensland",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f919ee3d-549d-4532-8558-ef99cfdc36eb",
+   "access": "datastore"
+  },
+  {
+   "n": 224,
+   "publisher_id": "australia:consumer-affairs-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/telephone-calls-answered-2012-2013/resource/7d072575-c0f2-4722-b71c-40d1e78e1517",
+   "title": "Consumer Affairs Victoria -Telephone calls answered",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7d072575-c0f2-4722-b71c-40d1e78e1517",
+   "access": "datastore"
+  },
+  {
+   "n": 225,
+   "publisher_id": "australia:corangamite-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/corangamite-shire-street-and-park-trees/resource/827f4d85-52dd-44fe-85ec-b1edcfe89241",
+   "title": "Corangamite Shire Street and Park Trees",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "827f4d85-52dd-44fe-85ec-b1edcfe89241",
+   "access": "csv"
+  },
+  {
+   "n": 226,
+   "publisher_id": "australia:coronavirus-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/current-sars-cov-2-cases-by-local-government-area/resource/b0df5c77-55dc-458e-8977-9050ccd995e3",
+   "title": "Current SARS-CoV-2 cases by local government area",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b0df5c77-55dc-458e-8977-9050ccd995e3",
+   "access": "datastore"
+  },
+  {
+   "n": 227,
+   "publisher_id": "australia:courts-administration-authority-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/caa-ar-audio-visual-links/resource/0522a307-162f-4dd6-966d-cba79171414c",
+   "title": "Courts Administration Authority - Annual Report - Audio Visual Links",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0522a307-162f-4dd6-966d-cba79171414c",
+   "access": "datastore"
+  },
+  {
+   "n": 228,
+   "publisher_id": "australia:cross-river-rail-delivery-authority-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/cross-river-rail-delivery-authority-annual-report-data-2023-2024-overseas-travel/resource/89163004-81ac-46e5-9813-0de234c47d0f",
+   "title": "Cross River Rail Delivery Authority Annual Report Data - 2023 - 2024 - Overseas Travel and Language Services",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "89163004-81ac-46e5-9813-0de234c47d0f",
+   "access": "datastore"
+  },
+  {
+   "n": 229,
+   "publisher_id": "australia:customer-services-open-data-and-small-and-family-business-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/government-service-counter-locations/resource/919a8e0f-f538-44df-bb3f-a6cccba0381f",
+   "title": "Government service counter locations",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "919a8e0f-f538-44df-bb3f-a6cccba0381f",
+   "access": "datastore"
+  },
+  {
+   "n": 230,
+   "publisher_id": "australia:darling-downs-moreton-rabbit-board-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/darling-downs-moreton-rabbit-board-annual-report-data-overseas-travel/resource/073a63c6-12e8-4b43-afd1-b1be48ac9b1b",
+   "title": "Darling Downs-Moreton Rabbit Board Annual Report Data - Overseas travel",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "073a63c6-12e8-4b43-afd1-b1be48ac9b1b",
+   "access": "datastore"
+  },
+  {
+   "n": 231,
+   "publisher_id": "australia:data-gov-au",
+   "resource_url": "https://data.gov.au/data/dataset/supporting-files/resource/0731b839-e083-4abe-a7d5-8120d28a9012",
+   "title": "Supporting files",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0731b839-e083-4abe-a7d5-8120d28a9012",
+   "access": "datastore"
+  },
+  {
+   "n": 232,
+   "publisher_id": "australia:dcceew",
+   "resource_url": "https://data.gov.au/data/dataset/energy-rating-for-household-appliances/resource/0973a476-eb0c-45e6-9a18-054f74307843",
+   "title": "Energy Rating Data for household appliances – Labelled Products",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0973a476-eb0c-45e6-9a18-054f74307843",
+   "access": "datastore"
+  },
+  {
+   "n": 233,
+   "publisher_id": "australia:defence-sa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/defence-sa-whs-2024-2025/resource/89fe8863-2c0b-4b6f-94a4-99f65b906259",
+   "title": "Defence SA WHS 2024-2025",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "89fe8863-2c0b-4b6f-94a4-99f65b906259",
+   "access": "datastore"
+  },
+  {
+   "n": 234,
+   "publisher_id": "australia:department-for-child-protection-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/contractors-utilised-by-dcp/resource/c3fea269-41f5-4c84-b626-d8c8657b828c",
+   "title": "Contractors",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c3fea269-41f5-4c84-b626-d8c8657b828c",
+   "access": "datastore"
+  },
+  {
+   "n": 235,
+   "publisher_id": "australia:department-for-education-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/suspensions-exclusions-and-expulsions/resource/b531cdc1-5abf-41dd-944d-54e812f85c75",
+   "title": "Suspensions, exclusions and expulsions",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b531cdc1-5abf-41dd-944d-54e812f85c75",
+   "access": "datastore"
+  },
+  {
+   "n": 236,
+   "publisher_id": "australia:department-for-energy-and-mining-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-for-energy-and-mining-annual-report-statistics/resource/3eb0747d-d29a-4e73-8e99-c2346a883c52",
+   "title": "Department for Energy and Mining Annual Report Statistics",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3eb0747d-d29a-4e73-8e99-c2346a883c52",
+   "access": "datastore"
+  },
+  {
+   "n": 237,
+   "publisher_id": "australia:department-for-environment-and-water-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/south-australian-climate-projections-narclim-1-5/resource/69472626-b42f-4462-9efe-ba0f9bfb6084",
+   "title": "South Australian climate projections (NARCliM 1.5)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "69472626-b42f-4462-9efe-ba0f9bfb6084",
+   "access": "datastore"
+  },
+  {
+   "n": 238,
+   "publisher_id": "australia:department-for-housing-and-urban-development-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-for-housing-and-urban-development-annual-report-statistics/resource/98355537-aa93-4247-86a0-517933454057",
+   "title": "Department for Housing and Urban Development Annual Report Statistics",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "98355537-aa93-4247-86a0-517933454057",
+   "access": "datastore"
+  },
+  {
+   "n": 239,
+   "publisher_id": "australia:department-for-infrastructure-and-transport-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/registered-vehicles-by-body-type/resource/995ca074-ad8a-45df-b768-539771f3ef20",
+   "title": "Registered Vehicles by Body Type",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "995ca074-ad8a-45df-b768-539771f3ef20",
+   "access": "datastore"
+  },
+  {
+   "n": 240,
+   "publisher_id": "australia:department-of-communications",
+   "resource_url": "https://data.gov.au/data/dataset/telecommunications-in-new-developments/resource/2de59763-765d-4955-be0e-e565c71b67be",
+   "title": "Telecommunications in New Developments",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2de59763-765d-4955-be0e-e565c71b67be",
+   "access": "datastore"
+  },
+  {
+   "n": 241,
+   "publisher_id": "australia:department-of-creative-industries-tourism-hospitality-and-sport-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-visitor-expenditure-nsw/resource/1004152a-6f00-4268-a404-786f80ea9099",
+   "title": "Visitor expenditure, NSW",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1004152a-6f00-4268-a404-786f80ea9099",
+   "access": "datastore"
+  },
+  {
+   "n": 242,
+   "publisher_id": "australia:department-of-customer-service-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-liquor-licence-premises-list-as-at-8-feb-2021/resource/530d86bc-cdc3-4e3f-b828-5106cd0e48c3",
+   "title": "Liquor licence premises list as at 8 Feb 2021",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "530d86bc-cdc3-4e3f-b828-5106cd0e48c3",
+   "access": "datastore"
+  },
+  {
+   "n": 243,
+   "publisher_id": "australia:department-of-education-performance-and-evaluation-division-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/government-schools-average-class-size-primary-classes-feb-victoria/resource/9554b30f-8df5-4b6e-8563-6a22b3f466c5",
+   "title": "Government schools average class size - Primary classes, February 2025 Census, Victoria",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9554b30f-8df5-4b6e-8563-6a22b3f466c5",
+   "access": "datastore"
+  },
+  {
+   "n": 244,
+   "publisher_id": "australia:department-of-education-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/school-locations-time-series/resource/2cac9412-3acf-4723-8c48-40133ca8805b",
+   "title": "School Locations 2019",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2cac9412-3acf-4723-8c48-40133ca8805b",
+   "access": "datastore"
+  },
+  {
+   "n": 245,
+   "publisher_id": "australia:department-of-employment-and-workplace-relations",
+   "resource_url": "https://data.gov.au/data/dataset/fair-entitlements-guarantee-feg/resource/223e971b-e1fb-4a81-bce0-45f794a0b78a",
+   "title": "Fair Entitlements Guarantee (FEG)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "223e971b-e1fb-4a81-bce0-45f794a0b78a",
+   "access": "datastore"
+  },
+  {
+   "n": 246,
+   "publisher_id": "australia:department-of-finance",
+   "resource_url": "https://data.gov.au/data/dataset/australian-government-organisations-register/resource/90b13a5b-fd2e-440c-b253-9cbf314d3da3",
+   "title": "Australian Government Organisations Register",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "90b13a5b-fd2e-440c-b253-9cbf314d3da3",
+   "access": "datastore"
+  },
+  {
+   "n": 247,
+   "publisher_id": "australia:department-of-government-services-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-of-government-services-financial-statements-2024-25/resource/c23bea3a-2ab2-48aa-9383-13ad4c26e71f",
+   "title": "Department of Government Services - Financial statements 2024-25",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c23bea3a-2ab2-48aa-9383-13ad4c26e71f",
+   "access": "datastore"
+  },
+  {
+   "n": 248,
+   "publisher_id": "australia:department-of-health",
+   "resource_url": "https://data.gov.au/data/dataset/modified-monash-model-mmm-2019/resource/7af3b211-60a0-4515-96ba-2e72b4cd7119",
+   "title": "Modified Monash Model (MMM) 2019",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7af3b211-60a0-4515-96ba-2e72b4cd7119",
+   "access": "datastore"
+  },
+  {
+   "n": 249,
+   "publisher_id": "australia:department-of-health-and-human-services-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/transitioning-from-out-of-home-care-support-for-aboriginal-young-people/resource/ac6fd280-efbb-4e10-a10e-8c46efecc2a3",
+   "title": "Transitioning from Out-of-home care: Support for Aboriginal young people",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ac6fd280-efbb-4e10-a10e-8c46efecc2a3",
+   "access": "datastore"
+  },
+  {
+   "n": 250,
+   "publisher_id": "australia:department-of-health-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-of-health-annual-report-2024-25-datasets/resource/ca4e1b4a-e5cc-4e79-9fa6-e54bd9ee0b28",
+   "title": "Department of Health Annual Report 2024-25 Datasets",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ca4e1b4a-e5cc-4e79-9fa6-e54bd9ee0b28",
+   "access": "datastore"
+  },
+  {
+   "n": 251,
+   "publisher_id": "australia:department-of-housing",
+   "resource_url": "https://data.gov.au/data/dataset/dwelling-age-by-construct-type/resource/33d1328c-356b-4312-bbd4-ce2626107437",
+   "title": "WA Public Housing Dwelling Age by Suburb by Construct type",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "33d1328c-356b-4312-bbd4-ce2626107437",
+   "access": "datastore"
+  },
+  {
+   "n": 252,
+   "publisher_id": "australia:department-of-human-services-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/dcsi-annual-report-data-2016-17-whistleblowers-disclosure/resource/2d789b3a-2917-492e-a0ef-d0a860199075",
+   "title": "DHS Annual Report Data - Public Interest Disclosure",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2d789b3a-2917-492e-a0ef-d0a860199075",
+   "access": "datastore"
+  },
+  {
+   "n": 253,
+   "publisher_id": "australia:department-of-industry",
+   "resource_url": "https://data.gov.au/data/dataset/stocktake-of-australian-innovation-precincts/resource/4fddfa19-1b09-412c-9d36-0705003e22db",
+   "title": "Stocktake of Australian Innovation Precincts - June 2019",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "4fddfa19-1b09-412c-9d36-0705003e22db",
+   "access": "datastore"
+  },
+  {
+   "n": 254,
+   "publisher_id": "australia:department-of-jobs-skills-industry-and-regions-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/tourism-victoria-financial-statements-2014-15/resource/f5a63d46-303f-48e3-be6c-78e367971f87",
+   "title": "Tourism Victoria Financial Statements 2014-15",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f5a63d46-303f-48e3-be6c-78e367971f87",
+   "access": "datastore"
+  },
+  {
+   "n": 255,
+   "publisher_id": "australia:department-of-justice-tasmania",
+   "resource_url": "https://data.gov.au/data/dataset/solicitor-general-civil-files-opened-financial-years-2008-09-to-2015-16/resource/fdc42e6a-d0f2-4a42-b061-4de434cc08e8",
+   "title": "Solicitor General Civil Files - Opened, Financial Years 2008-09 to 2015-16",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "fdc42e6a-d0f2-4a42-b061-4de434cc08e8",
+   "access": "csv"
+  },
+  {
+   "n": 256,
+   "publisher_id": "australia:department-of-premier-and-cabinet-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-of-premier-and-cabinet-oh-s-data-2024-25/resource/eda7d12b-380f-4572-906c-04cf00cabe68",
+   "title": "Department of Premier and Cabinet – OH&S data 2024-25",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "eda7d12b-380f-4572-906c-04cf00cabe68",
+   "access": "datastore"
+  },
+  {
+   "n": 257,
+   "publisher_id": "australia:department-of-primary-industries-and-regional-development-western-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/client-property-event-system-properties/resource/1bae22d6-0baa-4b32-be18-bfa656654599",
+   "title": "Client Property Event System - Properties (DPIRD-018)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1bae22d6-0baa-4b32-be18-bfa656654599",
+   "access": "datastore"
+  },
+  {
+   "n": 258,
+   "publisher_id": "australia:department-of-primary-industries-and-regions-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/fraud-detection-reporting-primary-industries-and-regions-sa/resource/7f635b67-60b1-4358-aa88-922c32e884ba",
+   "title": "Fraud Detection Reporting Primary Industries and Regions SA",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7f635b67-60b1-4358-aa88-922c32e884ba",
+   "access": "datastore"
+  },
+  {
+   "n": 259,
+   "publisher_id": "australia:department-of-social-services",
+   "resource_url": "https://data.gov.au/data/dataset/jobseeker-payment-and-youth-allowance-recipients-monthly-profile/resource/8bfe13e5-a71a-436b-9a28-645644b6a54c",
+   "title": "DSS JobSeeker Payment and Youth Allowance recipients – monthly profile",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8bfe13e5-a71a-436b-9a28-645644b6a54c",
+   "access": "datastore"
+  },
+  {
+   "n": 260,
+   "publisher_id": "australia:department-of-state-development-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/diis-annual-report-statistics-2023-24/resource/79938110-070c-40c2-87e5-cd01d1e70620",
+   "title": "DIIS-annual-report-statistics-2023-24",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "79938110-070c-40c2-87e5-cd01d1e70620",
+   "access": "datastore"
+  },
+  {
+   "n": 261,
+   "publisher_id": "australia:department-of-the-premier-and-cabinet-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/public-interest-disclosure-by-dpc/resource/46ad03fd-8e01-45ca-98ae-40d6ad8997c4",
+   "title": "Public Interest Disclosure by DPC",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "46ad03fd-8e01-45ca-98ae-40d6ad8997c4",
+   "access": "datastore"
+  },
+  {
+   "n": 262,
+   "publisher_id": "australia:department-of-transport-and-planning-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/whole-fleet-vehicle-registration-snapshot-by-postcode/resource/dcfa1362-db0d-48ba-8eab-55ad17efe14a",
+   "title": "Whole Fleet Vehicle Registration Snapshot by Postcode",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "dcfa1362-db0d-48ba-8eab-55ad17efe14a",
+   "access": "datastore"
+  },
+  {
+   "n": 263,
+   "publisher_id": "australia:departmentofforeignaffairsandtrade",
+   "resource_url": "https://data.gov.au/data/dataset/australia-s-merchandise-trade-by-state-territory-by-country-triec-to-cy2016/resource/14c35e61-f428-4ddb-9593-ca012c51521d",
+   "title": "Australia's merchandise trade by state/territory by country (TRIEC) to CY2016",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "14c35e61-f428-4ddb-9593-ca012c51521d",
+   "access": "datastore"
+  },
+  {
+   "n": 264,
+   "publisher_id": "australia:departmentofjustice",
+   "resource_url": "https://data.gov.au/data/dataset/prison-locations-victoria/resource/0bceed87-e2f2-4d4c-98f9-bb7dfbeb3a63",
+   "title": "Prison Locations (Victoria)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0bceed87-e2f2-4d4c-98f9-bb7dfbeb3a63",
+   "access": "datastore"
+  },
+  {
+   "n": 265,
+   "publisher_id": "australia:departmentofplanningandcommunitydevelopment",
+   "resource_url": "https://data.gov.au/data/dataset/water-sports-in-victoria-gfyl/resource/8bfb0b79-3f07-4ce4-a007-9e307a28cc5c",
+   "title": "Water Sports in Victoria – GFYL",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8bfb0b79-3f07-4ce4-a007-9e307a28cc5c",
+   "access": "datastore"
+  },
+  {
+   "n": 266,
+   "publisher_id": "australia:departmentofsustainabilityandenvironment",
+   "resource_url": "https://data.gov.au/data/dataset/urban-water-restrictions-victoria/resource/119a7fed-8686-4ec4-b5ca-e45156be5aff",
+   "title": "Urban Water Restrictions (Victoria)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "119a7fed-8686-4ec4-b5ca-e45156be5aff",
+   "access": "datastore"
+  },
+  {
+   "n": 267,
+   "publisher_id": "australia:digital-transformation-agency",
+   "resource_url": "https://data.gov.au/data/dataset/aps-career-pathfinder/resource/e8607a56-9010-4a17-a3bc-49f7b8642d13",
+   "title": "APS Career Pathfinder",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "e8607a56-9010-4a17-a3bc-49f7b8642d13",
+   "access": "datastore"
+  },
+  {
+   "n": 268,
+   "publisher_id": "australia:dtf-corporate-and-government-services-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/state-budget-2021-22-other-financial-aggregates/resource/9a25e52b-b259-47ba-b035-202541834ab9",
+   "title": "State Budget 2021-22 Other Financial Aggregates",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9a25e52b-b259-47ba-b035-202541834ab9",
+   "access": "datastore"
+  },
+  {
+   "n": 269,
+   "publisher_id": "australia:economic-development-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/edq-contract-disclosure/resource/9845e679-fe9c-4927-9197-aa359c9ea4a1",
+   "title": "Economic Development Queensland Contract Disclosure",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9845e679-fe9c-4927-9197-aa359c9ea4a1",
+   "access": "datastore"
+  },
+  {
+   "n": 270,
+   "publisher_id": "australia:education-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qpac-annual-report-data-overseas-travel-2025-26/resource/438c7426-3a0d-4321-ad66-021def292108",
+   "title": "QPAC Annual Report Data - Overseas Travel 2025-26",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "438c7426-3a0d-4321-ad66-021def292108",
+   "access": "datastore"
+  },
+  {
+   "n": 271,
+   "publisher_id": "australia:education-standards-board-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/work-health-and-saftety-and-return-to-work-management-education-stacndards-board/resource/2c4c883f-e523-464c-acab-12d2c0d35136",
+   "title": "Work health and safety and return to work management Education Standards Board",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2c4c883f-e523-464c-acab-12d2c0d35136",
+   "access": "datastore"
+  },
+  {
+   "n": 272,
+   "publisher_id": "australia:electoral-commission-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/consultancy-spending-electoral-commission-of-queensland/resource/9301ab8f-9d72-4568-b51e-a04bde0bdc5a",
+   "title": "Consultancy spending - Electoral Commission of Queensland",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9301ab8f-9d72-4568-b51e-a04bde0bdc5a",
+   "access": "datastore"
+  },
+  {
+   "n": 273,
+   "publisher_id": "australia:energy-and-water-ombudsman-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2025-26-case-statistics-energy-and-water-ombudsman-queensland/resource/8b631394-ba9a-471a-8d32-3ea0a9bd5fe6",
+   "title": "2025-26 Case Statistics - Energy and Water Ombudsman Queensland",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8b631394-ba9a-471a-8d32-3ea0a9bd5fe6",
+   "access": "datastore"
+  },
+  {
+   "n": 274,
+   "publisher_id": "australia:environment-protection-authority-epa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/port-pirie-oliver-st-air-quality-monitoring-station-meteorology-data/resource/420a1e80-1710-4a7a-b0f6-647a8aca4bc6",
+   "title": "Port Pirie Oliver St Air Quality monitoring station meteorology data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "420a1e80-1710-4a7a-b0f6-647a8aca4bc6",
+   "access": "datastore"
+  },
+  {
+   "n": 275,
+   "publisher_id": "australia:environment-protection-authority-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/fishermans-bend-groundwater-studies-2015-2017/resource/f181b10d-a487-4355-8610-e8a31a07b022",
+   "title": "Fishermans Bend groundwater studies 2015–2017",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f181b10d-a487-4355-8610-e8a31a07b022",
+   "access": "datastore"
+  },
+  {
+   "n": 276,
+   "publisher_id": "australia:environment-tourism-science-and-innovation-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/coastal-data-system-tide-data/resource/1311fc19-1e60-444f-b5cf-24687f1c15a7",
+   "title": "Coastal Data System – Near real time tide data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1311fc19-1e60-444f-b5cf-24687f1c15a7",
+   "access": "datastore"
+  },
+  {
+   "n": 277,
+   "publisher_id": "australia:epa-water-sciences-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/beach-report-enterococci-data/resource/b4bc2d2b-6c20-4331-9069-baba2a1c4cdc",
+   "title": "EPA Beach Report enterococci data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b4bc2d2b-6c20-4331-9069-baba2a1c4cdc",
+   "access": "datastore"
+  },
+  {
+   "n": 278,
+   "publisher_id": "australia:essential-services-commission-escosa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/escosa-annual-report-instances-of-fraud-recorded/resource/d40f31f1-cd1b-4cea-8319-8cac3d2760d0",
+   "title": "ESCOSA - Annual Report - Instances of fraud recorded",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "d40f31f1-cd1b-4cea-8319-8cac3d2760d0",
+   "access": "datastore"
+  },
+  {
+   "n": 279,
+   "publisher_id": "australia:fair-trading-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-end-of-tenancy-survey-pilot/resource/8057ffe2-89e5-40d3-8886-ec6155ad9f84",
+   "title": "End of Tenancy Survey - Pilot",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8057ffe2-89e5-40d3-8886-ec6155ad9f84",
+   "access": "datastore"
+  },
+  {
+   "n": 280,
+   "publisher_id": "australia:families-seniors-disability-services-and-child-safety-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/dfsdscs-annual-report-2024-25-data-consultancies/resource/f79f2243-10eb-4e1c-8ecd-2e7f13c97779",
+   "title": "DFSDSCS -  Annual Report Data - Consultancies",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f79f2243-10eb-4e1c-8ecd-2e7f13c97779",
+   "access": "datastore"
+  },
+  {
+   "n": 281,
+   "publisher_id": "australia:family-responsibilities-commission-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/show-cause-hearings/resource/6d1db0b2-5b8d-4a15-bbb7-1c6be4f975b4",
+   "title": "Family Responsibilities Commission - Show cause hearings",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6d1db0b2-5b8d-4a15-bbb7-1c6be4f975b4",
+   "access": "datastore"
+  },
+  {
+   "n": 282,
+   "publisher_id": "australia:games-independent-infrastructure-and-coordination-authority-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/gicca-published-contracts-disclosure-report/resource/ec9e955b-5d91-4f9a-9b5e-d20dab61ba89",
+   "title": "GIICA Published Contracts Disclosure Report FY25",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ec9e955b-5d91-4f9a-9b5e-d20dab61ba89",
+   "access": "datastore"
+  },
+  {
+   "n": 283,
+   "publisher_id": "australia:gladstone-area-water-board-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/overseas-travel-2024-25/resource/abb3461c-3de7-446a-a3ff-f03625c3365f",
+   "title": "Overseas Travel 2024/25",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "abb3461c-3de7-446a-a3ff-f03625c3365f",
+   "access": "datastore"
+  },
+  {
+   "n": 284,
+   "publisher_id": "australia:golden-plains-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/golden-plains-hall/resource/e740c4b3-a2da-410d-99d8-052bb7e3aeba",
+   "title": "Golden Plains Halls",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "e740c4b3-a2da-410d-99d8-052bb7e3aeba",
+   "access": "datastore"
+  },
+  {
+   "n": 285,
+   "publisher_id": "australia:government-commercial-business-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2018-19-queensland-urban-utilities-consultancy-spending/resource/d82af61c-ac09-4fbd-be9b-3e67a6cc6c8a",
+   "title": "Urban Utilities - consultancy spending",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "d82af61c-ac09-4fbd-be9b-3e67a6cc6c8a",
+   "access": "datastore"
+  },
+  {
+   "n": 286,
+   "publisher_id": "australia:greater-shepparton-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/penstocks-greater-shepparton/resource/f3da9ba4-adbe-4151-87b5-d4b98c48bcaa",
+   "title": "Penstocks - Greater Shepparton",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f3da9ba4-adbe-4151-87b5-d4b98c48bcaa",
+   "access": "datastore"
+  },
+  {
+   "n": 287,
+   "publisher_id": "australia:health-performance-council-hpc-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/health-performance-council-fraud/resource/76229561-5def-40fd-8839-18c866d5f7e5",
+   "title": "Health Performance Council - Fraud",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "76229561-5def-40fd-8839-18c866d5f7e5",
+   "access": "datastore"
+  },
+  {
+   "n": 288,
+   "publisher_id": "australia:history-trust-of-south-australia-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/fraud-detection-at-history-trust-of-south-australia/resource/375deca9-b443-40c7-ac27-0f13f3cbabdb",
+   "title": "Fraud detection at History Trust of South Australia",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "375deca9-b443-40c7-ac27-0f13f3cbabdb",
+   "access": "datastore"
+  },
+  {
+   "n": 289,
+   "publisher_id": "australia:hobsons-bay-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/hbcc-street-and-park-trees/resource/339238b6-3c2c-4649-aa49-501ee12a6c84",
+   "title": "Street and Park Trees in Hobsons Bay City Council",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "339238b6-3c2c-4649-aa49-501ee12a6c84",
+   "access": "datastore"
+  },
+  {
+   "n": 290,
+   "publisher_id": "australia:horsham-rural-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/hrcc-councillors-2025-26/resource/bb54cd9f-319a-48a5-932f-6abfeb63f49d",
+   "title": "HRCC Councillors 2025-26",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "bb54cd9f-319a-48a5-932f-6abfeb63f49d",
+   "access": "datastore"
+  },
+  {
+   "n": 291,
+   "publisher_id": "australia:housing-and-public-works-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-of-housing-and-public-works-annual-report-data-2024-25/resource/9731b2de-99c7-4ebc-a6a4-3e107619d9f1",
+   "title": "Department of Housing and Public Works Annual Report Data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9731b2de-99c7-4ebc-a6a4-3e107619d9f1",
+   "access": "datastore"
+  },
+  {
+   "n": 292,
+   "publisher_id": "australia:immi",
+   "resource_url": "https://data.gov.au/data/dataset/visitor-visas-granted-pivot-table/resource/eae15212-6255-4db5-8206-4a7f86d2b9a0",
+   "title": "Visitor visa program",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "eae15212-6255-4db5-8206-4a7f86d2b9a0",
+   "access": "datastore"
+  },
+  {
+   "n": 293,
+   "publisher_id": "australia:independent-commissioner-against-corruption-and-office-for-public-integrity-south-australia-governme",
+   "resource_url": "https://data.gov.au/data/dataset/icac-and-opi-annual-report-data-reporting-required-by-any-other-act/resource/a6d010ce-bc89-41ff-bcca-1bb054393f0e",
+   "title": "ICAC and OPI Annual Report Data - Reporting required by any other act",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a6d010ce-bc89-41ff-bcca-1bb054393f0e",
+   "access": "datastore"
+  },
+  {
+   "n": 294,
+   "publisher_id": "australia:information-and-privacy-commission-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-agency-level-gipa-data-2018-2019/resource/4ad47a9d-bf04-4019-b41b-794821769c78",
+   "title": "Agency-level GIPA Data 2018-2019",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "4ad47a9d-bf04-4019-b41b-794821769c78",
+   "access": "datastore"
+  },
+  {
+   "n": 295,
+   "publisher_id": "australia:infrastructure-sa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/infrastructure-sa-executives/resource/540811b5-b29b-49b8-bb95-c2200980bd3c",
+   "title": "Infrastructure SA Executives",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "540811b5-b29b-49b8-bb95-c2200980bd3c",
+   "access": "datastore"
+  },
+  {
+   "n": 296,
+   "publisher_id": "australia:ip-australia",
+   "resource_url": "https://data.gov.au/data/dataset/ntellectual-property-government-open-data-2015/resource/6db02be6-5dba-4a8f-89f6-638052aeb81c",
+   "title": "[Superseded] Intellectual Property Government Open Data 2015",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6db02be6-5dba-4a8f-89f6-638052aeb81c",
+   "access": "datastore"
+  },
+  {
+   "n": 297,
+   "publisher_id": "australia:ipea",
+   "resource_url": "https://data.gov.au/data/dataset/current-and-former-parliamentarians-expenditure-1-april-to-30-june-2026/resource/623a0000-df42-4782-9d39-2350d403f931",
+   "title": "Current and Former Parliamentarians’ Expenditure 1 April to 30 June 2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "623a0000-df42-4782-9d39-2350d403f931",
+   "access": "datastore"
+  },
+  {
+   "n": 298,
+   "publisher_id": "australia:ipswich-girls-grammar-school-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/ipswich-girls-grammar-school-contract-disclosure-2020-2021/resource/3119e931-fb5a-46b8-ae17-ffd115b5e7e0",
+   "title": "Ipswich Girls' Grammar School Contract Disclosure 2020 - 2021",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3119e931-fb5a-46b8-ae17-ffd115b5e7e0",
+   "access": "datastore"
+  },
+  {
+   "n": 299,
+   "publisher_id": "australia:james-cook-university-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/james-cook-university-contract-disclosure-report/resource/6f882117-2ac0-489f-a498-a986901fd838",
+   "title": "James Cook University Contract Disclosure Report",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6f882117-2ac0-489f-a498-a986901fd838",
+   "access": "datastore"
+  },
+  {
+   "n": 300,
+   "publisher_id": "australia:justice-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/queensland-language-services-policy-the-public-trustee/resource/5101df14-951b-4877-b3ca-cbc1dbd69c30",
+   "title": "Queensland Language Services Policy - The Public Trustee",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "5101df14-951b-4877-b3ca-cbc1dbd69c30",
+   "access": "datastore"
+  },
+  {
+   "n": 301,
+   "publisher_id": "australia:lake-macquarie-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/dog-exercise-areas-in-lake-macquarie/resource/13123449-07d9-4a42-b741-8e2e51a409fd",
+   "title": "Dog Exercise Areas in Lake Macquarie",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "13123449-07d9-4a42-b741-8e2e51a409fd",
+   "access": "datastore"
+  },
+  {
+   "n": 302,
+   "publisher_id": "australia:latrobe-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/latrobe-councillor-details/resource/f3906416-2497-4b94-8de9-ddcc8789820f",
+   "title": "Latrobe Councillor Details",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f3906416-2497-4b94-8de9-ddcc8789820f",
+   "access": "datastore"
+  },
+  {
+   "n": 303,
+   "publisher_id": "australia:legacy-datasets-not-updated-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-of-housing-local-government-planning-public-works-annual-report-data-2023-24/resource/200dc53f-327e-484c-9fdb-272b764d334b",
+   "title": "Department of Housing, Local Government Planning & Public Works Annual Report Data 2023-24",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "200dc53f-327e-484c-9fdb-272b764d334b",
+   "access": "datastore"
+  },
+  {
+   "n": 304,
+   "publisher_id": "australia:legal-aid-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/annual-report-2024-25-queensland-language-services-policy-report/resource/236710ba-f5c4-4432-ae0b-31aebba35d6c",
+   "title": "Annual report 2024-25 Queensland language services policy report",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "236710ba-f5c4-4432-ae0b-31aebba35d6c",
+   "access": "datastore"
+  },
+  {
+   "n": 305,
+   "publisher_id": "australia:libraries-tasmania",
+   "resource_url": "https://data.gov.au/data/dataset/tasmanian-wills-1824-1990/resource/3e4a55d2-554f-4577-a530-7fcb2d255060",
+   "title": "Tasmanian Wills (1813-1997)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3e4a55d2-554f-4577-a530-7fcb2d255060",
+   "access": "datastore"
+  },
+  {
+   "n": 306,
+   "publisher_id": "australia:local-government-water-and-volunteers-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/dlgwv-annual-report-data-2025-26/resource/40b48f21-12d2-4982-a1a5-c72a68d43e3c",
+   "title": "DLGWV Annual report data 2025-26",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "40b48f21-12d2-4982-a1a5-c72a68d43e3c",
+   "access": "datastore"
+  },
+  {
+   "n": 307,
+   "publisher_id": "australia:lotteries-commission-of-south-australia-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/lotteries-commission-of-south-australia-annual-report-data-instances-of-fraud-detected-in-the-a/resource/80c41a7f-c3bb-43bf-80b4-8b92e49b6b52",
+   "title": "Lotteries Commission of South Australia Annual Report Data - Instances of fraud detected in the agency",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "80c41a7f-c3bb-43bf-80b4-8b92e49b6b52",
+   "access": "datastore"
+  },
+  {
+   "n": 308,
+   "publisher_id": "australia:macedon-ranges-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/dog-walking-zones-prohibited-river/resource/b651a0f8-39f0-40df-a5f1-2b61f6790370",
+   "title": "Dog Walking Zones - Prohibited River",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b651a0f8-39f0-40df-a5f1-2b61f6790370",
+   "access": "datastore"
+  },
+  {
+   "n": 309,
+   "publisher_id": "australia:manningham-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/manningham-council-buildings/resource/19af0705-e0bd-4c75-bccc-c0e7be1db421",
+   "title": "Manningham Council Buildings",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "19af0705-e0bd-4c75-bccc-c0e7be1db421",
+   "access": "csv"
+  },
+  {
+   "n": 310,
+   "publisher_id": "australia:maribyrnong-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/open-space-condition-survey-2017-maribyrnong-city-council/resource/2aa9f461-e9e0-4fd1-8501-308072010bde",
+   "title": "Open Space Condition Survey 2017 - Maribyrnong City Council",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2aa9f461-e9e0-4fd1-8501-308072010bde",
+   "access": "datastore"
+  },
+  {
+   "n": 311,
+   "publisher_id": "australia:melbourne-water-corporation-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/water-supply-daily-streamflow-into-melbournes-4-major-harvesting-storage-dams/resource/49acbbe1-6ed6-44f8-9865-073e7d45bf08",
+   "title": "Water Supply - Daily Streamflow (into Melbourne's 4 Major Harvesting Storage Dams)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "49acbbe1-6ed6-44f8-9865-073e7d45bf08",
+   "access": "datastore"
+  },
+  {
+   "n": 312,
+   "publisher_id": "australia:mildura-rural-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/mildura-rcc-smart-cities-lorawan-network/resource/c12cdba2-a299-45a9-953e-9d9d2d5ac83f",
+   "title": "Mildura RCC Smart Cities Public LoRaWAN Network",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c12cdba2-a299-45a9-953e-9d9d2d5ac83f",
+   "access": "datastore"
+  },
+  {
+   "n": 313,
+   "publisher_id": "australia:motor-accident-insurance-commission-maic-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/maic-scheme-insights-2022-2023/resource/c4b53d59-d338-4b8e-b63f-2a8a15508c41",
+   "title": "MAIC scheme insights 2022-2023",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c4b53d59-d338-4b8e-b63f-2a8a15508c41",
+   "access": "datastore"
+  },
+  {
+   "n": 314,
+   "publisher_id": "australia:mount-isa-water-board-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/c-users-srabici-desktop-work-regulatory-reporting/resource/116863e1-25bf-42ab-bbb7-472c8d30deaa",
+   "title": "Mount Isa Water Board Consultant Expenditure 2025-26",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "116863e1-25bf-42ab-bbb7-472c8d30deaa",
+   "access": "datastore"
+  },
+  {
+   "n": 315,
+   "publisher_id": "australia:murray-darlingbasinauthority",
+   "resource_url": "https://data.gov.au/data/dataset/murray-darling-basin-waterbird-survey/resource/41e3d2ca-478a-4d6f-a251-7a7782959704",
+   "title": "Murray-Darling Basin waterbird survey",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "41e3d2ca-478a-4d6f-a251-7a7782959704",
+   "access": "datastore"
+  },
+  {
+   "n": 316,
+   "publisher_id": "australia:museums-of-history-nsw-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-nominal-roll-of-the-first-railway-section-aif-1917-20/resource/7e60d2dd-ff7a-4527-953a-21b2c491e760",
+   "title": "Nominal Roll of the First Railway Section (AIF), 1917-20",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7e60d2dd-ff7a-4527-953a-21b2c491e760",
+   "access": "datastore"
+  },
+  {
+   "n": 317,
+   "publisher_id": "australia:national-emergency-management-agency",
+   "resource_url": "https://data.gov.au/data/dataset/drfa-activation-history-by-lga/resource/ada7908b-afe6-48f3-966b-789aa26c1391",
+   "title": "DRFA Activation History by LGA",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ada7908b-afe6-48f3-966b-789aa26c1391",
+   "access": "datastore"
+  },
+  {
+   "n": 318,
+   "publisher_id": "australia:national-health-funding-body",
+   "resource_url": "https://data.gov.au/data/dataset/testing-only-funded-entity-id-development/resource/c5b4d6a4-beb9-423f-8e20-c87a3fbe7c80",
+   "title": "TESTING ONLY (Non-prod dataset for QA)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c5b4d6a4-beb9-423f-8e20-c87a3fbe7c80",
+   "access": "datastore"
+  },
+  {
+   "n": 319,
+   "publisher_id": "australia:national-injury-insurance-scheme-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/niisq-agency-contract-disclosure/resource/b583016e-6eb8-477f-b58d-b7406e0f7333",
+   "title": "NIISQ Agency Contract Disclosure",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b583016e-6eb8-477f-b58d-b7406e0f7333",
+   "access": "datastore"
+  },
+  {
+   "n": 320,
+   "publisher_id": "australia:natural-resources-and-mines-manufacturing-and-regional-and-rural-development-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/queensland-language-services-policy-nrmmrrd/resource/984c8f5f-5f99-49cb-8cda-6dc6c469b02e",
+   "title": "Queensland language services policy — Department of Natural Resources and Mines, Manufacturing and Regional and Rural Development",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "984c8f5f-5f99-49cb-8cda-6dc6c469b02e",
+   "access": "datastore"
+  },
+  {
+   "n": 321,
+   "publisher_id": "australia:nbra",
+   "resource_url": "https://data.gov.au/data/dataset/local-economic-recovery-projects-for-2019-20-bushfires/resource/e5cfbcff-1eca-406a-91b6-7ada48708d3a",
+   "title": "Local Economic Recovery Projects for 2019-20 Bushfires",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "e5cfbcff-1eca-406a-91b6-7ada48708d3a",
+   "access": "datastore"
+  },
+  {
+   "n": 322,
+   "publisher_id": "australia:noosa-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/dogs-of-noosa-shire/resource/32319cb2-0845-4311-9ae8-79811f77c3d1",
+   "title": "Dogs of Noosa Shire",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "32319cb2-0845-4311-9ae8-79811f77c3d1",
+   "access": "datastore"
+  },
+  {
+   "n": 323,
+   "publisher_id": "australia:northern-grampians-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/ngsc-roads-current/resource/f5414ce3-2c77-406e-8145-2f0d1a49c64f",
+   "title": "NGSC Roads Current",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f5414ce3-2c77-406e-8145-2f0d1a49c64f",
+   "access": "datastore"
+  },
+  {
+   "n": 324,
+   "publisher_id": "australia:nsw-department-of-climate-change-energy-the-environment-and-water-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-sydney-metropolitan-western-study-area-hydrogeological-landscapes-march-2011-first-edition6/resource/08db81d1-2030-4930-84aa-79170ac9e5c8",
+   "title": "Sydney Metropolitan Western Study Area Hydrogeological Landscapes: March 2011 (First Edition)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "08db81d1-2030-4930-84aa-79170ac9e5c8",
+   "access": "datastore"
+  },
+  {
+   "n": 325,
+   "publisher_id": "australia:nsw-department-of-education-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-nsw-education-specialist-support-classes-by-school-and-support-needs-type/resource/4eda0364-5b24-4453-ad77-5d73b78f3393",
+   "title": "Specialist support classes by school and support needs type",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "4eda0364-5b24-4453-ad77-5d73b78f3393",
+   "access": "datastore"
+  },
+  {
+   "n": 326,
+   "publisher_id": "australia:nsw-ministry-of-health-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-nsw-covid-19-tests-by-age-range-discontinued/resource/0325e760-26a5-4b9b-9681-42ef723ce6be",
+   "title": "NSW COVID-19 tests by age range (discontinued)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0325e760-26a5-4b9b-9681-42ef723ce6be",
+   "access": "datastore"
+  },
+  {
+   "n": 327,
+   "publisher_id": "australia:nsw-registry-of-births-deaths-and-marriages-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-bdm-data-marriages-registrations/resource/b03a20e7-75df-4118-a16e-3414d42308fa",
+   "title": "BDM Data - Marriages Registrations",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b03a20e7-75df-4118-a16e-3414d42308fa",
+   "access": "datastore"
+  },
+  {
+   "n": 328,
+   "publisher_id": "australia:office-of-industrial-relations-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/oir-contract-disclosure-report-fy-2025-26-feb-apr-2026/resource/ffd51db7-7398-4f7d-887e-6c0c1e7e4045",
+   "title": "OIR Contract Disclosure Report FY 2025-26 Feb-Apr 2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ffd51db7-7398-4f7d-887e-6c0c1e7e4045",
+   "access": "datastore"
+  },
+  {
+   "n": 329,
+   "publisher_id": "australia:office-of-the-commissioner-for-public-sector-employment-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/work-health-and-safety-and-return-to-work-performance-ocpse/resource/0bd5a792-886a-462a-abdc-c236f78508d6",
+   "title": "Work Health and Safety and Return to Work Performance - Office of the Commissioner for Public Sector Employment",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0bd5a792-886a-462a-abdc-c236f78508d6",
+   "access": "datastore"
+  },
+  {
+   "n": 330,
+   "publisher_id": "australia:office-of-the-governor-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/office-of-the-governor-contract-disclosure-report-2022-23/resource/19b81b82-b8ac-46c3-b42c-08ee30e528c0",
+   "title": "Office of the Governor - Contract Disclosure Report 2022-23",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "19b81b82-b8ac-46c3-b42c-08ee30e528c0",
+   "access": "datastore"
+  },
+  {
+   "n": 331,
+   "publisher_id": "australia:office-of-the-information-commissioner-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/training-participant-survey-results-office-of-the-information-commissioner/resource/29218dfe-1e8c-4fc8-b1a8-03130f4c8833",
+   "title": "Training participant survey results - Office of the Information Commissioner",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "29218dfe-1e8c-4fc8-b1a8-03130f4c8833",
+   "access": "datastore"
+  },
+  {
+   "n": 332,
+   "publisher_id": "australia:office-of-the-inspector-general-emergency-management-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/gifts-and-benefits-register-igem/resource/10fafe1d-4869-4add-9b85-dbd8376a7f79",
+   "title": "Gifts and Benefits Register – The Office of Inspector-General Emergency Management (IGEM)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "10fafe1d-4869-4add-9b85-dbd8376a7f79",
+   "access": "datastore"
+  },
+  {
+   "n": 333,
+   "publisher_id": "australia:office-of-the-sa-productivity-commission-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/osapc-fraud-detected-in-agency-2019-2020/resource/8fd2987f-c139-4c74-bab7-34b88e980b08",
+   "title": "OSAPC-Fraud Detected in Agency 2019-2020",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8fd2987f-c139-4c74-bab7-34b88e980b08",
+   "access": "datastore"
+  },
+  {
+   "n": 334,
+   "publisher_id": "australia:officeoftheaustralianinformationcommissioner",
+   "resource_url": "https://data.gov.au/data/dataset/freedom-of-information-statistics/resource/7cfb87b8-1e0a-4d25-acee-90de8f0f2be1",
+   "title": "Freedom of information statistics",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7cfb87b8-1e0a-4d25-acee-90de8f0f2be1",
+   "access": "datastore"
+  },
+  {
+   "n": 335,
+   "publisher_id": "australia:open-data-administration-data-requests-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/publishing-standards-data-qld-gov-au/resource/9819a07c-e9a1-47af-8c7e-89db9762d5cf",
+   "title": "Publishing standards—data.qld.gov.au",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9819a07c-e9a1-47af-8c7e-89db9762d5cf",
+   "access": "datastore"
+  },
+  {
+   "n": 336,
+   "publisher_id": "australia:pharmacy-regulation-authority-sa-prasa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/pharmacy-regulation-authority-sa-prasa-2018/resource/c38d6d6f-e9ef-4fce-ae1e-20852ece486d",
+   "title": "Pharmacy Regulation Authority SA (PRASA) - 2018",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c38d6d6f-e9ef-4fce-ae1e-20852ece486d",
+   "access": "datastore"
+  },
+  {
+   "n": 337,
+   "publisher_id": "australia:police-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qps-queensland-government-investment-portal-qgip/resource/ccda94be-ce85-4259-bfba-d192f4b83e24",
+   "title": "QPS—Queensland Government Investment Portal (QGIP)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ccda94be-ce85-4259-bfba-d192f4b83e24",
+   "access": "datastore"
+  },
+  {
+   "n": 338,
+   "publisher_id": "australia:premier-and-cabinet-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/overseas-travel-department-of-the-premier-and-cabinet/resource/45a0652f-ec75-4f40-b56d-4368ef89a630",
+   "title": "Overseas travel - Department of the Premier and Cabinet",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "45a0652f-ec75-4f40-b56d-4368ef89a630",
+   "access": "datastore"
+  },
+  {
+   "n": 339,
+   "publisher_id": "australia:premier-s-delivery-unit-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/contractors-engaged-by-the-premier-s-delivery-unit/resource/56731e5d-24b6-4850-911c-cbbe8bf09684",
+   "title": "Contractors engaged by the Premier's Delivery Unit",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "56731e5d-24b6-4850-911c-cbbe8bf09684",
+   "access": "datastore"
+  },
+  {
+   "n": 340,
+   "publisher_id": "australia:preventive-health-sa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/wellbeing-sa-consultants/resource/3811053e-2404-40f2-8006-7452dfffe3a3",
+   "title": "Preventive Health SA - Consultants",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3811053e-2404-40f2-8006-7452dfffe3a3",
+   "access": "datastore"
+  },
+  {
+   "n": 341,
+   "publisher_id": "australia:primary-industries-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/quarterly-reports-species-of-conservation-interest-soci-interactions-from-2006/resource/7ec15655-5c2c-48f5-88ac-50a9501317a0",
+   "title": "Fisheries Queensland - Reported interactions with Threatened, Endangered and Protected (TEP) species",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7ec15655-5c2c-48f5-88ac-50a9501317a0",
+   "access": "datastore"
+  },
+  {
+   "n": 342,
+   "publisher_id": "australia:public-records-office-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/prov-workforce-data-21-22/resource/1e3f8104-3241-41e1-8457-163ead2ba4a9",
+   "title": "PROV Workforce Data 21-22",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1e3f8104-3241-41e1-8457-163ead2ba4a9",
+   "access": "datastore"
+  },
+  {
+   "n": 343,
+   "publisher_id": "australia:public-sector-commission-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/public-service-commission-contract-disclosure-2019-20/resource/86d758f8-9bc6-42f7-9b31-c69ad5c2aeb0",
+   "title": "Contract Disclosure Report - Public Sector Commission",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "86d758f8-9bc6-42f7-9b31-c69ad5c2aeb0",
+   "access": "datastore"
+  },
+  {
+   "n": 344,
+   "publisher_id": "australia:public-sector-commission-wa",
+   "resource_url": "https://data.gov.au/data/dataset/wa-public-sector-occupational-profile/resource/cd3089cb-a1c0-4afd-b5fe-016723a5101a",
+   "title": "WA public sector occupational profile",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "cd3089cb-a1c0-4afd-b5fe-016723a5101a",
+   "access": "datastore"
+  },
+  {
+   "n": 345,
+   "publisher_id": "australia:qleave-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qleave-annual-report-data-consultancies-2025-2026/resource/0d680af3-fb54-4197-9fa4-7eb15b56f500",
+   "title": "QLeave Annual Report Data - Consultancies 2025-2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0d680af3-fb54-4197-9fa4-7eb15b56f500",
+   "access": "datastore"
+  },
+  {
+   "n": 346,
+   "publisher_id": "australia:queensland-academy-of-sport-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qas-contract-disclosure-qtr-3-fy-2025-26/resource/1d1b5073-a933-4d8c-bbbb-90bde21e165d",
+   "title": "QAS Contract Disclosure Report",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1d1b5073-a933-4d8c-bbbb-90bde21e165d",
+   "access": "datastore"
+  },
+  {
+   "n": 347,
+   "publisher_id": "australia:queensland-audit-office-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qao-consultancy-reporting-2023-24/resource/06a23cee-797c-4db9-a058-9a02e2df9b5b",
+   "title": "QAO Consultancy Reporting 2023-24",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "06a23cee-797c-4db9-a058-9a02e2df9b5b",
+   "access": "datastore"
+  },
+  {
+   "n": 348,
+   "publisher_id": "australia:queensland-building-and-construction-commission-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qbcc-annual-report-overseas-travel/resource/6bb1339d-8e7a-4028-af68-8ad45c7e72a0",
+   "title": "QBCC Annual Report - Overseas Travel",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6bb1339d-8e7a-4028-af68-8ad45c7e72a0",
+   "access": "datastore"
+  },
+  {
+   "n": 349,
+   "publisher_id": "australia:queensland-corrective-services-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2017-18-queensland-language-services-queensland-corrective-services/resource/878b6b7c-823c-4fa8-8573-4bec72e228fa",
+   "title": "Queensland Language Services - Queensland Corrective Services",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "878b6b7c-823c-4fa8-8573-4bec72e228fa",
+   "access": "datastore"
+  },
+  {
+   "n": 350,
+   "publisher_id": "australia:queensland-family-and-child-commission-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/queensland-family-and-child-commission-contract-disclosures/resource/1f733fa5-a4a6-4325-aa08-bc27887c4c62",
+   "title": "Queensland Family and Child Commission contract disclosures",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1f733fa5-a4a6-4325-aa08-bc27887c4c62",
+   "access": "datastore"
+  },
+  {
+   "n": 351,
+   "publisher_id": "australia:queensland-fire-department-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/queensland-fire-and-emergency-services-annual-report-data-queensland-language-services-policy/resource/39fd0f01-3bef-4e4e-8c0e-92951ce337d7",
+   "title": "Queensland Fire Department Annual Report Data - Queensland Language Services Policy",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "39fd0f01-3bef-4e4e-8c0e-92951ce337d7",
+   "access": "datastore"
+  },
+  {
+   "n": 352,
+   "publisher_id": "australia:queensland-health-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/p-sco-projects-scb-contract-disclosure-report-2026-27-contractors-q1-jul-sep26/resource/7e96b691-c758-409b-a329-0a7e2c0e9d78",
+   "title": "P&SCO Projects SCB Contract Disclosure Report 2026-27 Contractors Q1 Jul-Sep26",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7e96b691-c758-409b-a329-0a7e2c0e9d78",
+   "access": "datastore"
+  },
+  {
+   "n": 353,
+   "publisher_id": "australia:queensland-human-rights-commission-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/interpreter-services/resource/d4a7ee82-bdbf-41ca-8b2e-6eda35c40ac5",
+   "title": "Interpreter services",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "d4a7ee82-bdbf-41ca-8b2e-6eda35c40ac5",
+   "access": "datastore"
+  },
+  {
+   "n": 354,
+   "publisher_id": "australia:queensland-hydro-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/qld-hydro-april-2026-contract-disclosure-report/resource/260744d6-673f-4a35-8b7c-83763fa45779",
+   "title": "Qld Hydro April 2026 Contract Disclosure Report",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "260744d6-673f-4a35-8b7c-83763fa45779",
+   "access": "datastore"
+  },
+  {
+   "n": 355,
+   "publisher_id": "australia:queensland-law-society-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/consultancies-queensland-law-society-department-of-justice/resource/bfae3f24-bbb1-47b3-b04e-965f8583db58",
+   "title": "Consultancies - Queensland Law Society - Department of Justice",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "bfae3f24-bbb1-47b3-b04e-965f8583db58",
+   "access": "datastore"
+  },
+  {
+   "n": 356,
+   "publisher_id": "australia:queensland-museum-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/contract-over-10k-for-march-2026/resource/ddd2db97-37c1-431c-b56a-61a2a9597194",
+   "title": "Contract over 10k for March 2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ddd2db97-37c1-431c-b56a-61a2a9597194",
+   "access": "datastore"
+  },
+  {
+   "n": 357,
+   "publisher_id": "australia:queensland-ombudsman-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2024-25-open-data-annual-report-training/resource/016b6ab4-b70c-4fca-86e8-ccb096c69561",
+   "title": "2024-25 Open data annual report Training",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "016b6ab4-b70c-4fca-86e8-ccb096c69561",
+   "access": "datastore"
+  },
+  {
+   "n": 358,
+   "publisher_id": "australia:queensland-racing-integrity-commission-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2023-24-annual-report-consultancies-metadata-form/resource/5a1d68b8-f5cd-4e50-81cb-df9f110823aa",
+   "title": "QRIC Annual Reportable Overseas Travel Data 2023-24",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "5a1d68b8-f5cd-4e50-81cb-df9f110823aa",
+   "access": "datastore"
+  },
+  {
+   "n": 359,
+   "publisher_id": "australia:queensland-reconstruction-authority-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/https-data-qld-gov-au-dataset-resources-language-services-for-government-body-qldra/resource/833559a5-b6f4-4104-b39e-742a645cf07a",
+   "title": "Queensland Language Services Policy information for government body – Queensland Reconstruction Authority",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "833559a5-b6f4-4104-b39e-742a645cf07a",
+   "access": "datastore"
+  },
+  {
+   "n": 360,
+   "publisher_id": "australia:queensland-state-archives-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/register-of-immigrants-and-missing-immigrants/resource/49a8f18e-cbe5-45e1-b55d-5c236fed39ff",
+   "title": "Immigrants and Missing Immigrants cards 1920-1945",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "49a8f18e-cbe5-45e1-b55d-5c236fed39ff",
+   "access": "datastore"
+  },
+  {
+   "n": 361,
+   "publisher_id": "australia:queensland-treasury-corporation-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/queensland-treasury-corporation-annual-report-data-overseas-travel/resource/30ed78a5-ea06-46dd-af74-daf54d9ec1d3",
+   "title": "Queensland Treasury Corporation Annual Report Data - Overseas travel",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "30ed78a5-ea06-46dd-af74-daf54d9ec1d3",
+   "access": "datastore"
+  },
+  {
+   "n": 362,
+   "publisher_id": "australia:queensland-university-of-technology-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/queensland-university-of-technology-contract-disclosure-2019-20/resource/61984fb9-84f1-42a4-a5e5-3f103033aef5",
+   "title": "Queensland University of Technology Contract Disclosure Report",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "61984fb9-84f1-42a4-a5e5-3f103033aef5",
+   "access": "datastore"
+  },
+  {
+   "n": 363,
+   "publisher_id": "australia:racing-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/racing-queensland-contract-disclosure-report-2025/resource/5a299c44-e94b-4fb6-81c0-7644b5864825",
+   "title": "Racing Queensland Contract Disclosure Report - 2025",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "5a299c44-e94b-4fb6-81c0-7644b5864825",
+   "access": "datastore"
+  },
+  {
+   "n": 364,
+   "publisher_id": "australia:recycling-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/victorias-waste-projection-model/resource/483707e7-7959-45b8-b401-e0b916c1851f",
+   "title": "Victoria's waste projection model",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "483707e7-7959-45b8-b401-e0b916c1851f",
+   "access": "datastore"
+  },
+  {
+   "n": 365,
+   "publisher_id": "australia:registry-of-births-deaths-and-marriages-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/marriages-registered-per-month/resource/94c65704-40b5-4872-809f-27a40488ce6a",
+   "title": "Marriages registered per month",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "94c65704-40b5-4872-809f-27a40488ce6a",
+   "access": "datastore"
+  },
+  {
+   "n": 366,
+   "publisher_id": "australia:renewal-sa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/consultants-engaged-by-renewal-sa/resource/24ebcbf7-7e99-4a02-9c70-ee763d6d8f0a",
+   "title": "Consultants engaged by Renewal SA",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "24ebcbf7-7e99-4a02-9c70-ee763d6d8f0a",
+   "access": "datastore"
+  },
+  {
+   "n": 367,
+   "publisher_id": "australia:residential-tenancies-authority-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/overseas-travel-residential-tenancies-authority/resource/2d3fcd91-6f42-46c1-a376-9d691f28ec4d",
+   "title": "Overseas Travel Expenditure - Residential Tenancies Authority",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2d3fcd91-6f42-46c1-a376-9d691f28ec4d",
+   "access": "datastore"
+  },
+  {
+   "n": 368,
+   "publisher_id": "australia:resources-safety-and-health-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/list-of-authorised-explosives/resource/99b925af-74a6-423c-a8bd-3736d57b05f0",
+   "title": "List of authorised explosives",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "99b925af-74a6-423c-a8bd-3736d57b05f0",
+   "access": "datastore"
+  },
+  {
+   "n": 369,
+   "publisher_id": "australia:revenue-nsw-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-parking-space-levy-assessments/resource/6a933dc2-9200-482a-837c-9c8d6151c6ec",
+   "title": "Parking Space Levy assessments",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6a933dc2-9200-482a-837c-9c8d6151c6ec",
+   "access": "datastore"
+  },
+  {
+   "n": 370,
+   "publisher_id": "australia:riverbank-authority-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/fraud-detected-riverbank/resource/5a76368c-6a84-429a-8762-37f39981ca1e",
+   "title": "Fraud Detected",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "5a76368c-6a84-429a-8762-37f39981ca1e",
+   "access": "datastore"
+  },
+  {
+   "n": 371,
+   "publisher_id": "australia:royal-commission-into-aged-care-quality-and-safety",
+   "resource_url": "https://data.gov.au/data/dataset/research-paper-6-assessing-views-of-the-general-public-for-quality-of-aged-care-and-future-funding/resource/f539bc4d-e3ba-4045-9189-729b541dcea4",
+   "title": "Research Paper 6 – Australia’s aged care system: assessing the views and preferences of the general public for quality of care and future funding",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f539bc4d-e3ba-4045-9189-729b541dcea4",
+   "access": "datastore"
+  },
+  {
+   "n": 372,
+   "publisher_id": "australia:sa-health-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/wchn/resource/55efd90e-eac2-4005-b187-020f91ca2d2f",
+   "title": "Women’s and Children’s Health Network (WCHN)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "55efd90e-eac2-4005-b187-020f91ca2d2f",
+   "access": "datastore"
+  },
+  {
+   "n": 373,
+   "publisher_id": "australia:sa-tourism-commission-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/work-health-and-safety-and-return-to-work-performance-reporting-south-australian-tourism-commis/resource/abde3f65-c776-4275-9a38-5a953fdf961c",
+   "title": "Work Health and Safety and Return to Work Performance Reporting South Australian Tourism Commission",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "abde3f65-c776-4275-9a38-5a953fdf961c",
+   "access": "datastore"
+  },
+  {
+   "n": 374,
+   "publisher_id": "australia:sa-water-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/water-quality1/resource/71f9ff52-24e0-4cd7-9b43-5ef9c44b7a1b",
+   "title": "Water Quality",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "71f9ff52-24e0-4cd7-9b43-5ef9c44b7a1b",
+   "access": "datastore"
+  },
+  {
+   "n": 375,
+   "publisher_id": "australia:security-and-emergency-management-division-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/de-2025-2026-bushfire-at-risk-register-july-2025/resource/a927e847-5818-43e2-8fe6-ad7e469fabd1",
+   "title": "DE 2025-2026 Bushfire At-Risk Register - February 2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a927e847-5818-43e2-8fe6-ad7e469fabd1",
+   "access": "datastore"
+  },
+  {
+   "n": 376,
+   "publisher_id": "australia:seqwater-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/seqwater-overseas-travel/resource/c05c65a4-0c6e-466e-a2c4-b449a6eb19fe",
+   "title": "Seqwater Overseas Travel",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c05c65a4-0c6e-466e-a2c4-b449a6eb19fe",
+   "access": "datastore"
+  },
+  {
+   "n": 377,
+   "publisher_id": "australia:servicesaustralia",
+   "resource_url": "https://data.gov.au/data/dataset/services-australia-service-delivery-quarterly-operational-data/resource/4b1af2ae-69a9-43ed-8e7f-e11a16f1b82f",
+   "title": "Services Australia - Service Delivery quarterly operational data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "4b1af2ae-69a9-43ed-8e7f-e11a16f1b82f",
+   "access": "datastore"
+  },
+  {
+   "n": 378,
+   "publisher_id": "australia:sip-register-vostronet",
+   "resource_url": "https://data.gov.au/data/dataset/vostronet-pty-ltd-declaration-21-august-2025-brunswick/resource/dfb6ae4e-047e-464b-8f69-75e667a4230f",
+   "title": "VostroNet (Australia) Pty Ltd - Declaration - 21 August 2025 - Brunswick",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "dfb6ae4e-047e-464b-8f69-75e667a4230f",
+   "access": "datastore"
+  },
+  {
+   "n": 379,
+   "publisher_id": "australia:sip_asn_telecom",
+   "resource_url": "https://data.gov.au/data/dataset/asn-telecom-pty-ltd-anticipatory-notice-8-august-2025-multiple-batch-2/resource/fbce8cee-46bd-4b77-bd15-f9d0c956f5d5",
+   "title": "ASN Telecom Pty Ltd - Anticipatory Notice - 8 August 2025- Multiple (Declared 2 September 2025)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "fbce8cee-46bd-4b77-bd15-f9d0c956f5d5",
+   "access": "datastore"
+  },
+  {
+   "n": 380,
+   "publisher_id": "australia:sip_cntcorp",
+   "resource_url": "https://data.gov.au/data/dataset/cntcorp-pty-ltd-altona-north-vic-anticipatory-notice-september-2021/resource/d8139a53-ed42-4671-92b3-e3de31dab165",
+   "title": "CNTCorp Pty Ltd - Altona North VIC - Anticipatory Notice - September 2021 (Now declared)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "d8139a53-ed42-4671-92b3-e3de31dab165",
+   "access": "datastore"
+  },
+  {
+   "n": 381,
+   "publisher_id": "australia:sip_interphone",
+   "resource_url": "https://data.gov.au/data/dataset/interphone-pty-ltd-anticipatory-notice-4-september-2025-north-fremantle/resource/f3e826e2-9bec-40a6-8022-d0621769ccfb",
+   "title": "Interphone Pty Ltd- Anticipatory Notice-4 September 2025-North Fremantle",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f3e826e2-9bec-40a6-8022-d0621769ccfb",
+   "access": "datastore"
+  },
+  {
+   "n": 382,
+   "publisher_id": "australia:sip_lbn",
+   "resource_url": "https://data.gov.au/data/dataset/lbn-co-pty-ltd-multiple-declared-areas-january-2021/resource/50496330-c367-4939-bd0f-0107f2f8f225",
+   "title": "LBN Co Pty Ltd - multiple declared areas - January 2021",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "50496330-c367-4939-bd0f-0107f2f8f225",
+   "access": "datastore"
+  },
+  {
+   "n": 383,
+   "publisher_id": "australia:sip_lynham",
+   "resource_url": "https://data.gov.au/data/dataset/lyhnam-networks-pty-ltd-anticipatory-notice-gatton-august-2021/resource/46f8764c-6b2e-4776-83a1-dd207af1c02d",
+   "title": "Lynham Networks Pty Ltd - Anticipatory notice - Gatton - August 2021",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "46f8764c-6b2e-4776-83a1-dd207af1c02d",
+   "access": "datastore"
+  },
+  {
+   "n": 384,
+   "publisher_id": "australia:south-australia-police-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/annual-reporting-data/resource/f79bc2d7-98cc-462d-a578-d008e7ae77e8",
+   "title": "Annual Reporting Data",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f79bc2d7-98cc-462d-a578-d008e7ae77e8",
+   "access": "datastore"
+  },
+  {
+   "n": 385,
+   "publisher_id": "australia:south-australian-film-corporation-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/approved-funding/resource/7250cce9-49b5-455c-8743-e484824b0fcd",
+   "title": "Approved funding",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7250cce9-49b5-455c-8743-e484824b0fcd",
+   "access": "datastore"
+  },
+  {
+   "n": 386,
+   "publisher_id": "australia:south-australian-governments",
+   "resource_url": "https://data.gov.au/data/dataset/triathlon-clubs-gfyl/resource/39da999f-70ec-44a9-9c85-3afbd2ec5b6d",
+   "title": "Triathlon Clubs – GFYL",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "39da999f-70ec-44a9-9c85-3afbd2ec5b6d",
+   "access": "datastore"
+  },
+  {
+   "n": 387,
+   "publisher_id": "australia:south-australian-housing-trust-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/south-australian-housing-trust-annual-report-consultants/resource/8b94d337-b2fd-4dbb-bbe1-a672bca0b0b2",
+   "title": "South Australian Housing Trust Annual Report – Consultants",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8b94d337-b2fd-4dbb-bbe1-a672bca0b0b2",
+   "access": "datastore"
+  },
+  {
+   "n": 388,
+   "publisher_id": "australia:south-australian-mental-health-commission-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/contractors-sa-mental-health-commission/resource/1e1a33d3-51ff-4534-8497-9cc2b21e9b10",
+   "title": "Contractors - SA Mental Health Commission",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1e1a33d3-51ff-4534-8497-9cc2b21e9b10",
+   "access": "datastore"
+  },
+  {
+   "n": 389,
+   "publisher_id": "australia:south-australian-metropolitan-fire-service-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/annual-report-data-contractors/resource/8958fada-fc33-4df7-ba17-484c41eca9b5",
+   "title": "Annual Report Data - Contractors",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8958fada-fc33-4df7-ba17-484c41eca9b5",
+   "access": "datastore"
+  },
+  {
+   "n": 390,
+   "publisher_id": "australia:south-australian-museum-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/south-australian-museum-herpetology-collection1/resource/4f82f9ee-f5d3-4e1d-b8a2-f90a278d0f45",
+   "title": "South Australian Museum Herpetology Collection",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "4f82f9ee-f5d3-4e1d-b8a2-f90a278d0f45",
+   "access": "datastore"
+  },
+  {
+   "n": 391,
+   "publisher_id": "australia:southern-grampians-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/southern-grampians-garbage-collection-zones/resource/3cba301f-a126-491d-a8b9-8c80e595951b",
+   "title": "Southern Grampians Garbage Collection Zones",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3cba301f-a126-491d-a8b9-8c80e595951b",
+   "access": "datastore"
+  },
+  {
+   "n": 392,
+   "publisher_id": "australia:sport-racing-and-olympic-and-paralympic-games-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/dsropg-queensland-language-services-policy-2024-2025/resource/acc77938-5851-4424-9da1-1e89c47ec16a",
+   "title": "DSROPG Queensland Language Services Policy 2024-2025",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "acc77938-5851-4424-9da1-1e89c47ec16a",
+   "access": "datastore"
+  },
+  {
+   "n": 393,
+   "publisher_id": "australia:state-development-infrastructure-and-planning-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/dsdilgp-dsdi-contract-disclosure-reports/resource/98026b97-96e7-4f66-bf47-77a1b84ed3e0",
+   "title": "Contract disclosure reports",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "98026b97-96e7-4f66-bf47-77a1b84ed3e0",
+   "access": "datastore"
+  },
+  {
+   "n": 394,
+   "publisher_id": "australia:state-library-of-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/slq-consultancies1/resource/5ac82693-5d89-47c9-9b1e-2f1a18cf8c1a",
+   "title": "State Library of Queensland -  Consultancies",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "5ac82693-5d89-47c9-9b1e-2f1a18cf8c1a",
+   "access": "datastore"
+  },
+  {
+   "n": 395,
+   "publisher_id": "australia:state-library-of-south-australia-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/oral-histories/resource/a953a0e5-ab69-41d4-b658-9dfc97253b0f",
+   "title": "Oral Histories",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a953a0e5-ab69-41d4-b658-9dfc97253b0f",
+   "access": "datastore"
+  },
+  {
+   "n": 396,
+   "publisher_id": "australia:state-library-of-western-australia-western-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/wa-public-libraries/resource/31eabe52-d241-4f21-b9c7-3e3fef6c0bcb",
+   "title": "WA Public Libraries",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "31eabe52-d241-4f21-b9c7-3e3fef6c0bcb",
+   "access": "datastore"
+  },
+  {
+   "n": 397,
+   "publisher_id": "australia:state-of-the-environment",
+   "resource_url": "https://data.gov.au/data/dataset/2021-soe-urb-063/resource/aead5092-e394-4469-b3ea-af62e757f4aa",
+   "title": "2021 SoE Urban Urban water and sewerage consumer price index by Australian capital city, 1998 to 2020",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "aead5092-e394-4469-b3ea-af62e757f4aa",
+   "access": "datastore"
+  },
+  {
+   "n": 398,
+   "publisher_id": "australia:state-opera-of-south-australia-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/state-opera-south-australia-contractors/resource/0635b6d2-e6b6-4555-ac54-43aebbb98682",
+   "title": "State Opera South Australia Contractors",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0635b6d2-e6b6-4555-ac54-43aebbb98682",
+   "access": "datastore"
+  },
+  {
+   "n": 399,
+   "publisher_id": "australia:state-records-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/sa-foi-number-of-applications-received-by-agency-local-government/resource/173c64ae-6bff-4ce8-9844-785ee181f27b",
+   "title": "SA FOI – number of applications received by agency – local government",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "173c64ae-6bff-4ce8-9844-785ee181f27b",
+   "access": "datastore"
+  },
+  {
+   "n": 400,
+   "publisher_id": "australia:state-revenue-office-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/applications-for-fhog-top-10-overall-postcodes-2023-24/resource/9acec612-738a-4596-8526-fe9475c1ddda",
+   "title": "Applications for FHOG Top 10 Overall Postcodes 2023-24",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9acec612-738a-4596-8526-fe9475c1ddda",
+   "access": "datastore"
+  },
+  {
+   "n": 401,
+   "publisher_id": "australia:state-theatre-company-south-australia-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/state-theatre-company-south-australia-fraud-detected-from-2012-2020/resource/8d8b73a2-e96a-4fdd-8bb0-641a1f44c497",
+   "title": "State Theatre Company South Australia Fraud Detected from 2013-2024",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "8d8b73a2-e96a-4fdd-8bb0-641a1f44c497",
+   "access": "datastore"
+  },
+  {
+   "n": 402,
+   "publisher_id": "australia:statelibraryofnewsouthwales",
+   "resource_url": "https://data.gov.au/data/dataset/sydney-bond-store-maps-1894/resource/3b8828e4-116b-470c-85f1-7f96b6679165",
+   "title": "Sydney bond store maps 1894",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "3b8828e4-116b-470c-85f1-7f96b6679165",
+   "access": "datastore"
+  },
+  {
+   "n": 403,
+   "publisher_id": "australia:statelibraryofwesternaustralia",
+   "resource_url": "https://data.gov.au/data/dataset/slwa-digital-photographic-collection/resource/b3cb5ffc-b572-4b57-8914-2ffb6f4b3064",
+   "title": "State Library of Western Australia digital photographic collection",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b3cb5ffc-b572-4b57-8914-2ffb6f4b3064",
+   "access": "datastore"
+  },
+  {
+   "n": 404,
+   "publisher_id": "australia:statutory-infrastructure-provider-opticomm",
+   "resource_url": "https://data.gov.au/data/dataset/opticomm-pty-ltd-anticipatory-notice-25-july-2025-multiple/resource/1ac2b706-ffa1-4122-9724-db1953c70de1",
+   "title": "OptiComm Pty Ltd - Anticipatory Notice - 25 July 2025 - Multiple (Partly Declared 14 October 2026)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "1ac2b706-ffa1-4122-9724-db1953c70de1",
+   "access": "datastore"
+  },
+  {
+   "n": 405,
+   "publisher_id": "australia:strathbogie-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/strathbogie-shire-waste-collection-zones-2025-2026/resource/5f2d2b10-76af-4fa2-a43c-0e9ada5a69d9",
+   "title": "Strathbogie Shire Waste Collection Zones 2025-2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "5f2d2b10-76af-4fa2-a43c-0e9ada5a69d9",
+   "access": "csv"
+  },
+  {
+   "n": 406,
+   "publisher_id": "australia:surf-coast-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/surf-coast-shire-drinking-fountains/resource/ad7c956e-d243-45a4-b2f9-4a12c35ea957",
+   "title": "Surf Coast Shire Drinking Fountains",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ad7c956e-d243-45a4-b2f9-4a12c35ea957",
+   "access": "datastore"
+  },
+  {
+   "n": 407,
+   "publisher_id": "australia:sustainabilityvictoria",
+   "resource_url": "https://data.gov.au/data/dataset/detox-your-home/resource/a11617b3-a04b-4470-8d55-294e336819cb",
+   "title": "Detox Your Home Disposal Points (VIC)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a11617b3-a04b-4470-8d55-294e336819cb",
+   "access": "datastore"
+  },
+  {
+   "n": 408,
+   "publisher_id": "australia:sustainable-development-goals",
+   "resource_url": "https://data.gov.au/data/dataset/proportion-of-children-5-years-old-whose-births-have-been-registered-with-a-civil-authority-by-age/resource/cd6e63b7-37fe-469e-8e02-31e279be2a77",
+   "title": "Proportion of children (<5 years old) whose births have been registered with a civil authority, by age",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "cd6e63b7-37fe-469e-8e02-31e279be2a77",
+   "access": "datastore"
+  },
+  {
+   "n": 409,
+   "publisher_id": "australia:swan-hill-rural-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/township-fire-restriction-zones/resource/a1de9cbe-7cc1-4736-995b-db0fc2ae4f35",
+   "title": "Township Fire Restriction Zones",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a1de9cbe-7cc1-4736-995b-db0fc2ae4f35",
+   "access": "datastore"
+  },
+  {
+   "n": 410,
+   "publisher_id": "australia:tafe-sa-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/tafe-sa-whistleblowers-historical-trend/resource/dc7d0ac8-06c8-406f-a842-d469a20999be",
+   "title": "TAFE SA – Public Interest Disclosure – Historical Trend",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "dc7d0ac8-06c8-406f-a842-d469a20999be",
+   "access": "datastore"
+  },
+  {
+   "n": 411,
+   "publisher_id": "australia:teachers-registration-board-of-south-australia-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/fraud-detected-at-trbsa/resource/9d2a005b-56a2-4214-b99b-11591ffabe0d",
+   "title": "Fraud detected at TRBSA",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "9d2a005b-56a2-4214-b99b-11591ffabe0d",
+   "access": "datastore"
+  },
+  {
+   "n": 412,
+   "publisher_id": "australia:tertiary-education-quality-and-standards-agency-teqsa",
+   "resource_url": "https://data.gov.au/data/dataset/tqnr/resource/07370e3f-780b-4a70-8c87-b6796d5ab237",
+   "title": "TQNR",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "07370e3f-780b-4a70-8c87-b6796d5ab237",
+   "access": "datastore"
+  },
+  {
+   "n": 413,
+   "publisher_id": "australia:the-public-trustee-of-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/g-all-procurement-procurement-secure-5-reports-contract-disclosures-1-open-data-portal/resource/677795b1-897d-4be6-b9f2-17ea1121cdb4",
+   "title": "Contract Disclosures Public Trust Office",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "677795b1-897d-4be6-b9f2-17ea1121cdb4",
+   "access": "datastore"
+  },
+  {
+   "n": 414,
+   "publisher_id": "australia:the-treasury-datansw",
+   "resource_url": "https://data.gov.au/data/dataset/nsw-nsw-budget-2018-19/resource/a27e81d3-de0d-4f57-a8b6-6f8a48228944",
+   "title": "NSW Budget 2018-19",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "a27e81d3-de0d-4f57-a8b6-6f8a48228944",
+   "access": "datastore"
+  },
+  {
+   "n": 415,
+   "publisher_id": "australia:titles-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/titles-registry-activity-historical-fortnightly-lodgements/resource/709639ef-37ee-41ee-9053-dd864a56de26",
+   "title": "Titles registry activity historical fortnightly lodgements 2020",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "709639ef-37ee-41ee-9053-dd864a56de26",
+   "access": "datastore"
+  },
+  {
+   "n": 416,
+   "publisher_id": "australia:townsville-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/townsville-city-council-snap-send-solve-requests/resource/f71d6a76-56ed-42ff-b691-3e2be8fcdca0",
+   "title": "Townsville City Council Snap Send Solve Requests",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f71d6a76-56ed-42ff-b691-3e2be8fcdca0",
+   "access": "datastore"
+  },
+  {
+   "n": 417,
+   "publisher_id": "australia:trade-employment-and-training-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/school-based-apprentice-and-trainee-in-trainingqualifications-by-desbt-region/resource/54cd8353-b4aa-4306-8ceb-b9615a30b4ef",
+   "title": "School-based Apprentice and Trainee in-training qualifications by DTET Region",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "54cd8353-b4aa-4306-8ceb-b9615a30b4ef",
+   "access": "datastore"
+  },
+  {
+   "n": 418,
+   "publisher_id": "australia:transport-and-main-roads-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/department-of-transport-and-main-roads-annual-report-data-2025-2026/resource/974aca8c-4682-49ef-a1e7-3ad51128752b",
+   "title": "Department of Transport and Main Roads Annual Report Data—2025-2026",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "974aca8c-4682-49ef-a1e7-3ad51128752b",
+   "access": "datastore"
+  },
+  {
+   "n": 419,
+   "publisher_id": "australia:treasury-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/consultancies-queensland-competition-authority-qca/resource/b0d3c0d4-5aa4-4b4f-a88e-c83df35af202",
+   "title": "Consultancies—Queensland Competition Authority (QCA)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "b0d3c0d4-5aa4-4b4f-a88e-c83df35af202",
+   "access": "datastore"
+  },
+  {
+   "n": 420,
+   "publisher_id": "australia:unitywater-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/2017-18-unitywater-consultancy-spending-and-overseas-travel/resource/7b907b44-c23c-4237-af8b-0c50c16e9122",
+   "title": "2017-18 Unitywater - Consultancy spending and overseas travel",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7b907b44-c23c-4237-af8b-0c50c16e9122",
+   "access": "datastore"
+  },
+  {
+   "n": 421,
+   "publisher_id": "australia:university-of-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/remuneration-information-university-of-queensland/resource/f5de535c-3c46-42c4-8457-68b63b9bc765",
+   "title": "Remuneration information - University of Queensland",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "f5de535c-3c46-42c4-8457-68b63b9bc765",
+   "access": "datastore"
+  },
+  {
+   "n": 422,
+   "publisher_id": "australia:university-of-southern-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/university-of-southern-queensland-contract-disclosure-report-2020-2021/resource/ac76f601-7d43-4329-a37c-0f71916f4cec",
+   "title": "University of Southern Queensland Contract Disclosure Report",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ac76f601-7d43-4329-a37c-0f71916f4cec",
+   "access": "datastore"
+  },
+  {
+   "n": 423,
+   "publisher_id": "australia:victorian-planning-authority-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/precinct-structure-plans-road-centrelines/resource/d8aea109-a768-4c84-bc16-98535c27cb12",
+   "title": "Precinct Structure Plans - Road Centrelines",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "d8aea109-a768-4c84-bc16-98535c27cb12",
+   "access": "datastore"
+  },
+  {
+   "n": 424,
+   "publisher_id": "australia:victorian-public-sector-commission-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/victorian-board-and-board-member-profile/resource/2facc25e-8544-4e65-8897-3d6f3d7dd4f1",
+   "title": "Victorian Board and board member profile",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "2facc25e-8544-4e65-8897-3d6f3d7dd4f1",
+   "access": "datastore"
+  },
+  {
+   "n": 425,
+   "publisher_id": "australia:victorian-state-budget-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/state-budget-2026-27-macroeconomic-indicators/resource/7bc98af0-ece6-4d22-8137-ef9167875244",
+   "title": "State Budget 2026-27 macroeconomic indicators",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "7bc98af0-ece6-4d22-8137-ef9167875244",
+   "access": "datastore"
+  },
+  {
+   "n": 426,
+   "publisher_id": "australia:wimmera-cma",
+   "resource_url": "https://data.gov.au/data/dataset/wimmera-cma-wetlands/resource/c0f479f4-9964-465e-92e3-d3e0c225cc5c",
+   "title": "Wimmera CMA Wetlands",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "c0f479f4-9964-465e-92e3-d3e0c225cc5c",
+   "access": "datastore"
+  },
+  {
+   "n": 427,
+   "publisher_id": "australia:windmill-theatre-co-south-australia-government",
+   "resource_url": "https://data.gov.au/data/dataset/windmill-theatre-co-whistleblowers-disclosure/resource/0b0cbf73-8ddd-4402-ae51-419bc24f6baf",
+   "title": "Windmill Theatre Co Whistleblowers disclosure",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "0b0cbf73-8ddd-4402-ae51-419bc24f6baf",
+   "access": "datastore"
+  },
+  {
+   "n": 428,
+   "publisher_id": "australia:women-aboriginal-and-torres-strait-islander-partnerships-and-multiculturalism-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/dwatsipca-annual-report-queensland-language-services-policy/resource/990e9677-540c-45f4-ab17-e43c2a24c150",
+   "title": "DWATSIPM Annual Report Queensland Language Services Policy",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "990e9677-540c-45f4-ab17-e43c2a24c150",
+   "access": "datastore"
+  },
+  {
+   "n": 429,
+   "publisher_id": "australia:workcover-queensland-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/consultancy-spending-workcover-queensland/resource/ffc403a3-5ec6-433e-889e-776fa15afb13",
+   "title": "Consultancy spending - WorkCover Queensland",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "ffc403a3-5ec6-433e-889e-776fa15afb13",
+   "access": "datastore"
+  },
+  {
+   "n": 430,
+   "publisher_id": "australia:worksafe-victoria-victoria-government",
+   "resource_url": "https://data.gov.au/data/dataset/worksafe-victoria-claims-statistical-report-by-financial-year/resource/84e5b58f-7b16-42ef-837f-dcf822014637",
+   "title": "WorkSafe Victoria - Claims statistical report by financial year",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "84e5b58f-7b16-42ef-837f-dcf822014637",
+   "access": "datastore"
+  },
+  {
+   "n": 431,
+   "publisher_id": "australia:wyndham-city-council",
+   "resource_url": "https://data.gov.au/data/dataset/wyndham-city-hard-rubbish-bookings/resource/6e944c40-2426-47bf-8eec-7ed1999e39c8",
+   "title": "Wyndham City Hard Rubbish Bookings",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "6e944c40-2426-47bf-8eec-7ed1999e39c8",
+   "access": "datastore"
+  },
+  {
+   "n": 432,
+   "publisher_id": "australia:yarriambiack-shire-council",
+   "resource_url": "https://data.gov.au/data/dataset/silo-art-trail-points/resource/56a33356-d778-447c-8e97-5219a2058b97",
+   "title": "Silo Art Trail (Points)",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "56a33356-d778-447c-8e97-5219a2058b97",
+   "access": "datastore"
+  },
+  {
+   "n": 433,
+   "publisher_id": "australia:youth-justice-and-victim-support-queensland-government",
+   "resource_url": "https://data.gov.au/data/dataset/youth-justice-centre-locations/resource/dc155c0e-4a16-4a39-9bca-68cb00023c29",
+   "title": "Youth Justice centre locations",
+   "platform": "ckan",
+   "host": "data.gov.au",
+   "resource_id": "dc155c0e-4a16-4a39-9bca-68cb00023c29",
+   "access": "datastore"
+  },
+  {
+   "n": 434,
+   "publisher_id": "ireland:bord-iascaigh-mhara",
+   "resource_url": "https://data.gov.ie/dataset/nssfisheries/resource/b65d2f5d-c719-4d6c-a11d-40a6247a905a",
+   "title": "NSSfisheries",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "b65d2f5d-c719-4d6c-a11d-40a6247a905a",
+   "access": "datastore"
+  },
+  {
+   "n": 435,
+   "publisher_id": "ireland:central-bank-of-ireland",
+   "resource_url": "https://data.gov.ie/dataset/template-on-international-reserves/resource/ad3a2fae-2b38-4660-8e45-cfafbf0ed59f",
+   "title": "Template on International Reserves",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "ad3a2fae-2b38-4660-8e45-cfafbf0ed59f",
+   "access": "datastore"
+  },
+  {
+   "n": 436,
+   "publisher_id": "ireland:charities-regulator",
+   "resource_url": "https://data.gov.ie/dataset/https-www-charitiesregulator-ie-media-kzzggg0y-registration-stats-csv/resource/b2e710e2-74a2-48cd-aec8-ed8099b9c8e7",
+   "title": "Charities Regulator Registration Statistics 2025",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "b2e710e2-74a2-48cd-aec8-ed8099b9c8e7",
+   "access": "datastore"
+  },
+  {
+   "n": 437,
+   "publisher_id": "ireland:companies-registration-office",
+   "resource_url": "https://data.gov.ie/dataset/financial-statements/resource/508d4f8a-74a1-40c7-8b86-cdf0d54a4929",
+   "title": "Financial Statements",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "508d4f8a-74a1-40c7-8b86-cdf0d54a4929",
+   "access": "datastore"
+  },
+  {
+   "n": 438,
+   "publisher_id": "ireland:competition-and-consumer-protection-commission",
+   "resource_url": "https://data.gov.ie/dataset/ccpc-homebuying-research/resource/338e9bda-76f5-4eb1-8c65-04465efe176e",
+   "title": "Homebuying Research",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "338e9bda-76f5-4eb1-8c65-04465efe176e",
+   "access": "datastore"
+  },
+  {
+   "n": 439,
+   "publisher_id": "ireland:cork-city-council",
+   "resource_url": "https://data.gov.ie/dataset/planning-permission/resource/8d5bbfa9-3b0c-40ac-8630-4243bed94b2d",
+   "title": "Planning Permission",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "8d5bbfa9-3b0c-40ac-8630-4243bed94b2d",
+   "access": "datastore"
+  },
+  {
+   "n": 440,
+   "publisher_id": "ireland:department-of-agriculture-food-and-the-marine",
+   "resource_url": "https://data.gov.ie/dataset/dafm-freedom-of-information-disclosure-logs/resource/bb929e9e-a78e-497c-bf55-0ae87b948843",
+   "title": "DAFM Freedom of Information Disclosure Logs",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "bb929e9e-a78e-497c-bf55-0ae87b948843",
+   "access": "datastore"
+  },
+  {
+   "n": 441,
+   "publisher_id": "ireland:department-of-children-equality-disability-integration-and-youth",
+   "resource_url": "https://data.gov.ie/dataset/sca25-highest-level-of-education-attained-of-mother/resource/924f0a8f-b8e3-4754-a3f2-b0d2f1b76e5e",
+   "title": "SCA25 - Highest Level of Education Attained of Mother",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "924f0a8f-b8e3-4754-a3f2-b0d2f1b76e5e",
+   "access": "datastore"
+  },
+  {
+   "n": 442,
+   "publisher_id": "ireland:department-of-education",
+   "resource_url": "https://data.gov.ie/dataset/ed133-pupils-enrolled-in-second-level-schools/resource/582f8425-aed3-4acd-8743-f79efd2fc985",
+   "title": "ED133 - Pupils enrolled in Second-Level Schools",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "582f8425-aed3-4acd-8743-f79efd2fc985",
+   "access": "datastore"
+  },
+  {
+   "n": 443,
+   "publisher_id": "ireland:department-of-finance",
+   "resource_url": "https://data.gov.ie/dataset/g0113-d-resources-allocated-by-the-government-directly-to-poverty-by-state-year-and-statistic-e771/resource/fd3aa68a-d5f8-4caf-a8db-63cd7ca495f9",
+   "title": "G0113 - SDG 1.a.1 Proportion of domestically generated resources allocated by the government directly to poverty by State, Year and Statistic",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "fd3aa68a-d5f8-4caf-a8db-63cd7ca495f9",
+   "access": "datastore"
+  },
+  {
+   "n": 444,
+   "publisher_id": "ireland:department-of-health",
+   "resource_url": "https://data.gov.ie/dataset/jq18-medical-technology/resource/ecd31967-a21c-4dfc-b14d-71636750ae68",
+   "title": "JQ18 – Medical Technology",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "ecd31967-a21c-4dfc-b14d-71636750ae68",
+   "access": "datastore"
+  },
+  {
+   "n": 445,
+   "publisher_id": "ireland:department-of-housing-local-government-and-heritage",
+   "resource_url": "https://data.gov.ie/dataset/section-42-by-county-2022-licences-issued-deer-shot/resource/c3ecff41-4e0a-43d6-8c1a-1b45c37a6d78",
+   "title": "Section 42 by County 2022 Licences issued & deer shot",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "c3ecff41-4e0a-43d6-8c1a-1b45c37a6d78",
+   "access": "datastore"
+  },
+  {
+   "n": 446,
+   "publisher_id": "ireland:department-of-justice",
+   "resource_url": "https://data.gov.ie/dataset/family-reunification-applications-and-decisions-by-year-and-month/resource/eda4307d-82f1-4d28-ba80-d5b190cc4212",
+   "title": "Family Reunification applications and decisions by year and month",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "eda4307d-82f1-4d28-ba80-d5b190cc4212",
+   "access": "datastore"
+  },
+  {
+   "n": 447,
+   "publisher_id": "ireland:department-of-public-expenditure-infrastructure-public-service-reform-and-digitalisation",
+   "resource_url": "https://data.gov.ie/dataset/voted-public-expenditure/resource/1d5370f7-4a87-4f18-95cd-1c8e3e8d2c03",
+   "title": "",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "1d5370f7-4a87-4f18-95cd-1c8e3e8d2c03",
+   "access": "datastore"
+  },
+  {
+   "n": 448,
+   "publisher_id": "ireland:department-of-social-protection",
+   "resource_url": "https://data.gov.ie/dataset/department-of-social-protection-quarterly-data-age/resource/7829cc77-93e3-4f2d-8ba1-e7213c62508f",
+   "title": "Quarterly Statistics on Social Welfare Payments ",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "7829cc77-93e3-4f2d-8ba1-e7213c62508f",
+   "access": "datastore"
+  },
+  {
+   "n": 449,
+   "publisher_id": "ireland:dublin-city-council",
+   "resource_url": "https://data.gov.ie/dataset/dublin-fire-brigade-stations-dublin-region/resource/ee70e67f-b126-4961-87db-d696246883dc",
+   "title": "Dublin Fire Brigade Stations",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "ee70e67f-b126-4961-87db-d696246883dc",
+   "access": "datastore"
+  },
+  {
+   "n": 450,
+   "publisher_id": "ireland:dun-laoghaire-rathdown-county-council",
+   "resource_url": "https://data.gov.ie/dataset/playgrounds-dlr/resource/e24a4a86-f4a2-4f2e-85ee-30c58a3c0e08",
+   "title": "Playgrounds DLR",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "e24a4a86-f4a2-4f2e-85ee-30c58a3c0e08",
+   "access": "datastore"
+  },
+  {
+   "n": 451,
+   "publisher_id": "ireland:fingal-county-council",
+   "resource_url": "https://data.gov.ie/dataset/trees/resource/47d28489-44e5-4eee-93a8-a31e110f6cce",
+   "title": "Trees",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "47d28489-44e5-4eee-93a8-a31e110f6cce",
+   "access": "datastore"
+  },
+  {
+   "n": 452,
+   "publisher_id": "ireland:geological-survey-of-ireland",
+   "resource_url": "https://data.gov.ie/dataset/seabed-sediment-samples-irish-waters-wgs84-lat/resource/5cd09a7a-32fb-4e98-a65e-07a3bc8ac41c",
+   "title": "Seabed Sediment Samples Irish Waters WGS84 LAT",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "5cd09a7a-32fb-4e98-a65e-07a3bc8ac41c",
+   "access": "datastore"
+  },
+  {
+   "n": 453,
+   "publisher_id": "ireland:health-and-safety-authority",
+   "resource_url": "https://data.gov.ie/dataset/fatal-workplace-injuries-by-economic-sector-2015-2024-nace-revision-2/resource/0f268a4a-261a-4067-80ba-e49ce7269e38",
+   "title": "Fatal Workplace Injuries by Economic Sector 2015-2024 (NACE Revision 2)",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "0f268a4a-261a-4067-80ba-e49ce7269e38",
+   "access": "datastore"
+  },
+  {
+   "n": 454,
+   "publisher_id": "ireland:health-protection-surveillance-centre",
+   "resource_url": "https://data.gov.ie/dataset/g0308-number-of-new-hiv-infections/resource/028d000b-37af-4062-b447-afa6f7b46676",
+   "title": "G0308 - Number of new HIV infections",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "028d000b-37af-4062-b447-afa6f7b46676",
+   "access": "datastore"
+  },
+  {
+   "n": 455,
+   "publisher_id": "ireland:health-research-board",
+   "resource_url": "https://data.gov.ie/dataset/hr009-irish-psychiatric-units-and-hospital-census/resource/b168558c-242d-4729-8399-b4c531f450b7",
+   "title": "HR009 - Irish Psychiatric Units and Hospital Census",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "b168558c-242d-4729-8399-b4c531f450b7",
+   "access": "datastore"
+  },
+  {
+   "n": 456,
+   "publisher_id": "ireland:irish-maritime-development-office",
+   "resource_url": "https://data.gov.ie/dataset/ima06-container-traffic-lift-onlift-off/resource/b4e39523-5eae-4c5a-b146-3a9c1de93d51",
+   "title": "IMA06 - Container Traffic (Lift On/Lift Off)",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "b4e39523-5eae-4c5a-b146-3a9c1de93d51",
+   "access": "datastore"
+  },
+  {
+   "n": 457,
+   "publisher_id": "ireland:kildare-county-council",
+   "resource_url": "https://data.gov.ie/dataset/prompt-payment-reports/resource/f80b0bd8-662d-4c01-8480-762db223f3ba",
+   "title": "Prompt Payment Reports",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "f80b0bd8-662d-4c01-8480-762db223f3ba",
+   "access": "datastore"
+  },
+  {
+   "n": 458,
+   "publisher_id": "ireland:meteireann",
+   "resource_url": "https://data.gov.ie/dataset/mtm02-temperature/resource/088f06a9-560e-456d-89ce-04e55a8869fa",
+   "title": "MTM02 - Temperature",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "088f06a9-560e-456d-89ce-04e55a8869fa",
+   "access": "datastore"
+  },
+  {
+   "n": 459,
+   "publisher_id": "ireland:national-building-control-office",
+   "resource_url": "https://data.gov.ie/dataset/bcnccc/resource/0774e781-7af8-46da-b623-872e74cf541e",
+   "title": "Building Commencement and Completion Data 2014 – Present",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "0774e781-7af8-46da-b623-872e74cf541e",
+   "access": "datastore"
+  },
+  {
+   "n": 460,
+   "publisher_id": "ireland:national-council-for-special-education",
+   "resource_url": "https://data.gov.ie/dataset/aon-referrals-20251/resource/dd774651-995d-483f-8b2e-619a9d20a6bb",
+   "title": "AON Referrals 2025",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "dd774651-995d-483f-8b2e-619a9d20a6bb",
+   "access": "datastore"
+  },
+  {
+   "n": 461,
+   "publisher_id": "ireland:national-transport-authority",
+   "resource_url": "https://data.gov.ie/dataset/national-public-transport-access-nodes-naptan/resource/61f00deb-8bcc-43f3-b984-b8255d11948a",
+   "title": "National Public Transport Access Nodes (NaPTAN)",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "61f00deb-8bcc-43f3-b984-b8255d11948a",
+   "access": "datastore"
+  },
+  {
+   "n": 462,
+   "publisher_id": "ireland:office-of-government-procurement",
+   "resource_url": "https://data.gov.ie/dataset/contracts-for-mini-competitions-and-standalone-awards-2024-q1/resource/e79a8d25-dbdb-4ee7-aa36-5ea33d926b73",
+   "title": "Contracts for Mini-Competitions and Standalone Awards 2024 Q1",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "e79a8d25-dbdb-4ee7-aa36-5ea33d926b73",
+   "access": "datastore"
+  },
+  {
+   "n": 463,
+   "publisher_id": "ireland:office-of-public-works",
+   "resource_url": "https://data.gov.ie/dataset/opw-hydrometric-network-real-time-water-level-data/resource/1bdb5fb0-f10a-4cbf-bdd0-ddd85b7323f8",
+   "title": "OPW Hydrometric Network Real-time Water Level Data",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "1bdb5fb0-f10a-4cbf-bdd0-ddd85b7323f8",
+   "access": "datastore"
+  },
+  {
+   "n": 464,
+   "publisher_id": "ireland:pharmaceutical-society-of-ireland",
+   "resource_url": "https://data.gov.ie/dataset/https-www-psi-ie-sites-default-files-document-pharmacies_website_statistics-csv/resource/92d0d1d4-bdd2-4ba4-b29d-36d72a1f9685",
+   "title": "PSI Registered Pharmacies - October 2026",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "92d0d1d4-bdd2-4ba4-b29d-36d72a1f9685",
+   "access": "datastore"
+  },
+  {
+   "n": 465,
+   "publisher_id": "ireland:pobal",
+   "resource_url": "https://data.gov.ie/dataset/pobal-hp-deprivation-index-scores-2022/resource/0806f07b-b514-4769-bd3d-649da87ad205",
+   "title": "Pobal HP - Deprivation Index Scores - 2022",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "0806f07b-b514-4769-bd3d-649da87ad205",
+   "access": "datastore"
+  },
+  {
+   "n": 466,
+   "publisher_id": "ireland:property-services-regulatory-authority",
+   "resource_url": "https://data.gov.ie/dataset/dublin-residential-property-price-register/resource/2d81e403-5cb7-4b1c-b296-2b21b95df5c8",
+   "title": "PSRA - Dublin Residential Property Price Register",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "2d81e403-5cb7-4b1c-b296-2b21b95df5c8",
+   "access": "datastore"
+  },
+  {
+   "n": 467,
+   "publisher_id": "ireland:revenue-commissioners",
+   "resource_url": "https://data.gov.ie/dataset/relief-on-disposal-of-certain-land-or-buildings-section-604a/resource/a785c6e1-b2e9-4015-b0ed-33346907c303",
+   "title": "Relief on Disposal of Certain Land or Buildings (Section 604A)",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "a785c6e1-b2e9-4015-b0ed-33346907c303",
+   "access": "datastore"
+  },
+  {
+   "n": 468,
+   "publisher_id": "ireland:road-safety-authority",
+   "resource_url": "https://data.gov.ie/dataset/roa20-traffic-collisions-and-casualties/resource/fe82c651-4d55-441f-aceb-0f3d4ce4fe58",
+   "title": "ROA20 - Traffic Collisions and Casualties",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "fe82c651-4d55-441f-aceb-0f3d4ce4fe58",
+   "access": "datastore"
+  },
+  {
+   "n": 469,
+   "publisher_id": "ireland:roscommon-county-council",
+   "resource_url": "https://data.gov.ie/dataset/fire-type-statistics-roscommon1/resource/1012e17b-44d3-4014-a7ca-95b0b21a110a",
+   "title": "Fire Type Statistics - Roscommon",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "1012e17b-44d3-4014-a7ca-95b0b21a110a",
+   "access": "datastore"
+  },
+  {
+   "n": 470,
+   "publisher_id": "ireland:science-foundation-ireland",
+   "resource_url": "https://data.gov.ie/dataset/science-foundation-ireland-grants-commitments/resource/b03ba013-e4cb-481a-9377-93ddabed14cb",
+   "title": "Science Foundation Ireland Grants Commitments",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "b03ba013-e4cb-481a-9377-93ddabed14cb",
+   "access": "datastore"
+  },
+  {
+   "n": 471,
+   "publisher_id": "ireland:smartbay-ireland",
+   "resource_url": "https://data.gov.ie/dataset/smartbay-ireland-galway-bay-buoy-9dof/resource/f459198b-2176-4a5b-a487-3de163b475a0",
+   "title": "SmartBay Ireland Galway Bay Buoy 9DOF",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "f459198b-2176-4a5b-a487-3de163b475a0",
+   "access": "datastore"
+  },
+  {
+   "n": 472,
+   "publisher_id": "ireland:south-dublin-county-council",
+   "resource_url": "https://data.gov.ie/dataset/monthly-river-quality-data-sdcc1/resource/3905e116-d3b1-44ce-bfc7-399e06bb1f91",
+   "title": "Monthly River Quality Data SDCC",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "3905e116-d3b1-44ce-bfc7-399e06bb1f91",
+   "access": "datastore"
+  },
+  {
+   "n": 473,
+   "publisher_id": "ireland:sustainable-energy-authority-of-ireland",
+   "resource_url": "https://data.gov.ie/dataset/wind-farms-in-ireland/resource/9a93472a-28e8-4e1b-bb53-49e89d7b6eb9",
+   "title": "Wind Farms in Ireland",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "9a93472a-28e8-4e1b-bb53-49e89d7b6eb9",
+   "access": "datastore"
+  },
+  {
+   "n": 474,
+   "publisher_id": "ireland:the-courts-service",
+   "resource_url": "https://data.gov.ie/dataset/courts-service-annual-report-2025/resource/f1fe90fd-6a79-4074-9659-35da3ddae596",
+   "title": "Courts Service Annual Report 2025",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "f1fe90fd-6a79-4074-9659-35da3ddae596",
+   "access": "datastore"
+  },
+  {
+   "n": 475,
+   "publisher_id": "ireland:the-probation-service",
+   "resource_url": "https://data.gov.ie/dataset/probation-service-community-return/resource/0b8b29e8-f987-44e2-a359-8c86d734b503",
+   "title": "Probation Service: Community Return ",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "0b8b29e8-f987-44e2-a359-8c86d734b503",
+   "access": "datastore"
+  },
+  {
+   "n": 476,
+   "publisher_id": "ireland:transport-infrastructure-ireland",
+   "resource_url": "https://data.gov.ie/dataset/skid-resistance-on-national-roads/resource/a60e4eac-6d14-4f9d-a811-4a6a759b6a06",
+   "title": "",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "a60e4eac-6d14-4f9d-a811-4a6a759b6a06",
+   "access": "datastore"
+  },
+  {
+   "n": 477,
+   "publisher_id": "ireland:tusla",
+   "resource_url": "https://data.gov.ie/dataset/no-of-cases-awaiting-allocation-that-are-high-priority-2015/resource/6558e252-5a3a-400a-b82b-bdaa7c40ec7d",
+   "title": "No. of Cases Awaiting Allocation that are High Priority 2015",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "6558e252-5a3a-400a-b82b-bdaa7c40ec7d",
+   "access": "datastore"
+  },
+  {
+   "n": 478,
+   "publisher_id": "ireland:university-college-dublin",
+   "resource_url": "https://data.gov.ie/dataset/irish-state-administration-database/resource/043fe671-70ab-4972-8bd1-ca3b6d3d6572",
+   "title": "Irish State Administration Database",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "043fe671-70ab-4972-8bd1-ca3b6d3d6572",
+   "access": "datastore"
+  },
+  {
+   "n": 479,
+   "publisher_id": "ireland:wexford-county-council",
+   "resource_url": "https://data.gov.ie/dataset/wexford-county-council-buildings/resource/07e57b79-03f1-4461-ab52-ca3ac724c4ea",
+   "title": "Wexford County Council Buildings",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "07e57b79-03f1-4461-ab52-ca3ac724c4ea",
+   "access": "datastore"
+  },
+  {
+   "n": 480,
+   "publisher_id": "ireland:wicklow-county-council",
+   "resource_url": "https://data.gov.ie/dataset/tree-preservation-orders-wicklow-county-cdp-2022-2028/resource/d29b75b7-d343-4a4b-935c-b502bd65fdf9",
+   "title": "Tree Preservation Orders Wicklow County (CDP 2022 - 2028)",
+   "platform": "ckan",
+   "host": "data.gov.ie",
+   "resource_id": "d29b75b7-d343-4a4b-935c-b502bd65fdf9",
+   "access": "datastore"
+  },
+  {
+   "n": 481,
+   "publisher_id": "canada:aafc-aac",
+   "resource_url": "https://open.canada.ca/data/dataset/dc1ac14c-2ce1-402a-8c59-5e08c81e0f81/resource/ff435632-e786-4584-b29a-c5356eaae90a",
+   "title": "Type specimens in Canada's National Collection of Vascular Plants (DAO)",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "ff435632-e786-4584-b29a-c5356eaae90a",
+   "access": "datastore"
+  },
+  {
+   "n": 482,
+   "publisher_id": "canada:aandc-aadnc",
+   "resource_url": "https://open.canada.ca/data/dataset/7b61d492-dea5-42bd-b679-ebde2c7cd185/resource/87fe67d4-f7f9-4995-b74c-821f3877c923",
+   "title": "List of Briefing Notes prepared for the Minister of Intergovernmental and Northern Affairs and Internal Trade",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "87fe67d4-f7f9-4995-b74c-821f3877c923",
+   "access": "csv"
+  },
+  {
+   "n": 483,
+   "publisher_id": "canada:atssc-scdata",
+   "resource_url": "https://open.canada.ca/data/dataset/fb55a0a8-4451-43d2-ab4f-819c34a00772/resource/1afc1675-cbbb-4bcc-be7d-88860fba25bd",
+   "title": "2018-19 Departmental Results Report - Results",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "1afc1675-cbbb-4bcc-be7d-88860fba25bd",
+   "access": "datastore"
+  },
+  {
+   "n": 484,
+   "publisher_id": "canada:cas-satj",
+   "resource_url": "https://open.canada.ca/data/dataset/5c0e0057-898c-481b-8331-5ca7748bd598/resource/aea3690d-203e-4470-b042-6af9928d17c2",
+   "title": "Courts Administration Service 2017–18 Annual Report –  Federal Courts Statistics",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "aea3690d-203e-4470-b042-6af9928d17c2",
+   "access": "csv"
+  },
+  {
+   "n": 485,
+   "publisher_id": "canada:cbsa-asfc",
+   "resource_url": "https://open.canada.ca/data/dataset/fe8020ad-51a1-4752-a509-b011a48411a8/resource/7d4d8f73-1c3a-4102-b043-ec156029fef7",
+   "title": "Border Wait Times – Air Mode",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "7d4d8f73-1c3a-4102-b043-ec156029fef7",
+   "access": "datastore"
+  },
+  {
+   "n": 486,
+   "publisher_id": "canada:ced-dec",
+   "resource_url": "https://open.canada.ca/data/dataset/ce1c9c73-3d09-482f-95ea-cba8844bc412/resource/ac7225d2-d0e1-44aa-bf6d-00bc9e89d514",
+   "title": "2017-2018 - Survival rate of businesses supported in their startup",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "ac7225d2-d0e1-44aa-bf6d-00bc9e89d514",
+   "access": "csv"
+  },
+  {
+   "n": 487,
+   "publisher_id": "canada:cer-rec",
+   "resource_url": "https://open.canada.ca/data/dataset/5ab871c2-d811-4b33-93cc-6bb1683c26d2/resource/59418abd-6474-454f-87fa-1d5df2794660",
+   "title": "Canada’s Energy Future 2026 - Cost and Performance Parameters for Electricity Generation and Storage Technologies   ",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "59418abd-6474-454f-87fa-1d5df2794660",
+   "access": "datastore"
+  },
+  {
+   "n": 488,
+   "publisher_id": "canada:cfia-acia",
+   "resource_url": "https://open.canada.ca/data/dataset/fa56c3d3-c43d-42b5-a2ac-c68db422df3a/resource/af476b8e-966b-424c-90d1-6c3ff20f6a7d",
+   "title": "CFIA-Undeclared Sulfites in Fruit Spreads - 2010-2011",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "af476b8e-966b-424c-90d1-6c3ff20f6a7d",
+   "access": "datastore"
+  },
+  {
+   "n": 489,
+   "publisher_id": "canada:cic",
+   "resource_url": "https://open.canada.ca/data/dataset/17f69360-123a-4bd2-8eef-bba94468071f/resource/bfd6c1fb-42d9-4c2d-ae5e-4a628db7e486",
+   "title": "Immigration, Refugees and Citizenship Canada Glossaries ",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "bfd6c1fb-42d9-4c2d-ae5e-4a628db7e486",
+   "access": "datastore"
+  },
+  {
+   "n": 490,
+   "publisher_id": "canada:cnsc-ccsn",
+   "resource_url": "https://open.canada.ca/data/dataset/a4d4b53b-143a-4d10-9ded-45abb164d239/resource/b0fa1965-e5f2-4890-a1a9-04df93ac885e",
+   "title": "Lost, Stolen and Found Sealed Sources and Radiation Devices",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "b0fa1965-e5f2-4890-a1a9-04df93ac885e",
+   "access": "datastore"
+  },
+  {
+   "n": 491,
+   "publisher_id": "canada:cra-arc",
+   "resource_url": "https://open.canada.ca/data/dataset/6d18e669-2df3-4a11-a818-d0a8f0e05b36/resource/81235d9b-f15b-4e9a-8ddf-b68f581164a0",
+   "title": "First Home Savings Account Statistics (2023 tax year)",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "81235d9b-f15b-4e9a-8ddf-b68f581164a0",
+   "access": "datastore"
+  },
+  {
+   "n": 492,
+   "publisher_id": "canada:crtc",
+   "resource_url": "https://open.canada.ca/data/dataset/3d54f3bc-0763-4016-b1d7-d6ce14c9457f/resource/b6057ffd-edd8-42db-b43b-7f775176f60c",
+   "title": "Radio Sector – CMR (2013-2024)",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "b6057ffd-edd8-42db-b43b-7f775176f60c",
+   "access": "csv"
+  },
+  {
+   "n": 493,
+   "publisher_id": "canada:csa-asc",
+   "resource_url": "https://open.canada.ca/data/dataset/5d31f5b8-8bd6-48fc-aad8-f4f054f83a09/resource/9ba4c185-2aab-4cf1-ab94-2045b9da1d05",
+   "title": "Astronautics Vocabulary",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "9ba4c185-2aab-4cf1-ab94-2045b9da1d05",
+   "access": "datastore"
+  },
+  {
+   "n": 494,
+   "publisher_id": "canada:csc-scc",
+   "resource_url": "https://open.canada.ca/data/dataset/cb4b563d-23f7-4fe9-8dc1-eac45612a934/resource/9f8a1a16-1964-4d1f-895e-6ec7b84ca3f3",
+   "title": "Opioid agonist treatment archives",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "9f8a1a16-1964-4d1f-895e-6ec7b84ca3f3",
+   "access": "datastore"
+  },
+  {
+   "n": 495,
+   "publisher_id": "canada:csec-cstc",
+   "resource_url": "https://open.canada.ca/data/dataset/a55ae12f-24d3-4e7e-a123-1284ac6d9fd9/resource/07ecdc4c-9337-455c-a0de-eedbb43e6483",
+   "title": "2018-2026 Procurement - Awarded Contracts and Indigenous Businesses",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "07ecdc4c-9337-455c-a0de-eedbb43e6483",
+   "access": "datastore"
+  },
+  {
+   "n": 496,
+   "publisher_id": "canada:csis-scrs",
+   "resource_url": "https://open.canada.ca/data/dataset/d77a24fe-eb38-4d02-8e00-32148a708b11/resource/964857e0-555f-4d44-b363-b9fea45f6a89",
+   "title": "Employment Equity Representation for the Canadian Security Intelligence Service",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "964857e0-555f-4d44-b363-b9fea45f6a89",
+   "access": "csv"
+  },
+  {
+   "n": 497,
+   "publisher_id": "canada:csps-efpc",
+   "resource_url": "https://open.canada.ca/data/dataset/4f2fedd4-a1be-4440-bac5-d96ee8d71e30/resource/b39f7b34-49d6-43e7-9369-d3b7405e505f",
+   "title": "Shape Your Learning",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "b39f7b34-49d6-43e7-9369-d3b7405e505f",
+   "access": "datastore"
+  },
+  {
+   "n": 498,
+   "publisher_id": "canada:dfatd-maecd",
+   "resource_url": "https://open.canada.ca/data/dataset/ece743aa-514a-4024-93c6-7f5ed5cd4eb2/resource/0a819fe4-33cb-4b76-aec1-512312b1efc5",
+   "title": "Heads of Missions",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "0a819fe4-33cb-4b76-aec1-512312b1efc5",
+   "access": "datastore"
+  },
+  {
+   "n": 499,
+   "publisher_id": "canada:dfo-mpo",
+   "resource_url": "https://open.canada.ca/data/dataset/8e6984b6-16a4-47cf-8719-8b36ad95b38d/resource/322c2065-b166-4573-8746-aae42cdb1f25",
+   "title": "Commercial Fisheries - Quota Reports",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "322c2065-b166-4573-8746-aae42cdb1f25",
+   "access": "datastore"
+  },
+  {
+   "n": 500,
+   "publisher_id": "canada:dnd-mdn",
+   "resource_url": "https://open.canada.ca/data/dataset/5097acea-9aa8-4f7e-82dd-873397a7ea37/resource/0a33ba5c-fb21-4487-920a-8eb8d4195888",
+   "title": "National Defence Catalogue of IM/IT Services",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "0a33ba5c-fb21-4487-920a-8eb8d4195888",
+   "access": "datastore"
+  },
+  {
+   "n": 501,
+   "publisher_id": "canada:drdc-rddc",
+   "resource_url": "https://open.canada.ca/data/dataset/2c30e366-ef2b-400e-8363-0b13e4a7b6f4/resource/02f25500-dcf7-48fe-b2ce-6ef85da3e9f4",
+   "title": "The NATO Generic Destroyer - a shared geometry for collaborative research into modelling and simulation of shipboard launch and recovery: source data posting on Open Science Canada",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "02f25500-dcf7-48fe-b2ce-6ef85da3e9f4",
+   "access": "csv"
+  },
+  {
+   "n": 502,
+   "publisher_id": "canada:ec",
+   "resource_url": "https://open.canada.ca/data/dataset/dbce7b33-be2a-4cec-a3be-96bc59887441/resource/179c03f7-105a-4e0e-9249-286dda895137",
+   "title": "Federal Sustainable Development Strategy 2022-2026 data",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "179c03f7-105a-4e0e-9249-286dda895137",
+   "access": "datastore"
+  },
+  {
+   "n": 503,
+   "publisher_id": "canada:elections",
+   "resource_url": "https://open.canada.ca/data/dataset/b545fe25-5cf5-4488-9923-b5c2ebeeb8cc/resource/73586e35-290d-431c-94ba-5cf8a97c4ae5",
+   "title": "Turnout by Age, Gender and Province, GE38–GE45",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "73586e35-290d-431c-94ba-5cf8a97c4ae5",
+   "access": "datastore"
+  },
+  {
+   "n": 504,
+   "publisher_id": "canada:esdc-edsc",
+   "resource_url": "https://open.canada.ca/data/dataset/7ca30e18-619a-457a-8ee2-b9cc78938cad/resource/7076e06d-4e92-4fc5-9898-8279951b000b",
+   "title": "Old Age Security Monthly Statistics",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "7076e06d-4e92-4fc5-9898-8279951b000b",
+   "access": "datastore"
+  },
+  {
+   "n": 505,
+   "publisher_id": "canada:feddevontario",
+   "resource_url": "https://open.canada.ca/data/dataset/ea1c248b-4534-41e6-83b3-b3306472606a/resource/dbafc837-7759-4ac6-b604-d231f0ae02af",
+   "title": "Employment Insurance Beneficiaries in Southern Ontario",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "dbafc837-7759-4ac6-b604-d231f0ae02af",
+   "access": "csv"
+  },
+  {
+   "n": 506,
+   "publisher_id": "canada:fin",
+   "resource_url": "https://open.canada.ca/data/dataset/0849a2c8-e65f-4874-a978-952029f39c11/resource/6a28d2f6-0273-4ac4-bf5a-c97486900505",
+   "title": "Report on Federal Tax Expenditures - Concepts, Estimates and Evaluations 2026",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "6a28d2f6-0273-4ac4-bf5a-c97486900505",
+   "access": "datastore"
+  },
+  {
+   "n": 507,
+   "publisher_id": "canada:hc-sc",
+   "resource_url": "https://open.canada.ca/data/dataset/4744a5e2-a35d-41fc-b4a5-17ea3cfabf49/resource/b53359db-fc50-4c1c-abd1-0bd275519833",
+   "title": "Data on cannabis for medical purposes",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "b53359db-fc50-4c1c-abd1-0bd275519833",
+   "access": "datastore"
+  },
+  {
+   "n": 508,
+   "publisher_id": "canada:iaac-aeic",
+   "resource_url": "https://open.canada.ca/data/dataset/5f676365-2a0f-4195-b174-40b0b5156579/resource/75a175cc-f92e-4f8f-9fbb-daa16e0499cd",
+   "title": "Screening and Class-Screening Assessments under the Canadian Environmental Assessment Act, 1992",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "75a175cc-f92e-4f8f-9fbb-daa16e0499cd",
+   "access": "datastore"
+  },
+  {
+   "n": 509,
+   "publisher_id": "canada:ic",
+   "resource_url": "https://open.canada.ca/data/dataset/2f13112e-b179-4f52-9a98-b752f1789945/resource/f96d3517-f7b4-4ceb-aceb-5903a48dce9f",
+   "title": "Credit Conditions Survey – 2009",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "f96d3517-f7b4-4ceb-aceb-5903a48dce9f",
+   "access": "datastore"
+  },
+  {
+   "n": 510,
+   "publisher_id": "canada:infc",
+   "resource_url": "https://open.canada.ca/data/dataset/7e0189e3-8595-4e62-a4e9-4fed6f265e10/resource/df7d26a4-7d1d-488e-a12a-04d03b376d84",
+   "title": "The National Service Provider List (NSPL)",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "df7d26a4-7d1d-488e-a12a-04d03b376d84",
+   "access": "datastore"
+  },
+  {
+   "n": 511,
+   "publisher_id": "canada:irb-cisr",
+   "resource_url": "https://open.canada.ca/data/dataset/6e47f705-71ed-41f0-8fd5-d1a8508a3b63/resource/e513b95a-ade2-425a-a99e-17251abb267e",
+   "title": "Refugee Protection Division (RPD) Decisions",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "e513b95a-ade2-425a-a99e-17251abb267e",
+   "access": "datastore"
+  },
+  {
+   "n": 512,
+   "publisher_id": "canada:isc-sac",
+   "resource_url": "https://open.canada.ca/data/dataset/34b3aa67-dd04-455b-996f-9d9b5032ed39/resource/e2359e4c-ac72-4935-8fe1-70285c14c0ea",
+   "title": "Results of the Mandatory Minimum 5% Indigenous Procurement Target for Fiscal Year 2022-2023",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "e2359e4c-ac72-4935-8fe1-70285c14c0ea",
+   "access": "datastore"
+  },
+  {
+   "n": 513,
+   "publisher_id": "canada:lac-bac",
+   "resource_url": "https://open.canada.ca/data/dataset/0ddba181-11e2-4282-a718-99f3f5e8d9c5/resource/c29668f0-0f43-4054-b80c-2fbd86665926",
+   "title": "Published documents acquired during the year that are processed",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "c29668f0-0f43-4054-b80c-2fbd86665926",
+   "access": "datastore"
+  },
+  {
+   "n": 514,
+   "publisher_id": "canada:lp-bp",
+   "resource_url": "https://open.canada.ca/data/dataset/ea8f2c37-90b6-4fee-857e-984d3060184e/resource/5c8ab22c-4a5e-494b-879a-e0611bc10a95",
+   "title": "History of the Federal Electoral Ridings, 1867-2010",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "5c8ab22c-4a5e-494b-879a-e0611bc10a95",
+   "access": "csv"
+  },
+  {
+   "n": 515,
+   "publisher_id": "canada:nrc-cnrc",
+   "resource_url": "https://open.canada.ca/data/dataset/46c213f2-863f-4fa2-9a14-467f8a75c8e1/resource/250ea304-fbc3-4291-a40a-9e90877ece1b",
+   "title": "National Research Council Canada Publications 2019-2021",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "250ea304-fbc3-4291-a40a-9e90877ece1b",
+   "access": "datastore"
+  },
+  {
+   "n": 516,
+   "publisher_id": "canada:nrcan-rncan",
+   "resource_url": "https://open.canada.ca/data/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/026e45b4-eb63-451f-b34f-d9308ea3a3d9",
+   "title": "Fuel consumption ratings",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "026e45b4-eb63-451f-b34f-d9308ea3a3d9",
+   "access": "datastore"
+  },
+  {
+   "n": 517,
+   "publisher_id": "canada:opc-cpvp",
+   "resource_url": "https://open.canada.ca/data/dataset/2e638b0b-b57f-4654-ad35-82864037d267/resource/db653f69-d748-4bc8-bf97-3e931a5e8c98",
+   "title": "2025-2026 Survey of Canadian businesses on privacy-related issues",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "db653f69-d748-4bc8-bf97-3e931a5e8c98",
+   "access": "datastore"
+  },
+  {
+   "n": 518,
+   "publisher_id": "canada:osfi-bsif",
+   "resource_url": "https://open.canada.ca/data/dataset/4c6c515f-7c44-4bb6-ab56-c5f79f75f705/resource/6987c14b-8c4f-4462-9339-1341960d0fc6",
+   "title": "Property and casualty companies",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "6987c14b-8c4f-4462-9339-1341960d0fc6",
+   "access": "datastore"
+  },
+  {
+   "n": 519,
+   "publisher_id": "canada:pc",
+   "resource_url": "https://open.canada.ca/data/dataset/1e2bd6b2-d6c7-415b-8c95-f5f6b2459759/resource/73609a87-77f6-4a69-bd96-b8e3f3451aa7",
+   "title": "Parks Canada attendance 2025_26",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "73609a87-77f6-4a69-bd96-b8e3f3451aa7",
+   "access": "datastore"
+  },
+  {
+   "n": 520,
+   "publisher_id": "canada:pch",
+   "resource_url": "https://open.canada.ca/data/dataset/43a63c4f-b08e-4c53-99bb-20b90b83c6c0/resource/32d4e561-fd31-408e-baad-7b801a51e2fa",
+   "title": "Canadian Film or Video Production Tax Credit Program (CPTC) - Certified Productions",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "32d4e561-fd31-408e-baad-7b801a51e2fa",
+   "access": "datastore"
+  },
+  {
+   "n": 521,
+   "publisher_id": "canada:pco-bcp",
+   "resource_url": "https://open.canada.ca/data/dataset/7c03f039-3753-4093-af60-74b0f7b2385d/resource/92bec4b7-6feb-4215-a5f7-61da342b2354",
+   "title": "Government of Canada - Consultations",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "92bec4b7-6feb-4215-a5f7-61da342b2354",
+   "access": "datastore"
+  },
+  {
+   "n": 522,
+   "publisher_id": "canada:phac-aspc",
+   "resource_url": "https://open.canada.ca/data/dataset/1e823172-c6c2-4434-b284-14e060cf14bc/resource/16275b4c-3d66-44e8-93c1-6dc20e8ede5b",
+   "title": "Knowledge, Perceptions, Awareness and Behaviours Relating to Immunization among First Nations and Inuit  ",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "16275b4c-3d66-44e8-93c1-6dc20e8ede5b",
+   "access": "datastore"
+  },
+  {
+   "n": 523,
+   "publisher_id": "canada:ps-sp",
+   "resource_url": "https://open.canada.ca/data/dataset/c97954e2-0146-4cdd-afc5-f91250e126fd/resource/2be6a257-5dab-41a2-8f34-e575be9c9063",
+   "title": "2025 S-211: Fighting Against Forced Labour and Child Labour in Supply Chains Act",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "2be6a257-5dab-41a2-8f34-e575be9c9063",
+   "access": "datastore"
+  },
+  {
+   "n": 524,
+   "publisher_id": "canada:psc-cfp",
+   "resource_url": "https://open.canada.ca/data/dataset/e61c8587-2cc9-4775-b34e-f1041ad00410/resource/82f58b1e-b90a-4397-9d20-2a554cb4e1da",
+   "title": "Advertisements to the Public Service ",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "82f58b1e-b90a-4397-9d20-2a554cb4e1da",
+   "access": "datastore"
+  },
+  {
+   "n": 525,
+   "publisher_id": "canada:rcmp-grc",
+   "resource_url": "https://open.canada.ca/data/dataset/6a09c998-cddb-4a22-beff-4dca67ab892f/resource/43c67af5-e598-4a9b-a484-fe1cb5d775b5",
+   "title": "Canadian Anti-Fraud Centre Fraud Reporting System Dataset",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "43c67af5-e598-4a9b-a484-fe1cb5d775b5",
+   "access": "datastore"
+  },
+  {
+   "n": 526,
+   "publisher_id": "canada:ssc-spc",
+   "resource_url": "https://open.canada.ca/data/dataset/55b59eab-92bd-45f2-bf08-8d12f0bda709/resource/4ad9bd97-b766-41ff-8673-a0eb69fbc915",
+   "title": "Customer Satisfaction Feedback Initiative - General Satisfaction Questionnaire",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "4ad9bd97-b766-41ff-8673-a0eb69fbc915",
+   "access": "datastore"
+  },
+  {
+   "n": 527,
+   "publisher_id": "canada:tbs-sct",
+   "resource_url": "https://open.canada.ca/data/dataset/933c7f9d-deb0-4367-940d-06c38f494153/resource/04cbec5c-5a3d-4d34-927d-e41c9e6e3736",
+   "title": "Open Government Portal Department List",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "04cbec5c-5a3d-4d34-927d-e41c9e6e3736",
+   "access": "datastore"
+  },
+  {
+   "n": 528,
+   "publisher_id": "canada:tc",
+   "resource_url": "https://open.canada.ca/data/dataset/23344072-7118-4715-84a9-daf630ec76c8/resource/e05b011e-f782-44ad-913a-971de5730923",
+   "title": "Statistics on the Electric Vehicle Affordability Program (EVAP)",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "e05b011e-f782-44ad-913a-971de5730923",
+   "access": "datastore"
+  },
+  {
+   "n": 529,
+   "publisher_id": "canada:vac-acc",
+   "resource_url": "https://open.canada.ca/data/dataset/89b5bb71-47f1-42ae-a08f-a532a05a8773/resource/884e71b1-d729-43ef-bbe5-47e02edc0641",
+   "title": "2021-22 Departmental Results Framework",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "884e71b1-d729-43ef-bbe5-47e02edc0641",
+   "access": "datastore"
+  },
+  {
+   "n": 530,
+   "publisher_id": "canada:wd-deo",
+   "resource_url": "https://open.canada.ca/data/dataset/80465a11-b974-45a5-a99a-a24a6cad078b/resource/1bbd6b02-4a10-4937-93a2-7f6c5d9e092f",
+   "title": "Amount leveraged per dollar by WD in community projects",
+   "platform": "ckan",
+   "host": "open.canada.ca",
+   "resource_id": "1bbd6b02-4a10-4937-93a2-7f6c5d9e092f",
+   "access": "datastore"
+  },
+  {
+   "n": 531,
+   "publisher_id": "tokyo:t000001",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000001d0000000011/resource/7b7ae088-3867-474a-978e-32bdcf10105b",
+   "title": "「未来の東京」戦略　政策ダッシュボード（PowerBI版）データ一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "7b7ae088-3867-474a-978e-32bdcf10105b",
+   "access": "datastore"
+  },
+  {
+   "n": 532,
+   "publisher_id": "tokyo:t000002",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000002d2000000001/resource/48cf66c9-0393-4f9e-992d-fd664feba26e",
+   "title": "子供・青少年に関する調査_全文（18 MB）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "48cf66c9-0393-4f9e-992d-fd664feba26e",
+   "access": "datastore"
+  },
+  {
+   "n": 533,
+   "publisher_id": "tokyo:t000003",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000003d0000000406/resource/06336569-985e-4305-be97-9c3d5c69d35b",
+   "title": "住民基本台帳による東京都の世帯と人口(町丁別・年齢別)_時系列表",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "06336569-985e-4305-be97-9c3d5c69d35b",
+   "access": "datastore"
+  },
+  {
+   "n": 534,
+   "publisher_id": "tokyo:t000004",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d2000000026/resource/a9b8c837-c558-4c30-8992-8b651786211b",
+   "title": "TOKYO政策評価・事業評価・グループ連携事業評価見える化ボード データ一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "a9b8c837-c558-4c30-8992-8b651786211b",
+   "access": "csv"
+  },
+  {
+   "n": 535,
+   "publisher_id": "tokyo:t000005",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000005d0000000015/resource/005754a7-4277-4b09-88cd-75d6eb519533",
+   "title": "都税収入見える化ダッシュボード　データ一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "005754a7-4277-4b09-88cd-75d6eb519533",
+   "access": "csv"
+  },
+  {
+   "n": 536,
+   "publisher_id": "tokyo:t000006",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000006d2000000027/resource/78eaaa11-0fc2-4846-9fb0-12d40c66264d",
+   "title": "平成28年度第6回インターネット都政モニター「東京都の公式ホームページ」アンケート結果_調査結果（PDF：367KB）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "78eaaa11-0fc2-4846-9fb0-12d40c66264d",
+   "access": "csv"
+  },
+  {
+   "n": 537,
+   "publisher_id": "tokyo:t000007",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000007d1900000004/resource/986266e7-83f0-48f1-b766-9cab632cd8e9",
+   "title": "外国人の安全安心に関する意識・要望調査_外国人の安全安心に関する意識・要望調査",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "986266e7-83f0-48f1-b766-9cab632cd8e9",
+   "access": "csv"
+  },
+  {
+   "n": 538,
+   "publisher_id": "tokyo:t000008",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000008d2000000015/resource/2bb2533e-8ef5-41d1-ac78-56b1a343f2f1",
+   "title": "丘陵地の緑を保全する取組方針　本文",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "2bb2533e-8ef5-41d1-ac78-56b1a343f2f1",
+   "access": "csv"
+  },
+  {
+   "n": 539,
+   "publisher_id": "tokyo:t000009",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000009d2000000066/resource/132c7a1c-a3d7-4695-969e-f4e5e98eefc3",
+   "title": "東京都環境白書2025",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "132c7a1c-a3d7-4695-969e-f4e5e98eefc3",
+   "access": "datastore"
+  },
+  {
+   "n": 540,
+   "publisher_id": "tokyo:t000011",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000011d1700000004/resource/12081acf-7e3e-4205-9b67-a2b97c226fc1",
+   "title": "都立病院に関するアンケート調査（来院者）調査結果報告書",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "12081acf-7e3e-4205-9b67-a2b97c226fc1",
+   "access": "csv"
+  },
+  {
+   "n": 541,
+   "publisher_id": "tokyo:t000012",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000012d0000000081/resource/2772cc34-b7d1-4ccb-85f0-9a66a3a9a7cf",
+   "title": "R6国・地域別外国人旅行者行動特性調査",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "2772cc34-b7d1-4ccb-85f0-9a66a3a9a7cf",
+   "access": "csv"
+  },
+  {
+   "n": 542,
+   "publisher_id": "tokyo:t000013",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000013d2000000029/resource/240ac0b3-4903-48a9-b463-1130136fca9b",
+   "title": "東京都中央卸売市場取引業務運営協議会_報告事項 （352.2KB）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "240ac0b3-4903-48a9-b463-1130136fca9b",
+   "access": "csv"
+  },
+  {
+   "n": 543,
+   "publisher_id": "tokyo:t000014",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000014d2000000025/resource/fb21f2ba-700b-4d14-a088-ed0c292c0ca9",
+   "title": "北多摩北部建設事務所_事務所概要",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "fb21f2ba-700b-4d14-a088-ed0c292c0ca9",
+   "access": "csv"
+  },
+  {
+   "n": 544,
+   "publisher_id": "tokyo:t000015",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000015d2000000014/resource/beafa328-f7d4-45c5-b20c-9f9852c6d982",
+   "title": "港湾局のご案内_＜東京都港湾局組織一覧＞",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "beafa328-f7d4-45c5-b20c-9f9852c6d982",
+   "access": "csv"
+  },
+  {
+   "n": 545,
+   "publisher_id": "tokyo:t000016",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000016d0000000005/resource/8e152dce-50cc-4e95-a0eb-db65f976ed96",
+   "title": "公金支出情報（一般会計・特別会計）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "8e152dce-50cc-4e95-a0eb-db65f976ed96",
+   "access": "datastore"
+  },
+  {
+   "n": 546,
+   "publisher_id": "tokyo:t000017",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000017d1700000050/resource/7d6d8e91-a55e-44d6-98af-043ea78ef775",
+   "title": "東京都の市街地状況調査報告書（第10回）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "7d6d8e91-a55e-44d6-98af-043ea78ef775",
+   "access": "csv"
+  },
+  {
+   "n": 547,
+   "publisher_id": "tokyo:t000018",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000018d0000000043/resource/3e3e3ba2-b199-41ba-bc2c-a875cd525025",
+   "title": "都営バス　バスのりば",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "3e3e3ba2-b199-41ba-bc2c-a875cd525025",
+   "access": "datastore"
+  },
+  {
+   "n": 548,
+   "publisher_id": "tokyo:t000019",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000019d2000000046/resource/f4fdeccc-12b7-42a8-afb7-40bfe0fe5983",
+   "title": "給水人口の一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "f4fdeccc-12b7-42a8-afb7-40bfe0fe5983",
+   "access": "csv"
+  },
+  {
+   "n": 549,
+   "publisher_id": "tokyo:t000020",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000020d0000000080/resource/b04d87e2-85dd-46d9-9e2b-38bc070dd3a3",
+   "title": "東京都区部下水道・下水処理１００年史",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "b04d87e2-85dd-46d9-9e2b-38bc070dd3a3",
+   "access": "csv"
+  },
+  {
+   "n": 550,
+   "publisher_id": "tokyo:t000021",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000021d2000000191/resource/ded28125-ff91-4c9c-b755-8fd9e8060882",
+   "title": "公立学校統計調査報告書【東京都公立学校一覧】",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "ded28125-ff91-4c9c-b755-8fd9e8060882",
+   "access": "csv"
+  },
+  {
+   "n": 551,
+   "publisher_id": "tokyo:t000022",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000022d1800000015/resource/565126a3-b5f0-4fad-9971-87c96d07dfe2",
+   "title": "遺失物取扱状況",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "565126a3-b5f0-4fad-9971-87c96d07dfe2",
+   "access": "csv"
+  },
+  {
+   "n": 552,
+   "publisher_id": "tokyo:t000023",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000023d2000000045/resource/66d49e8a-d635-4618-a748-35a62b2738ab",
+   "title": "政治団体名簿_都道府県知事・議会議員(PDF形式：236KB)",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "66d49e8a-d635-4618-a748-35a62b2738ab",
+   "access": "csv"
+  },
+  {
+   "n": 553,
+   "publisher_id": "tokyo:t000024",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000024d0000000004/resource/d89a479a-b87d-4d5a-9aed-e7f3061be075",
+   "title": "初任給一覧表",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "d89a479a-b87d-4d5a-9aed-e7f3061be075",
+   "access": "csv"
+  },
+  {
+   "n": 554,
+   "publisher_id": "tokyo:t000025",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000025d1700000008/resource/e54129f9-aef8-41e9-80e5-8c1202e8d8be",
+   "title": "令和5年工事監査報告書",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e54129f9-aef8-41e9-80e5-8c1202e8d8be",
+   "access": "csv"
+  },
+  {
+   "n": 555,
+   "publisher_id": "tokyo:t000029",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000029d0000000027/resource/cbf676b7-dbc3-41f4-b059-970338e6dee4",
+   "title": "オープンデータ一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "cbf676b7-dbc3-41f4-b059-970338e6dee4",
+   "access": "csv"
+  },
+  {
+   "n": 556,
+   "publisher_id": "tokyo:t000030",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000030d1900000001/resource/0532908f-e6dc-4d19-b68f-9903f5c3a0b5",
+   "title": "住宅市街地の開発整備の方針の概要　変更概要",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "0532908f-e6dc-4d19-b68f-9903f5c3a0b5",
+   "access": "csv"
+  },
+  {
+   "n": 557,
+   "publisher_id": "tokyo:t000054",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000054d0000000373/resource/6544e6ec-bd98-421f-beb9-da31b7c9f9ea",
+   "title": "社会福祉施設等一覧（令和７年５月１日時点）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "6544e6ec-bd98-421f-beb9-da31b7c9f9ea",
+   "access": "csv"
+  },
+  {
+   "n": 558,
+   "publisher_id": "tokyo:t000055",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000055d0000000566/resource/e73d67eb-053d-4077-b413-6f231d87a7c5",
+   "title": "東京都エイズ専門家会議（平成28年度）_資料6　東京都のエイズ対策事業におけるNPO等多様な主体との連携について（PDF：82KB）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e73d67eb-053d-4077-b413-6f231d87a7c5",
+   "access": "csv"
+  },
+  {
+   "n": 559,
+   "publisher_id": "tokyo:t131016",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131016d2024000004/resource/a8837fd5-74c1-4ce8-bf6f-062b5b77a363",
+   "title": "団体・サークル一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "a8837fd5-74c1-4ce8-bf6f-062b5b77a363",
+   "access": "datastore"
+  },
+  {
+   "n": 560,
+   "publisher_id": "tokyo:t131024",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131024d2024000005/resource/27709de8-42ff-423e-a853-0748b16cd5ac",
+   "title": "SNSアカウント一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "27709de8-42ff-423e-a853-0748b16cd5ac",
+   "access": "datastore"
+  },
+  {
+   "n": 561,
+   "publisher_id": "tokyo:t131032",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131032d0000000231/resource/5f5a2245-e33c-46a2-ad5f-fb4ead44a5c6",
+   "title": "港区の理容所情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "5f5a2245-e33c-46a2-ad5f-fb4ead44a5c6",
+   "access": "datastore"
+  },
+  {
+   "n": 562,
+   "publisher_id": "tokyo:t131041",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131041d2024000007/resource/692e5ac8-ac80-46cb-b22d-43f0c9bf775b",
+   "title": "姉妹・友好都市一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "692e5ac8-ac80-46cb-b22d-43f0c9bf775b",
+   "access": "csv"
+  },
+  {
+   "n": 563,
+   "publisher_id": "tokyo:t131059",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131059d2025000004/resource/1e352eb1-3127-4125-be76-0f4ec29cbca4",
+   "title": "宿泊施設（旅館台帳）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "1e352eb1-3127-4125-be76-0f4ec29cbca4",
+   "access": "datastore"
+  },
+  {
+   "n": 564,
+   "publisher_id": "tokyo:t131067",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131067d2025000004/resource/305a5982-f2c4-4c96-a111-7a4a56874611",
+   "title": "宿泊施設（旅館台帳）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "305a5982-f2c4-4c96-a111-7a4a56874611",
+   "access": "datastore"
+  },
+  {
+   "n": 565,
+   "publisher_id": "tokyo:t131075",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131075d3100000005/resource/5f12c575-326b-4e3e-a4fa-33fcc1a02dea",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "5f12c575-326b-4e3e-a4fa-33fcc1a02dea",
+   "access": "csv"
+  },
+  {
+   "n": 566,
+   "publisher_id": "tokyo:t131083",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131083d0000000056/resource/3f015bd5-32c7-435f-a954-5a76fade61eb",
+   "title": "健康長寿お口の元気度チェック実施医療機関一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "3f015bd5-32c7-435f-a954-5a76fade61eb",
+   "access": "datastore"
+  },
+  {
+   "n": 567,
+   "publisher_id": "tokyo:t131091",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131091d0000000019/resource/ac7f8e9b-7b0c-4bfd-abed-927997a2a5be",
+   "title": "附属機関",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "ac7f8e9b-7b0c-4bfd-abed-927997a2a5be",
+   "access": "csv"
+  },
+  {
+   "n": 568,
+   "publisher_id": "tokyo:t131105",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131105d0000000251/resource/aa34ad42-77c8-4ecb-bc44-b226173e9c0e",
+   "title": "医務関係施設一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "aa34ad42-77c8-4ecb-bc44-b226173e9c0e",
+   "access": "datastore"
+  },
+  {
+   "n": 569,
+   "publisher_id": "tokyo:t131113",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131113d2024000007/resource/91ad8fdc-09b0-4e26-90f3-2d22aaf87342",
+   "title": "姉妹・友好都市一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "91ad8fdc-09b0-4e26-90f3-2d22aaf87342",
+   "access": "csv"
+  },
+  {
+   "n": 570,
+   "publisher_id": "tokyo:t131121",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131121d2024000003/resource/e997171e-3285-4ff9-bf00-a266536f1676",
+   "title": "保護指定樹木",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e997171e-3285-4ff9-bf00-a266536f1676",
+   "access": "datastore"
+  },
+  {
+   "n": 571,
+   "publisher_id": "tokyo:t131130",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131130d2025000004/resource/5400bc2c-2ad9-4be7-8cd2-c9eebbf68d63",
+   "title": "宿泊施設（旅館台帳）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "5400bc2c-2ad9-4be7-8cd2-c9eebbf68d63",
+   "access": "datastore"
+  },
+  {
+   "n": 572,
+   "publisher_id": "tokyo:t131156",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131156d3100000005/resource/c75d4b1c-11cc-4708-8723-9be8672b3685",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "c75d4b1c-11cc-4708-8723-9be8672b3685",
+   "access": "csv"
+  },
+  {
+   "n": 573,
+   "publisher_id": "tokyo:t131164",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131164d2024000006/resource/fb1f50c2-ebf3-4d40-a6f1-567192953d1f",
+   "title": "町会・自治会一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "fb1f50c2-ebf3-4d40-a6f1-567192953d1f",
+   "access": "datastore"
+  },
+  {
+   "n": 574,
+   "publisher_id": "tokyo:t131181",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131181d2025000004/resource/2b821284-90ea-479c-ba07-69839a24e775",
+   "title": "宿泊施設（旅館台帳）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "2b821284-90ea-479c-ba07-69839a24e775",
+   "access": "datastore"
+  },
+  {
+   "n": 575,
+   "publisher_id": "tokyo:t131199",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131199d0000000141/resource/41f51cf0-f8f2-4287-a895-3c23e085e974",
+   "title": "イベント情報（オープンデータ）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "41f51cf0-f8f2-4287-a895-3c23e085e974",
+   "access": "datastore"
+  },
+  {
+   "n": 576,
+   "publisher_id": "tokyo:t131202",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131202d0000000115/resource/b0786a86-f6b7-409f-b315-9a170fc6dee0",
+   "title": "公共施設一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "b0786a86-f6b7-409f-b315-9a170fc6dee0",
+   "access": "datastore"
+  },
+  {
+   "n": 577,
+   "publisher_id": "tokyo:t131211",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131211d3100000005/resource/411f2094-6e2b-4b06-87e2-dbea1f434af1",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "411f2094-6e2b-4b06-87e2-dbea1f434af1",
+   "access": "csv"
+  },
+  {
+   "n": 578,
+   "publisher_id": "tokyo:t131229",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131229d2025000004/resource/3e8a3c5f-f264-47c5-be09-e408889de789",
+   "title": "宿泊施設（旅館台帳）",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "3e8a3c5f-f264-47c5-be09-e408889de789",
+   "access": "datastore"
+  },
+  {
+   "n": 579,
+   "publisher_id": "tokyo:t131237",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t131237d3100000004/resource/890a1ebd-6421-4f80-86e8-41c2146ca8fe",
+   "title": "スポーツ施設一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "890a1ebd-6421-4f80-86e8-41c2146ca8fe",
+   "access": "csv"
+  },
+  {
+   "n": 580,
+   "publisher_id": "tokyo:t132012",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132012d3100000005/resource/a50c8bcf-80e7-499d-8e57-9a5ed59d36cc",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "a50c8bcf-80e7-499d-8e57-9a5ed59d36cc",
+   "access": "csv"
+  },
+  {
+   "n": 581,
+   "publisher_id": "tokyo:t132021",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132021d3100000004/resource/013216fd-6a23-47f1-a013-d8860da053e8",
+   "title": "スポーツ施設一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "013216fd-6a23-47f1-a013-d8860da053e8",
+   "access": "csv"
+  },
+  {
+   "n": 582,
+   "publisher_id": "tokyo:t132039",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132039d3100000005/resource/4b118146-df0b-46db-91c0-f91dd403b9aa",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "4b118146-df0b-46db-91c0-f91dd403b9aa",
+   "access": "csv"
+  },
+  {
+   "n": 583,
+   "publisher_id": "tokyo:t132055",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132055d3100000005/resource/e67f1f60-944d-4ee7-9c73-09ea3998e9f5",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e67f1f60-944d-4ee7-9c73-09ea3998e9f5",
+   "access": "csv"
+  },
+  {
+   "n": 584,
+   "publisher_id": "tokyo:t132063",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132063d2024000002/resource/fa1698b9-958c-450f-86a3-c0ba2667a9d4",
+   "title": "組織情報一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "fa1698b9-958c-450f-86a3-c0ba2667a9d4",
+   "access": "datastore"
+  },
+  {
+   "n": 585,
+   "publisher_id": "tokyo:t132071",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132071d2025000001/resource/0691af25-b77c-410e-9d51-a5205c2ffc3e",
+   "title": "地域のイベント会場（貸出可能施設）一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "0691af25-b77c-410e-9d51-a5205c2ffc3e",
+   "access": "datastore"
+  },
+  {
+   "n": 586,
+   "publisher_id": "tokyo:t132080",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132080d3100002111/resource/9ef87334-8793-41b0-92b5-ba27b8d809de",
+   "title": "(令和6年)原因別交通事故発生件数(運転者側の過失)",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "9ef87334-8793-41b0-92b5-ba27b8d809de",
+   "access": "datastore"
+  },
+  {
+   "n": 587,
+   "publisher_id": "tokyo:t132098",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132098d3100000004/resource/23e15c4d-0517-4505-8ed3-9eb764b1377a",
+   "title": "スポーツ施設一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "23e15c4d-0517-4505-8ed3-9eb764b1377a",
+   "access": "csv"
+  },
+  {
+   "n": 588,
+   "publisher_id": "tokyo:t132101",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132101d0000000045/resource/8e9ca8c8-2c16-4206-84ae-3754349ff51d",
+   "title": "支援制度（給付金）情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "8e9ca8c8-2c16-4206-84ae-3754349ff51d",
+   "access": "datastore"
+  },
+  {
+   "n": 589,
+   "publisher_id": "tokyo:t132110",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132110d3100000005/resource/e46a46a0-31cd-4bfd-ba4b-5fc42972d39b",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e46a46a0-31cd-4bfd-ba4b-5fc42972d39b",
+   "access": "csv"
+  },
+  {
+   "n": 590,
+   "publisher_id": "tokyo:t132128",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132128d3100000004/resource/a6f9ec35-3535-4f53-b664-c033ea0055ec",
+   "title": "スポーツ施設一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "a6f9ec35-3535-4f53-b664-c033ea0055ec",
+   "access": "csv"
+  },
+  {
+   "n": 591,
+   "publisher_id": "tokyo:t132136",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132136d3100000035/resource/0d1b272a-b331-4197-9d64-d93b71077463",
+   "title": "東村山市観光地物・地点一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "0d1b272a-b331-4197-9d64-d93b71077463",
+   "access": "csv"
+  },
+  {
+   "n": 592,
+   "publisher_id": "tokyo:t132144",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132144d3100000014/resource/e537056f-d203-414a-81f1-b76650bebf71",
+   "title": "ゴミの分別方法一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e537056f-d203-414a-81f1-b76650bebf71",
+   "access": "csv"
+  },
+  {
+   "n": 593,
+   "publisher_id": "tokyo:t132152",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132152d3100000001/resource/326f6f01-1682-4375-a551-4fd76fd5f54b",
+   "title": "子ども食堂一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "326f6f01-1682-4375-a551-4fd76fd5f54b",
+   "access": "datastore"
+  },
+  {
+   "n": 594,
+   "publisher_id": "tokyo:t132187",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132187d3100000005/resource/73a34f72-91fd-4f5a-aacb-d96ac269214f",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "73a34f72-91fd-4f5a-aacb-d96ac269214f",
+   "access": "csv"
+  },
+  {
+   "n": 595,
+   "publisher_id": "tokyo:t132195",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132195d0000000385/resource/2674f8a9-0f23-420b-99ee-b4732a7f6d27",
+   "title": "令和６年度狛江市前期基本計画の指標等に係る市民アンケート",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "2674f8a9-0f23-420b-99ee-b4732a7f6d27",
+   "access": "csv"
+  },
+  {
+   "n": 596,
+   "publisher_id": "tokyo:t132209",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132209d2025000002/resource/28d596ab-086e-422d-9dd8-3ccd640f9d7b",
+   "title": "公営住宅一覧",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "28d596ab-086e-422d-9dd8-3ccd640f9d7b",
+   "access": "datastore"
+  },
+  {
+   "n": 597,
+   "publisher_id": "tokyo:t132225",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132225d3100000005/resource/e1eee2ea-6d65-4cd0-a2d6-b5e2b9f54478",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "e1eee2ea-6d65-4cd0-a2d6-b5e2b9f54478",
+   "access": "csv"
+  },
+  {
+   "n": 598,
+   "publisher_id": "tokyo:t132233",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132233d3100000005/resource/a127e06a-51af-46e8-ae94-17787f47fab8",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "a127e06a-51af-46e8-ae94-17787f47fab8",
+   "access": "csv"
+  },
+  {
+   "n": 599,
+   "publisher_id": "tokyo:t132241",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132241d3100000003/resource/29629941-8890-4e0d-9ad1-b3b204b98600",
+   "title": "戸籍窓口関係証明の発行枚数",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "29629941-8890-4e0d-9ad1-b3b204b98600",
+   "access": "csv"
+  },
+  {
+   "n": 600,
+   "publisher_id": "tokyo:t132250",
+   "resource_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132250d3100000005/resource/ce473cf7-1c85-4378-a27b-a9a961be61cf",
+   "title": "公立図書館情報",
+   "platform": "ckan",
+   "host": "catalog.data.metro.tokyo.lg.jp",
+   "resource_id": "ce473cf7-1c85-4378-a27b-a9a961be61cf",
+   "access": "csv"
   }
- ]
+ ],
+ "size_note": "b008 で datastore が読めなかった豪州の 183 表（retry_of。ファイルは州のサイト gov.au にある）を先に入れ、規則で採れた 1155 表から公開元を順に 1 表ずつ 417 表を足した（1 陣 1 公開元 3 表まで）。2026-10-24 Claude"
 }

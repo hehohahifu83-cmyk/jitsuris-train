@@ -117,6 +117,15 @@ class CkanDatastoreFallbackTests(unittest.TestCase):
         self.assertEqual(meta["access"], "csv")
         self.assertTrue(meta["datastore_failed"])
 
+    def test_falls_back_to_csv_on_state_gov_au(self):
+        # data.gov.au は州のポータルの目録で、ファイルは州のサイト（gov.au）にある（b009 で 110 表ほど。2026-10-24）
+        self.fmt = "CSV"
+        self.csv_url = "https://www.data.qld.gov.au/dataset/y/resource/z/download/a.csv"
+        meta, fields, recs, total = F.fetch_table(self.item, set())
+        self.assertEqual(meta["access"], "csv")
+        self.assertTrue(P.host_in("data.sa.gov.au", P.csv_domains("data.gov.au")))
+        self.assertFalse(P.host_in("gov.au.example.com", P.csv_domains("data.gov.au")))
+
     def test_uses_datastore_dump_when_no_csv(self):
         self.fmt = "XLSX"
         self.csv_url = f"https://data.gov.au/data/dataset/x/resource/{self.RID}/download/a.xlsx"
