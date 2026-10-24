@@ -45,6 +45,22 @@ def split_val_by_family(rows, salt: str, mod: int):
     return train, val
 
 
+def adjudicated_keys(batch_files) -> set:
+    """教材庫の batch_*.jsonl のうち、Claude が裁定した列（teacher が claude- で始まる）の (表の名前, 見出し)。
+    見出しは exp7.load_real と同じく先頭の BOM を外す。"""
+    import json
+    keys = set()
+    for fn in batch_files:
+        with open(fn, encoding="utf-8") as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                d = json.loads(line)
+                if str(d.get("teacher", "")).startswith("claude-"):
+                    keys.add((str(d["table"]), str(d["header"]).lstrip("﻿")))
+    return keys
+
+
 def cap_tables_per_family(rows, cap: int, salt: str = FAMILY_SALT):
     """1 様式あたり cap 表まで残す（cap が 0 以下なら何もしない）。(残した行, 外した表の数) を返す。"""
     if cap <= 0:

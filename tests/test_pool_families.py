@@ -39,6 +39,14 @@ class PoolFamiliesTest(unittest.TestCase):
         self.assertEqual(len({r[4] for r in kept if r[4].startswith("u")}), 30)
         self.assertEqual(F.cap_tables_per_family(self.rows, 0), (self.rows, 0))
 
+    def test_adjudicated_keys(self):
+        import json, tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False, encoding="utf-8") as fh:
+            for t, h, who in (("a", "\ufeffx", "claude-b009"), ("a", "y", "ChatGPT+e5base-agree"), ("b", "z", "claude-b010")):
+                fh.write(json.dumps({"table": t, "header": h, "teacher": who}) + "\n")
+        self.assertEqual(F.adjudicated_keys([fh.name]), {("a", "x"), ("b", "z")})
+        os.unlink(fh.name)
+
 
 if __name__ == "__main__":
     unittest.main()

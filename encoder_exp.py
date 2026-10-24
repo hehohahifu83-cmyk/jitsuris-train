@@ -86,6 +86,15 @@ if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。�
 if POOL:
     real_rows += real_train_rows_with_units(pooltr, POOL_COPIES, 10, True, unit_by_table, perturb, per_table=60)
     print(f"FT_POOL=1: +{len(pooltr)} pool source rows ({len({r[4] for r in pooltr})} tables) x{POOL_COPIES}; validation {len(poolval)}", flush=True)
+# FT_POOL_HARD_COPIES=k（既定 0＝足さない）：教材庫のうち、先生とモデルが食い違って Claude が裁定した列（batch_*.jsonl の teacher が claude-…）を k 回ぶん余分に足す（2026-10-24）。
+# 今のモデルが迷う列そのものなので、同じ数の列でも学ぶことが多いはず。検証側の表には足さない（pooltr の中だけ）
+POOL_HARD_COPIES = int(os.environ.get("FT_POOL_HARD_COPIES", "0") or 0)
+if POOL and POOL_HARD_COPIES > 0:
+    from pool_families import adjudicated_keys
+    _hard_keys = adjudicated_keys(_pool_files)
+    _hard = [r for r in pooltr if (str(r[4]), r[0]) in _hard_keys]
+    real_rows += real_train_rows_with_units(_hard, POOL_HARD_COPIES, 11, True, unit_by_table, perturb, per_table=60)
+    print(f"FT_POOL_HARD_COPIES={POOL_HARD_COPIES}: +{len(_hard)} adjudicated pool rows x{POOL_HARD_COPIES}", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
 y = np.array([r[2] for r in rows])
