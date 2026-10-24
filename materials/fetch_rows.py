@@ -65,9 +65,15 @@ def sensitive_value(value) -> bool:
                        or BR_CPF_RE.search(v) or BR_PHONE_RE.search(v) or BR_CEP_RE.search(v) or BR_STREET_RE.search(v)))
 
 
+# 語がつながった英語の列名（namelast・legalowner・contactphone など）。区切りが無いと HEADER_DENY をすり抜けるので、
+# 英字だけを残した形の中に語があれば落とす（2026-10-24、b006 のボストンの表で見つけた。namelsad などを落としすぎても安全な側）
+COMPACT_DENY = re.compile(r"(name|owner|holder|contact|applicant|email|phone|address|street|licensee|firstnm|lastnm)")
+
+
 def blocked_header(header) -> bool:
     h = normalize_header(header)
-    return bool(HEADER_DENY.search(h) or PT_HEADER_DENY.search(h))
+    compact = re.sub(r"[^a-z]", "", h)
+    return bool(HEADER_DENY.search(h) or PT_HEADER_DENY.search(h) or COMPACT_DENY.search(compact))
 
 
 def _h(*parts) -> int:

@@ -65,6 +65,12 @@ class PoolDiscoverTests(unittest.TestCase):
         for v in ("123.456.789-01", "(31) 3277-1234", "30130-010", "Rua da Bahia, 1148"):
             self.assertTrue(F.sensitive_value(v), v)
         self.assertFalse(F.sensitive_value("R$ 1.234,56"))
+        for h in ("namelast", "namefirst", "legalowner", "ContactPhone", "BusinessName"):   # 語がつながった列名
+            self.assertTrue(F.blocked_header(h), h)
+        for h in ("licstatus", "FY27 Budget", "Neighborhood", "result"):
+            self.assertFalse(F.blocked_header(h), h)
+        from pipeline import TITLE_DENY
+        self.assertTrue(TITLE_DENY.search("Food Establishment Inspections"))
 
     def test_national_orgs_register_as_train_children_before_dataset_search(self):
         import json, shutil, tempfile

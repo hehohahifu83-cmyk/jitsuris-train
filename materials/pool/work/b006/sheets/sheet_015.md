@@ -1,0 +1,753 @@
+# ラベル用シート 015 / 018
+
+- LABEL_GUIDE v1.8 だけで決める。予測は見ない。決められない列は unknown、表が崩れている・値が空の列は S
+- 使えるラベル：account address amount category date email id org other person phone product quantity rate tax_class text unknown S
+- 1 グループ＝見出しと値の形が同じ列のまとまり。グループの全部の列に同じラベルが付く。例が 2 つあるときは両方を見て決める
+- 答え：末尾の「答えの雛形」を `answers/sheet_015.tsv` に写し、各行の TAB の後ろにラベルを 1 つ書く
+
+## g1681（1 列）
+- 見出し：numero_documento
+- 例1 値：24 | 49 | 24 | 12 | 4
+  - 同じ表の列：entidade, data_lancamento, receita, receita_classificac…, receita_detalhe, nro_docto_classific…, vl_documento
+
+## g1682（1 列）
+- 見出し：nro_docto_classificacao
+- 例1 値：74 | 36 | 245 | 253 | 179
+  - 同じ表の列：entidade, data_lancamento, receita, receita_classificac…, receita_detalhe, numero_documento, vl_documento
+
+## g1683（1 列）
+- 見出し：vl_documento
+- 例1 値：1055,1 | 46,23 | 5009,05 | 80,86 | 435,27
+  - 同じ表の列：entidade, data_lancamento, receita, receita_classificac…, receita_detalhe, numero_documento, nro_docto_classific…
+
+## g1684（1 列）
+- 見出し：#EXERCICIO
+- 例1 値：2022 | 2022 | 2022 | 2022 | 2022
+  - 同じ表の列：ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO, CLASSIFICACAO
+
+## g1685（1 列）
+- 見出し：ANO_EMPENHO
+- 例1 値：2022 | 2022 | 2022 | 2022 | 2022
+  - 同じ表の列：#EXERCICIO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO, CLASSIFICACAO
+
+## g1686（1 列）
+- 見出し：UO_EMPENHO
+- 例1 値：201 | 2302 | 800 | 1011 | 2302
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO, CLASSIFICACAO
+
+## g1687（1 列）
+- 見出し：DATA_EMPENHO
+- 例1 値：12/17/2022 00:00:00 | 11/30/2022 00:00:00 | 12/17/2022 00:00:00 | 12/17/2022 00:00:00 | 12/17/2022 00:00:00
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO, CLASSIFICACAO
+
+## g1688（1 列）
+- 見出し：VALOR_EMPENHO
+- 例1 値：1180,80 | 1008,60 | 2576,41 | 492,00 | 25322,16
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO, CLASSIFICACAO
+
+## g1689（1 列）
+- 見出し：VALOR_EMPENHO_ANULADO
+- 例1 値：0,00 | 0,00 | 0,00 | 0,00 | 0,00
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, MODALIDADE_LICITACAO, CLASSIFICACAO
+
+## g1690（1 列）
+- 見出し：MODALIDADE_LICITACAO
+- 例1 値：8 | 8 | 8 | 8 | 8
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, CLASSIFICACAO
+
+## g1691（1 列）
+- 見出し：CLASSIFICACAO
+- 例1 値：2200.0500.12.361.168.2.080.31901113.0005 | 2200.0900.12.365.169.2.542.31911303.0000 | 2200.0400.12.365.169.2.542.31911303.0005 | 2302.0400.10.302.114.2.891.31911302.0000 | 1000.2500.14.422.127.2.928.31901101.0000
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO
+
+## g1692（1 列）
+- 見出し：JUSTIFICATIVA_SUCINTA
+- 例1 値：Apropriação de folha de pagamento do mê… | Apropriação de folha de pagamento do mê… | Apropriação de folha de pagamento do mê… | Apropriação de folha de pagamento do mê… | Apropriação de folha de pagamento do mê…
+  - 同じ表の列：#EXERCICIO, ANO_EMPENHO, UO_EMPENHO, NUMERO_EMPENHO, DATA_EMPENHO, VALOR_EMPENHO, VALOR_EMPENHO_ANULA…, MODALIDADE_LICITACAO
+
+## g1693（1 列）
+- 見出し：ID_UNIDADE_ILUMINACAO_PUBLICA
+- 例1 値：216 | 312 | 653 | 896 | 103
+  - 同じ表の列：NUMERO_IDENTIFICACAO, ILUMINACAO_DESTAQUE, OBJETO_ILUMINADO, PONTO_MODERNIZADO_L…, TELEGESTAO, BAIRRO, REGIONAL, GEOMETRIA
+
+## g1694（1 列）
+- 見出し：NUMERO_IDENTIFICACAO
+- 例1 値：061221-9 | 076608-9 | 121487-0 | 082162-4 | 068418-0
+  - 同じ表の列：ID_UNIDADE_ILUMINAC…, ILUMINACAO_DESTAQUE, OBJETO_ILUMINADO, PONTO_MODERNIZADO_L…, TELEGESTAO, BAIRRO, REGIONAL, GEOMETRIA
+
+## g1695（1 列）
+- 見出し：ILUMINACAO_DESTAQUE
+- 例1 値：NÃO | NÃO | NÃO | NÃO | NÃO
+  - 同じ表の列：ID_UNIDADE_ILUMINAC…, NUMERO_IDENTIFICACAO, OBJETO_ILUMINADO, PONTO_MODERNIZADO_L…, TELEGESTAO, BAIRRO, REGIONAL, GEOMETRIA
+
+## g1696（1 列）
+- 見出し：OBJETO_ILUMINADO
+- 例1 値：VIA | PRACA | VIA | VIA | VIA
+  - 同じ表の列：ID_UNIDADE_ILUMINAC…, NUMERO_IDENTIFICACAO, ILUMINACAO_DESTAQUE, PONTO_MODERNIZADO_L…, TELEGESTAO, BAIRRO, REGIONAL, GEOMETRIA
+
+## g1697（1 列）
+- 見出し：PONTO_MODERNIZADO_LED
+- 例1 値：NÃO | SIM | SIM | SIM | SIM
+  - 同じ表の列：ID_UNIDADE_ILUMINAC…, NUMERO_IDENTIFICACAO, ILUMINACAO_DESTAQUE, OBJETO_ILUMINADO, TELEGESTAO, BAIRRO, REGIONAL, GEOMETRIA
+
+## g1698（1 列）
+- 見出し：TELEGESTAO
+- 例1 値：NÃO | NÃO | SIM | SIM | NÃO
+  - 同じ表の列：ID_UNIDADE_ILUMINAC…, NUMERO_IDENTIFICACAO, ILUMINACAO_DESTAQUE, OBJETO_ILUMINADO, PONTO_MODERNIZADO_L…, BAIRRO, REGIONAL, GEOMETRIA
+
+## g1699（1 列）
+- 見出し：BAIRRO
+- 例1 値：ALPES | DIAMANTE | RIBEIRO DE ABREU | SÃO GABRIEL | JARDIM ATLÂNTICO
+  - 同じ表の列：ID_UNIDADE_ILUMINAC…, NUMERO_IDENTIFICACAO, ILUMINACAO_DESTAQUE, OBJETO_ILUMINADO, PONTO_MODERNIZADO_L…, TELEGESTAO, REGIONAL, GEOMETRIA
+
+## g1700（1 列）
+- 見出し：ID_REDE_MICRODRENAGEM
+- 例1 値：917 | 93 | 516 | 318 | 281
+  - 同じ表の列：MATERIAL, DIAMETRO, ALTURA, LARGURA, COMPRIMENTO, GEOMETRIA
+
+## g1701（1 列）
+- 見出し：MATERIAL
+- 例1 値：RTC | RTC | RTC | RTC | RTC
+  - 同じ表の列：ID_REDE_MICRODRENAG…, DIAMETRO, ALTURA, LARGURA, COMPRIMENTO, GEOMETRIA
+
+## g1702（1 列）
+- 見出し：DIAMETRO
+- 例1 値：500 | 600 | 800 | 1000 | 800
+  - 同じ表の列：ID_REDE_MICRODRENAG…, MATERIAL, ALTURA, LARGURA, COMPRIMENTO, GEOMETRIA
+
+## g1703（1 列）
+- 見出し：ALTURA
+- 例1 値：1400 | 1250 | 700 | 1250 | 1250
+  - 同じ表の列：ID_REDE_MICRODRENAG…, MATERIAL, DIAMETRO, LARGURA, COMPRIMENTO, GEOMETRIA
+
+## g1704（1 列）
+- 見出し：LARGURA
+- 例1 値：1500 | 1500 | 1250 | 1250 | 1500
+  - 同じ表の列：ID_REDE_MICRODRENAG…, MATERIAL, DIAMETRO, ALTURA, COMPRIMENTO, GEOMETRIA
+
+## g1705（1 列）
+- 見出し：COMPRIMENTO
+- 例1 値：61.19 | 12.44 | 30.08 | 32.57 | 33.35
+  - 同じ表の列：ID_REDE_MICRODRENAG…, MATERIAL, DIAMETRO, ALTURA, LARGURA, GEOMETRIA
+
+## g1706（1 列）
+- 見出し：GEOMETRIA
+- 例1 値：LINESTRING (611536.523465341 7805918.07… | LINESTRING (606736.337252204 7809108.95… | LINESTRING (614274.080066643 7806051.36… | LINESTRING (612301.037101755 7801657.04… | LINESTRING (604714.066100085 7801541.00…
+  - 同じ表の列：ID_REDE_MICRODRENAG…, MATERIAL, DIAMETRO, ALTURA, LARGURA, COMPRIMENTO
+
+## g1707（1 列）
+- 見出し：ID_SUBBAC
+- 例1 値：136 | 169 | 254 | 58 | 125
+  - 同じ表の列：SUBBACIA, COD_BACIA, AREA_M2, PERIMETRO_M, GEOMETRIA
+
+## g1708（1 列）
+- 見出し：SUBBACIA
+- 例1 値：4111105 | 4140007 | 4140803 | 4130001 | 4110019
+  - 同じ表の列：ID_SUBBAC, COD_BACIA, AREA_M2, PERIMETRO_M, GEOMETRIA
+
+## g1709（1 列）
+- 見出し：COD_BACIA
+- 例1 値：4111700 | 4110100 | 4110700 | 4111700 | 4130003
+  - 同じ表の列：ID_SUBBAC, SUBBACIA, AREA_M2, PERIMETRO_M, GEOMETRIA
+
+## g1710（1 列）
+- 見出し：AREA_M2
+- 例1 値：1227682.53498 | 674800.100243 | 386370.548594 | 2368576.64223 | 1913745.2965
+  - 同じ表の列：ID_SUBBAC, SUBBACIA, COD_BACIA, PERIMETRO_M, GEOMETRIA
+
+## g1711（1 列）
+- 見出し：PERIMETRO_M
+- 例1 値：2631.328109 | 3185.632653 | 13196.440007 | 4401.115124 | 7725.42322
+  - 同じ表の列：ID_SUBBAC, SUBBACIA, COD_BACIA, AREA_M2, GEOMETRIA
+
+## g1712（1 列）
+- 見出し：num_not
+- 例1 値：312153501628 | 312153600312 | 312154099862 | 312153741088 | 312154158198
+  - 同じ表の列：racacor, dt_notific, dt_sin_pri, dt_nasc, forma_doenca, classificacao, evolucao, ano
+
+## g1713（1 列）
+- 見出し：racacor
+- 例1 値：Sem preenchimento | Parda | Sem preenchimento | Sem preenchimento | Sem preenchimento
+  - 同じ表の列：num_not, dt_notific, dt_sin_pri, dt_nasc, forma_doenca, classificacao, evolucao, ano
+
+## g1714（1 列）
+- 見出し：dt_notific
+- 例1 値：2021-01-05 | 2021-01-04 | 2021-01-04 | 2021-01-03 | 2021-01-04
+  - 同じ表の列：num_not, racacor, dt_sin_pri, dt_nasc, forma_doenca, classificacao, evolucao, ano
+
+## g1715（1 列）
+- 見出し：dt_sin_pri
+- 例1 値：2021-01-03 | 2021-01-04 | 2021-01-03 | 2021-01-04 | 2021-01-04
+  - 同じ表の列：num_not, racacor, dt_notific, dt_nasc, forma_doenca, classificacao, evolucao, ano
+
+## g1716（1 列）
+- 見出し：dt_nasc
+- 例1 値：1986-02-25 | 1979-10-20 | 1986-03-25 | 1988-06-25 | 1928-10-12
+  - 同じ表の列：num_not, racacor, dt_notific, dt_sin_pri, forma_doenca, classificacao, evolucao, ano
+
+## g1717（1 列）
+- 見出し：forma_doenca
+- 例1 値：SG | SRAG | SG | SG | SG
+  - 同じ表の列：num_not, racacor, dt_notific, dt_sin_pri, dt_nasc, classificacao, evolucao, ano
+
+## g1718（1 列）
+- 見出し：classificacao
+- 例1 値：Descartados | Confirmados | Confirmados | Suspeitos | Suspeitos
+  - 同じ表の列：num_not, racacor, dt_notific, dt_sin_pri, dt_nasc, forma_doenca, evolucao, ano
+
+## g1719（1 列）
+- 見出し：evolucao
+- 例1 値：Em investigação | Em investigação | Em investigação | Óbito | Em investigação
+  - 同じ表の列：num_not, racacor, dt_notific, dt_sin_pri, dt_nasc, forma_doenca, classificacao, ano
+
+## g1720（1 列）
+- 見出し：ID_EQ_SAUDE
+- 例1 値：221 | 967 | 159 | 454 | 151
+  - 同じ表の列：CATEGORIA, SIGLA_CATEGORIA, NUMERO_IMOVEL, GEOMETRIA
+
+## g1721（1 列）
+- 見出し：CATEGORIA
+- 例1 値：CENTRO DE ESPECIALIDADES MEDICAS | CENTRO DE ESPECIALIDADES MEDICAS | LABORATORIO | FARMACIA DISTRITAL | SERVICO DE RESIDENCIA TERAPEUTICA
+  - 同じ表の列：ID_EQ_SAUDE, SIGLA_CATEGORIA, NUMERO_IMOVEL, GEOMETRIA
+
+## g1722（1 列）
+- 見出し：SIGLA_CATEGORIA
+- 例1 値：CS | CS | CC | CEM | CS
+  - 同じ表の列：ID_EQ_SAUDE, CATEGORIA, NUMERO_IMOVEL, GEOMETRIA
+
+## g1723（1 列）
+- 見出し：ID_DISTRITO_SANITARIO
+- 例1 値：9 | 5 | 7 | 2 | 4
+  - 同じ表の列：GEOMETRIA
+
+## g1724（1 列）
+- 見出し：ID_SONDAGEM_GEOTECNICA
+- 例1 値：1058 | 979 | 271 | 250 | 1028
+  - 同じ表の列：COD_RELATORIO, CODIGO_FURO_SONDAGEM, TIPO_FURO_SONDAGEM, CAMPANHA, GEOMETRIA
+
+## g1725（1 列）
+- 見出し：COD_RELATORIO
+- 例1 値：0159_22042015 | 1015_22092014 | XXXX_04122006 | 1114_23112016 | 2419_24082020
+  - 同じ表の列：ID_SONDAGEM_GEOTECN…, CODIGO_FURO_SONDAGEM, TIPO_FURO_SONDAGEM, CAMPANHA, GEOMETRIA
+
+## g1726（1 列）
+- 見出し：CODIGO_FURO_SONDAGEM
+- 例1 値：SP 02 | SP 11 | SP 06A | SPT 03 | SP 14
+  - 同じ表の列：ID_SONDAGEM_GEOTECN…, COD_RELATORIO, TIPO_FURO_SONDAGEM, CAMPANHA, GEOMETRIA
+
+## g1727（1 列）
+- 見出し：TIPO_FURO_SONDAGEM
+- 例1 値：Sondagem a percussão | Sondagem a percussão | Sondagem a trado | Sondagem a percussão | Sondagem a percussão
+  - 同じ表の列：ID_SONDAGEM_GEOTECN…, COD_RELATORIO, CODIGO_FURO_SONDAGEM, CAMPANHA, GEOMETRIA
+
+## g1728（1 列）
+- 見出し：CAMPANHA
+- 例1 値：01_2018 | 01_2006 | 01_2018 | 01_2016 | 02_2021
+  - 同じ表の列：ID_SONDAGEM_GEOTECN…, COD_RELATORIO, CODIGO_FURO_SONDAGEM, TIPO_FURO_SONDAGEM, GEOMETRIA
+
+## g1729（1 列）
+- 見出し：GEOMETRIA
+- 例1 値：POINT Z (607462.697 7804563.123 0) | POINT Z (604100.6 7788700.33 0) | POINT Z (610966.9897 7805627.6139 0) | POINT Z (609535.0711 7809842.3169 0) | POINT Z (603113.7213 7802978.6972 0)
+  - 同じ表の列：ID_SONDAGEM_GEOTECN…, COD_RELATORIO, CODIGO_FURO_SONDAGEM, TIPO_FURO_SONDAGEM, CAMPANHA
+
+## g1730（2 列）
+- 見出し：ID_AREA_EMPREENDIMENTO
+- 例1 値：2870 | 2377 | 2139 | 1808 | 2371
+  - 同じ表の列：NUMERO_PO, REGIONAL, TEMATICA, STATUS, GEOMETRIA
+- 例2 値：2594 | 3428 | 3045 | 2136 | 2285
+  - 同じ表の列：NUMERO_PO, REGIONAL, TEMATICA, STATUS, GRUPO, IND_PREVISAO_OBRA, GEOMETRIA
+
+## g1731（2 列）
+- 見出し：NUMERO_PO
+- 例1 値：387 | 2245 | 320 | 1389 | 2369
+  - 同じ表の列：ID_AREA_EMPREENDIME…, REGIONAL, TEMATICA, STATUS, GEOMETRIA
+- 例2 値：2764 | 587 | 1055 | 2141 | 264
+  - 同じ表の列：ID_AREA_EMPREENDIME…, REGIONAL, TEMATICA, STATUS, GRUPO, IND_PREVISAO_OBRA, GEOMETRIA
+
+## g1732（2 列）
+- 見出し：TEMATICA
+- 例1 値：Mobilidade | Manutenção | Educação | Educação | Infraestrutura
+  - 同じ表の列：ID_AREA_EMPREENDIME…, NUMERO_PO, REGIONAL, STATUS, GEOMETRIA
+- 例2 値：Esportes | Infraestrutura | Esportes | Esportes | Educação
+  - 同じ表の列：ID_AREA_EMPREENDIME…, NUMERO_PO, REGIONAL, STATUS, GRUPO, IND_PREVISAO_OBRA, GEOMETRIA
+
+## g1733（1 列）
+- 見出し：STATUS
+- 例1 値：Em Execução Obra-M | Concluído | Concluído | Em Execução Obra-M | Concluído
+  - 同じ表の列：ID_AREA_EMPREENDIME…, NUMERO_PO, REGIONAL, TEMATICA, GEOMETRIA
+
+## g1734（1 列）
+- 見出し：STATUS
+- 例1 値：Concluído | Concluído | Concluído | Concluído | Concluído
+  - 同じ表の列：ID_AREA_EMPREENDIME…, NUMERO_PO, REGIONAL, TEMATICA, GRUPO, IND_PREVISAO_OBRA, GEOMETRIA
+
+## g1735（1 列）
+- 見出し：GRUPO
+- 例1 値：Edificação | Edificação | Edificação | Infraestrutura | Edificação
+  - 同じ表の列：ID_AREA_EMPREENDIME…, NUMERO_PO, REGIONAL, TEMATICA, STATUS, IND_PREVISAO_OBRA, GEOMETRIA
+
+## g1736（1 列）
+- 見出し：IND_PREVISAO_OBRA
+- 例1 値：S | S | S | S | S
+  - 同じ表の列：ID_AREA_EMPREENDIME…, NUMERO_PO, REGIONAL, TEMATICA, STATUS, GRUPO, GEOMETRIA
+
+## g1737（1 列）
+- 見出し：VIAGEM
+- 例1 値：2022-04-13T00:00:00 | 2022-07-04T00:00:00 | 2022-06-04T00:00:00 | 2022-04-29T00:00:00 | 2022-04-26T00:00:00
+  - 同じ表の列：LINHA, SUBLINHA, PC, CONCESSIONARIA, SAIDA, VEICULO, CHEGADA, CATRACA SAIDA
+
+## g1738（1 列）
+- 見出し：LINHA
+- 例1 値：SC01A | SC01A | SC01A | SC01A | SC01A
+  - 同じ表の列：VIAGEM, SUBLINHA, PC, CONCESSIONARIA, SAIDA, VEICULO, CHEGADA, CATRACA SAIDA
+
+## g1739（1 列）
+- 見出し：SUBLINHA
+- 例1 値：1 | 1 | 1 | 1 | 1
+  - 同じ表の列：VIAGEM, LINHA, PC, CONCESSIONARIA, SAIDA, VEICULO, CHEGADA, CATRACA SAIDA
+
+## g1740（1 列）
+- 見出し：PC
+- 例1 値：1 | 1 | 1 | 1 | 0
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, CONCESSIONARIA, SAIDA, VEICULO, CHEGADA, CATRACA SAIDA
+
+## g1741（1 列）
+- 見出し：CONCESSIONARIA
+- 例1 値：801 | 801 | 801 | 801 | 801
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, PC, SAIDA, VEICULO, CHEGADA, CATRACA SAIDA
+
+## g1742（1 列）
+- 見出し：SAIDA
+- 例1 値：06:01 | 07:52 | 07:21 | 07:01 | 06:06
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, PC, CONCESSIONARIA, VEICULO, CHEGADA, CATRACA SAIDA
+
+## g1743（1 列）
+- 見出し：VEICULO
+- 例1 値：11091 | 40816 | 10959 | 11093 | 10959
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, PC, CONCESSIONARIA, SAIDA, CHEGADA, CATRACA SAIDA
+
+## g1744（1 列）
+- 見出し：CHEGADA
+- 例1 値：18:40 | 15:40 | 05:17 | 19:43 | 16:19
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, PC, CONCESSIONARIA, SAIDA, VEICULO, CATRACA SAIDA
+
+## g1745（1 列）
+- 見出し：CATRACA SAIDA
+- 例1 値：45749 | 39411 | 34125 | 58755 | 53691
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, PC, CONCESSIONARIA, SAIDA, VEICULO, CHEGADA
+
+## g1746（1 列）
+- 見出し：CATRACA CHEGADA
+- 例1 値：55717 | 76009 | 58314 | 632 | 55317
+  - 同じ表の列：VIAGEM, LINHA, SUBLINHA, PC, CONCESSIONARIA, SAIDA, VEICULO, CHEGADA
+
+## g1747（1 列）
+- 見出し：ID_MATRIZ_OD_ORIGEM
+- 例1 値：8936 | 8942 | 7017 | 8982 | 9147
+  - 同じ表の列：COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1748（2 列）
+- 見出し：COD_HEX_H3
+- 例1 値：89a88cd9b1bffff | 89a88cdb5c3ffff | 89a881ac9b3ffff | 89a88cd849bffff | 89a881a4a97ffff
+  - 同じ表の列：ID_MATRIZ_OD_ORIGEM, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+- 例2 値：89a88cda3d7ffff | 89a88cd92afffff | 89a88cda2cfffff | 89a881ac803ffff | 89a88cd8657ffff
+  - 同じ表の列：ID_MATRIZ_OD_DESTINO, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1749（2 列）
+- 見出し：DOMINGO_TIPICO
+- 例1 値：0 | 0 | 0 | 7 | 39
+  - 同じ表の列：ID_MATRIZ_OD_ORIGEM, COD_HEX_H3, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+- 例2 値：2 | 23 | 30 | 27 | 2
+  - 同じ表の列：ID_MATRIZ_OD_DESTINO, COD_HEX_H3, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1750（2 列）
+- 見出し：SABADO_TIPICO
+- 例1 値：0 | 0 | 213 | 125 | 0
+  - 同じ表の列：ID_MATRIZ_OD_ORIGEM, COD_HEX_H3, DOMINGO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+- 例2 値：42 | 74 | 0 | 16 | 21
+  - 同じ表の列：ID_MATRIZ_OD_DESTINO, COD_HEX_H3, DOMINGO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1751（2 列）
+- 見出し：DIA_UTIL_TIPICO
+- 例1 値：272 | 10 | 0 | 11 | 242
+  - 同じ表の列：ID_MATRIZ_OD_ORIGEM, COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+- 例2 値：6 | 291 | 139 | 140 | 0
+  - 同じ表の列：ID_MATRIZ_OD_DESTINO, COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1752（2 列）
+- 見出し：DATA_REFERENCIA
+- 例1 値：JUNHO 2025 | JUNHO 2025 | JUNHO 2025 | JUNHO 2025 | JUNHO 2025
+  - 同じ表の列：ID_MATRIZ_OD_ORIGEM, COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_ATUALIZACAO, GEOMETRIA
+- 例2 値：JUNHO 2025 | JUNHO 2025 | JUNHO 2025 | JUNHO 2025 | JUNHO 2025
+  - 同じ表の列：ID_MATRIZ_OD_DESTINO, COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1753（2 列）
+- 見出し：DATA_ATUALIZACAO
+- 例1 値：28-07-2025 | 28-07-2025 | 28-07-2025 | 28-07-2025 | 28-07-2025
+  - 同じ表の列：ID_MATRIZ_OD_ORIGEM, COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, GEOMETRIA
+- 例2 値：28-07-2025 | 28-07-2025 | 28-07-2025 | 28-07-2025 | 28-07-2025
+  - 同じ表の列：ID_MATRIZ_OD_DESTINO, COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, GEOMETRIA
+
+## g1754（1 列）
+- 見出し：ID_MATRIZ_OD_DESTINO
+- 例1 値：9926 | 12336 | 9702 | 9829 | 10003
+  - 同じ表の列：COD_HEX_H3, DOMINGO_TIPICO, SABADO_TIPICO, DIA_UTIL_TIPICO, DATA_REFERENCIA, DATA_ATUALIZACAO, GEOMETRIA
+
+## g1755（1 列）
+- 見出し：ID_CHB
+- 例1 値：161 | 397 | 260 | 177 | 294
+  - 同じ表の列：DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1756（1 列）
+- 見出し：DESC_AGRUPAMENTO
+- 例1 値：202 UH - Urucuia / ASCA | 56 UH - Leonina | 264 UH - Pedreira Vila Viva | 16 UH - Capivari | 440 UH - Vila Viva São Tomaz
+  - 同じ表の列：ID_CHB, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1757（1 列）
+- 見出し：STATUS_CONSTRUCAO
+- 例1 値：Obra concluída | Obra concluída | Obra concluída | Obra concluída | Obra concluída
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1758（1 列）
+- 見出し：STATUS_REGULARIZACAO
+- 例1 値：Não regularizado | Não regularizado | Não regularizado | Não regularizado | Não regularizado
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1759（1 列）
+- 見出し：NUM_UNID_INICIAR
+- 例1 値：0 | 0 | 0 | 0 | 30
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1760（1 列）
+- 見出し：NUM_UNID_ANDAMENTO
+- 例1 値：0 | 0 | 0 | 0 | 0
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_CONCLUSAO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1761（1 列）
+- 見出し：NUM_UNID_CONCLUSAO
+- 例1 値：58 | 8 | 42 | 32 | 8
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, DESC_PROGRAMA, DESC_FONTE_RECURSO
+
+## g1762（1 列）
+- 見出し：DESC_PROGRAMA
+- 例1 値：Vila Viva | Acampados / OPH / PEAR -> Desabrigados | OPH | MCMV | Intervenção Pública -> Avenida Bacuraus
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_FONTE_RECURSO
+
+## g1763（1 列）
+- 見出し：DESC_FONTE_RECURSO
+- 例1 値：PAC 1 / Saneamento Para Todos | BNDES / PAC 1 | BNDES / PAC 1 | PAC 1 / Pró-moradia | Pró-moradia
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA
+
+## g1764（1 列）
+- 見出し：ANO_PREVISAO_CONCLUSAO
+- 例1 値：0 | 0 | 0 | 0 | 2017
+  - 同じ表の列：ID_CHB, DESC_AGRUPAMENTO, STATUS_CONSTRUCAO, STATUS_REGULARIZACAO, NUM_UNID_INICIAR, NUM_UNID_ANDAMENTO, NUM_UNID_CONCLUSAO, DESC_PROGRAMA
+
+## g1765（1 列）
+- 見出し：COD_VISTORIA
+- 例1 値：19990400198 | 19990300255 | 19990700127 | 19990300145 | 19990700177
+  - 同じ表の列：REGIONAL, DATA_EXECUCAO_VISTO…, NIVEL_RISCO
+
+## g1766（1 列）
+- 見出し：DATA_EXECUCAO_VISTORIA
+- 例1 値：22/07/1999 | 05/10/1999 | 24/11/1999 | 16/12/1999 | 19/10/1999
+  - 同じ表の列：COD_VISTORIA, REGIONAL, NIVEL_RISCO
+
+## g1767（1 列）
+- 見出し：NIVEL_RISCO
+- 例1 値：Sem Risco | Médio | Médio | Baixo | Médio
+  - 同じ表の列：COD_VISTORIA, REGIONAL, DATA_EXECUCAO_VISTO…
+
+## g1768（1 列）
+- 見出し：ID_OCUPACAO_LOTEAM_IRREG
+- 例1 値：279 | 361 | 286 | 311 | 351
+  - 同じ表の列：PLANO_URBANISTICO, REGIONAL, GEOMETRIA
+
+## g1769（1 列）
+- 見出し：PLANO_URBANISTICO
+- 例1 値：Não | Não | Em Andamento | Não | Não
+  - 同じ表の列：ID_OCUPACAO_LOTEAM_…, REGIONAL, GEOMETRIA
+
+## g1770（1 列）
+- 見出し：REGIONAL
+- 例1 値：NORTE | BARREIRO | NOROESTE | NORTE | VENDA NOVA
+  - 同じ表の列：ID_OCUPACAO_LOTEAM_…, PLANO_URBANISTICO, GEOMETRIA
+
+## g1771（1 列）
+- 見出し：timestamp
+- 例1 値：2016-07-11 10:54:20 | 2016-10-24 14:45:02 | 2016-11-18 14:43:43 | 2016-09-14 15:20:57 | 2016-11-03 10:52:13
+  - 同じ表の列：date_of_request, inquiry_type, how_contacted, research_type, service_time_minutes, date_completed
+
+## g1772（1 列）
+- 見出し：date_of_request
+- 例1 値：2016-10-19 | 2016-10-27 | 2016-08-30 | 2017-01-09 | 2016-08-15
+  - 同じ表の列：timestamp, inquiry_type, how_contacted, research_type, service_time_minutes, date_completed
+
+## g1773（1 列）
+- 見出し：inquiry_type
+- 例1 値：City Government Department | Public | Public | Public | Public
+  - 同じ表の列：timestamp, date_of_request, how_contacted, research_type, service_time_minutes, date_completed
+
+## g1774（1 列）
+- 見出し：how_contacted
+- 例1 値：Telephone | In Person | Telephone | Email | In Person
+  - 同じ表の列：timestamp, date_of_request, inquiry_type, research_type, service_time_minutes, date_completed
+
+## g1775（1 列）
+- 見出し：research_type
+- 例1 値：Environmental research | Building or landscape research | Building or landscape research | Genealogy | General historical research
+  - 同じ表の列：timestamp, date_of_request, inquiry_type, how_contacted, service_time_minutes, date_completed
+
+## g1776（1 列）
+- 見出し：service_time_minutes
+- 例1 値：180 | 5 | 10 | 5 | 15
+  - 同じ表の列：timestamp, date_of_request, inquiry_type, how_contacted, research_type, date_completed
+
+## g1777（1 列）
+- 見出し：date_completed
+- 例1 値：2016-11-03 | 2017-01-27 | 2016-10-19 | 2016-11-30 | 2016-09-21
+  - 同じ表の列：timestamp, date_of_request, inquiry_type, how_contacted, research_type, service_time_minutes
+
+## g1778（2 列）
+- 見出し：Date
+- 例1 値：2016-05-29 | 2018-08-08 | 2016-06-18 | 2017-06-26 | 2017-08-30
+  - 同じ表の列：Pageviews
+- 例2 値：2019-03-07 | 2019-07-10 | 2018-02-09 | 2019-09-11 | 2019-10-03
+  - 同じ表の列：user_count
+
+## g1779（2 列）
+- 見出し：Pageviews
+- 例1 値：0 | 0 | 0 | 73 | 401
+  - 同じ表の列：Date
+- 例2 値：2366 | 1245 | 1424 | 2209 | 2481
+  - 同じ表の列：Day Index
+
+## g1780（1 列）
+- 見出し：ST_NUM
+- 例1 値：246 | 285 | 85 | 421 | 249
+  - 同じ表の列：ST_ALPHA, ST_NUM2, UNIT_NUM, CITY, BLDG_SEQ, NUM_BLDGS, LUC, LU
+
+## g1781（1 列）
+- 見出し：ST_ALPHA
+- 例1 値：474A | A373 | A431 | A426 | HF
+  - 同じ表の列：ST_NUM, ST_NUM2, UNIT_NUM, CITY, BLDG_SEQ, NUM_BLDGS, LUC, LU
+
+## g1782（1 列）
+- 見出し：ST_NUM2
+- 例1 値：28 | 104 | 430 | 268 | 354
+  - 同じ表の列：ST_NUM, ST_ALPHA, UNIT_NUM, CITY, BLDG_SEQ, NUM_BLDGS, LUC, LU
+
+## g1783（1 列）
+- 見出し：UNIT_NUM
+- 例1 値：6 | 2 | 3 | 239-A | 3
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, CITY, BLDG_SEQ, NUM_BLDGS, LUC, LU
+
+## g1784（1 列）
+- 見出し：CITY
+- 例1 値：EAST BOSTON | EAST BOSTON | EAST BOSTON | EAST BOSTON | EAST BOSTON
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, UNIT_NUM, BLDG_SEQ, NUM_BLDGS, LUC, LU
+
+## g1785（1 列）
+- 見出し：BLDG_SEQ
+- 例1 値：1 | 1 | 1 | 1 | 1
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, UNIT_NUM, CITY, NUM_BLDGS, LUC, LU
+
+## g1786（1 列）
+- 見出し：NUM_BLDGS
+- 例1 値：1 | 1 | 1 | 1 | 1
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, UNIT_NUM, CITY, BLDG_SEQ, LUC, LU
+
+## g1787（1 列）
+- 見出し：LUC
+- 例1 値：102 | 013 | 102 | 985 | 102
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, UNIT_NUM, CITY, BLDG_SEQ, NUM_BLDGS, LU
+
+## g1788（1 列）
+- 見出し：LU
+- 例1 値：R1 | CM | R2 | CL | R2
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, UNIT_NUM, CITY, BLDG_SEQ, NUM_BLDGS, LUC
+
+## g1789（1 列）
+- 見出し：LU_DESC
+- 例1 値：TWO-FAM DWELLING | RESIDENTIAL CONDO | RESIDENTIAL CONDO | TANKS: Above Ground | TWO-FAM DWELLING
+  - 同じ表の列：ST_NUM, ST_ALPHA, ST_NUM2, UNIT_NUM, CITY, BLDG_SEQ, NUM_BLDGS, LUC
+
+## g1790（1 列）
+- 見出し：CASE_ENQUIRY_ID
+- 例1 値：101000706317 | 101000705968 | 101000706102 | 101000706575 | 101000705888
+  - 同じ表の列：open_dt, closed_dt, CASE_STATUS, CASE_TITLE, SUBJECT, REASON, TYPE, QUEUE
+
+## g1791（1 列）
+- 見出し：open_dt
+- 例1 値：11/15/2012 11:08:00 PM | 11/15/2012 10:21:00 AM | 11/15/2012 09:13:00 AM | 11/15/2012 10:18:00 AM | 11/15/2012 01:19:00 PM
+  - 同じ表の列：CASE_ENQUIRY_ID, closed_dt, CASE_STATUS, CASE_TITLE, SUBJECT, REASON, TYPE, QUEUE
+
+## g1792（1 列）
+- 見出し：closed_dt
+- 例1 値：11/14/2012 12:39:00 PM | 12/12/2012 09:52:00 AM | 11/19/2012 12:40:00 PM | 11/16/2012 10:11:00 AM | 11/16/2012 12:43:00 PM
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, CASE_STATUS, CASE_TITLE, SUBJECT, REASON, TYPE, QUEUE
+
+## g1793（1 列）
+- 見出し：CASE_STATUS
+- 例1 値：Closed | Closed | Closed | Open | Closed
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_TITLE, SUBJECT, REASON, TYPE, QUEUE
+
+## g1794（1 列）
+- 見出し：CASE_TITLE
+- 例1 値：Street Light Outages | Park Maintenance: Union Park | Unsatisfactory Living Conditions | General Lighting Request | Missed Trash: District 05
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_STATUS, SUBJECT, REASON, TYPE, QUEUE
+
+## g1795（1 列）
+- 見出し：SUBJECT
+- 例1 値：Boston Public School | Public Works Department | Public Works Department | Public Works Department | Boston Public School
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_STATUS, CASE_TITLE, REASON, TYPE, QUEUE
+
+## g1796（1 列）
+- 見出し：REASON
+- 例1 値：Street Lights | Trees | School Transportation | Code Enforcement | Street Cleaning
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_STATUS, CASE_TITLE, SUBJECT, TYPE, QUEUE
+
+## g1797（1 列）
+- 見出し：TYPE
+- 例1 値：Rodent Activity | Schedule a Bulk Item Pickup | General Transportation Issues | Schedule a Bulk Item Pickup | Street Light Outages
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_STATUS, CASE_TITLE, SUBJECT, REASON, QUEUE
+
+## g1798（1 列）
+- 見出し：QUEUE
+- 例1 値：ISD_Environmental Services | BPS_Transportation Administration | ISD_Environmental Services | BTDT_Parking Enforcement | PARK_Tree Maintenance Request
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_STATUS, CASE_TITLE, SUBJECT, REASON, TYPE
+
+## g1799（1 列）
+- 見出し：Department
+- 例1 値：PWDx | PWDx | PWDx | PWDx | PWDx
+  - 同じ表の列：CASE_ENQUIRY_ID, open_dt, closed_dt, CASE_STATUS, CASE_TITLE, SUBJECT, REASON, TYPE
+
+## g1800（1 列）
+- 見出し：Permit application number
+- 例1 値：A1006151 | A1048187 | A1020703 | A1096014 | A1065445
+  - 同じ表の列：Permit application …, Zoning review appro…, Started appeal, Completed appeal, Permit issued, Permit application …, Permit application …, Permit issued date
+
+## 答えの雛形
+
+```
+g1681	
+g1682	
+g1683	
+g1684	
+g1685	
+g1686	
+g1687	
+g1688	
+g1689	
+g1690	
+g1691	
+g1692	
+g1693	
+g1694	
+g1695	
+g1696	
+g1697	
+g1698	
+g1699	
+g1700	
+g1701	
+g1702	
+g1703	
+g1704	
+g1705	
+g1706	
+g1707	
+g1708	
+g1709	
+g1710	
+g1711	
+g1712	
+g1713	
+g1714	
+g1715	
+g1716	
+g1717	
+g1718	
+g1719	
+g1720	
+g1721	
+g1722	
+g1723	
+g1724	
+g1725	
+g1726	
+g1727	
+g1728	
+g1729	
+g1730	
+g1731	
+g1732	
+g1733	
+g1734	
+g1735	
+g1736	
+g1737	
+g1738	
+g1739	
+g1740	
+g1741	
+g1742	
+g1743	
+g1744	
+g1745	
+g1746	
+g1747	
+g1748	
+g1749	
+g1750	
+g1751	
+g1752	
+g1753	
+g1754	
+g1755	
+g1756	
+g1757	
+g1758	
+g1759	
+g1760	
+g1761	
+g1762	
+g1763	
+g1764	
+g1765	
+g1766	
+g1767	
+g1768	
+g1769	
+g1770	
+g1771	
+g1772	
+g1773	
+g1774	
+g1775	
+g1776	
+g1777	
+g1778	
+g1779	
+g1780	
+g1781	
+g1782	
+g1783	
+g1784	
+g1785	
+g1786	
+g1787	
+g1788	
+g1789	
+g1790	
+g1791	
+g1792	
+g1793	
+g1794	
+g1795	
+g1796	
+g1797	
+g1798	
+g1799	
+g1800	
+```
