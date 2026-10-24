@@ -89,5 +89,40 @@ class LicenseTitleTests(unittest.TestCase):
             self.assertFalse(F.blocked_header(h), h)
 
 
+class CkanDatastoreFallbackTests(unittest.TestCase):
+    """data.gov.au：datastore_search が HTTP 302 のとき、同じホストの CSV を読む（2026-10-24）。"""
+    RID = "78a56b2c-1744-420e-8f38-bf24814d5039"
+
+    def setUp(self):
+        self.orig = (F.http_json, F.http_bytes)
+        self.csv_url = f"https://data.gov.au/data/dataset/x/resource/{self.RID}/download/a.csv"
+        def fake_json(url, step="", tries=3):
+            if "resource_show" in url:
+                return {"result": {"package_id": "p1", "url": self.csv_url, "format": self.fmt, "datastore_active": True}}
+            if "package_show" in url:
+                return {"result": {"license_id": "cc-by-4.0"}}
+            raise RuntimeError("datastore_search: HTTP 302")
+        F.http_json = fake_json
+        F.http_bytes = lambda url, step="", tries=3, limit=0: ("year,count\n2020,5\n2021,7\n".encode(), False)
+        self.item = {"n": 1, "publisher_id": "australia:x", "resource_url": f"https://data.gov.au/data/dataset/x/resource/{self.RID}",
+                     "platform": "ckan", "host": "data.gov.au"}
+
+    def tearDown(self):
+        F.http_json, F.http_bytes = self.orig
+
+    def test_falls_back_to_csv_on_same_host(self):
+        self.fmt = "CSV"
+        meta, fields, recs, total = F.fetch_table(self.item, set())
+        self.assertEqual(fields, ["year", "count"])
+        self.assertEqual(meta["access"], "csv")
+        self.assertTrue(meta["datastore_failed"])
+
+    def test_keeps_error_when_no_csv(self):
+        self.fmt = "XLSX"
+        self.csv_url = f"https://data.gov.au/data/dataset/x/resource/{self.RID}/download/a.xlsx"
+        with self.assertRaises(RuntimeError):
+            F.fetch_table(self.item, set())
+
+
 if __name__ == "__main__":
     unittest.main()

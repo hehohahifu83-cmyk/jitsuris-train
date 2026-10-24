@@ -291,21 +291,31 @@ def fetch_table(item, known):
         meta = {"platform": plat, "resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
                 "download_url": download, "license": lic, "fetched_utc": now,
                 "source_prefix": "jp3" if plat == "bodik" else "world", "language": language_of(host, plat)}
-        if item.get("access") == "csv" or not res.get("datastore_active"):
-            # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
-            dl_host = urlparse(download).hostname or ""
-            if urlparse(download).scheme != "https" or not host_in(dl_host, csv_domains(host)):
-                raise ValueError("csv: download is not on the catalog host or its organization's domain")
-            ALLOWED_HOSTS.add(dl_host)
-            if str(res.get("format") or "").lower() not in ("csv", "text/csv") and not download.lower().split("?")[0].endswith(".csv"):
-                raise ValueError(f"csv: not a CSV resource ({res.get('format')})")
-            raw, truncated = http_bytes(download, "csv")
-            fields, records, total = parse_csv(raw, truncated)
-            meta["access"] = "csv"
-            return meta, fields, records, total
-        ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
-        fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
-        return meta, fields, ds["records"], ds.get("total")
+        def csv_ok():
+            dl = urlparse(download)
+            return dl.scheme == "https" and host_in(dl.hostname or "", csv_domains(host)) and (
+                str(res.get("format") or "").lower() in ("csv", "text/csv") or download.lower().split("?")[0].endswith(".csv"))
+        if item.get("access") != "csv" and res.get("datastore_active"):
+            try:
+                ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
+                fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
+                return meta, fields, ds["records"], ds.get("total")
+            except RuntimeError:
+                # data.gov.au は datastore_search が HTTP 302 で読めない（b008 で 183 表。2026-10-24）。同じホストの CSV があればそちらを読む
+                if not csv_ok():
+                    raise
+                meta["datastore_failed"] = True
+        # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
+        dl_host = urlparse(download).hostname or ""
+        if urlparse(download).scheme != "https" or not host_in(dl_host, csv_domains(host)):
+            raise ValueError("csv: download is not on the catalog host or its organization's domain")
+        ALLOWED_HOSTS.add(dl_host)
+        if str(res.get("format") or "").lower() not in ("csv", "text/csv") and not download.lower().split("?")[0].endswith(".csv"):
+            raise ValueError(f"csv: not a CSV resource ({res.get('format')})")
+        raw, truncated = http_bytes(download, "csv")
+        fields, records, total = parse_csv(raw, truncated)
+        meta["access"] = "csv"
+        return meta, fields, records, total
     if plat == "socrata":
         check, host = platform_of({"platform": "socrata", "publisher_id": item["publisher_id"], "resource_id": item.get("resource_id"),
                                    "catalog_url": item["resource_url"]})
