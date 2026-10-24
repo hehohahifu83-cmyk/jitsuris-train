@@ -4,7 +4,7 @@
 **予測より前にコミットする**。結果を見てから候補を足す・規則を変える・ラベルを付け替えることはしない（`specs/SEALED_EVAL_PROTOCOL.md` 第 6 章）。
 
 - 登録のコミット SHA：このファイルを入れたコミット（連絡箱に書く）
-- セット：`independent_eval/results/sealed2/sealed2.json`、SHA-256：`SET_SHA256`（`provenance.json`）
+- セット：`independent_eval/results/sealed2/sealed2.json`、SHA-256：`7ebecac4372898280d07bdd81f8ad3a123642a21a1ed89af0aeffa634c86355e`（1,030 列・300 表・68 公開元・日本語 68%・学習にある見出し 20%・最大の公開元 5.5%。凍結 2026-10-24 23:05 UTC）（`provenance.json`）
 - 作り方：`independent_eval/sealed2.py`（eval2 の公開元だけ、規則で採用・凍結、値は誰も開いていない）
 - ラベルの人とファイル SHA-256：Claude ＜予測の後に付けて追記＞ ／ ChatGPT ＜同＞ ／ 裁定後 ＜作成後に追記＞
 
