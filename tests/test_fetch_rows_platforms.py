@@ -60,9 +60,16 @@ class LicenseTitleTests(unittest.TestCase):
         self.assertNotIn(P.normalize_license("cc-by-nc"), P.ALLOWED_LICENSES)
 
     def test_title_deny(self):
-        for t in ("Crime Reports", "Campaign Finance - FPPC Form 460", "311 OPCD Calls", "School Admission Offers"):
+        for t in ("Crime Reports", "Campaign Finance - FPPC Form 460", "311 OPCD Calls", "School Admission Offers",
+                  "Internal Affairs Allegations", "Montgomery College Enrollment Data"):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
+
+    def test_blocked_header_initials(self):
+        for h in ("INPUT BY", "PURCHASING AGENT", "Entered_By", "namelast", "legalowner"):
+            self.assertTrue(F.blocked_header(h), h)
+        for h in ("PURCHASE ORDER NUMBER", "TOTAL AMOUNT", "Agency", "COST CENTER"):
+            self.assertFalse(F.blocked_header(h), h)
 
 
 if __name__ == "__main__":

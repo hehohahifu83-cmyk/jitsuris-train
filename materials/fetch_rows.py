@@ -67,7 +67,9 @@ def sensitive_value(value) -> bool:
 
 # 語がつながった英語の列名（namelast・legalowner・contactphone など）。区切りが無いと HEADER_DENY をすり抜けるので、
 # 英字だけを残した形の中に語があれば落とす（2026-10-24、b006 のボストンの表で見つけた。namelsad などを落としすぎても安全な側）
-COMPACT_DENY = re.compile(r"(name|owner|holder|contact|applicant|email|phone|address|street|licensee|firstnm|lastnm)")
+# 入力した人・担当者のイニシャル（INPUT BY・PURCHASING AGENT など）も落とす（2026-10-24、b007 のバトンルージュの発注表）
+COMPACT_DENY = re.compile(r"(name|owner|holder|contact|applicant|email|phone|address|street|licensee|firstnm|lastnm|"
+                          r"inputby|enteredby|createdby|modifiedby|updatedby|approvedby|agent|buyer|initials)")
 
 
 def blocked_header(header) -> bool:

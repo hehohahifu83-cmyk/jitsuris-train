@@ -1,3 +1,19 @@
+# 最新確認 2026-10-24 15:45 JST（Claude。b007 の取り出しを確認・予測を依頼・ラベル用シート）
+
+## 確認済み
+- b007 の取り出し（run 40065312671、success）：採用 476 表のうち 410 表・3,062 列（列不足 49、エラー 17）
+- 個人の記録を外した（`work/b007/removed.json`）：モンゴメリー郡の「Internal Affairs Allegations」（警察官への苦情の記録、6 列）と「Montgomery College Enrollment Data」（学生 1 人 1 行、性別・人種・年齢層、10 列）は表ごと、バトンルージュの発注表の「INPUT BY」「PURCHASING AGENT」（職員のイニシャル）は 2 列だけ。**残り 408 表・3,044 列**
+- 規則を足した：題名（`pipeline.TITLE_DENY`）に enrollment・allegation・internal affairs・在籍者・入学者、列名（`fetch_rows.COMPACT_DENY`）に inputby・enteredby・createdby・agent・buyer・initials など。確定済みの教材（batch_*）で新しく落ちる列は 0。試験 1 件
+- 見出し・値の形で人の名前らしい列を探した：法人名・施設名（美容室など）・英語の地名だけで、人の名前の列は見つからなかった
+- 予測を依頼（`materials/label_assist/predict.request`）。ラベル用シート 19 枚・2,179 グループを作った（`work/b007/sheets/`）
+
+## 次
+- ChatGPT が b007 のラベル（LABEL_GUIDE v1.8）→ Claude が `label_sheets.py status/merge` → `pipeline.py reconcile` → 裁定・確定
+- 候補集め run 40065375608（レシフェ・e-Gov・東京都・豪州・アイルランド・カナダ）の結果を見て b008 を採用
+- 22,000 列までは学習しない
+
+---
+
 # 最新確認 2026-10-24 14:10 JST（Claude。b006 を確定・個人名の消去）
 
 ## 確認済み
