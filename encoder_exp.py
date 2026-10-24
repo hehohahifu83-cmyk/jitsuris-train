@@ -39,10 +39,14 @@ if JPVAL:
 # FT_VAL=1 のときは教材庫の表の 1/8 を「検証（教材庫）」に回す。水増しの倍率は FT_POOL_COPIES（既定 3）、表あたり 60 列まで。jp3 は教材庫の陣 jp3 として入っているので FT_JP3 と一緒に使わない。
 POOL = os.environ.get("FT_POOL") == "1"
 POOL_COPIES = int(os.environ.get("FT_POOL_COPIES", "3") or 3)
-if POOL and (JP3 or JPVAL):
+# FT_POOL_VALONLY=1（FT_VAL=1 と一緒、FT_POOL なし）：教材庫を学習には足さず、「検証（教材庫）」だけを同じ分け方で測る（2026-10-25。教材庫なしの基準と教材庫の検証で比べるため）
+POOL_VALONLY = os.environ.get("FT_POOL_VALONLY") == "1" and not POOL
+if POOL_VALONLY and os.environ.get("FT_VAL") != "1":
+    raise SystemExit("FT_POOL_VALONLY は FT_VAL=1 と一緒に使う")
+if (POOL or POOL_VALONLY) and (JP3 or JPVAL):
     raise SystemExit("FT_POOL と FT_JP3／FT_JPVAL は同時に使えない（jp3 が二重に入る）")
 pool_all = []
-if POOL:
+if POOL or POOL_VALONLY:
     import glob as _glob
     _pool_files = sorted(_glob.glob("materials/pool/batch_*.jsonl"))
     if not _pool_files:
@@ -54,9 +58,12 @@ pooltr, poolval = pool_all, []
 # 教材庫の検証は様式（同じ見出しの組の表）ごとに分ける（2026-10-24。表ごとだと同じ様式の表が学習側にも残り、検証が高く出る）。
 # 学習側は 1 様式 FT_POOL_FAMILY_CAP 表まで（既定 4、0 で上限なし）。どちらも pool_families.py。教材庫はこれより前に学習していない
 POOL_FAMILY_CAP = int(os.environ.get("FT_POOL_FAMILY_CAP", "4") or 0)
-if POOL and os.environ.get("FT_VAL") == "1":
+if (POOL or POOL_VALONLY) and os.environ.get("FT_VAL") == "1":
     from pool_families import split_val_by_family
     pooltr, poolval = split_val_by_family(pool_all, salt="jitsuris-poolval-v2", mod=8)
+if POOL_VALONLY:
+    pooltr = []
+    print(f"FT_POOL_VALONLY=1: pool not trained; validation {len(poolval)}", flush=True)
 if POOL:
     from pool_families import cap_tables_per_family
     pooltr, _capped = cap_tables_per_family(pooltr, POOL_FAMILY_CAP)

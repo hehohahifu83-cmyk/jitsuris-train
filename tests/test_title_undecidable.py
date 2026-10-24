@@ -38,6 +38,20 @@ class EncoderExpEnvTest(unittest.TestCase):
         self.assertEqual(n1 - n0, o1 - o0)         # 足したのは other の行だけ
         self.assertIn("FT_TITLE=1: table titles", log)
 
+    def test_pool_valonly_same_validation_no_training_rows(self):
+        code = "import encoder_exp as E; print(len(E.rows)); print(len(E.poolval)); print(len(E.pooltr))"
+        def run(**env):
+            out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, env={**os.environ, **env}, capture_output=True, text=True, timeout=900)
+            self.assertEqual(out.returncode, 0, out.stderr[-2000:])
+            return [int(x) for x in out.stdout.strip().splitlines()[-3:]]
+        base = run(FT_VAL="1")
+        valonly = run(FT_VAL="1", FT_POOL_VALONLY="1")
+        pool = run(FT_VAL="1", FT_POOL="1")
+        self.assertEqual(base[0], valonly[0])      # 学習の行は教材庫なしと同じ
+        self.assertEqual(valonly[2], 0)
+        self.assertEqual(valonly[1], pool[1])      # 検証（教材庫）は FT_POOL=1 と同じ列
+        self.assertGreater(valonly[1], 0)
+
 
 if __name__ == "__main__":
     unittest.main()
