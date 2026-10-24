@@ -6,7 +6,7 @@
 - 登録のコミット SHA：このファイルを入れたコミット（連絡箱に書く）
 - セット：`independent_eval/results/sealed2/sealed2.json`、SHA-256：`7ebecac4372898280d07bdd81f8ad3a123642a21a1ed89af0aeffa634c86355e`（1,030 列・300 表・68 公開元・日本語 68%・学習にある見出し 20%・最大の公開元 5.5%。凍結 2026-10-24 23:05 UTC）（`provenance.json`）
 - 作り方：`independent_eval/sealed2.py`（eval2 の公開元だけ、規則で採用・凍結、値は誰も開いていない）
-- ラベルの人とファイル SHA-256：Claude `9a635238f14d5c9115ff60c6c50aebeeabf2c6b4989220966562e8bce4beee13`（2026-10-25、予測を開かずに付けた・非公開） ／ ChatGPT ＜同＞ ／ 裁定後 ＜作成後に追記＞
+- ラベルの人とファイル SHA-256：Claude `9a635238f14d5c9115ff60c6c50aebeeabf2c6b4989220966562e8bce4beee13`（2026-10-25、予測を開かずに付けた・非公開） ／ ChatGPT `82c9777548892eb531bec8b3f9c90db51ac91e766eb463e313dbeb81c1e2e6c2` ／ 裁定後 `9aeeb6a1f450ea0ac082b6c93b88a124afa483eee1e6b96eeef7b10acdf4adc9`
 
 ## 候補と基準線
 | 名前 | run | 種子 | 重みの SHA-256（model.safetensors） |
