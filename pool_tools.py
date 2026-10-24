@@ -131,6 +131,35 @@ def table_pass_apply(lr, P, cols, labels, mix=1.0):
     return mix * new + (1 - mix) * P
 
 
+def table_pass_export(lr, labels, path, meta):
+    """2 回目の判定の係数を JSON に書く（製品やほかの道具で sklearn なしに使えるように）。"""
+    doc = {"schema_version": 1, "kind": "jitsuris-table-pass", "labels": list(labels), "classes": [str(c) for c in lr.classes_],
+           "coef": np.round(lr.coef_, 6).tolist(), "intercept": np.round(lr.intercept_, 6).tolist(),
+           "features": "log(own probs) | mean of other columns' probs in the same table | max of them | log1p(table columns)", **meta}
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(doc, fh, ensure_ascii=False, indent=0)
+        fh.write("\n")
+
+
+def table_pass_load_apply(path, P, cols, labels, mix=1.0):
+    """JSON の係数で 2 回目の判定をする（numpy だけ）。cols は batch・table を持つ列（pool_bench の形）。"""
+    doc = json.load(open(path, encoding="utf-8"))
+    if doc["labels"] != list(labels):
+        raise ValueError("種類の並びが係数のときと違う")
+
+    class _LR:
+        classes_ = np.array(doc["classes"])
+
+        @staticmethod
+        def predict_proba(X):
+            z = X @ np.array(doc["coef"]).T + np.array(doc["intercept"])
+            z -= z.max(axis=1, keepdims=True)
+            e = np.exp(z)
+            return e / e.sum(axis=1, keepdims=True)
+    return table_pass_apply(_LR, P, cols, labels, mix)
+
+
 # ---------------------------------------------------------------- 3. 言い切りを控える基準
 
 def abstain(labels, P, pred, T):
@@ -222,6 +251,7 @@ def main(argv=None):
     ap.add_argument("--batches", default=",".join(B.BENCH_BATCHES))
     ap.add_argument("--top3", action="store_true", help="npz の代わりに保存済みの上位 3 つで試す（見方 1 通り）")
     ap.add_argument("--out", default="bench/pool_tools.md")
+    ap.add_argument("--export", help="全部の陣で 2 回目の判定を学び、係数を JSON に書く（例 models/table_pass_v1.json）")
     a = ap.parse_args(argv)
     cols = B.load_bench(a.batches.split(","))
     if a.top3:
@@ -230,6 +260,15 @@ def main(argv=None):
     else:
         probs, labels = load_probs()
         cols = [c for c in cols if f"{c['batch']}:{c['id']}" in probs]
+    if a.export:
+        ids = [f"{c['batch']}:{c['id']}" for c in cols]
+        P = np.stack([probs[i][0] for i in ids])
+        lr = table_pass_fit(P, cols, labels)
+        table_pass_export(lr, labels, a.export, {"trained_on": sorted({c["batch"] for c in cols}), "columns": len(cols),
+                                                 "source_weights_sha256": "38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7",
+                                                 "note": "今のモデル（E5-base 種子 1）の見方 1 の確率で学んだ。モデルを学習し直したら、新しいモデルの確率で学び直す"})
+        print("wrote", a.export)
+        return 0
     print(compare(probs, labels, cols, a.out))
     return 0
 
