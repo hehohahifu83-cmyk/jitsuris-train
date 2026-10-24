@@ -370,8 +370,46 @@ def bad_ymd8(values):
     return ok < len(v8) / 2
 
 
-def guard_with_reason(pred, probs_sorted, values, _enabled_rules=None):
-    """Return (final label, reason code); reason is None when the label is retained."""
+# ---------------------------------------------------------------- v11（2026-10-24 Claude）：日付の見張りが列名も見る（規則 H1）
+# 背景（research/root-cause-audit-2026-10-24.md 原因 1）：見張りは値の形だけで日付を決めるので、教材庫（学習側の列）で正しい date を 149 列「不明」にしていた。
+# 月だけ（06・列名「月」）・統計の四半期の番号（20094・列名 TLIST(Q1)）・Excel の日付番号（28982.0・列名「指定年月日」）・月の名前（August）・和暦の年（令和7）・引用符つきの年月日など。
+# H1：値の形の根拠が足りなくても、①列名が日付の語（月・年度・年月日・Month・Quarter・TLIST・date など）を含み、②列名に 4 桁の年が入っていない（「Year 2007」は年ごとの数の列）、
+#     ③空でない値が全部「日付の部品として読める形」のとき、date を残す。v9.1・v10 は変えない（H1 は v11 だけ）。規則は表記の定義と学習側の集計から作り、固定試験は使っていない。
+GUARD_V11 = "v11"
+_H1_HEADER = re.compile(r"(月|年度|年次|年月|年月日|日付|期日|和暦|西暦|month|quarter|tlist|date|period|fiscal|year)", re.I)
+_H1_HEADER_YEAR = re.compile(r"(19|20)[0-9]{2}")
+_H1_VALUE = [re.compile(p, re.I) for p in (
+    r"[0-9]{1,2}",                                   # 月・日（列名が月・日のとき）
+    r"(19|20)[0-9]{2}[1-4]",                         # 統計の四半期の番号（20094＝2009 年第 4 四半期）
+    r"(19|20)[0-9]{2}(0[1-9]|1[0-2])",               # 年月の 6 桁（195808）
+    r"(19|20)[0-9]{2}",                              # 年
+    r"[1-7][0-9]{4}(\.0+)?",                        # Excel の日付番号（10000〜79999）
+    _MONTH + r"\.?",                                 # 月の名前
+    r"(令和|平成|昭和|大正|明治|[rhsRHS])[ .]?[0-9元]{1,2}(年度?)?",   # 和暦の年
+    r"[0-9]{1,2}[./][0-9]{1,2}",                     # 月日（02.25）
+    r"(19|20)[0-9]{2}[-/][0-9]{1,2}([-/][0-9]{1,2})?",   # 年-月・年-月-日
+    r"(19|20)[0-9]{2}(q|Q|m|M)[0-9]{1,2}",           # 2019M06・2010Q2
+    r"q[1-4]|t[1-4]( - (19|20)[0-9]{2})?",           # Q1・T3 - 2022
+)]
+
+
+def _h1_value_ok(v):
+    v = _strip(_text(v)).strip('"\'').strip()
+    return any(r.fullmatch(v) for r in _H1_VALUE)
+
+
+def header_date_ok(header, values):
+    """規則 H1：列名と値の形から、日付の部品の列と言えるか。"""
+    h = unicodedata.normalize("NFKC", str(header or ""))
+    if not _H1_HEADER.search(h) or _H1_HEADER_YEAR.search(h):
+        return False
+    ne = [v for v in values if _strip(_text(v))]
+    return bool(ne) and all(_h1_value_ok(v) for v in ne)
+
+
+def guard_with_reason(pred, probs_sorted, values, _enabled_rules=None, header=None):
+    """Return (final label, reason code); reason is None when the label is retained.
+    header を渡したとき（v11）だけ、日付の見張りで規則 H1 を使う。"""
     if pred == "other":
         return "unknown", "other_class"
     s = dict(zip(STAT_NAMES, value_stats(values))) if values else None
@@ -382,7 +420,8 @@ def guard_with_reason(pred, probs_sorted, values, _enabled_rules=None):
             old = s["date"] + s["datetime"]
             top = probs_sorted[0][1] if probs_sorted else 0.0
             if not (max(old, strong) >= 0.5 or (max(old, strong) + year >= 0.5 and top >= YEAR_CONFIDENCE)):
-                return "unknown", "date_value_evidence_low"
+                if header is None or not header_date_ok(header, values):
+                    return "unknown", "date_value_evidence_low"
             if bad_ymd8(values):
                 return "unknown", "date_invalid_8digit"
         loose = num_loose_share(values, _enabled_rules) if pred in ("amount", "quantity", "rate") else 0.0

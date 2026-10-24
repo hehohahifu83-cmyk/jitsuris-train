@@ -156,10 +156,14 @@ def decide_with_details(classes, P, rows, use_guard=True, thr=0.5, Ph=None, guar
     """Return labels and reasons using the requested guard without changing probabilities."""
     if guard_version is None:
         guard_version = guard_module.GUARD_VERSION
+    use_header = False
     if guard_version == "v9.1":
         enabled_rules = frozenset()
     elif guard_version == guard_module.GUARD_VERSION:
         enabled_rules = None
+    elif guard_version == guard_module.GUARD_V11:   # v10 の全部の規則＋列名を見る日付の規則 H1（2026-10-24）
+        enabled_rules = None
+        use_header = True
     else:
         raise ValueError("unsupported guard version: " + str(guard_version))
     details = []
@@ -173,7 +177,7 @@ def decide_with_details(classes, P, rows, use_guard=True, thr=0.5, Ph=None, guar
         else:
             lab = order[0][0]
             if use_guard:
-                lab, reason = guard_with_reason(lab, order, row[1], _enabled_rules=enabled_rules)
+                lab, reason = guard_with_reason(lab, order, row[1], _enabled_rules=enabled_rules, header=row[0] if use_header else None)
         if Ph is not None and lab in NUMERIC and row[0]:
             hl = classes[int(np.argmax(Ph[i]))]
             if hl in NUMERIC and hl != lab:

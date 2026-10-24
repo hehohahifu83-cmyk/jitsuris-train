@@ -61,9 +61,12 @@ def rows_for_guard(cols):
     return [(c["header"], c["values5"], "", c["context"], c["unit"]) for c in cols]
 
 
-def judge(labels, P, cols):
+GUARD = os.environ.get("POOL_TOOLS_GUARD") or None   # 見張りの版（既定は guard.GUARD_VERSION＝v10。v11 で列名を見る日付の規則も使う）
+
+
+def judge(labels, P, cols, guard_version=None):
     from train3 import decide_with_details
-    return [d["guarded_prediction"] for d in decide_with_details(labels, P, rows_for_guard(cols))]
+    return [d["guarded_prediction"] for d in decide_with_details(labels, P, rows_for_guard(cols), guard_version=guard_version or GUARD)]
 
 
 def score(pred, cols):
