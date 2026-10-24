@@ -29,6 +29,13 @@ sys.path.insert(0, str(ROOT / "materials"))
 from pipeline import ALLOWED_LICENSES, PER_PUBLISHER_POOL, TITLE_DENY, allowed_ckan_hosts, normalize_license  # noqa: E402
 
 PER_PUBLISHER = PER_PUBLISHER_POOL
+# 国のポータル（2026-10-24）。親の公開元は allocation.py の FIXED_ASSIGNMENTS で train に固定されているので、
+# 組織は「親:組織」で登録すれば必ず train になる（parent_publisher の決まり）。データセットを見る前に組織だけ登録する
+NATIONAL = [
+    {"parent": "australia", "host": "data.gov.au", "site": "https://data.gov.au/data"},
+    {"parent": "ireland", "host": "data.gov.ie", "site": "https://data.gov.ie"},
+    {"parent": "canada", "host": "open.canada.ca", "site": "https://open.canada.ca/data"},
+]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
 
@@ -40,7 +47,7 @@ def get_json(url, tries=4):
     for attempt in range(tries):
         time.sleep(1.0 + 5.0 * attempt)
         try:
-            with urlopen(Request(url, headers=UA), timeout=60) as resp:
+            with urlopen(Request(url, headers=UA), timeout=120) as resp:
                 return json.loads(resp.read(50_000_001).decode("utf-8-sig"))
         except HTTPError as exc:
             if (exc.code in (403, 429) or exc.code >= 500) and attempt < tries - 1:
@@ -60,19 +67,21 @@ def bodik_candidates(train_orgs, limit=None):
     return ckan_candidates("data.bodik.jp", {org: org for org in train_orgs}, "bodik", limit)
 
 
-def ckan_candidates(host, orgs, platform, limit=None):
-    """CKAN の組織（organization_id → publisher_id）ごとに package_search。datastore のあるリソースだけを候補にする。"""
+def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
+    """CKAN の組織（organization_id → publisher_id）ごとに package_search。datastore のあるリソースだけを候補にする。
+    site は API と dataset の URL の根（data.gov.au は https://data.gov.au/data）。"""
+    site = site or f"https://{host}"
     out, stats = [], Counter()
     for org in sorted(orgs)[:limit]:
         pid = orgs[org]
         start, packages = 0, []
         try:
             while True:
-                res = get_json(f"https://{host}/api/3/action/package_search?" + urlencode(
-                    {"fq": f"organization:{org}", "rows": 1000, "start": start}))["result"]
+                res = get_json(f"{site}/api/3/action/package_search?" + urlencode(
+                    {"fq": f"organization:{org}", "rows": rows, "start": start}))["result"]
                 packages += res.get("results", [])
-                start += 1000
-                if start >= int(res.get("count") or 0):
+                start += rows
+                if start >= int(res.get("count") or 0) or start >= 1000:   # 1 組織 1,000 件まで（15 表を選ぶには足りる）
                     break
         except Exception as exc:
             stats[f"search_failed:{str(exc)[:40]}"] += 1
@@ -102,10 +111,36 @@ def ckan_candidates(host, orgs, platform, limit=None):
             seen_titles.add(key)
             picked += 1
             out.append({"publisher_id": pid, "pool": "train", "platform": platform, "title": title, "resource_name": res.get("name", ""),
-                        "resource_url": f"https://{host}/dataset/{pkg.get('name')}/resource/{res['id']}", "resource_id": res["id"],
+                        "resource_url": f"{site}/dataset/{pkg.get('name')}/resource/{res['id']}", "resource_id": res["id"],
                         "license": {"id": lic}, "datastore_available": True, "safe_headers": []})
         stats["tables"] = len(out)
     return out, stats
+
+
+def register_national_orgs(alloc_path, today, limit=None):
+    """国のポータルの組織の一覧（organization_list：名前だけ）を取り、「親:組織」で allocation.json に登録する。
+    データセットの中身は見ない。登録は allocation.py の決まりだけで決まる（親が train に固定）。"""
+    sys.path.insert(0, str(ROOT / "independent_eval"))
+    import allocation as A
+    alloc = A.load_allocation(alloc_path)
+    found, stats = {}, {}
+    for nat in NATIONAL:
+        try:
+            names = get_json(f"{nat['site']}/api/3/action/organization_list")["result"]
+        except Exception as exc:
+            stats[nat["host"]] = {f"organization_list_failed:{str(exc)[:40]}": 1}
+            continue
+        names = sorted(str(n) for n in names)[:limit]
+        orgs = {}
+        for n in names:
+            pid = f"{nat['parent']}:{n}"
+            alloc = A.add_assignment(alloc, pid, today)
+            if A.assignment_for(pid, alloc)["pool"] == "train":
+                orgs[n] = A.normalize_publisher_id(pid)
+        found[nat["host"]] = (nat, orgs)
+        stats[nat["host"]] = {"organizations": len(names), "train": len(orgs)}
+    Path(alloc_path).write_text(json.dumps(alloc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return found, stats
 
 
 def socrata_candidates(train_hosts, limit=None):
@@ -154,6 +189,8 @@ def main(argv=None):
     ap.add_argument("--out", required=True)
     ap.add_argument("--bodik", action="store_true")
     ap.add_argument("--ckan", action="store_true")
+    ap.add_argument("--national", action="store_true")
+    ap.add_argument("--only-host", action="append", default=[], help="--ckan で探すホストを絞る（取り直し用）")
     ap.add_argument("--socrata", action="store_true")
     ap.add_argument("--limit-publishers", type=int)
     a = ap.parse_args(argv)
@@ -171,10 +208,19 @@ def main(argv=None):
         for cat in src["catalogues"]:
             if cat.get("platform") != "ckan" or cat.get("domain") not in allowed:
                 continue
+            if a.only_host and cat["domain"] not in a.only_host:
+                continue
             orgs = {p["organization_id"]: p["publisher_id"] for p in cat.get("publisher_ids", []) if p["publisher_id"] in train}
             if not orgs:
                 continue
-            c, stats["ckan"][cat["domain"]] = ckan_candidates(cat["domain"], orgs, "ckan", a.limit_publishers)
+            c, stats["ckan"][cat["domain"]] = ckan_candidates(cat["domain"], orgs, "ckan", a.limit_publishers, rows=200)
+            selected += c
+    if a.national:
+        today = datetime.now(timezone.utc).date().isoformat()
+        found, stats["national_registration"] = register_national_orgs(ROOT / "independent_eval" / "allocation.json", today, a.limit_publishers)
+        stats["national"] = {}
+        for host, (nat, orgs) in found.items():
+            c, stats["national"][host] = ckan_candidates(host, orgs, "ckan", None, site=nat["site"], rows=200)
             selected += c
     if a.socrata:
         hosts = set()

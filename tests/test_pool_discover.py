@@ -66,6 +66,33 @@ class PoolDiscoverTests(unittest.TestCase):
             self.assertTrue(F.sensitive_value(v), v)
         self.assertFalse(F.sensitive_value("R$ 1.234,56"))
 
+    def test_national_orgs_register_as_train_children_before_dataset_search(self):
+        import json, shutil, tempfile
+        tmp = Path(tempfile.mkdtemp()) / "allocation.json"
+        shutil.copy(Path(__file__).resolve().parents[1] / "independent_eval" / "allocation.json", tmp)
+        calls = []
+        def fake(url, tries=4):
+            calls.append(url)
+            return {"result": ["abs", "bom"]} if "organization_list" in url else {"result": {"count": 0, "results": []}}
+        orig, orig_nat = D.get_json, D.NATIONAL
+        D.get_json, D.NATIONAL = fake, [{"parent": "australia", "host": "data.gov.au", "site": "https://data.gov.au/data"}]
+        try:
+            found, stats = D.register_national_orgs(tmp, "2026-10-24")
+        finally:
+            D.get_json, D.NATIONAL = orig, orig_nat
+        self.assertTrue(all("package_search" not in u for u in calls), "組織の登録ではデータセットを見ない")
+        pubs = {p["publisher_id"]: p["pool"] for p in json.loads(tmp.read_text(encoding="utf-8"))["publishers"]}
+        self.assertEqual(pubs["australia:abs"], "train")
+        self.assertEqual(pubs["australia:bom"], "train")
+        self.assertEqual(found["data.gov.au"][1], {"abs": "australia:abs", "bom": "australia:bom"})
+        self.assertEqual(stats["data.gov.au"], {"organizations": 2, "train": 2})
+
+    def test_ogl_canada_is_allowed_and_odbl_is_not(self):
+        from pipeline import ALLOWED_LICENSES, normalize_license
+        self.assertIn(normalize_license("OGL-Canada-2.0"), ALLOWED_LICENSES)
+        self.assertIn(normalize_license("odc-pddl"), ALLOWED_LICENSES)
+        self.assertNotIn(normalize_license("odc-odbl"), ALLOWED_LICENSES)
+
 
 if __name__ == "__main__":
     unittest.main()

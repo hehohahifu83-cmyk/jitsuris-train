@@ -31,6 +31,12 @@
 - 取り出しでは、ポルトガル語の個人情報の列名（nome・cpf・telefone・endereço・logradouro・cep・servidor など）と値（CPF・電話・CEP・通りの住所）も落とす（`fetch_rows.py`）。題名の規則にもポルトガル語（servidor・remuneração・ocorrência・aluno・paciente など）を足した
 - ライセンス：ODC-PDDL は公有の宣言なので public-domain と同じ扱いにした。ODbL（継承あり）は使わない
 
+## 国のポータルを足した（2026-10-24 Claude）
+- 豪州（data.gov.au）・アイルランド（data.gov.ie）・カナダ（open.canada.ca）。親の公開元（australia・ireland・canada）は `independent_eval/allocation.py` の FIXED_ASSIGNMENTS で train に固定なので、組織を「親:組織」（例 `australia:abs`）で登録すると必ず train になる（評価用の公開元とは重ならない）
+- `pool_discover.py --national`：① 組織の一覧（organization_list、名前だけ）を取って `allocation.json` に登録 → ② そのあとで組織ごとに package_search（datastore のあるものだけ、1 組織 1,000 件まで見る）。Actions が `allocation.json` も保存する
+- ライセンス：OGL-Canada-2.0 を OGL-UK-3.0 と同じく使ってよいことにした（出典表示だけ）
+- レシフェ（10/24 はタイムアウト）は `--ckan --only-host dados.recife.pe.gov.br` で取り直す（待ち時間 120 秒、1 回 200 件）
+
 ## 取り出せる場（2026-10-22）
 - BODIK の datastore（`data.bodik.jp`）
 - Socrata（SODA）：公開元の ID が `world_socrata_<ホストの . と - を _ にしたもの>` で、ホストが一致するもの。列の定義から表示名を取り、位置情報・URL・写真の列は落とす。ライセンスは公式の `licenseId` で確かめる（PUBLIC_DOMAIN・CC0_10・CC_30_BY・CC_40_BY・ODC_BY_10）

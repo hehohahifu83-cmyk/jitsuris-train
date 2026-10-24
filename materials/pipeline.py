@@ -38,7 +38,7 @@ NOT_USED = ("unknown", "S")
 # 再配布できる条件だけ（DATA_COLLECTION_PROTOCOL 第 2 章：CC0・CC BY・政府標準利用規約 2.0・PDL 1.0・OGL）。NC・SA・不明は入れない。
 # 政府標準利用規約の CKAN の ID は、カタログでの表記を確かめてから足す（2026-10-22 時点で未確認）。
 ALLOWED_LICENSES = {"cc-by-4.0", "cc-by-40-intl", "cc-by", "cc-by-21", "cc-by-21-jp", "cc-by-30", "cc-zero", "cc0", "cc0-1.0", "odc-by",
-                    "ogl-uk-3.0", "pdl1.0", "public-domain"}   # pdl1.0・cc-by-21 は 2026-10-22 に内訳を見て追加。public-domain は CC0 と同じ扱い
+                    "ogl-uk-3.0", "ogl-canada-2.0", "pdl1.0", "public-domain"}   # pdl1.0・cc-by-21 は 2026-10-22 に内訳を見て追加。public-domain は CC0 と同じ扱い
 PER_PUBLISHER_BATCH = 3      # 1 陣で 1 公開元あたりの表
 PER_PUBLISHER_POOL = 15      # 教材庫全体で 1 公開元あたりの表（系統の偏りを抑える）
 SAME_HEADERS_PER_PUBLISHER = 3   # 同じ公開元で見出しの組が同じ表（DATA_COLLECTION_PROTOCOL 第 2 章）
@@ -131,6 +131,8 @@ def normalize_license(raw):
         return "public-domain"
     if "cczero" in v or v.startswith("cc0") or "cc0-10" in v:
         return "cc0"
+    if v in ("ogl-canada-2.0", "ogl-canada", "open-government-licence-canada"):   # 出典表示だけの政府ライセンス（OGL-UK と同じ扱い。2026-10-24）
+        return "ogl-canada-2.0"
     if v in ("cc-30-by", "cc-by-3.0"):
         return "cc-by-30"
     if v in ("cc-40-by", "cc-by-40"):
