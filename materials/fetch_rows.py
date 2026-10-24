@@ -300,11 +300,19 @@ def fetch_table(item, known):
                 ds = http_json(base + "datastore_search?" + urlencode({"resource_id": rid, "limit": FETCH_LIMIT}), "datastore_search")["result"]
                 fields = [f["id"] for f in ds["fields"] if f["id"] != "_id"]
                 return meta, fields, ds["records"], ds.get("total")
-            except RuntimeError:
-                # data.gov.au は datastore_search が HTTP 302 で読めない（b008 で 183 表。2026-10-24）。同じホストの CSV があればそちらを読む
-                if not csv_ok():
-                    raise
+            except RuntimeError as exc:
+                # data.gov.au は datastore_search が HTTP 302 で読めない（b008 で 183 表。2026-10-24）。同じホストの CSV があればそちらを、
+                # 無ければ datastore の CSV 書き出し（/datastore/dump/<id>、同じホスト）を読む。だめなら形式とホストを誤りに書く
                 meta["datastore_failed"] = True
+                if not csv_ok():
+                    dump = base.replace("/api/3/action/", f"/datastore/dump/{rid}")
+                    try:
+                        raw, truncated = http_bytes(dump, "datastore_dump")
+                        fields, records, total = parse_csv(raw, truncated)
+                    except (RuntimeError, ValueError) as exc2:
+                        raise RuntimeError(f"{exc}; dump: {exc2}; file: {res.get('format')} on {urlparse(download).hostname}") from None
+                    meta["access"] = "datastore_dump"
+                    return meta, fields, records, total
         # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
         dl_host = urlparse(download).hostname or ""
         if urlparse(download).scheme != "https" or not host_in(dl_host, csv_domains(host)):

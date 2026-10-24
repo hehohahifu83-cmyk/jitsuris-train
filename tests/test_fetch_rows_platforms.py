@@ -117,10 +117,25 @@ class CkanDatastoreFallbackTests(unittest.TestCase):
         self.assertEqual(meta["access"], "csv")
         self.assertTrue(meta["datastore_failed"])
 
-    def test_keeps_error_when_no_csv(self):
+    def test_uses_datastore_dump_when_no_csv(self):
         self.fmt = "XLSX"
         self.csv_url = f"https://data.gov.au/data/dataset/x/resource/{self.RID}/download/a.xlsx"
-        with self.assertRaises(RuntimeError):
+        seen = []
+        def fake_bytes(url, step="", tries=3, limit=0):
+            seen.append(url)
+            return "year,count\n2020,5\n".encode(), False
+        F.http_bytes = fake_bytes
+        meta, fields, recs, total = F.fetch_table(self.item, set())
+        self.assertEqual(seen, [f"https://data.gov.au/data/datastore/dump/{self.RID}"])
+        self.assertEqual(meta["access"], "datastore_dump")
+
+    def test_error_names_format_and_host_when_all_fail(self):
+        self.fmt = "XLSX"
+        self.csv_url = f"https://example.org/a.xlsx"
+        def fail(url, step="", tries=3, limit=0):
+            raise RuntimeError(f"{step}: HTTP 302")
+        F.http_bytes = fail
+        with self.assertRaisesRegex(RuntimeError, "XLSX on example.org"):
             F.fetch_table(self.item, set())
 
 
