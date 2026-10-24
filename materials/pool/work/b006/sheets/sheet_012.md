@@ -490,7 +490,7 @@
 
 ## g1416（1 列）
 - 見出し：Elected official
-- 例1 値：Thomas, Percy F. | Hughes, William H. | Emory, G. Meade | Munro, Ed | Adams, John P.
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：Position, Start year, End year
 
 ## g1417（1 列）

@@ -109,7 +109,7 @@
   {
    "batch": "b003",
    "finalized_utc": "2026-10-23T09:24:16+00:00",
-   "columns": 4464,
+   "columns": 4461,
    "tables": 599,
    "publishers": 257,
    "labels": {
@@ -125,8 +125,7 @@
     "product": 10,
     "amount": 33,
     "other": 8,
-    "account": 4,
-    "person": 3
+    "account": 4
    },
    "stats": {
     "to_review": 500,
@@ -138,7 +137,7 @@
    "audit": 205,
    "audit_errors": 2,
    "audit_error_rate": 0.0098,
-   "sha256": "ec2c74ae3a0d692068a9fdf3543f3664bb40e8d9db43b9c635085d0a342de2ff",
+   "sha256": "860dfed144986447115e313c89e806931bf3e48548e301b24326068974c541d0",
    "inputs": {
     "adopted.json": "62ecef9822ddd9fa9d1583190f2c502781f8ca33b3986caf77606586c8853ddb",
     "corpus.jsonl": "9065a0e90af784983eda5b38b8791e8112abc7d3f8929cd8ce2f6d72c95579f0",
@@ -146,12 +145,13 @@
     "pred_e5base_seed1.json": "ead16a4a1ba36aca147993f0da3cad7a68ebc16115a67b7c612513b7178fe7b0",
     "review.jsonl": "b4b99d04ae3d698547130360ddf8fd8ce96a3f458f52b1ad30db095e0150504e",
     "decisions.jsonl": "ff0d6ab96af0074fcc90408253db4f35b2d05cdb053a10542e9be43753c5822e"
-   }
+   },
+   "redacted_person": 3
   },
   {
    "batch": "b004",
    "finalized_utc": "2026-10-23T16:27:52+00:00",
-   "columns": 3311,
+   "columns": 3308,
    "tables": 432,
    "publishers": 179,
    "labels": {
@@ -167,8 +167,7 @@
     "amount": 29,
     "product": 7,
     "other": 5,
-    "phone": 21,
-    "person": 3
+    "phone": 21
    },
    "stats": {
     "agree": 2834,
@@ -180,7 +179,7 @@
    "audit": 149,
    "audit_errors": 1,
    "audit_error_rate": 0.0067,
-   "sha256": "578816825c6e76af7d9ad76ead1c34317edc5c26510c0e2cca480258f0362e65",
+   "sha256": "86eceda630b9e4c6023474701e06a5615f12cd229b665c1791a1f0386cc166b9",
    "inputs": {
     "adopted.json": "4c0eacb3631391afbbcc79b89f2f484635b59e9f3a8893bf6a023dfc5ed06417",
     "corpus.jsonl": "658d572cea6d121849fa06faff21d450277ae26864793bc2af5397510e17679b",
@@ -188,7 +187,8 @@
     "pred_e5base_seed1.json": "400ae041460d18eb7dbe96071258aa6da2120244c2a3a3adba3fdcfb4c706ed3",
     "review.jsonl": "58d91327acb19576413ab66c5a031b1008208705fa1d26513ae923040b6ebf0b",
     "decisions.jsonl": "34d6bb453e7cb47777b99543e0e5d595962d36446bc6008461b64d380ba80afb"
-   }
+   },
+   "redacted_person": 3
   },
   {
    "batch": "b005",
@@ -229,6 +229,48 @@
     "pred_e5base_seed1.json": "b4b4bb8f7109d9dceade6383863271a2d6c91b0e01a00eb871a0277eddf02bbd",
     "review.jsonl": "045ff983a18f4cf4e36fa9d08590496ba20be765c12e22ae99ac0ce57d6b2be2",
     "decisions.jsonl": "96878b5efd25a11728a6426c1d0209b60ca6043429428de81d00980a27e5c346"
+   }
+  },
+  {
+   "batch": "b006",
+   "finalized_utc": "2026-10-24T05:10:40+00:00",
+   "columns": 2452,
+   "tables": 341,
+   "publishers": 147,
+   "labels": {
+    "id": 489,
+    "address": 374,
+    "org": 240,
+    "quantity": 406,
+    "date": 290,
+    "category": 384,
+    "account": 44,
+    "amount": 59,
+    "product": 3,
+    "text": 71,
+    "rate": 40,
+    "other": 46,
+    "phone": 6
+   },
+   "stats": {
+    "agree": 2009,
+    "to_review": 500,
+    "not_used_person": 8,
+    "audit": 105,
+    "not_used": 162,
+    "dropped": 158
+   },
+   "audit": 105,
+   "audit_errors": 0,
+   "audit_error_rate": 0.0,
+   "sha256": "b8ff576872eb2bfd0f1076b426bc74c0a93c19019502f45547b7f71c9f7187d5",
+   "inputs": {
+    "adopted.json": "8569d54a0b23e007dde4bce1791f6cf6d4971c894411e690844f771c6b17221e",
+    "corpus.jsonl": "f3e171bd451bfa5c122467cfd73d3d743bf7484e0b69b6820147075af7ff16b8",
+    "labels_chatgpt.jsonl": "0e1eeac266704515d545587bcf89ffad9860bcd4ee5dba3e88fa1d2b3327cddd",
+    "pred_e5base_seed1.json": "d7f901f2907727b1017b5ca17354fe9d566788bd07b60269c9bfb32ebf305896",
+    "review.jsonl": "93a86d9d2674bdcd61f4e5383785bd2e02ebb9cceaf21362b3f3bcf063f99ffe",
+    "decisions.jsonl": "fbb884489ec142f2519c52d7415bf117c57931b6b339bfb7423d43d66579b44d"
    }
   }
  ]

@@ -340,6 +340,10 @@ def finalize(corpus, labels, preds, review, decisions, batch, teacher_name):
             lab, who = dec[i]["label"], f"claude-{batch}"
         else:
             lab, who = labels[i]["label"], f"{teacher_name}+e5base-agree"
+        if lab == "person":
+            # 公開データの表の人の名前は教材庫に入れない（個人情報。2026-10-24）。person の教材は仕様由来の偽の名前で作る
+            stat["not_used_person"] += 1
+            continue
         stat[k] += 1
         rec = {**c, "label": lab, "teacher": who, "batch": batch}
         if i in dec:

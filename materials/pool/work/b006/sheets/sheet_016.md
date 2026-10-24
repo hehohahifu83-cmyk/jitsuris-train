@@ -259,7 +259,7 @@
 
 ## g1851（1 列）
 - 見出し：Incumbent/Candidate
-- 例1 値：City Councilor | City Council, District 1 | City Councilor | Mayor | Boston city council candidate
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：CCL #, Category, Add Date, Year, Quarter, Quarter Activity, Type, Contribution Date
 
 ## g1852（1 列）
@@ -284,7 +284,7 @@
 
 ## g1856（1 列）
 - 見出し：councillor
-- 例1 値：FitzGerald | Luoijeune | Breadon | Mejia | Weber
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：roll_call_id, docket_number, subject, vote_date, vote
 
 ## g1857（1 列）
@@ -514,7 +514,7 @@
 
 ## g1902（1 列）
 - 見出し：city_council_councilor
-- 例1 値：Brian Worrell | Ed Flynn | John Fitzgerald | John Fitzgerald | John Fitzgerald
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：city_council_distri…, city_council_image, city_council_webpage, ons_liaison_ons, ons_liaison_neighbo…, ons_liaison_webpage, public_libraries_br…, public_libraries_di…
 
 ## g1903（1 列）

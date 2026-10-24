@@ -64,12 +64,12 @@
 
 ## g1452（1 列）
 - 見出し：Sponsor(s)
-- 例1 値：Council President at the Request of the… | Council President at the request of the… | E.Glass, N.Fani-Gonzalez, M.Balcombe, L… | R.Berliner, H.Riemer | W.Jawando
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：Bill No, Title, Co-Sponsor(s), Introduction Date, Expiration Date, Public Hearing Date, Action Date, Effective Date
 
 ## g1453（1 列）
 - 見出し：Co-Sponsor(s)
-- 例1 値：N.Floreen, C.Rice, H.Riemer, M.Elrich, … | W.Jawando, N.Navarro, T.Hucker, H.Rieme… | G.Albornoz | G.Leventhal, R.Berliner, H.Riemer, N.Fl… | W.Jawando, N.Navarro, T.Hucker, S.Katz,…
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：Bill No, Title, Sponsor(s), Introduction Date, Expiration Date, Public Hearing Date, Action Date, Effective Date
 
 ## g1454（1 列）
@@ -126,56 +126,56 @@
 
 ## g1464（1 列）
 - 見出し：LicNbr
-- 例1 値：5628CL3 | 4888CL1 | 5231CL3 | 6670CL1 | BB369
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：Profession, LicType, DBA, Addr3, Addr4, City, State, Zipcode
 
 ## g1465（1 列）
 - 見出し：Profession
-- 例1 値：Boiler | Boiler | Boiler | Boiler | Boiler
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, LicType, DBA, Addr3, Addr4, City, State, Zipcode
 
 ## g1466（1 列）
 - 見出し：LicType
-- 例1 値：CL3-Building Service Mechanic | CL1-Trainee/Helper | CL3-Building Service Mechanic | BB-Boiler Business | CL5-Pressure Piping Mechanic
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, DBA, Addr3, Addr4, City, State, Zipcode
 
 ## g1467（1 列）
 - 見出し：DBA
-- 例1 値：LOVETT SERVICES | GORMLEY PLUMBING & MECHANICAL / DR. HAVC | PIPER MECHANICAL | APPLIED PROCESS COOLING CORPORATION | 1 800 PLUMBER+AIR PACIFIC NW; WIRED TOG…
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, Addr3, Addr4, City, State, Zipcode
 
 ## g1468（1 列）
 - 見出し：Addr3
-- 例1 値：S2 Industrial Inc
+- 例1 値：[個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, DBA, Addr4, City, State, Zipcode
 
 ## g1469（1 列）
 - 見出し：Addr4
-- 例1 値：PORTLAND OR 97211 | MEDFORD OR 97501 | LA GRANDE OR 97850 | CALDWELL ID 83605 | PORTLAND OR 97219
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, DBA, Addr3, City, State, Zipcode
 
 ## g1470（1 列）
 - 見出し：City
-- 例1 値：MEDFORD | THE DALLES | ELLENSBURG | GRESHAM | OREGON CITY
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, DBA, Addr3, Addr4, State, Zipcode
 
 ## g1471（3 列）
 - 見出し：State
-- 例1 値：WA | OR | OR | OR | ID
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, DBA, Addr3, Addr4, City, Zipcode
 - 例2 値：MA | MA | MA | MA | MA
   - 同じ表の列：fc_num, supervisor, city, duration, circumstance, basis, vehicle_year, vehicle_state
 
 ## g1472（2 列）
 - 見出し：Zipcode
-- 例1 値：97023 | 83605 | 8734 | 98682 | 97701
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, DBA, Addr3, Addr4, City, State
 - 例2 値：01701 | 02125 | 02119 | 22182 | 02121
   - 同じ表の列：services_provided, mbe_wbe_cert, small_local_cert, veteran_cert, sdo_certified, city_registered, city, state
 
 ## g1473（1 列）
 - 見出し：County
-- 例1 値：ESCAMBIA | JACKSON | ADAMS | UMATILLA | BENTON
+- 例1 値：[個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除] | [個人の記録のため削除]
   - 同じ表の列：LicNbr, Profession, LicType, DBA, Addr3, Addr4, City, State
 
 ## g1474（1 列）
@@ -222,7 +222,7 @@
 
 ## g1482（1 列）
 - 見出し：Primary Administrator
-- 例1 値：Mr Dan Dominisac , Chief Executive Offi… | Ms Suzanne L Markle , Chief Executive O… | Ms Michele Sandt , Chief Executive Offi… | Mr Raymond Naccarati , Chief Executive … | Mr Michael Molla
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：Administrative Unit…, School Branch, Category, Status, County, City, School Year
 
 ## g1483（1 列）
