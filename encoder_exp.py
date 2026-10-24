@@ -51,9 +51,16 @@ if POOL:
     if not pool_all:
         raise SystemExit("FT_POOL=1 なのに教材庫の行が 0")
 pooltr, poolval = pool_all, []
+# 教材庫の検証は様式（同じ見出しの組の表）ごとに分ける（2026-10-24。表ごとだと同じ様式の表が学習側にも残り、検証が高く出る）。
+# 学習側は 1 様式 FT_POOL_FAMILY_CAP 表まで（既定 4、0 で上限なし）。どちらも pool_families.py。教材庫はこれより前に学習していない
+POOL_FAMILY_CAP = int(os.environ.get("FT_POOL_FAMILY_CAP", "4") or 0)
 if POOL and os.environ.get("FT_VAL") == "1":
-    from val_split import split_val
-    pooltr, poolval = split_val(pool_all, salt="jitsuris-poolval-v1", mod=8)
+    from pool_families import split_val_by_family
+    pooltr, poolval = split_val_by_family(pool_all, salt="jitsuris-poolval-v2", mod=8)
+if POOL:
+    from pool_families import cap_tables_per_family
+    pooltr, _capped = cap_tables_per_family(pooltr, POOL_FAMILY_CAP)
+    print(f"FT_POOL_FAMILY_CAP={POOL_FAMILY_CAP}: dropped {_capped} same-template tables from pool training", flush=True)
 # FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
 VAL_MODE = os.environ.get("FT_VAL") == "1"
 gval = bval = b2val = jval = []
