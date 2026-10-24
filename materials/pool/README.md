@@ -21,6 +21,14 @@
 
 1 陣の大きさは 1,000〜2,000 列が目安（Claude の裁定は 1 陣 500 列まで）。陣の ID は `b001`、`b002` … の順。
 
+## ラベル用シート（2026-10-24 Claude。b006 から）
+ChatGPT が大きな `corpus.jsonl`（1 陣 3〜5MB）を読まずにラベルを付けるための道具。`materials/label_sheets.py`
+- Claude：`python materials/label_sheets.py make --batch b00N` → `work/b00N/sheets/` に `sheet_001.md` …（1 枚 120 グループ・約 40KB）と `groups.json`
+- **グループ**＝見出し・単位・値の形が同じ列のまとまり（数字・ラテン文字の形だけをそろえ、漢字・かなは文字のまま比べる）。グループの全部の列に同じラベルが付く。b005 で試すと 2,621 列 → 1,772 グループ（約 3 割減）、1 列ずつ付けたラベルとの違いは 7 列（0.3%）
+- ChatGPT：シートを読み、末尾の「答えの雛形」を `work/b00N/sheets/answers/sheet_NNN.tsv` に写して、各行「g0001<TAB>ラベル」を埋める。シートごとに commit してよい（途中で止まってもシート単位で続きから）
+- Claude：`status --batch b00N`（済んだシート・問題）→ `merge --batch b00N`（全部の行の `labels_chatgpt.jsonl` に戻す。答えの無いグループ・決まりにないラベル・別のシートの番号があれば止まる）→ いつもの `pipeline.py reconcile`
+- 番号がはっきりしているので、行のずれ（b003 の 622〜664 行）や抜け（b004 の 1501〜1600 行）は起きない
+
 ## 候補を速く集める（2026-10-22 Claude）
 - `materials/pool_discover.py`（Actions `pool-discover.yml`、依頼は `materials/pool/discover.request` に `discover materials/pool/candidates_<日付>.json --bodik --socrata`）。BODIK は train の組織ごとに検索 1 回で全データセットを見て datastore のあるリソースを選ぶ。Socrata はカタログ API。年度違いの同じ表は重ねない。
 - 1 回目（2026-10-22）：2,201 表・272 公開元。1 陣 1 公開元 3 表までなので、b003 に 716 表、残りは b004 以降へ（同じ候補の一覧を `adopt` にもう一度渡せば、使った表は自動で外れる）。
