@@ -151,6 +151,31 @@ class PoolDiscoverTests(unittest.TestCase):
         self.assertFalse(D.csv_on_host({"format": "CSV", "url": "https://metro.tokyo.lg.jp.example.com/a.csv"}, "https://catalog.data.metro.tokyo.lg.jp"))
         self.assertFalse(D.csv_on_host({"format": "CSV", "url": "https://www.city.example.lg.jp/a.csv"}, "https://data.bodik.jp"))
 
+    def test_pool_eval2_searches_only_eval2_publishers(self):
+        import json, tempfile, os
+        searched = []
+        def fake(url, tries=4):
+            searched.append(url)
+            return {"result": {"count": 1, "results": [{"name": "p1", "title": "予算", "license_id": "cc-by-4.0", "metadata_modified": "2024",
+                                                         "resources": [{"id": "r1", "datastore_active": True}]}]}}
+        orig = D.get_json
+        D.get_json = fake
+        try:
+            with tempfile.TemporaryDirectory() as d:
+                out = os.path.join(d, "c.json")
+                D.main(["--out", out, "--bodik", "--pool", "eval2"])
+                doc = json.load(open(out, encoding="utf-8"))
+        finally:
+            D.get_json = orig
+            D.POOL_NAME = "train"
+        pubs = json.load(open(D.ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]
+        pools = {p["publisher_id"]: p["pool"] for p in pubs}
+        self.assertTrue(doc["selected"])
+        self.assertTrue(all(x["pool"] == "eval2" and pools[x["publisher_id"]] == "eval2" for x in doc["selected"]))
+        with self.assertRaises(SystemExit):
+            D.main(["--out", "/dev/null", "--national", "--pool", "eval2"])
+        D.POOL_NAME = "train"
+
 
 if __name__ == "__main__":
     unittest.main()

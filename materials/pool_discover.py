@@ -42,6 +42,7 @@ NATIONAL = [
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
+POOL_NAME = "train"   # --pool eval2 で封印セット #2 の候補を探す（2026-10-25。公開元の割り当ては allocation.json のまま、付け替えない）
 DEADLINE = None   # 持ち時間の終わり（time.monotonic()）。過ぎたら新しい組織を探さずに止める（main が --budget-minutes から決める）
 
 
@@ -141,7 +142,7 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
                 stats["csv"] += 1
             seen_titles.add(key)
             picked += 1
-            out.append({"publisher_id": pid, "pool": "train", "platform": platform, "title": title, "resource_name": res.get("name", ""),
+            out.append({"publisher_id": pid, "pool": POOL_NAME, "platform": platform, "title": title, "resource_name": res.get("name", ""),
                         "resource_url": f"{site}/dataset/{pkg.get('name')}/resource/{res['id']}", "resource_id": res["id"],
                         "license": {"id": lic}, "datastore_available": access == "datastore", "access": access, "safe_headers": []})
         stats["tables"] = len(out)
@@ -208,7 +209,7 @@ def socrata_candidates(train_hosts, limit=None):
                 continue
             seen_titles.add(key)
             picked += 1
-            out.append({"publisher_id": pid, "pool": "train", "platform": "socrata", "title": title, "resource_id": r.get("id"),
+            out.append({"publisher_id": pid, "pool": POOL_NAME, "platform": "socrata", "title": title, "resource_id": r.get("id"),
                         "catalog_url": item.get("permalink") or f"https://{host}/d/{r.get('id')}",
                         "resource_url": item.get("permalink") or f"https://{host}/d/{r.get('id')}",
                         "license": {"id": lic}, "datastore_available": True,
@@ -228,12 +229,16 @@ def main(argv=None):
     ap.add_argument("--socrata", action="store_true")
     ap.add_argument("--limit-publishers", type=int)
     ap.add_argument("--budget-minutes", type=float, help="この時間を過ぎたら新しい組織を探さずに止めて書き出す")
+    ap.add_argument("--pool", default="train", choices=["train", "eval2", "eval3"], help="探す公開元のプール（eval2・eval3 は封印セット用。--national は train 専用）")
     a = ap.parse_args(argv)
-    global DEADLINE
+    global DEADLINE, POOL_NAME
+    POOL_NAME = a.pool
+    if a.pool != "train" and a.national:
+        raise SystemExit("--national の組織は親が train に固定なので、--pool eval2／eval3 と一緒に使えない")
     if a.budget_minutes:
         DEADLINE = time.monotonic() + a.budget_minutes * 60
     pubs = json.load(open(ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]
-    train = {p["publisher_id"] for p in pubs if p["pool"] == "train"}
+    train = {p["publisher_id"] for p in pubs if p["pool"] == a.pool}   # 名前は train のまま（--pool の公開元の集合）
     selected, stats = [], {}
 
     def save(partial=True):
