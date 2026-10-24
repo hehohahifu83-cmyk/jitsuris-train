@@ -241,7 +241,7 @@
 
 ## g0645（1 列）
 - 見出し：RaisedBy
-- 例1 値：mmackley | acoutts | MSchirmer | acoutts | mmackley
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：Seq, Defect Number, DateRaised, PrimaryLocation, LocationCategory, ResponseTime, DefectScore, TargetDate
 
 ## g0646（1 列）

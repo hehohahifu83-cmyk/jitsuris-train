@@ -1,0 +1,577 @@
+{"i": 4, "kind": "to_review", "teacher": "other", "model": "rate", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 6, "kind": "to_review", "teacher": "other", "model": "rate", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 15, "kind": "to_review", "teacher": "address", "model": "id", "label": "address", "reason": "番地・方書・号棟・郵便番号は住所の一部なので address"}
+{"i": 30, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 35, "kind": "to_review", "teacher": "org", "model": "address", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 37, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 38, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 40, "kind": "to_review", "teacher": "S", "model": "category", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 41, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 43, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 44, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 45, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 46, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 47, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 48, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 49, "kind": "to_review", "teacher": "amount", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 55, "kind": "to_review", "teacher": "address", "model": "unknown", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 56, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 57, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 59, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 65, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 67, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 69, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 76, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 77, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 78, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 85, "kind": "to_review", "teacher": "address", "model": "unknown", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 86, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 87, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 91, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 92, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 96, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 104, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 105, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 108, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 111, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 114, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 115, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 116, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 122, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 123, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 124, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 129, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 132, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 134, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 136, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 137, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 138, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 140, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 141, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 142, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 143, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 144, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 148, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 149, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 150, "kind": "to_review", "teacher": "account", "model": "category", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 154, "kind": "to_review", "teacher": "category", "model": "org", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 155, "kind": "to_review", "teacher": "id", "model": "product", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 157, "kind": "to_review", "teacher": "text", "model": "account", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 159, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 162, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 163, "kind": "to_review", "teacher": "category", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 170, "kind": "to_review", "teacher": "address", "model": "unknown", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 172, "kind": "to_review", "teacher": "rate", "model": "unknown", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 173, "kind": "to_review", "teacher": "S", "model": "account", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 174, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 175, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 176, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 177, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 178, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 179, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 180, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 181, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 182, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 185, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 190, "kind": "to_review", "teacher": "rate", "model": "unknown", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 193, "kind": "to_review", "teacher": "address", "model": "category", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 194, "kind": "to_review", "teacher": "org", "model": "address", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 195, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 201, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 203, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 206, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 214, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 215, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 216, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 217, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 228, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "番地・方書・号棟・郵便番号は住所の一部なので address"}
+{"i": 233, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 235, "kind": "audit", "teacher": "account", "model": "account", "label": "account", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 243, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 246, "kind": "to_review", "teacher": "org", "model": "category", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 254, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 255, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 260, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 261, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 272, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 278, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 283, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 284, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 285, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 286, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 311, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 331, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 335, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 336, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 337, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 339, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 340, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 356, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 362, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 365, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 402, "kind": "to_review", "teacher": "other", "model": "product", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 405, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 406, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 408, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 410, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 411, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 412, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 413, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 414, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 415, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 416, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 417, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 418, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 422, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 423, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 424, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 425, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 426, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 427, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 431, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 434, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 440, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 441, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 443, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 457, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 461, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 464, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 469, "kind": "to_review", "teacher": "unknown", "model": "id", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 501, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 508, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 527, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 538, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 554, "kind": "to_review", "teacher": "org", "model": "text", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 557, "kind": "to_review", "teacher": "text", "model": "phone", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 559, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 566, "kind": "to_review", "teacher": "product", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 567, "kind": "to_review", "teacher": "product", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 569, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 573, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 576, "kind": "to_review", "teacher": "S", "model": "account", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 577, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 578, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 589, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 591, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 602, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 608, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 609, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 610, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 611, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 613, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 614, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 615, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 616, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 618, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 619, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 620, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 628, "kind": "to_review", "teacher": "category", "model": "org", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 633, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 634, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 639, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 640, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 647, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 650, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 652, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 657, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 661, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 675, "kind": "to_review", "teacher": "category", "model": "account", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 676, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 687, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 688, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 702, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 704, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 706, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 714, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 715, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 729, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 731, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 733, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 741, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 746, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 749, "kind": "to_review", "teacher": "person", "model": "address", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 752, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 753, "kind": "to_review", "teacher": "other", "model": "rate", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 754, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 755, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 773, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 779, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 781, "kind": "to_review", "teacher": "id", "model": "text", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 784, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 785, "kind": "to_review", "teacher": "id", "model": "category", "label": "address", "reason": "番地・方書・号棟・郵便番号は住所の一部なので address"}
+{"i": 790, "kind": "to_review", "teacher": "id", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 791, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 793, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 794, "kind": "to_review", "teacher": "date", "model": "category", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 802, "kind": "to_review", "teacher": "product", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 803, "kind": "to_review", "teacher": "product", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 815, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 816, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 817, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 818, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 819, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 827, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 828, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 829, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 846, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 851, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 865, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 867, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 871, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 874, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 876, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 878, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 879, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 885, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 887, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 888, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 889, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 895, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 896, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 898, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 899, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 907, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 910, "kind": "to_review", "teacher": "account", "model": "org", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 911, "kind": "to_review", "teacher": "account", "model": "org", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 918, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 919, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 932, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 936, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 937, "kind": "to_review", "teacher": "date", "model": "category", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 949, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 952, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 953, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 954, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 955, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 956, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 957, "kind": "to_review", "teacher": "S", "model": "person", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 958, "kind": "to_review", "teacher": "S", "model": "account", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 959, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 960, "kind": "to_review", "teacher": "S", "model": "org", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 961, "kind": "to_review", "teacher": "S", "model": "account", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 962, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 963, "kind": "to_review", "teacher": "S", "model": "person", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 965, "kind": "to_review", "teacher": "S", "model": "amount", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 966, "kind": "to_review", "teacher": "S", "model": "person", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 969, "kind": "to_review", "teacher": "other", "model": "rate", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 994, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1011, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1012, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1014, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1015, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1016, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1018, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1020, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1034, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1035, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1038, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1049, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1050, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1051, "kind": "to_review", "teacher": "category", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1055, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1062, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1063, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1064, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1065, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1066, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1067, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1068, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1071, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1072, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1079, "kind": "to_review", "teacher": "address", "model": "unknown", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1080, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1081, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1083, "kind": "to_review", "teacher": "account", "model": "category", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1092, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1093, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1094, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1095, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1103, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1104, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1105, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1106, "kind": "to_review", "teacher": "category", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1107, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1108, "kind": "to_review", "teacher": "category", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1109, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1111, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1112, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1113, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1115, "kind": "to_review", "teacher": "quantity", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1116, "kind": "to_review", "teacher": "quantity", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1120, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1121, "kind": "to_review", "teacher": "quantity", "model": "person", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1127, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1128, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1129, "kind": "to_review", "teacher": "other", "model": "org", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1130, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1133, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1134, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1136, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1140, "kind": "to_review", "teacher": "category", "model": "text", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1142, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1143, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1144, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1146, "kind": "to_review", "teacher": "amount", "model": "unknown", "label": "amount", "reason": "金額（予算・資金・契約額・税の支出）は amount"}
+{"i": 1149, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1150, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1152, "kind": "to_review", "teacher": "address", "model": "text", "label": "address", "reason": "番地・方書・号棟・郵便番号は住所の一部なので address"}
+{"i": 1157, "kind": "to_review", "teacher": "S", "model": "address", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1158, "kind": "to_review", "teacher": "S", "model": "id", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1159, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1160, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1161, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1162, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1163, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1164, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1165, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1166, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1172, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1175, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1186, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1194, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1195, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1196, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1197, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1204, "kind": "agree", "teacher": "org", "model": "org", "label": "S", "reason": "ラベルのあとに見つけた個人名（家庭福祉員の氏名）。値を消したので S"}
+{"i": 1205, "kind": "agree", "teacher": "org", "model": "org", "label": "S", "reason": "ラベルのあとに見つけた個人名（家庭福祉員の氏名）。値を消したので S"}
+{"i": 1206, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1215, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1216, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1223, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1237, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1239, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1240, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1242, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1247, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1248, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1249, "kind": "audit", "teacher": "account", "model": "account", "label": "account", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1250, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1252, "kind": "to_review", "teacher": "account", "model": "unknown", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1258, "kind": "to_review", "teacher": "org", "model": "account", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 1287, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1295, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1301, "kind": "to_review", "teacher": "date", "model": "text", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1312, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 1320, "kind": "to_review", "teacher": "other", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1323, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1324, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1328, "kind": "to_review", "teacher": "address", "model": "category", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1342, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1343, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1345, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1347, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 1350, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1356, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1357, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1358, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1361, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1365, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1379, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1380, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1384, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1387, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1390, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1403, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1404, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1409, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1410, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1411, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1412, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1413, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1414, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1415, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1425, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1427, "kind": "to_review", "teacher": "S", "model": "org", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1429, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1437, "kind": "to_review", "teacher": "text", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1448, "kind": "to_review", "teacher": "id", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1465, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1468, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1477, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1478, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1491, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1502, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1503, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1504, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1505, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1506, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1507, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1508, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1511, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 1512, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 1513, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "rate", "reason": "％の割合（剥奪指数の各項目）は rate"}
+{"i": 1522, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1525, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1528, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1544, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1550, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1554, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1560, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1563, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1565, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1568, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1569, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1570, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1586, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1588, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1593, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1594, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1599, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "amount", "reason": "金額（予算・資金・契約額・税の支出）は amount"}
+{"i": 1606, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "S", "reason": "抜き取りで見直し：unsafe_ の見出しの表は S（b011 と同じ）"}
+{"i": 1609, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1611, "kind": "to_review", "teacher": "category", "model": "account", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1612, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1614, "kind": "to_review", "teacher": "quantity", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1615, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1622, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1624, "kind": "to_review", "teacher": "unknown", "model": "amount", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1633, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1637, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1639, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1643, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1644, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1645, "kind": "to_review", "teacher": "text", "model": "address", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1646, "kind": "to_review", "teacher": "text", "model": "address", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1650, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1652, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1659, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1669, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1676, "kind": "to_review", "teacher": "other", "model": "id", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1677, "kind": "to_review", "teacher": "S", "model": "text", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1679, "kind": "to_review", "teacher": "S", "model": "text", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1681, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1683, "kind": "to_review", "teacher": "S", "model": "date", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1686, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1688, "kind": "audit", "teacher": "quantity", "model": "quantity", "label": "quantity", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1697, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1712, "kind": "to_review", "teacher": "category", "model": "id", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1714, "kind": "to_review", "teacher": "quantity", "model": "rate", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1723, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1730, "kind": "to_review", "teacher": "category", "model": "product", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1731, "kind": "to_review", "teacher": "category", "model": "product", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1756, "kind": "audit", "teacher": "text", "model": "text", "label": "text", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1765, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1766, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1767, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1768, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1769, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1774, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1779, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1786, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1787, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1801, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1802, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1803, "kind": "to_review", "teacher": "category", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1804, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1805, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1806, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1807, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1810, "kind": "audit", "teacher": "date", "model": "date", "label": "date", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1812, "kind": "to_review", "teacher": "category", "model": "org", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1816, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1817, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1818, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1823, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1824, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1826, "kind": "to_review", "teacher": "unknown", "model": "quantity", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1832, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1835, "kind": "audit", "teacher": "amount", "model": "amount", "label": "amount", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1846, "kind": "to_review", "teacher": "date", "model": "category", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1847, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1849, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1850, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1854, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1857, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1858, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1859, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1860, "kind": "to_review", "teacher": "id", "model": "unknown", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1861, "kind": "to_review", "teacher": "id", "model": "category", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 1866, "kind": "to_review", "teacher": "date", "model": "amount", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1868, "kind": "to_review", "teacher": "other", "model": "id", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1871, "kind": "to_review", "teacher": "other", "model": "id", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1872, "kind": "to_review", "teacher": "other", "model": "quantity", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 1889, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1895, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1897, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1898, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1899, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1901, "kind": "to_review", "teacher": "S", "model": "quantity", "label": "S", "reason": "表が崩れている（見出しが数・値と同じ、値が空や NULL・NA・記号だけ、JSON が列に割れた、unsafe_ の見出し）ので S"}
+{"i": 1921, "kind": "to_review", "teacher": "date", "model": "text", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1922, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1923, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1924, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1928, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1931, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1932, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 1933, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1934, "kind": "to_review", "teacher": "quantity", "model": "id", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 1943, "kind": "to_review", "teacher": "category", "model": "id", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 1955, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1958, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1959, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1961, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1962, "kind": "to_review", "teacher": "unknown", "model": "rate", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1965, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1969, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1970, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1971, "kind": "to_review", "teacher": "text", "model": "unknown", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 1983, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 1984, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 1988, "kind": "to_review", "teacher": "org", "model": "address", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 1997, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1998, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 1999, "kind": "to_review", "teacher": "address", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 2001, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2002, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2007, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2009, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2010, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2012, "kind": "to_review", "teacher": "quantity", "model": "address", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2013, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2017, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2019, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2025, "kind": "audit", "teacher": "amount", "model": "amount", "label": "amount", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2026, "kind": "to_review", "teacher": "account", "model": "category", "label": "category", "reason": "区分・種類・有無・決まった語の繰り返し・統計の表の項目名・寸法の区切り（5-10m）は category"}
+{"i": 2034, "kind": "audit", "teacher": "account", "model": "account", "label": "account", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2035, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 2036, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 2037, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 2038, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 2039, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 2040, "kind": "to_review", "teacher": "other", "model": "amount", "label": "other", "reason": "測定値（面積・距離・濃度・波・電力・密度）・座標・URL・ファイル形式・学名・樹種は other（v1.4・v1.9）"}
+{"i": 2044, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2047, "kind": "to_review", "teacher": "quantity", "model": "unknown", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2061, "kind": "to_review", "teacher": "org", "model": "address", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 2068, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2076, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "番地・方書・号棟・郵便番号は住所の一部なので address"}
+{"i": 2077, "kind": "to_review", "teacher": "quantity", "model": "category", "label": "quantity", "reason": "件数・人数・量・時間の長さ・年齢・回数は quantity"}
+{"i": 2083, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2089, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 2096, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 2097, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 2101, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 2123, "kind": "to_review", "teacher": "text", "model": "category", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 2131, "kind": "to_review", "teacher": "org", "model": "unknown", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 2132, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2133, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2139, "kind": "audit", "teacher": "org", "model": "org", "label": "org", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2153, "kind": "to_review", "teacher": "org", "model": "address", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 2155, "kind": "audit", "teacher": "address", "model": "address", "label": "address", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2168, "kind": "to_review", "teacher": "text", "model": "org", "label": "text", "reason": "説明・題名・定義・用語・キーワードの羅列・自由回答・時刻の説明の文は text（v1.6）"}
+{"i": 2169, "kind": "to_review", "teacher": "id", "model": "quantity", "label": "id", "reason": "コード・番号・識別子・並べ替えの番号は id"}
+{"i": 2175, "kind": "to_review", "teacher": "account", "model": "unknown", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 2176, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 2177, "kind": "audit", "teacher": "account", "model": "account", "label": "account", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2178, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 2180, "kind": "to_review", "teacher": "account", "model": "org", "label": "account", "reason": "部署・課・係・費目・歳出の款項の名前は account（v1.3・v1.7）"}
+{"i": 2190, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 2191, "kind": "to_review", "teacher": "date", "model": "unknown", "label": "date", "reason": "年度・年月日・時刻・月・四半期・和暦・UNIX 時刻・Excel の日付番号は date"}
+{"i": 2194, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 2195, "kind": "to_review", "teacher": "address", "model": "org", "label": "org", "reason": "会社・自動車メーカー・役所・図書館・裁判所・施設など組織として活動するものの名前・略称は org（v1.6）"}
+{"i": 2202, "kind": "to_review", "teacher": "unknown", "model": "text", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 2203, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 2204, "kind": "to_review", "teacher": "unknown", "model": "org", "label": "unknown", "reason": "意味が決められない（単位のない年度ごとの数、指数、値がばらばら、CSO の VALUE で UNIT が見えない）ので unknown（v1.4・v1.8）"}
+{"i": 2209, "kind": "audit", "teacher": "id", "model": "id", "label": "id", "reason": "抜き取り：先生とモデルの一致を確認"}
+{"i": 2217, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2218, "kind": "to_review", "teacher": "address", "model": "org", "label": "address", "reason": "運動場・テニスコート・公園・観測所・地点・施設の中の場所など場所そのもの、または自治体名・国名だけの列は address（v1.6・v1.7・v1.9）"}
+{"i": 2225, "kind": "audit", "teacher": "category", "model": "category", "label": "category", "reason": "抜き取り：先生とモデルの一致を確認"}

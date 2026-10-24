@@ -16,54 +16,54 @@
   - 同じ表の列：Total new workplace…, Fatalities, Seriously injury wo…, Significant injurie…, Number of notifiabl…, Number of provision…, Total gross workers…
 
 ## g0843（1 列）
-- 見出し：Thomas Besanko, Barrister
-- 例1 値：Robert Whitington QC, Barrister | Legal Services disclosures not reported… | Legal services | Adam Kimber SC, Barrister | Dentons Australia Limited
-  - 同じ表の列：Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, Craig Stevens, Public Interest Dis…, $6,732.00
+- 見出し：［個人名のため削除］
+- 例1 値：［個人名のため削除］ | Legal Services disclosures not reported… | Legal services | ［個人名のため削除］ | ［個人名のため削除］
+  - 同じ表の列：Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, ［個人名のため削除］, Public Interest Dis…, $6,732.00
 
 ## g0844（1 列）
 - 見出し：Corruption investigation
 - 例1 値：Corruption investigation | Corruption investigation | Maladministration investigation | Total | Purpose
-  - 同じ表の列：Thomas Besanko, Bar…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, Craig Stevens, Public Interest Dis…, $6,732.00
+  - 同じ表の列：Thomas Besanko, Bar…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, ［個人名のため削除］, Public Interest Dis…, $6,732.00
 
 ## g0845（1 列）
 - 見出し：$5,670.00
 - 例1 値：$58,344.40 | $10,250.00 | $36,036.00 | $260,846.13 | $22,758.00
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, Crown Solicitor's O…, Human resource mana…, $226.40, Craig Stevens, Public Interest Dis…, $6,732.00
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, Crown Solicitor's O…, Human resource mana…, $226.40, ［個人名のため削除］, Public Interest Dis…, $6,732.00
 
 ## g0846（1 列）
 - 見出し：Crown Solicitor's Office
-- 例1 値：Damian O鱈eary, Barrister | Mark Livesey QC, Barrister | Crown Solicitor's Office | Legal services with a contract value ab… | Damian O鱈eary, Barrister
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Human resource mana…, $226.40, Craig Stevens, Public Interest Dis…, $6,732.00
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | Crown Solicitor's Office | Legal services with a contract value ab… | ［個人名のため削除］
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Human resource mana…, $226.40, ［個人名のため削除］, Public Interest Dis…, $6,732.00
 
 ## g0847（1 列）
 - 見出し：Human resource management
 - 例1 値：Corruption investigation | Maladministration investigation | Purpose | Work Health and Safety Policy | Human resource management
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, $226.40, Craig Stevens, Public Interest Dis…, $6,732.00
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, $226.40, ［個人名のため削除］, Public Interest Dis…, $6,732.00
 
 ## g0848（1 列）
 - 見出し：$226.40
 - 例1 値：$1,466.20 | $44,294.40 | $61,789.90 | $8,098.00 | $2,233.60
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, Craig Stevens, Public Interest Dis…, $6,732.00
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, ［個人名のため削除］, Public Interest Dis…, $6,732.00
 
 ## g0849（1 列）
-- 見出し：Craig Stevens
-- 例1 値：Crown Solicitor's Office | Crown Solicitor's Office | Holly Stanley, Barrister | Mark Livesey QC, Barrister | Crown Solicitor's Office
+- 見出し：［個人名のため削除］
+- 例1 値：Crown Solicitor's Office | Crown Solicitor's Office | ［個人名のため削除］ | ［個人名のため削除］ | Crown Solicitor's Office
   - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, Public Interest Dis…, $6,732.00
 
 ## g0850（1 列）
 - 見出し：Public Interest Disclosure policy
-- 例1 値：Total | Corruption investigation | ICAC Act disclosure | Total | Human resource management
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, Craig Stevens, $6,732.00
+- 例1 値：Total | Corruption investigation | ［個人名のため削除］ | Total | Human resource management
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, ［個人名のため削除］, $6,732.00
 
 ## g0851（1 列）
 - 見出し：$6,732.00
 - 例1 値：$23,504.20 | $16,236.33 | $2,401.20 | $10,432.80 | $2,704.80
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, Craig Stevens, Public Interest Dis…
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, ［個人名のため削除］, Public Interest Dis…
 
 ## g0852（1 列）
-- 見出し：Mark Christopher Livesey QC
-- 例1 値：Thomas Andrew Besanko | Legal services | Russell-Cooke Solicitors | Cowell Clarke | Mark Christopher Livesey QC
-  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, Craig Stevens, Public Interest Dis…
+- 見出し：［個人名のため削除］
+- 例1 値：［個人名のため削除］ | Legal services | Russell-Cooke Solicitors | ［個人名のため削除］ | ［個人名のため削除］
+  - 同じ表の列：Thomas Besanko, Bar…, Corruption investig…, $5,670.00, Crown Solicitor's O…, Human resource mana…, $226.40, ［個人名のため削除］, Public Interest Dis…
 
 ## g0853（2 列）
 - 見出し：Time
