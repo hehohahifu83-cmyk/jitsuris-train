@@ -148,11 +148,26 @@ def license_from_pkg(pkg):
     if lid and lid not in ("notspecified", "none"):
         return lid
     title = unicodedata.normalize("NFKC", str(pkg.get("license_title") or "")).strip()
+    if not title:
+        title = license_text_elsewhere(pkg)
     if re.search(r"政府標準利用規約.*(2\.0|第2)", title) or re.search(r"(CC|クリエイティブ・?コモンズ)\s*(BY|表示)\s*4\.0", title, re.I):
         return "cc-by-4.0"
     if re.search(r"(CC|クリエイティブ・?コモンズ)\s*(BY|表示)(?![-\s]*(NC|SA|非営利|継承))", title, re.I):
         return "cc-by"
     return normalize_license(title) if title else lid
+
+
+def license_text_elsewhere(pkg):
+    """license_id・license_title が両方空のとき、extras（key に license・ライセンス・利用規約）とリソースの license・rights を読む
+    （e-Gov は 10/24 の候補集めで 12,908 件すべて両方が空だった。2026-10-24）。見つからなければ空。"""
+    for e in pkg.get("extras") or []:
+        if isinstance(e, dict) and re.search(r"licen[cs]e|ライセンス|利用規約|rights", str(e.get("key") or ""), re.I) and str(e.get("value") or "").strip():
+            return unicodedata.normalize("NFKC", str(e["value"])).strip()
+    for r in pkg.get("resources") or []:
+        for k in ("license", "license_title", "rights"):
+            if str(r.get(k) or "").strip():
+                return unicodedata.normalize("NFKC", str(r[k])).strip()
+    return ""
 
 
 def csv_domains(catalog_host):
@@ -174,10 +189,10 @@ def license_id(c):
 
 # 題名で落とす（個人の記録が入りやすい表。列の検査だけに頼らない）
 TITLE_DENY = re.compile(r"(crime|arrest|police|incident|complaint|311|service request|campaign|contribut|donor|election|"
-                        r"permit|licens|inspection|admission|enrol+ment|allegation|internal affairs|student|patient|victim|offender|inmate|payroll|employee|salar|"
+                        r"permit|licens|inspection|violation|calls for service|admission|enrol+ment|allegation|internal affairs|student|patient|victim|offender|inmate|payroll|employee|salar|"
                         r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員|在籍者|入学者|"
                         r"crime|ocorr[eê]ncia|den[uú]ncia|reclama[cç]|elei[cç]|servidor|sal[aá]rio|remunera[cç]|folha de pagamento|"
-                        r"aluno|matr[ií]cula|paciente|v[ií]tima|pres[oa]s|detent|alvar[aá]|multa|benefici[aá]rio)", re.I)
+                        r"aluno|estudante|profissionais|concurso|inscri[cç]|matr[ií]cula|paciente|v[ií]tima|pres[oa]s|detent|alvar[aá]|multa|benefici[aá]rio)", re.I)
 
 
 def platform_of(c):

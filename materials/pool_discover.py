@@ -116,6 +116,9 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
             if lic not in ALLOWED_LICENSES:
                 stats["license"] += 1
                 stats[f"license:{lic or '(none)'}"] += 1   # どのライセンスで落ちたかの内訳（規則を決めるため）
+                if not lic:   # ライセンスが空のデータセットに、ライセンスらしい欄があるか（欄の名前だけを残す。値は残さない）
+                    for k in sorted({str(e.get("key")) for e in pkg.get("extras") or [] if isinstance(e, dict)})[:20]:
+                        stats[f"license_none_extra_key:{k[:30]}"] += 1
                 continue
             if TITLE_DENY.search(title):
                 stats["title_deny"] += 1

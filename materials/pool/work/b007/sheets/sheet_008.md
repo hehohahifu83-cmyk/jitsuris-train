@@ -320,52 +320,52 @@
 
 ## g0902（1 列）
 - 見出し：EVENTID
-- 例1 値：K220527426 | K220528525 | K220493691 | K220539645 | K220553397
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：CREATE DATE, CREATE TIME, CALL CREATION, HOUR, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE, DIVISION
 
 ## g0903（1 列）
 - 見出し：CREATE DATE
-- 例1 値：2022-07-27T00:00:00.000 | 2022-07-02T00:00:00.000 | 2022-07-09T00:00:00.000 | 2022-07-04T00:00:00.000 | 2022-07-21T00:00:00.000
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE TIME, CALL CREATION, HOUR, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE, DIVISION
 
 ## g0904（1 列）
 - 見出し：CREATE TIME
-- 例1 値：18:11:47 PM | 19:04:08 PM | 19:38:15 PM | 20:46:07 PM | 14:55:29 PM
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CALL CREATION, HOUR, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE, DIVISION
 
 ## g0905（1 列）
 - 見出し：CALL CREATION
-- 例1 値：2022-07-16T15:14:00.000 | 2022-07-18T15:11:00.000 | 2022-07-15T18:13:00.000 | 2022-07-15T16:30:00.000 | 2022-07-28T17:53:00.000
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, HOUR, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE, DIVISION
 
 ## g0906（1 列）
 - 見出し：HOUR
-- 例1 値：14 | 19 | 21 | 18 | 14
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, CALL CREATION, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE, DIVISION
 
 ## g0907（1 列）
 - 見出し：DAY OF WEEK
-- 例1 値：Fri | Tue | Wed | Mon | Sat
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, CALL CREATION, HOUR, EVENT TYPE, EVENT SUBTYPE, DIVISION
 
 ## g0908（1 列）
 - 見出し：EVENT TYPE
-- 例1 値：ACCIDENT | ACCIDENT | ACCIDENT | ACCIDENT | ACCIDENT
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, CALL CREATION, HOUR, DAY OF WEEK, EVENT SUBTYPE, DIVISION
 
 ## g0909（1 列）
 - 見出し：EVENT SUBTYPE
-- 例1 値：NON-INJURY | INJURY | NON-INJURY | INJURY | INJURY
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, CALL CREATION, HOUR, DAY OF WEEK, EVENT TYPE, DIVISION
 
 ## g0910（1 列）
 - 見出し：DIVISION
-- 例1 値：EPD | EPD | MPD | SPD | EPD
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, CALL CREATION, HOUR, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE
 
 ## g0911（1 列）
 - 見出し：BEAT
-- 例1 値：423 | 532 | 131 | 113 | 643
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：EVENTID, CREATE DATE, CREATE TIME, CALL CREATION, HOUR, DAY OF WEEK, EVENT TYPE, EVENT SUBTYPE
 
 ## g0912（3 列）

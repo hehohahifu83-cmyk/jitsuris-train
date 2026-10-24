@@ -61,9 +61,18 @@ class LicenseTitleTests(unittest.TestCase):
 
     def test_title_deny(self):
         for t in ("Crime Reports", "Campaign Finance - FPPC Form 460", "311 OPCD Calls", "School Admission Offers",
-                  "Internal Affairs Allegations", "Montgomery College Enrollment Data"):
+                  "Internal Affairs Allegations", "Montgomery College Enrollment Data",
+                  "KCPD Calls for Service 2023", "Building and Property Violations",
+                  "Relação de Estudantes das Instituições da Rede Parceira", "Relação de Profissionais das Instituições da Rede Parceira",
+                  "Resultado Concurso PBH Ativos 001/2018"):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
+
+    def test_license_from_extras_and_resources(self):
+        self.assertEqual(P.license_from_pkg({"license_id": "", "license_title": "", "extras": [{"key": "利用規約", "value": "政府標準利用規約（第2.0版）"}]}), "cc-by-4.0")
+        self.assertEqual(P.license_from_pkg({"license_id": None, "resources": [{"license": "CC BY 4.0"}]}), "cc-by-4.0")
+        self.assertEqual(P.license_from_pkg({"license_id": "", "extras": [{"key": "theme", "value": "CC BY 4.0"}]}), "")
+        self.assertNotIn(P.license_from_pkg({"license_id": "", "resources": [{"license": "CC BY-NC 4.0"}]}), P.ALLOWED_LICENSES)
 
     def test_blocked_header_initials(self):
         for h in ("INPUT BY", "PURCHASING AGENT", "Entered_By", "namelast", "legalowner"):

@@ -496,52 +496,52 @@
 
 ## g1296（1 列）
 - 見出し：case_no
-- 例1 値：V874508 | V908861 | V873588 | V929824 | V857360
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：ap_case_defn_key, status_dttm, status, code, value, violation_stno, violation_sthigh, violation_suffix
 
 ## g1297（1 列）
 - 見出し：ap_case_defn_key
-- 例1 値：1013 | 1013 | 1013 | 1013 | 1013
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, status_dttm, status, code, value, violation_stno, violation_sthigh, violation_suffix
 
 ## g1298（1 列）
 - 見出し：status_dttm
-- 例1 値：2025-09-04 15:39:57 | 2025-04-30 09:05:45 | 2025-03-20 08:14:08 | 2025-12-12 09:25:43 | 2025-11-20 15:16:14
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status, code, value, violation_stno, violation_sthigh, violation_suffix
 
 ## g1299（1 列）
 - 見出し：status
-- 例1 値：Closed | Closed | Closed | Open | Open
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, code, value, violation_stno, violation_sthigh, violation_suffix
 
 ## g1300（1 列）
 - 見出し：code
-- 例1 値：105.1 | 104.6 | 105.1 | 105 | 102.8
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, status, value, violation_stno, violation_sthigh, violation_suffix
 
 ## g1301（1 列）
 - 見出し：value
-- 例1 値：N/A | N/A | N/A | N/A | N/A
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, status, code, violation_stno, violation_sthigh, violation_suffix
 
 ## g1302（1 列）
 - 見出し：violation_stno
-- 例1 値：22 | 95 | 61 | 270 | 18
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, status, code, value, violation_sthigh, violation_suffix
 
 ## g1303（1 列）
 - 見出し：violation_sthigh
-- 例1 値：31 | 790 | 37A | 1667 | 773
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, status, code, value, violation_stno, violation_suffix
 
 ## g1304（1 列）
 - 見出し：violation_suffix
-- 例1 値：AV | ST | ST | ST | PL
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, status, code, value, violation_stno, violation_sthigh
 
 ## g1305（1 列）
 - 見出し：violation_city
-- 例1 値：Mattapan | Roslindale | Dorchester | Dorchester | West Roxbury
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：case_no, ap_case_defn_key, status_dttm, status, code, value, violation_stno, violation_sthigh
 
 ## g1306（1 列）

@@ -61,6 +61,165 @@
     "HS Category"
    ],
    "reason": "学生 1 人 1 行の記録（性別・人種・年齢層・通う校舎）。入学・生徒の表と同じく表ごと外した"
+  },
+  {
+   "table": "https://data.kcmo.org/resource/icgu-nqmt.json",
+   "rows0": [
+    1278,
+    1279,
+    1280,
+    1281,
+    1282,
+    1283,
+    1284,
+    1285,
+    1286,
+    1287
+   ],
+   "headers": [
+    "EVENTID",
+    "CREATE DATE",
+    "CREATE TIME",
+    "CALL CREATION",
+    "HOUR",
+    "DAY OF WEEK",
+    "EVENT TYPE",
+    "EVENT SUBTYPE",
+    "DIVISION",
+    "BEAT"
+   ],
+   "reason": "警察への通報（Calls for Service）1 件 1 行の記録。表ごと値を消して S にした（行は残してラベルとの対応を保つ）"
+  },
+  {
+   "table": "https://ckan.pbh.gov.br/dataset/1aa0bbee-c86f-4d0b-9763-4125323f415c/resource/2b6c0a71-92a8-4b23-9773-360ae7bf9e63/download/classificacao-final.csv",
+   "rows0": [
+    1469,
+    1470,
+    1471,
+    1472
+   ],
+   "headers": [
+    "INSCRICAO",
+    "CARGO",
+    "CLASSIFICACAO",
+    "ESCOLARIDADE"
+   ],
+   "reason": "公務員試験の受験番号ごとの順位（受験者 1 人 1 行）。表ごと値を消して S にした（行は残してラベルとの対応を保つ）"
+  },
+  {
+   "table": "https://ckan.pbh.gov.br/dataset/42f5bbf8-146e-44f2-9994-64a61ce1424e/resource/90888004-6d41-4da7-a638-b119fddb259e/download/20241230_estudantes_instituicoes_rede_parceira.csv",
+   "rows0": [
+    1531,
+    1532,
+    1533,
+    1534,
+    1535,
+    1536,
+    1537,
+    1538,
+    1539
+   ],
+   "headers": [
+    "REGIONAL",
+    "INSTITUICAO_PARCEIRA",
+    "INEP",
+    "ANO_ENSINO",
+    "TURNO",
+    "TURMA",
+    "CODIGO",
+    "NEE",
+    "ANO_NASC"
+   ],
+   "reason": "生徒 1 人 1 行の名簿（個人コード・生まれ年・特別支援の有無）。表ごと値を消して S にした（行は残してラベルとの対応を保つ）"
+  },
+  {
+   "table": "https://ckan.pbh.gov.br/dataset/a52e5bde-d107-494a-9a41-07edaa7108d0/resource/6d477ad6-ec68-44ae-9667-68f41b60323c/download/20241230_estudantes_escolas_municipais_rede_propria.csv",
+   "rows0": [
+    1540,
+    1541,
+    1542,
+    1543,
+    1544,
+    1545,
+    1546,
+    1547,
+    1548,
+    1549
+   ],
+   "headers": [
+    "REGIONAL",
+    "ESCOLA",
+    "INEP",
+    "CATEGORIA",
+    "ENSINO",
+    "ORGANIZACAO",
+    "ANO",
+    "ANO_ENSINO",
+    "TURNO",
+    "TURMA"
+   ],
+   "reason": "生徒 1 人 1 行の名簿（学級・学年）。表ごと値を消して S にした（行は残してラベルとの対応を保つ）"
+  },
+  {
+   "table": "https://ckan.pbh.gov.br/dataset/8c2e3776-5577-43b4-b1ba-37e226343e21/resource/20605eda-8b3a-43c3-863e-bdccb1aef191/download/20241230_profissionais_instituicoes_rede_parceira.csv",
+   "rows0": [
+    1550,
+    1551,
+    1552,
+    1553,
+    1554,
+    1555,
+    1556
+   ],
+   "headers": [
+    "REGIONAL",
+    "INSTITUICAO_PARCEIRA",
+    "INEP",
+    "COD_PROF",
+    "ANO_NASC",
+    "CARGO",
+    "ESCOLARIDADE"
+   ],
+   "reason": "職員 1 人 1 行の名簿（個人コード・生まれ年・職・学歴）。表ごと値を消して S にした（行は残してラベルとの対応を保つ）"
+  },
+  {
+   "table": "https://data.boston.gov/dataset/705244a6-70a6-4ff8-ab8e-56441aff18e7/resource/800a2663-1d6a-46e7-9356-bedb70f5332c/download/tmp2wc14b4h.csv",
+   "rows0": [
+    1711,
+    1712,
+    1713,
+    1714,
+    1715,
+    1716,
+    1717,
+    1718,
+    1719,
+    1720
+   ],
+   "headers": [
+    "case_no",
+    "ap_case_defn_key",
+    "status_dttm",
+    "status",
+    "code",
+    "value",
+    "violation_stno",
+    "violation_sthigh",
+    "violation_suffix",
+    "violation_city"
+   ],
+   "reason": "建物の違反 1 件 1 行の記録（番地つき）。表ごと値を消して S にした（行は残してラベルとの対応を保つ）"
+  },
+  {
+   "table": "https://www.opendata.metro.tokyo.lg.jp/toshima/131164_toshimaku_kodomosyokudou.csv",
+   "rows0": [
+    2586
+   ],
+   "headers": [
+    "方書"
+   ],
+   "reason": "方書に個人の姓（〇〇様方）が 1 件。その値だけ消した"
   }
- ]
+ ],
+ "note": "rows は set の id の番号（1 から。行を取り除いた）。rows0 は今の corpus の行の番号（0 から。行は残して値だけ消した）"
 }

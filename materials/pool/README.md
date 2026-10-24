@@ -32,6 +32,11 @@
 - `allowed_hosts.json` の `csv_domains`：カタログごとに CSV を取ってよい組織のドメイン（東京都 → `metro.tokyo.lg.jp`、e-Gov → `go.jp`）。カタログのホストか、そのドメインの下のホストの https の CSV だけ（似た名前の別ドメインは通らない）
 - `pipeline.license_from_pkg`：license_id が空なら license_title を読む。政府標準利用規約（第2.0版）は CC BY 4.0 と互換と規約に明記されているので cc-by-4.0。CC BY（表示）も読む。NC・SA は通さない
 
+## 個人の記録の表を見つけたら（2026-10-24 Claude。b007 から）
+- 取り出しのあとで Claude が、題名・見出し・値を見て、1 人・1 件ごとの記録（生徒・職員の名簿、通報、受験者、違反の記録など）を探す。題名の規則（`pipeline.TITLE_DENY`）で落とせなかったものは規則にも足す
+- ラベルを付ける前なら行を取り除く（`work/<陣>/removed.json` の rows）。**ラベルを付けた後は行を残して値だけを「［個人名のため削除］」にし、裁定で S にする**（rows0。行を取り除くとラベルとの対応がずれる）。シートは同じグループ分けのまま `label_sheets.render_sheet` で描き直す
+- 1 陣の大きさ：採用できる表が多いときは、公開元を順に 1 表ずつ取って 500 表前後にする（b008 から。`adopted.json` の size_note）
+
 ## ラベル用シート（2026-10-24 Claude。b006 から）
 ChatGPT が大きな `corpus.jsonl`（1 陣 3〜5MB）を読まずにラベルを付けるための道具。`materials/label_sheets.py`
 - Claude：`python materials/label_sheets.py make --batch b00N` → `work/b00N/sheets/` に `sheet_001.md` …（1 枚 120 グループ・約 40KB）と `groups.json`

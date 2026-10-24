@@ -27,22 +27,22 @@
 
 ## g1085（1 列）
 - 見出し：INSCRICAO
-- 例1 値：167766 | 174199 | 167858 | 171729 | 184651
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：CARGO, CLASSIFICACAO, ESCOLARIDADE
 
 ## g1086（1 列）
 - 見出し：CARGO
-- 例1 値：Tecnico Administrativo | Tecnico Administrativo | Tecnico Administrativo | Analista Contabil | Tecnico Administrativo
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：INSCRICAO, CLASSIFICACAO, ESCOLARIDADE
 
 ## g1087（1 列）
 - 見出し：CLASSIFICACAO
-- 例1 値：26 | 20 | 1 | 6 | 36
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：INSCRICAO, CARGO, ESCOLARIDADE
 
 ## g1088（1 列）
 - 見出し：ESCOLARIDADE
-- 例1 値：Nível Médio - Ampla | Nível Superior - Ampla | Nível Superior - Ampla | Nível Superior - Ampla | Nível Médio - Ampla
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：INSCRICAO, CARGO, CLASSIFICACAO
 
 ## g1089（1 列）
@@ -283,7 +283,7 @@
 - 見出し：CATEGORIA
 - 例1 値：Horta | Horta | Horta | Agrofloresta | Horta
   - 同じ表の列：ID_EQUIP_SEG_ALIM_N…, NUMERO_IMOVEL, BAIRRO, COMPOSTAGEM, COMERCIALIZACAO, ANO_CADASTRO, TIPO_PRODUCAO, QTDE_AGRICULTOR
-- 例2 値：EMEF | EMEF | EMEF | EMEF | EMEF
+- 例2 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, ENSINO, ORGANIZACAO, ANO, ANO_ENSINO, TURNO
 
 ## g1136（1 列）
@@ -313,105 +313,105 @@
 
 ## g1141（3 列）
 - 見出し：REGIONAL
-- 例1 値：DIRE-B | DIRE-B | DIRE-B | DIRE-B | DIRE-B
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：INSTITUICAO_PARCEIRA, INEP, ANO_ENSINO, TURNO, TURMA, CODIGO, NEE, ANO_NASC
-- 例2 値：DIRE-B | DIRE-B | DIRE-B | DIRE-B | DIRE-B
+- 例2 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：ESCOLA, INEP, CATEGORIA, ENSINO, ORGANIZACAO, ANO, ANO_ENSINO, TURNO
 
 ## g1142（1 列）
 - 見出し：INSTITUICAO_PARCEIRA
-- 例1 値：CRECHE CASINHA DA VOVO | CRECHE CASINHA DA VOVO | CENTRO INFANTIL LAR FELIZ | CRECHE ABRIGO CORACAO DE JESUS | CESCLAR - CENTRO DE EDUCACAO INFANTIL S…
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INEP, ANO_ENSINO, TURNO, TURMA, CODIGO, NEE, ANO_NASC
 
 ## g1143（3 列）
 - 見出し：INEP
-- 例1 値：31384631 | 31383970 | 31383970 | 31348023 | 31281492
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, ANO_ENSINO, TURNO, TURMA, CODIGO, NEE, ANO_NASC
-- 例2 値：31002836 | 31002836 | 31002836 | 31002836 | 31002917
+- 例2 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, CATEGORIA, ENSINO, ORGANIZACAO, ANO, ANO_ENSINO, TURNO
 
 ## g1144（1 列）
 - 見出し：ANO_ENSINO
-- 例1 値：EDUCAÇÃO INFANTIL | EDUCAÇÃO INFANTIL | EDUCAÇÃO INFANTIL | EDUCAÇÃO INFANTIL | EDUCAÇÃO INFANTIL
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, TURNO, TURMA, CODIGO, NEE, ANO_NASC
 
 ## g1145（2 列）
 - 見出し：TURNO
-- 例1 値：TARDE | TARDE | TARDE | TARDE | TARDE
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, ANO_ENSINO, TURMA, CODIGO, NEE, ANO_NASC
-- 例2 値：TARDE | TARDE | TARDE | TARDE | INTEGRAL
+- 例2 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, CATEGORIA, ENSINO, ORGANIZACAO, ANO, ANO_ENSINO
 
 ## g1146（1 列）
 - 見出し：TURMA
-- 例1 値：1 ANO A | 3 ANOS FLEX B | 2 ANOS A | 2 ANOS B | BERCARIO B
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, ANO_ENSINO, TURNO, CODIGO, NEE, ANO_NASC
 
 ## g1147（1 列）
 - 見出し：CODIGO
-- 例1 値：2023128149209341 | 2023125782667571 | 2023128148438103 | 2023128148472210 | 2023138397072618
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, ANO_ENSINO, TURNO, TURMA, NEE, ANO_NASC
 
 ## g1148（1 列）
 - 見出し：NEE
-- 例1 値：N | N | N | N | N
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, ANO_ENSINO, TURNO, TURMA, CODIGO, ANO_NASC
 
 ## g1149（2 列）
 - 見出し：ANO_NASC
-- 例1 値：2019 | 2022 | 2021 | 2022 | 2023
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, ANO_ENSINO, TURNO, TURMA, CODIGO, NEE
-- 例2 値：1981 | 1978 | 1988 | 1997 | 1982
+- 例2 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, COD_PROF, CARGO, ESCOLARIDADE
 
 ## g1150（1 列）
 - 見出し：ESCOLA
-- 例1 値：Escola Municipal Aires da Mata Machado | Escola Municipal Ana Alves Teixeira | Escola Municipal Aires da Mata Machado | Escola Municipal Ana Alves Teixeira | Escola Municipal Aires da Mata Machado
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INEP, CATEGORIA, ENSINO, ORGANIZACAO, ANO, ANO_ENSINO, TURNO
 
 ## g1151（1 列）
 - 見出し：ENSINO
-- 例1 値：FR | FR | FR | FR | FR
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, CATEGORIA, ORGANIZACAO, ANO, ANO_ENSINO, TURNO
 
 ## g1152（1 列）
 - 見出し：ORGANIZACAO
-- 例1 値：2o. CICLO | 1o. CICLO | CICLO DA INFÂNCIA | 2o. CICLO | 1o. CICLO
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, CATEGORIA, ENSINO, ANO, ANO_ENSINO, TURNO
 
 ## g1153（1 列）
 - 見出し：ANO
-- 例1 値：3o ANO | 2o ANO | 1o ANO | 3o ANO | 2o ANO
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, CATEGORIA, ENSINO, ORGANIZACAO, ANO_ENSINO, TURNO
 
 ## g1154（1 列）
 - 見出し：ANO_ENSINO
-- 例1 値：EDUCAÇÃO INFANTIL | ENSINO FUNDAMENTAL 1O. CICLO 1O. ANO | ENSINO FUNDAMENTAL 1O. CICLO 1O. ANO | ENSINO FUNDAMENTAL 1O. CICLO 1O. ANO | ENSINO FUNDAMENTAL 1O. CICLO 1O. ANO
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, CATEGORIA, ENSINO, ORGANIZACAO, ANO, TURNO
 
 ## g1155（1 列）
 - 見出し：TURMA
-- 例1 値：FRCPA2MA | FRCIA3MD | FRCPA1MD | FRCIA1TD | FRCPA1MB
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, ESCOLA, INEP, CATEGORIA, ENSINO, ORGANIZACAO, ANO, ANO_ENSINO
 
 ## g1156（1 列）
 - 見出し：INSTITUICAO_PARCEIRA
-- 例1 値：CRECHE COMUNITARIA BOM MENINO | CRECHE EDUCACIONAL NASCER DA ESPERANCA | CASA DO BEBE MARIA BESSA | CENTRO INFANTIL BERENICE CATAO DE MAGAL… | CRECHE LAR DAS CRIANCAS SAO VICENTE DE …
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INEP, COD_PROF, ANO_NASC, CARGO, ESCOLARIDADE
 
 ## g1157（1 列）
 - 見出し：COD_PROF
-- 例1 値：3606800060708031 | 3098730009117931 | 2827720082413131 | 2579970057648731 | 2812250814921031
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, ANO_NASC, CARGO, ESCOLARIDADE
 
 ## g1158（1 列）
 - 見出し：CARGO
-- 例1 値：PROFESSOR REFERENCIA | PROFESSOR REFERENCIA | PROFESSOR REFERENCIA | PROFESSOR DE APOIO | EDUCADORA INFANTIL
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, COD_PROF, ANO_NASC, ESCOLARIDADE
 
 ## g1159（1 列）
 - 見出し：ESCOLARIDADE
-- 例1 値：SUPERIOR - COMPLETO | POS-GRADUACAO (LATO SENSO) - COMPLETO | SUPERIOR - INCOMPLETO | SUPERIOR - COMPLETO | SUPERIOR - COMPLETO
+- 例1 値：[個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除] | [個人名のため削除]
   - 同じ表の列：REGIONAL, INSTITUICAO_PARCEIRA, INEP, COD_PROF, ANO_NASC, CARGO
 
 ## g1160（1 列）
