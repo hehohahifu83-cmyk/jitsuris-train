@@ -41,6 +41,11 @@ NATIONAL = [
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
+DEADLINE = None   # 持ち時間の終わり（time.monotonic()）。過ぎたら新しい組織を探さずに止める（main が --budget-minutes から決める）
+
+
+def out_of_time():
+    return DEADLINE is not None and time.monotonic() > DEADLINE
 
 
 def get_json(url, tries=4):
@@ -83,6 +88,9 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
     site = site or f"https://{host}"
     out, stats = [], Counter()
     for org in sorted(orgs)[:limit]:
+        if out_of_time():
+            stats["stopped_by_budget"] += 1   # 持ち時間で探さなかった組織の数
+            continue
         pid = orgs[org]
         start, packages = 0, []
         try:
@@ -214,7 +222,11 @@ def main(argv=None):
     ap.add_argument("--only-host", action="append", default=[], help="--ckan で探すホストを絞る（取り直し用）")
     ap.add_argument("--socrata", action="store_true")
     ap.add_argument("--limit-publishers", type=int)
+    ap.add_argument("--budget-minutes", type=float, help="この時間を過ぎたら新しい組織を探さずに止めて書き出す")
     a = ap.parse_args(argv)
+    global DEADLINE
+    if a.budget_minutes:
+        DEADLINE = time.monotonic() + a.budget_minutes * 60
     pubs = json.load(open(ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]
     train = {p["publisher_id"] for p in pubs if p["pool"] == "train"}
     selected, stats = [], {}

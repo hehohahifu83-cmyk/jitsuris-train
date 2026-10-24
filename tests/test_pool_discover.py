@@ -130,6 +130,18 @@ class PoolDiscoverTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             F.parse_csv(b"1,2,3\n4,5,6\n")
 
+    def test_budget_stops_before_searching_more_orgs(self):
+        calls = []
+        orig, orig_d = D.get_json, D.DEADLINE
+        D.get_json = lambda url, tries=4: (calls.append(url), {"result": {"count": 0, "results": []}})[1]
+        D.DEADLINE = 0   # もう過ぎている
+        try:
+            out, stats = D.ckan_candidates("data.bodik.jp", {"a": "a", "b": "b"}, "bodik")
+        finally:
+            D.get_json, D.DEADLINE = orig, orig_d
+        self.assertEqual(calls, [])
+        self.assertEqual(stats["stopped_by_budget"], 2)
+
 
 if __name__ == "__main__":
     unittest.main()
