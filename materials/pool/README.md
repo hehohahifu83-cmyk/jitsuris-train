@@ -8,13 +8,13 @@
 - `work/<陣>/`：作業の置き場（adopted → corpus・set → pred → labels_chatgpt → review → decisions）。
 - 状態：`python materials/pipeline.py status --out bench/pool_status.md`
 
-## 1 陣の流れと担当
+## 1 陣の流れと担当（2026-10-24 オーナー指示：ChatGPT はラベル付けだけ。ほかは Claude。結果の確認はオーナーが声をかけたとき）
 | 段 | 担当 | すること | できるもの |
 |---|---|---|---|
-| 1 候補 | ChatGPT | train の公開元だけで候補一覧（メタデータだけ。`selected` か `candidates` に publisher_id・resource_url（Socrata は catalog_url）・resource_id・license・datastore_available・safe_headers・title、Socrata は `platform: "socrata"`） | `materials/s11_*_candidates_*.json` |
-| 2 採用 | ChatGPT が道具を実行（規則は Claude が決め、変えてよいのは Claude だけ。2026-10-22 から） | `pipeline.py adopt --batch <陣> --candidates …`（規則：train・ライセンスの一覧・datastore・使っていない表・1 陣 1 公開元 3 表・教材庫 1 公開元 15 表・同じ見出しの組 3 表） | `work/<陣>/adopted.json` |
-| 3 取り出し | ChatGPT が依頼のファイルを書く → Actions | `materials/fetch_rows.request` に `fetch materials/pool/work/<陣>/adopted.json materials/pool/work/<陣>/corpus.jsonl` | `corpus.jsonl`・`set.json` |
-| 4 予測 | ChatGPT が依頼のファイルを書く → Actions | `materials/label_assist/predict.request` に `run materials/pool/work/<陣>/set.json materials/pool/work/<陣>/pred_e5base_seed1.json` | `pred_e5base_seed1.json` |
+| 1 候補 | Claude | train の公開元だけで候補一覧（メタデータだけ。`selected` か `candidates` に publisher_id・resource_url（Socrata は catalog_url）・resource_id・license・datastore_available・safe_headers・title、Socrata は `platform: "socrata"`） | `materials/s11_*_candidates_*.json` |
+| 2 採用 | Claude | `pipeline.py adopt --batch <陣> --candidates …`（規則：train・ライセンスの一覧・datastore・使っていない表・1 陣 1 公開元 3 表・教材庫 1 公開元 15 表・同じ見出しの組 3 表） | `work/<陣>/adopted.json` |
+| 3 取り出し | Claude が依頼のファイルを書く → Actions | `materials/fetch_rows.request` に `fetch materials/pool/work/<陣>/adopted.json materials/pool/work/<陣>/corpus.jsonl` | `corpus.jsonl`・`set.json` |
+| 4 予測 | Claude が依頼のファイルを書く → Actions | `materials/label_assist/predict.request` に `run materials/pool/work/<陣>/set.json materials/pool/work/<陣>/pred_e5base_seed1.json` | `pred_e5base_seed1.json` |
 | 5 ラベル | ChatGPT | LABEL_GUIDE だけで全列（予測を見ない）。corpus と同じ順に `{table, header, label, teacher}` | `labels_chatgpt.jsonl` |
 | 6 突き合わせ | Claude | `pipeline.py reconcile`：一致は自動で採用、食い違いは優先度の高い順に 500 列まで Claude、残りは捨てる。一致の 5%（最少 10）を抜き取り | `review.jsonl` |
 | 7 裁定・確定 | Claude | `decisions.jsonl` を書き、`pipeline.py finalize`（抜き取りの誤りが 5% を超えたら止まる） | `batch_<陣>.jsonl`・台帳 |
