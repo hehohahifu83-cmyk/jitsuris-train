@@ -126,8 +126,18 @@ def pool_header_sets():
 def normalize_license(raw):
     """カタログごとの書き方の違いをそろえる（Socrata の PUBLIC_DOMAIN・CC0_10・「name-public-domain-…」など）。"""
     v = str(raw or "").strip().lower().replace("_", "-")
-    if "nc" in re.split(r"[^a-z0-9]+", v) or "sa" in re.split(r"[^a-z0-9]+", v):
-        return v   # 非営利・継承は一覧に無いので、そのまま返して落とす
+    words = re.split(r"[^a-z0-9]+", v)
+    if "nc" in words or "sa" in words or "nd" in words or "noncommercial" in words or "sharealike" in words or "noderivatives" in words:
+        return v   # 非営利・継承・改変禁止は一覧に無いので、そのまま返して落とす
+    # 書き方の違い（2026-10-24 の候補集めで落ちていた）：URL（creativecommons.org/licenses/by/4.0）、版・国つきの CC BY
+    # （cc-by-2.5・cc-by-3.0-au・「Creative Commons Attribution 3.0 Australia」）は表示だけのライセンスなので cc-by にまとめる
+    if re.search(r"creativecommons\.org/publicdomain/zero", v):
+        return "cc0"
+    if re.search(r"creativecommons\.org/licenses/by/", v) or re.fullmatch(r"cc-by-[0-9.]+(-(au|intl|int|nz))?", v) \
+            or re.fullmatch(r"creative commons (cc-by|attribution)( [0-9.]+)?( (australia|international|au|intl))?", v):
+        return v if v in ("cc-by-4.0", "cc-by-30", "cc-by-21") else "cc-by"
+    if v in ("ca-ogl-lgo", "qc-cc-by"):   # カナダ連邦の Open Government Licence、ケベック州の CC BY（open.canada.ca の ID）
+        return "ogl-canada-2.0" if v == "ca-ogl-lgo" else "cc-by"
     if "public-domain" in v or v == "public domain" or v in ("odc-pddl", "pddl"):   # PDDL は公有の宣言（CC0 と同じ扱い）
         return "public-domain"
     if "cczero" in v or v.startswith("cc0") or "cc0-10" in v:

@@ -1,3 +1,16 @@
+# 最新確認 2026-10-24 16:45 JST（Claude。候補集めの結果・ライセンスの書き方）
+
+## 確認済み
+- 候補集め run 40072352004（success、candidates_20261024e）：アイルランド 325 表。カナダ 0・e-Gov 0
+- カナダ：連邦のライセンスの ID が `ca-ogl-lgo`（14,151 件）で、一覧の `ogl-canada-2.0` と合わずに全部落ちていた
+- アイルランド：`https://creativecommons.org/licenses/by/4.0` と URL で書いたものが 178 件落ちていた。豪州（前の run）も cc-by-2.5（1,807）・cc-by-3.0-au（465）・「Creative Commons CC-BY 4.0」などで落ちていた
+- `pipeline.normalize_license`：URL・版・国つきの CC BY を cc-by に、`ca-ogl-lgo` を ogl-canada-2.0 に、`qc-cc-by` を cc-by にまとめた。NC・SA・ND（改変禁止）は今までどおり通さない。州の OGL（ab-ogla・on-oglo など）はまだ通さない。試験 1 件
+- e-Gov：API のデータセットにライセンスの欄が無い（extras は creator・description・release_date_legacy だけ）。サイト全体の利用規約（政府標準利用規約）を当てはめるかは、規約の本文を確かめてから決める（ここからは e-Gov に接続できない）。それまで e-Gov は使わない
+- 候補集めを依頼：カナダ → アイルランド → 豪州（持ち時間 95 分、`candidates_20261024f.json`）
+- b008 の取り出し run 40072352010 は実行中
+
+---
+
 # 最新確認 2026-10-24 16:00 JST（Claude。b007 を確定・b008 を採用）
 
 ## 確認済み

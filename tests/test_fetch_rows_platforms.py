@@ -68,6 +68,14 @@ class LicenseTitleTests(unittest.TestCase):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
 
+    def test_license_spellings(self):
+        for raw in ("https://creativecommons.org/licenses/by/4.0", "cc-by-2.5", "cc-by-3.0-au", "Creative Commons CC-BY 4.0",
+                    "creative commons attribution 3.0 australia", "ca-ogl-lgo", "qc-cc-by"):
+            self.assertIn(P.normalize_license(raw), P.ALLOWED_LICENSES, raw)
+        for raw in ("cc-by-sa-4.0", "cc-by-nc-3.0-au", "cc-by-nd", "cc-nc-nd", "https://creativecommons.org/licenses/by-nc/4.0", "ab-ogla", "notspecified"):
+            self.assertNotIn(P.normalize_license(raw), P.ALLOWED_LICENSES, raw)
+        self.assertEqual(P.normalize_license("cc-by-4.0"), "cc-by-4.0")
+
     def test_license_from_extras_and_resources(self):
         self.assertEqual(P.license_from_pkg({"license_id": "", "license_title": "", "extras": [{"key": "利用規約", "value": "政府標準利用規約（第2.0版）"}]}), "cc-by-4.0")
         self.assertEqual(P.license_from_pkg({"license_id": None, "resources": [{"license": "CC BY 4.0"}]}), "cc-by-4.0")
