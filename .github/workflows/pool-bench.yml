@@ -1,0 +1,113 @@
+name: 教材庫で道具を試す：今のモデルで何通りかの見方の推論（CPU・学習しない）
+
+# pool_bench.py infer を回すだけ。重みは label-assist-predict と同じ E5-base 種子 1（SHA-256 を照合）。学習・Kaggle は使わない。
+# 依頼：materials/tools/bench.request に「run <見方の数> <陣,陣,…>」。CPU で 1 列 0.12 秒なので陣ごとに並べて流す。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "materials/tools/bench.request"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: pool-bench
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.req.outputs.proceed }}
+      views: ${{ steps.req.outputs.views }}
+      batches: ${{ steps.req.outputs.batches }}
+      matrix: ${{ steps.req.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: 依頼を読む
+        id: req
+        run: |
+          set -eu
+          read -r cmd views batches <<< "$(head -1 materials/tools/bench.request)"
+          if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          case "$views" in [1-9]|1[0-2]) ;; *) echo "views は 1〜12"; exit 1;; esac
+          echo "$batches" | grep -Eq '^b[0-9]{3}(,b[0-9]{3})*$' || { echo "陣の名前が違う"; exit 1; }
+          matrix=$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1].split(",")))' "$batches")
+          { echo "proceed=true"; echo "views=$views"; echo "batches=$batches"; echo "matrix=$matrix"; } >> "$GITHUB_OUTPUT"
+
+  bench:
+    needs: plan
+    if: needs.plan.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        batch: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: CPU の推論の道具
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - uses: actions/download-artifact@v4
+        with:
+          name: jitsuris-model
+          run-id: 39506074807
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/e5-model
+      - name: 重みの SHA-256 を照合（E5-base 最終比較の種子 1）
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          ck = Path("/tmp/e5-model/ft_out_job1")
+          m = json.loads((ck / "manifest.json").read_text(encoding="utf-8"))
+          name, meta = next(iter(m["saved_model"]["weights"].items()))
+          want = "38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7"
+          got = hashlib.sha256((ck / name).read_bytes()).hexdigest()
+          if got != want or meta["sha256"] != want:
+              raise SystemExit("weight verification failed")
+          print("verified")
+          PY
+      - name: 推論（何通りかの見方）
+        env: { TOKENIZERS_PARALLELISM: 'false' }
+        run: |
+          mkdir -p out
+          python pool_bench.py infer --batches "${{ matrix.batch }}" --views "${{ needs.plan.outputs.views }}" \
+            --checkpoint /tmp/e5-model/ft_out_job1 --out "out/probs_v${{ needs.plan.outputs.views }}_${{ matrix.batch }}.npz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pool-bench-${{ matrix.batch }}
+          path: out/
+
+  save:
+    needs: [plan, bench]
+    if: always() && needs.plan.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pool-bench-*
+          merge-multiple: true
+          path: eval_reports/pool_bench
+      - name: 確率だけを保存
+        run: |
+          ls -la eval_reports/pool_bench
+          echo "done ${{ needs.plan.outputs.views }} ${{ needs.plan.outputs.batches }}" > materials/tools/bench.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add eval_reports/pool_bench materials/tools/bench.request
+          git commit -m "教材庫で道具を試す：何通りかの見方の確率（自動）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
