@@ -69,7 +69,9 @@ class LicenseTitleTests(unittest.TestCase):
                   "政治団体名簿_都道府県知事・議会議員", "Queensland COVID-19 Case Line List",
                   "Famílias no Cadastro Único", "ASIC – Credit Representative Dataset", "Ballarat Planning Applications Currently on Advertising",
                   "Development Application Register", "NSW COVID-19 tests by result (discontinued)", "Governance Board Member Remuneration 2017 - Roscommon",
-                  "Rental Bond and Rental Data Tasmania", "Tasmanian Prisoners (1877-1938)", "Deceased Estate Files, 1880-1923"):
+                  "Rental Bond and Rental Data Tasmania", "Tasmanian Prisoners (1877-1938)", "Deceased Estate Files, 1880-1923",
+                  "Tasmanian Naturalisations (1835-1904)", "ASIC – Australian Financial Services Authorised Representatives", "Proactive Disclosure - Travel Expenses",
+                  "Playford WWI service record", "Tasmanian Marriages (1803-1944)", "Noosa Shire - crash locations (2001-14)"):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
 
