@@ -64,7 +64,9 @@ class LicenseTitleTests(unittest.TestCase):
                   "Internal Affairs Allegations", "Montgomery College Enrollment Data",
                   "KCPD Calls for Service 2023", "Building and Property Violations",
                   "Relação de Estudantes das Instituições da Rede Parceira", "Relação de Profissionais das Instituições da Rede Parceira",
-                  "Resultado Concurso PBH Ativos 001/2018"):
+                  "Resultado Concurso PBH Ativos 001/2018", "HRCC Councillors 2025-26", "Convict Indexes",
+                  "DAFM Freedom of Information Disclosure Logs", "PSRA - Dublin Residential Property Price Register",
+                  "政治団体名簿_都道府県知事・議会議員", "Queensland COVID-19 Case Line List"):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
 

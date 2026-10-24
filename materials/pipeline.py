@@ -203,7 +203,10 @@ def license_id(c):
 
 # 題名で落とす（個人の記録が入りやすい表。列の検査だけに頼らない）
 TITLE_DENY = re.compile(r"(crime|arrest|police|incident|complaint|311|service request|campaign|contribut|donor|election|"
-                        r"permit|licens|inspection|violation|calls for service|admission|enrol+ment|allegation|internal affairs|student|patient|victim|offender|inmate|payroll|employee|salar|"
+                        r"permit|licens|inspection|violation|calls for service|councillor|parliamentarian|heads of mission|convict|wills|baby names|auditor|liquidator|"
+                        r"snap send solve|hard rubbish|planning permission|freedom of information|disclosure log|property price register|"
+                        r"fraud reporting|tenancy survey|parking ticket|expiation|unclaimed|line list|政治団体名簿|"
+                        r"admission|enrol+ment|allegation|internal affairs|student|patient|victim|offender|inmate|payroll|employee|salar|"
                         r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員|在籍者|入学者|"
                         r"crime|ocorr[eê]ncia|den[uú]ncia|reclama[cç]|elei[cç]|servidor|sal[aá]rio|remunera[cç]|folha de pagamento|"
                         r"aluno|estudante|profissionais|concurso|inscri[cç]|matr[ií]cula|paciente|v[ií]tima|pres[oa]s|detent|alvar[aá]|multa|benefici[aá]rio)", re.I)
