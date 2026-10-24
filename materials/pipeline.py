@@ -127,7 +127,7 @@ def normalize_license(raw):
     v = str(raw or "").strip().lower().replace("_", "-")
     if "nc" in re.split(r"[^a-z0-9]+", v) or "sa" in re.split(r"[^a-z0-9]+", v):
         return v   # 非営利・継承は一覧に無いので、そのまま返して落とす
-    if "public-domain" in v or v == "public domain":
+    if "public-domain" in v or v == "public domain" or v in ("odc-pddl", "pddl"):   # PDDL は公有の宣言（CC0 と同じ扱い）
         return "public-domain"
     if "cczero" in v or v.startswith("cc0") or "cc0-10" in v:
         return "cc0"
@@ -146,7 +146,9 @@ def license_id(c):
 # 題名で落とす（個人の記録が入りやすい表。列の検査だけに頼らない）
 TITLE_DENY = re.compile(r"(crime|arrest|police|incident|complaint|311|service request|campaign|contribut|donor|election|"
                         r"permit|license holder|admission|student|patient|victim|offender|inmate|payroll|employee|salar|"
-                        r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員)", re.I)
+                        r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員|"
+                        r"crime|ocorr[eê]ncia|den[uú]ncia|reclama[cç]|elei[cç]|servidor|sal[aá]rio|remunera[cç]|folha de pagamento|"
+                        r"aluno|matr[ií]cula|paciente|v[ií]tima|pres[oa]s|detent|alvar[aá]|multa|benefici[aá]rio)", re.I)
 
 
 def platform_of(c):

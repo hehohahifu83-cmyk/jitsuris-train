@@ -25,6 +25,12 @@
 - `materials/pool_discover.py`（Actions `pool-discover.yml`、依頼は `materials/pool/discover.request` に `discover materials/pool/candidates_<日付>.json --bodik --socrata`）。BODIK は train の組織ごとに検索 1 回で全データセットを見て datastore のあるリソースを選ぶ。Socrata はカタログ API。年度違いの同じ表は重ねない。
 - 1 回目（2026-10-22）：2,201 表・272 公開元。1 陣 1 公開元 3 表までなので、b003 に 716 表、残りは b004 以降へ（同じ候補の一覧を `adopt` にもう一度渡せば、使った表は自動で外れる）。
 
+## CKAN の公開元を足した（2026-10-24 Claude）
+- BODIK（254 組織）と Socrata は 2026-10-22 の 1 回で調べ尽くした（もう一度回しても同じ表しか出ない）。新しい候補は、まだ使っていない train の CKAN の公開元から集める：ベロオリゾンテ（dados.pbh.gov.br、19 組織）・レシフェ（dados.recife.pe.gov.br、22）・リオグランデ・ド・スル州（dados.rs.gov.br、7）・ボストン（data.boston.gov、34）。組織の一覧は `independent_eval/allocation_sources_world_20261022.json`
+- `pool_discover.py --ckan`（依頼：`discover materials/pool/candidates_<日付>.json --ckan`）。ホストは `allowed_hosts.json` の `ckan` にあるものだけ。ライセンスで落ちたものは `stats` に `license:<id>` で内訳を残す
+- 取り出しでは、ポルトガル語の個人情報の列名（nome・cpf・telefone・endereço・logradouro・cep・servidor など）と値（CPF・電話・CEP・通りの住所）も落とす（`fetch_rows.py`）。題名の規則にもポルトガル語（servidor・remuneração・ocorrência・aluno・paciente など）を足した
+- ライセンス：ODC-PDDL は公有の宣言なので public-domain と同じ扱いにした。ODbL（継承あり）は使わない
+
 ## 取り出せる場（2026-10-22）
 - BODIK の datastore（`data.bodik.jp`）
 - Socrata（SODA）：公開元の ID が `world_socrata_<ホストの . と - を _ にしたもの>` で、ホストが一致するもの。列の定義から表示名を取り、位置情報・URL・写真の列は落とす。ライセンスは公式の `licenseId` で確かめる（PUBLIC_DOMAIN・CC0_10・CC_30_BY・CC_40_BY・ODC_BY_10）

@@ -34,6 +34,38 @@ class PoolDiscoverTests(unittest.TestCase):
         self.assertEqual(stats["no_datastore"], 1)
         self.assertTrue(out[0]["resource_url"].endswith("/dataset/p1/resource/r1"))
 
+    def test_ckan_uses_host_and_publisher_id_and_counts_licenses(self):
+        pkgs = [
+            {"name": "orcamento", "title": "Orçamento 2024", "license_id": "cc-by", "metadata_modified": "2024", "resources": [{"id": "r1", "datastore_active": True}]},
+            {"name": "obras", "title": "Obras", "license_id": "odc-odbl", "metadata_modified": "2023", "resources": [{"id": "r2", "datastore_active": True}]},
+            {"name": "servidores", "title": "Remuneração dos servidores", "license_id": "cc-by", "metadata_modified": "2022", "resources": [{"id": "r3", "datastore_active": True}]},
+            {"name": "parques", "title": "Parques", "license_id": "odc-pddl", "metadata_modified": "2021", "resources": [{"id": "r4", "datastore_active": True}]},
+        ]
+        seen = []
+        orig = D.get_json
+        D.get_json = lambda url, tries=4: (seen.append(url), {"result": {"count": len(pkgs), "results": pkgs}})[1]
+        try:
+            out, stats = D.ckan_candidates("dados.pbh.gov.br", {"belotur": "world_ckan_dados_pbh_gov_br_belotur"}, "ckan")
+        finally:
+            D.get_json = orig
+        self.assertTrue(seen[0].startswith("https://dados.pbh.gov.br/api/3/action/package_search?"))
+        self.assertEqual([x["resource_id"] for x in out], ["r1", "r4"])
+        self.assertEqual({x["publisher_id"] for x in out}, {"world_ckan_dados_pbh_gov_br_belotur"})
+        self.assertEqual({x["platform"] for x in out}, {"ckan"})
+        self.assertEqual(out[0]["resource_url"], "https://dados.pbh.gov.br/dataset/orcamento/resource/r1")
+        self.assertEqual(stats["license:odc-odbl"], 1)
+        self.assertEqual(stats["title_deny"], 1)
+
+    def test_portuguese_personal_columns_and_values_are_dropped(self):
+        import fetch_rows as F
+        for h in ("Nome do servidor", "CPF", "Endereço", "Telefone", "Logradouro", "CEP"):
+            self.assertTrue(F.blocked_header(h), h)
+        for h in ("Bairro", "Valor", "Secretaria", "Quantidade"):
+            self.assertFalse(F.blocked_header(h), h)
+        for v in ("123.456.789-01", "(31) 3277-1234", "30130-010", "Rua da Bahia, 1148"):
+            self.assertTrue(F.sensitive_value(v), v)
+        self.assertFalse(F.sensitive_value("R$ 1.234,56"))
+
 
 if __name__ == "__main__":
     unittest.main()

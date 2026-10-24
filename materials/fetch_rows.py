@@ -46,16 +46,28 @@ JP_PHONE_RE = re.compile(r"(?<!\d)(?:0\d{1,4}-\d{1,4}-\d{3,4}|0[5789]0\d{8}|0\d{
 INTL_PHONE_RE = re.compile(r"\+\d{1,3}[\s-]?\d[\d\s-]{6,}\d")
 JP_POSTAL_RE = re.compile(r"〒\s*\d{3}-?\d{4}|(?<![\d-])\d{3}-\d{4}(?![\d-])")
 STREET_RE = re.compile(r"\b\d{1,6}\s+[A-Z0-9.' -]{2,40}\s+(?:ST|STREET|AVE|AVENUE|RD|ROAD|BLVD|DR|DRIVE|LN|LANE)\b", re.I)
+# ブラジル（ポルトガル語）の個人情報：CPF・電話・CEP（郵便番号）・通りの住所（2026-10-24、CKAN の公開元を足すため）
+BR_CPF_RE = re.compile(r"(?<!\d)\d{3}\.\d{3}\.\d{3}-\d{2}(?!\d)")
+BR_PHONE_RE = re.compile(r"\(\d{2}\)\s?\d{4,5}-?\d{4}(?!\d)")
+BR_CEP_RE = re.compile(r"(?<![\d-])\d{5}-\d{3}(?![\d-])")
+BR_STREET_RE = re.compile(r"\b(?:rua|r\.|avenida|av\.|travessa|alameda|rodovia|estrada|pra[cç]a)\s+\S+.*\d", re.I)
+# 列名で落とす（ポルトガル語）。independent_eval/discover.py の HEADER_DENY に足して使う
+PT_HEADER_DENY = re.compile(
+    r"(^|[^a-z])(?:nome|nomes|cpf|rg|telefone|telefones|celular|fone|e-?mail|endere[cç]o|logradouro|cep|complemento|"
+    r"matr[ií]cula|servidor|servidora|respons[aá]vel|propriet[aá]rio|contato|observa[cç][aã]o|observa[cç][oõ]es|"
+    r"descri[cç][aã]o|coment[aá]rio|nascimento|idade|sexo|ra[cç]a|cor)($|[^a-z])", re.I)
 
 
 def sensitive_value(value) -> bool:
     v = unicodedata.normalize("NFKC", str(value or "")).strip()
     return bool(v and (EMAIL_RE.search(v) or JP_PHONE_RE.search(v) or INTL_PHONE_RE.search(v)
-                       or JP_POSTAL_RE.search(v) or STREET_RE.search(v)))
+                       or JP_POSTAL_RE.search(v) or STREET_RE.search(v)
+                       or BR_CPF_RE.search(v) or BR_PHONE_RE.search(v) or BR_CEP_RE.search(v) or BR_STREET_RE.search(v)))
 
 
 def blocked_header(header) -> bool:
-    return bool(HEADER_DENY.search(normalize_header(header)))
+    h = normalize_header(header)
+    return bool(HEADER_DENY.search(h) or PT_HEADER_DENY.search(h))
 
 
 def _h(*parts) -> int:
