@@ -29,7 +29,13 @@
 ## 3b. 学習側に足した設定（2026-10-24 23:00）
 - `FT_POOL_HARD_COPIES=k`（既定 0）：教材庫のうち Claude が裁定した列（先生とモデルが食い違った列、3,681 列）を k 回ぶん余分に足す。`pool_families.adjudicated_keys`
 
+## 3c. 原因の再検査から足した設定（2026-10-25。`research/root-cause-audit-2026-10-24.md`）
+- `FT_TITLE=1`（既定オフ）：表の題名を入力の文に入れる（「| 表の題名: …」、40 文字まで）。題名は `materials/pool/titles.json`（教材庫の 3,316 表。ほかの表は題名なし）。学習・評価とも同じ対応表を通す。オフのときの文は前と同じ（試験 `tests/test_title_undecidable.py`）。文が長くなるので `FT_MAX_LEN=160` と組み合わせる
+- `FT_POOL_UNDECIDABLE=k`（既定 0）：Claude が裁定で unknown と決めた教材庫の列（`materials/pool/undecidable.jsonl`、524 列）を other として k 回ぶん足す。見張りが other を「不明」にするので、決められない列に言い切らないことを学ぶ。検証（教材庫）の表の列は入れない
+- どちらも `python materials/build_pool_extras.py` で作り直す（陣を確定したあと）。Kaggle の束に入れた（`kaggle.sh`）
+- 見張り v11（列名を見る日付の規則）：学習の結果を測るときに v10 と並べて出す
+
 ## 4. 学習の許可が出たときの案（事前記録の下書き。数字は許可のあとに固定する）
 - 基準の設定：`intfloat/multilingual-e5-base 2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5`
-- 第 1 段（検証つき、`FT_VAL=1`、種子 1・2）：(a) 教材庫なし (b) `FT_POOL=1`（上限 4） (c) `FT_POOL=1 FT_POOL_FAMILY_CAP=0` (d) `FT_POOL=1 FT_POOL_HARD_COPIES=2`。未知見出しの macro-F1 と検証（教材庫）で、教材庫の効果と上限の良し悪しを見る。8 ジョブ、2 GPU で 4 波、1 ジョブ約 18 分の見込み（行が約 2 倍なので W1 の 543 秒の約 2 倍。実測ではない）
+- 第 1 段（検証つき、`FT_VAL=1`、種子 1・2）：(a) 教材庫なし (b) `FT_POOL=1`（上限 4） (c) `FT_POOL=1 FT_POOL_FAMILY_CAP=0` (d) `FT_POOL=1 FT_POOL_HARD_COPIES=2` (e) `FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160` (f) `FT_POOL=1 FT_POOL_UNDECIDABLE=2`。未知見出しの macro-F1 と検証（教材庫）で、教材庫の効果と上限の良し悪しを見る。12 ジョブ、2 GPU で 6 波（約 2 時間）、1 ジョブ約 18 分の見込み（行が約 2 倍なので W1 の 543 秒の約 2 倍。実測ではない）
 - 第 2 段：良い方の設定で検証なしの最終の学習（`FT_POOL=1 FT_KEEP=1`）→ 封印セット #2

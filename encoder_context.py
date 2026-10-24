@@ -55,7 +55,10 @@ def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, pe
     return out
 
 
-def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False):
+TITLE_SEP = "\x1e"   # 単位の例の欄に表の題名を一緒に入れるときの区切り（FT_TITLE。encoder_exp.py が単位の例の対応表に足す）
+
+
+def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False, title=False):
     """従来の encoder 入力。ctx_unit=True のときだけ UNIT 例を末尾に追加する。
     val_profile=True（W3a、FT_VALPROF=1）のときだけ、値の直後に「値の形」（value_profile.py）を入れる。切り詰めで先に落ちるのが同じ表の列名になるよう、値の直後に置く。"""
     header, values = row[0], row[1]
@@ -65,8 +68,11 @@ def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False):
         from value_profile import value_profile
         prof = value_profile(values[:5])
         shape = f" | 値の形: {prof}" if prof else ""
-    base = f"{prefix}列名: {header} | 値: {', '.join(str(x)[:30] for x in values[:5])}{shape} | 同じ表の列: {', '.join(str(x)[:20] for x in context[:12])}"
     unit = row[4] if len(row) > 4 else ""
+    unit, _, table_title = str(unit or "").partition(TITLE_SEP)
+    # title=True（FT_TITLE=1、2026-10-25）：表の題名を値の後に入れる（research/root-cause-audit-2026-10-24.md 原因 3：件数か金額かは題名で決まる列が多い）
+    ttl = f" | 表の題名: {table_title[:40]}" if title and table_title else ""
+    base = f"{prefix}列名: {header} | 値: {', '.join(str(x)[:30] for x in values[:5])}{shape}{ttl} | 同じ表の列: {', '.join(str(x)[:20] for x in context[:12])}"
     if ctx_unit and unit:
         base += f" | 同じ表の単位列の値: {str(unit)[:240]}"
     return base

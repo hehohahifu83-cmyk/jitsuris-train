@@ -77,7 +77,31 @@ selected_splits = tuple(select_real_fraction(source_rows, REAL_FRAC) for source_
 gtr, btr, b2tr, jtr = selected_splits
 selected_source_rows = [row for source_rows in selected_splits for row in source_rows]
 selected_tables = {str(row[4]) for row in selected_source_rows}
+# FT_POOL_UNDECIDABLE=k（既定 0）：Claude が裁定で unknown と決めた教材庫の列（materials/pool/undecidable.jsonl）を、"other" として k 回ぶん足す（2026-10-25）。
+# 見張りは other を「不明」にするので、「人が見ても決められない列には言い切らない」を学ぶ（research/root-cause-audit-2026-10-24.md 原因 6）。
+# 検証（教材庫）の表の列は入れない（教材庫の様式の分け方は変えない）
+POOL_UNDEC = int(os.environ.get("FT_POOL_UNDECIDABLE", "0") or 0)
+undec_tr = []
+if POOL and POOL_UNDEC > 0:
+    _undec = load_real(("materials/pool/undecidable.jsonl",))
+    if not _undec:
+        raise SystemExit("FT_POOL_UNDECIDABLE なのに materials/pool/undecidable.jsonl が無いか空（python materials/build_pool_extras.py）")
+    _val_tables = {r[4] for r in poolval}
+    if os.environ.get("FT_VAL") == "1":
+        from pool_families import split_val_by_family
+        _u_tr, _u_val = split_val_by_family(_undec, salt="jitsuris-poolval-v2", mod=8)
+        _val_tables |= {r[4] for r in _u_val}
+    undec_tr = [(h, v, "other", c, t) for h, v, _l, c, t in _undec if t not in _val_tables]
+# FT_TITLE=1（既定オフ）：表の題名（materials/pool/titles.json。教材庫の表だけ。ほかの表は題名なし）を入力の文に入れる。学習・評価とも同じ対応表を通す
+TITLE = os.environ.get("FT_TITLE") == "1"
 unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all + pool_all)
+if TITLE:
+    from encoder_context import TITLE_SEP
+    if not os.path.exists("materials/pool/titles.json"):
+        raise SystemExit("FT_TITLE=1 なのに materials/pool/titles.json が無い（python materials/build_pool_extras.py）")
+    for _t, _ttl in json.load(open("materials/pool/titles.json", encoding="utf-8")).items():
+        unit_by_table[_t] = unit_by_table.get(_t, "") + TITLE_SEP + _ttl
+    print(f"FT_TITLE=1: table titles for {sum(TITLE_SEP in v for v in unit_by_table.values())} tables", flush=True)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
 if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。種は別
@@ -89,6 +113,9 @@ if POOL:
 # FT_POOL_HARD_COPIES=k（既定 0＝足さない）：教材庫のうち、先生とモデルが食い違って Claude が裁定した列（batch_*.jsonl の teacher が claude-…）を k 回ぶん余分に足す（2026-10-24）。
 # 今のモデルが迷う列そのものなので、同じ数の列でも学ぶことが多いはず。検証側の表には足さない（pooltr の中だけ）
 POOL_HARD_COPIES = int(os.environ.get("FT_POOL_HARD_COPIES", "0") or 0)
+if undec_tr:
+    real_rows += real_train_rows_with_units(undec_tr, POOL_UNDEC, 12, True, unit_by_table, perturb, per_table=60)
+    print(f"FT_POOL_UNDECIDABLE={POOL_UNDEC}: +{len(undec_tr)} undecidable pool rows as other x{POOL_UNDEC}", flush=True)
 if POOL and POOL_HARD_COPIES > 0:
     from pool_families import adjudicated_keys
     _hard_keys = adjudicated_keys(_pool_files)
@@ -115,7 +142,7 @@ CTX_UNIT = os.environ.get("FT_CTX_UNIT") == "1"  # 同じ表の UNIT / Unit / �
 VAL_PROF = os.environ.get("FT_VALPROF") == "1"  # W3a：値の形（value_profile.py）を値の直後に足す（既定オフ。オフなら入力の文は従来と同じ）
 
 def text(r, prefix):
-    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT, val_profile=VAL_PROF)
+    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT, val_profile=VAL_PROF, title=TITLE)
 
 
 def run(model_name, prefix, out):
