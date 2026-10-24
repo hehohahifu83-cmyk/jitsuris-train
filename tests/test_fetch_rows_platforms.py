@@ -71,7 +71,8 @@ class LicenseTitleTests(unittest.TestCase):
                   "Development Application Register", "NSW COVID-19 tests by result (discontinued)", "Governance Board Member Remuneration 2017 - Roscommon",
                   "Rental Bond and Rental Data Tasmania", "Tasmanian Prisoners (1877-1938)", "Deceased Estate Files, 1880-1923",
                   "Tasmanian Naturalisations (1835-1904)", "ASIC – Australian Financial Services Authorised Representatives", "Proactive Disclosure - Travel Expenses",
-                  "Playford WWI service record", "Tasmanian Marriages (1803-1944)", "Noosa Shire - crash locations (2001-14)"):
+                  "Playford WWI service record", "Tasmanian Marriages (1803-1944)", "Noosa Shire - crash locations (2001-14)",
+                  "ASIC - Banned and Disqualified Persons Dataset", "Tasmanian Inquests (1828-1973)", "Adopt a soldier", "港区の住宅宿泊事業届出情報一覧"):
             self.assertTrue(P.TITLE_DENY.search(t), t)
         self.assertFalse(P.TITLE_DENY.search("Budget - Operating Expenditures"))
 
