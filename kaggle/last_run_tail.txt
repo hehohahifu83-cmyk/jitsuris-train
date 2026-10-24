@@ -1,22 +1,22 @@
 name, memory.total [MiB]\n
 Tesla T4
 Tesla T4
-GPU 0）FT_SEED=2 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1
-GPU 1）仕事1との違い：FT_POOL=1 FT_POOL_VALONLY=（外す） FT_KEEP=（外す）\n
+GPU 1）仕事1との違い：FT_SEED=2\n
+GPU 0）FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1
 ---
-り26/33 | 検証（日本の調達） 正98.5% 誤1 不明0 重大0 その他見送り1/1 | 検証（教材庫） 正92.6% 誤94 不明116 重大13 その他見送り55/62 | 学習 1192秒・評価 35秒 |\n"}
-,{"stream_name":"stdout","time":4289.613823888,"data":"[仕事6] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整6割＋今の仕組み4割 | 検証（一般） 正91.2% 誤10 不明3 重大0 その他見送り51/56 | 検証（業務） 正92.9% 誤8 不明6 重大2 その他見送り8/8 | 検証（業務2） 正96.6% 誤4 不明9 重大0 その他見送り21/33 | 検証（日本の調達） 正98.5% 誤1 不明0 重大0 その他見送り1/1 | 検証（教材庫） 正93.3% 誤100 不明90 重大17 その他見送り54/62 | 学習 1192秒・評価 35秒 |\n"}
-,{"stream_name":"stdout","time":4290.107298442,"data":"[仕事6] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正91.2% 誤11 不明2 重大0 その他見送り50/56 | 検証（業務） 正93.9% 誤8 不明4 重大3 その他見送り8/8 | 検証（業務2） 正96.9% 誤4 不明8 重大0 その他見送り18/33 | 検証（日本の調達） 正98.5% 誤1 不明0 重大0 その他見送り1/1 | 検証（教材庫） 正93.6% 誤99 不明84 重大17 その他見送り56/62 | 学習 1192秒・評価 36秒 |\n"}
-,{"stream_name":"stdout","time":4290.135517025,"data":"[仕事6] \n"}
-,{"stream_name":"stdout","time":4291.513603416,"data":"[仕事6] Writing model shards:   0%|          | 0/1 [00:00\u003c?, ?it/s]\n"}
-,{"stream_name":"stdout","time":4291.513789508,"data":"[仕事6] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.38s/it]\n"}
-,{"stream_name":"stdout","time":4291.513831329,"data":"[仕事6] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.38s/it]\n"}
-,{"stream_name":"stdout","time":4294.594706214,"data":"[仕事6] manifest.json written; weights sha256 2c3aeea4d472bc755115dcdd36fad05be39404a26d4e4d98cb27c852de6f95e9\n"}
-,{"stream_name":"stdout","time":4296.993948694,"data":"[仕事6] 終了（終了コード 0）\n"}
-,{"stream_name":"stderr","time":4299.68007553,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":4299.680104365,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":4299.922532532,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":4299.922556692,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":4300.714028477,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":4301.726643887,"data":"[NbConvertApp] Writing 313432 bytes to __results__.html\n"}
+般） 正91.5% 誤10 不明15 重大0 その他見送り81/88 | 本物（業務） 正93.7% 誤7 不明23 重大1 その他見送り15/15 | 本物（業務2） 正95.2% 誤11 不明33 重大2 その他見送り63/63 | 本物（日本の調達） 正100.0% 誤0 不明0 重大0 | 学習 1210秒・評価 16秒 |\n"}
+,{"stream_name":"stdout","time":2874.317082468,"data":"[仕事3] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整6割＋今の仕組み4割 | 開発用220 正96.4% 誤6 不明2 重大1 | 本物（一般） 正92.9% 誤11 不明10 重大0 その他見送り83/88 | 本物（業務） 正94.5% 誤10 不明16 重大1 その他見送り15/15 | 本物（業務2） 正95.5% 誤13 不明28 重大2 その他見送り63/63 | 本物（日本の調達） 正100.0% 誤0 不明0 重大0 | 学習 1210秒・評価 16秒 |\n"}
+,{"stream_name":"stdout","time":2874.60850197,"data":"[仕事3] | hfmodel/intfloat__multilingual-e5-base 微調整 2.0周・微調整7割＋今の仕組み3割 | 開発用220 正96.4% 誤6 不明2 重大1 | 本物（一般） 正91.9% 誤13 不明11 重大0 その他見送り83/88 | 本物（業務） 正94.9% 誤13 不明11 重大2 その他見送り15/15 | 本物（業務2） 正96.1% 誤15 不明21 重大2 その他見送り63/63 | 本物（日本の調達） 正100.0% 誤0 不明0 重大0 | 学習 1210秒・評価 16秒 |\n"}
+,{"stream_name":"stdout","time":2874.635569957,"data":"[仕事3] \n"}
+,{"stream_name":"stdout","time":2875.956498402,"data":"[仕事3] Writing model shards:   0%|          | 0/1 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2875.956557487,"data":"[仕事3] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.32s/it]\n"}
+,{"stream_name":"stdout","time":2875.956563303,"data":"[仕事3] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.32s/it]\n"}
+,{"stream_name":"stdout","time":2878.990919613,"data":"[仕事3] manifest.json written; weights sha256 bf967eb40cec826cf11e784d99a7e5284c1651fefc52e04a05515d604a2f1873\n"}
+,{"stream_name":"stdout","time":2881.444066483,"data":"[仕事3] 終了（終了コード 0）\n"}
+,{"stream_name":"stderr","time":2884.102033792,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2884.102056546,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2884.436797677,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2884.436836938,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2885.2408436,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2886.2774724,"data":"[NbConvertApp] Writing 313432 bytes to __results__.html\n"}
 ]
