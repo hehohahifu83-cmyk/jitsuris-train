@@ -378,17 +378,22 @@ def main(argv=None):
     adopted = json.load(open(a.adopted, encoding="utf-8"))
     pools = {p["publisher_id"]: p["pool"] for p in json.load(open(ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]}
     known = known_tables(exclude=a.out)
+    # 封印セット #2 の採用の記録（independent_eval/sealed2.py）は pool=eval2。教材の陣は train（2026-10-25）
+    want_pool = adopted.get("pool", "train")
+    if want_pool not in ("train", "eval2"):
+        raise SystemExit(f"採用の記録の pool が知らない値：{want_pool}")
     log = {"adopted": a.adopted, "started_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "tables": []}
     n_cols = 0
     with open(a.out, "w", encoding="utf-8") as fh:
         for item in adopted["adopted"]:
             entry = {"n": item["n"], "publisher_id": item["publisher_id"], "resource_url": item["resource_url"]}
             try:
-                if pools.get(item["publisher_id"]) != "train":
-                    raise ValueError("publisher is not in the train pool")
+                if pools.get(item["publisher_id"]) != want_pool:
+                    raise ValueError(f"publisher is not in the {want_pool} pool")
                 meta, fields, records, total = fetch_table(item, known)
                 rows, reasons = build_rows(meta, fields, records, total)
                 for r in rows:
+                    r["pool"] = want_pool
                     fh.write(json.dumps(r, ensure_ascii=False) + "\n")
                 n_cols += len(rows)
                 entry.update({"status": "ok" if rows else "skipped_too_small", "columns": len(rows), "dropped": reasons,
