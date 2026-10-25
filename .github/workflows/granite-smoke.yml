@@ -1,0 +1,46 @@
+name: granite-embedding の試運転（CPU）
+# 2026-10-26：GPU の学習（run 40242183928）が bfloat16 の重みで止まったので、float32 にそろえる直し（finetune_exp.py）を入れたあと、
+# 読み込み・トークナイザ・数ステップの学習・保存が通るかを GPU の前に CPU で確かめる
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['granite_smoke.request']
+
+permissions:
+  contents: write
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: 道具
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn transformers sentencepiece tokenizers huggingface_hub safetensors protobuf
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: モデルを取る
+        run: python kaggle/hf_fetch.py ibm-granite/granite-embedding-278m-multilingual hfmodel/ibm-granite__granite-embedding-278m-multilingual
+      - name: 数ステップの学習（CPU、検証モード）
+        env: { FT_VAL: '1', FT_LIMIT: '256', FT_SEED: '1', FT_BS: '16', FT_SORT: '1', FT_PAD8: '1', FT_CTX_UNIT: '1', FT_FOCAL_GAMMA: '1.5', FT_LR: '3e-5', FT_POOL: '1', FT_POOL_EXCLUDE: 'b013,b014', FT_KEEP: '1' }
+        run: |
+          set -o pipefail
+          python finetune_exp.py hfmodel/ibm-granite__granite-embedding-278m-multilingual 1 2>&1 | tee /tmp/smoke.log | tail -40
+          grep -E "weights cast|model_type=|device" /tmp/smoke.log | head -5
+          python -c "import json; m=json.load(open('ft_out/manifest.json')); print('manifest ok', list(m['saved_model']['weights']))"
+      - name: 結果を残す
+        if: always()
+        run: |
+          { echo "done"; grep -E "weights cast|model_type=|Traceback|Error" /tmp/smoke.log | head -10; tail -3 /tmp/smoke.log; } > granite_smoke.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add granite_smoke.request
+          git commit -m "granite-embedding の試運転の結果（自動）" || exit 0
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

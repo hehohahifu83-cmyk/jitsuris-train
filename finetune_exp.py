@@ -89,7 +89,12 @@ if init_model_path:
     print(f"initialized from audited source checkpoint: {init_model_path}", flush=True)
 else:
     model = AutoModelForSequenceClassification.from_pretrained(NAME, **fresh_extra, **model_args)
-DEV = "cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
+# 重みを float32 にそろえる（2026-10-26）。granite-embedding は bfloat16 で保存されていて、そのまま読むと float16 の自動混合精度の GradScaler が
+# 「BFloat16 には未実装」で止まった（run 40242183928）。e5 などもともと float32 のモデルでは何も変わらない
+if any(p.dtype != torch.float32 for p in model.parameters()):
+    print(f"weights cast to float32 (was {sorted({str(p.dtype) for p in model.parameters()})})", flush=True)
+    model = model.float()
+DEV ="cuda" if torch.cuda.is_available() else "cpu"; model.to(DEV)  # Kaggle では GPU
 print(f"device {DEV}; CPU threads={CPU_THREADS}/{CPU_AVAILABLE}", flush=True)
 print(f"model_type={MODEL_TYPE} params={sum(p.numel() for p in model.parameters()):,} attn={getattr(model.config, '_attn_implementation', None)} "
       f"pooling={getattr(model.config, 'classifier_pooling', None)} config_changes={config_changes}", flush=True)
