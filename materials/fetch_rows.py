@@ -378,9 +378,9 @@ def main(argv=None):
     adopted = json.load(open(a.adopted, encoding="utf-8"))
     pools = {p["publisher_id"]: p["pool"] for p in json.load(open(ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]}
     known = known_tables(exclude=a.out)
-    # 封印セット #2 の採用の記録（independent_eval/sealed2.py）は pool=eval2。教材の陣は train（2026-10-25）
+    # 封印セット #2・#3 の採用の記録（independent_eval/sealed2.py・sealed3.py）は pool=eval2・eval3。教材の陣は train（2026-10-25）
     want_pool = adopted.get("pool", "train")
-    if want_pool not in ("train", "eval2"):
+    if want_pool not in ("train", "eval2", "eval3"):
         raise SystemExit(f"採用の記録の pool が知らない値：{want_pool}")
     log = {"adopted": a.adopted, "started_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "tables": []}
     n_cols = 0

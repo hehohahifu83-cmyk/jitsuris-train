@@ -53,16 +53,17 @@ def pools():
     return {p["publisher_id"]: p["pool"] for p in pubs}
 
 
-def adopt(cands, pool_of, known_urls, known_rids):
-    """候補 → (採用, 落とした理由)。公開元ごとにハッシュの順で TABLES_PER_PUBLISHER 表まで。"""
+def adopt(cands, pool_of, known_urls, known_rids, pool="eval2", per_publisher=None):
+    """候補 → (採用, 落とした理由)。公開元ごとにハッシュの順で TABLES_PER_PUBLISHER 表まで（封印セット #3 は pool="eval3"、sealed3.py）。"""
+    per_publisher = per_publisher or TABLES_PER_PUBLISHER
     why, per_pub, seen, out = Counter(), Counter(), set(), []
     for c in sorted(cands, key=lambda c: h(c.get("resource_id") or c.get("resource_url", ""))):
         url = c.get("resource_url") or ""
         rid = c.get("resource_id")
         pub = str(c.get("publisher_id", ""))
         reason = None
-        if pool_of.get(pub) != "eval2" or c.get("pool") != "eval2":
-            reason = "公開元が eval2 でない"
+        if pool_of.get(pub) != pool or c.get("pool") != pool:
+            reason = f"公開元が {pool} でない"
         elif license_id(c) not in ALLOWED_LICENSES:
             reason = "ライセンスが許可の一覧にない"
         elif TITLE_DENY.search(f"{c.get('title', '')} {c.get('resource_name', '')}"):
@@ -73,8 +74,8 @@ def adopt(cands, pool_of, known_urls, known_rids):
             reason = "取り出せる場でない"
         elif url in known_urls or rid in known_rids or rid in seen:
             reason = "学習側で使った表（URL・リソースの一致）"
-        elif per_pub[pub] >= TABLES_PER_PUBLISHER:
-            reason = f"1 公開元 {TABLES_PER_PUBLISHER} 表まで"
+        elif per_pub[pub] >= per_publisher:
+            reason = f"1 公開元 {per_publisher} 表まで"
         if reason:
             why[reason] += 1
             continue
