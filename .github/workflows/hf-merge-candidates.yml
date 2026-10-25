@@ -1,0 +1,41 @@
+name: 融合の候補を探す（Hugging Face のメタデータだけ）
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "research/merge/search.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hf-merge-candidates
+  cancel-in-progress: false
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 探す
+        run: |
+          set -eu
+          test "$(head -1 research/merge/search.request)" = "search"
+          python -I research/merge/hf_merge_candidates.py
+          echo done > research/merge/search.request
+      - name: 保存
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/merge/
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "融合の候補を集めた（自動・メタデータだけ）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
