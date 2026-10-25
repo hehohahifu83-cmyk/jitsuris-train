@@ -967,3 +967,4 @@
     [仕事3] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
     [仕事3] peak GPU memory 5.5 GiB; training loop 1540s
 2026-10-25T15:45:19Z 重みを非公開データセット jitsuris-weights-c1-pool-40118170559 に残した（run 40118170559、SHA-256 照合済み）
+2026-10-25T15:50:55Z 重みを非公開データセット jitsuris-weights-c2-pool-title-40202377192 に残した（run 40202377192、SHA-256 照合済み）
