@@ -1,0 +1,215 @@
+{
+ "code": {
+  "batching.py": "63fc63c69c4aae25934b5e313a1770532e7c570757189dbaca27b7c7bf683464",
+  "encoder_context.py": "28aa52e6d1b51acfa52ca91a1dec1d8a5a7a0a310877a65d8842507adc0e5847",
+  "encoder_exp.py": "2f767bf8afe91fa63b0ab33491d260a1a42d2b0c9556f299b6661ab5b5e778e6",
+  "evaluation_records.py": "acc16dd65e8ee5473c61125dff363fafc6c43ca5121c2a853ab8ef09f32a6757",
+  "exp7.py": "8e51d4e8e01cb01844207462154dab736d8c16a2526cdc1e62c4307fc784f799",
+  "features.py": "1b5c86f902a2ff45dccd219f4daa8cc2abdd6f00d94aaf50eda600be256583ec",
+  "finetune_exp.py": "b6e87b340a069c343464cbde799442719c3ec6973d42f8b04cd6b90053696eda",
+  "gen.py": "5c4d82d085b64b9ce48a5b62ce7082bf11ed9413bd6b51a103f42afb369123fa",
+  "jobs.py": "43f066047d8a8af34e92eaa139fb48462439bcc90d5fbf567e00c17e6ed9bf6e",
+  "llm_baseline.py": "fd997645f1f7d6cf6daea9ac4e858fbfbeda9a4ef1a832fe3c1fe9d9ba9981df",
+  "model_setup.py": "6b1de34b0c2d3e23467bc2081bc64a663c4fc74ca5a81026ff7d79f80fb5ee85",
+  "provenance.py": "7e6842f4b019a59b71898c0fcbd1e346a2a953b810a3d5a61f65694732943f90",
+  "train3.py": "87177b6f24e9b3db24b15e57d003845fd307a7e32a73a99e31ab6a7942ee2062",
+  "val_split.py": "911baee2b13c86fe5e09c4371068d5db4e7b76897a9c87d4f0afee9e3d3b1a16"
+ },
+ "commit": "87c4f288e94049cf50cf4d9c02eb0b7b886f6490",
+ "created_utc": "2026-10-25T22:55:05Z",
+ "extra": {
+  "config_changes": {},
+  "device": "cuda",
+  "dropout_override": null,
+  "eval_mode": "fixed_tests",
+  "gpu": "Tesla T4",
+  "max_length": 128,
+  "model_type": "xlm-roberta",
+  "no_dropout": false,
+  "prefix": "",
+  "request_args": "hfmodel/ibm-granite__granite-embedding-278m-multilingual 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_POOL_EXCLUDE=b013,b014 FT_KEEP=1 ++ FT_SEED=2",
+  "token_stats": {
+   "train": {
+    "max": 242,
+    "max_length": 128,
+    "mean": 64.21283292186453,
+    "n": 122326,
+    "p50": 60,
+    "p95": 113,
+    "p99": 149,
+    "truncated": 3175,
+    "truncated_rate": 0.025955234373722675
+   },
+   "本物（一般）": {
+    "max": 188,
+    "max_length": 128,
+    "mean": 92.86422976501305,
+    "n": 383,
+    "p50": 96,
+    "p95": 131,
+    "p99": 167,
+    "truncated": 22,
+    "truncated_rate": 0.057441253263707574
+   },
+   "本物（日本の調達）": {
+    "max": 196,
+    "max_length": 128,
+    "mean": 106.1304347826087,
+    "n": 92,
+    "p50": 108,
+    "p95": 155,
+    "p99": 196,
+    "truncated": 18,
+    "truncated_rate": 0.1956521739130435
+   },
+   "本物（業務2）": {
+    "max": 177,
+    "max_length": 128,
+    "mean": 86.59323770491804,
+    "n": 976,
+    "p50": 87,
+    "p95": 122,
+    "p99": 155,
+    "truncated": 17,
+    "truncated_rate": 0.017418032786885244
+   },
+   "本物（業務）": {
+    "max": 147,
+    "max_length": 128,
+    "mean": 89.35510204081632,
+    "n": 490,
+    "p50": 88,
+    "p95": 135,
+    "p99": 142,
+    "truncated": 41,
+    "truncated_rate": 0.0836734693877551
+   },
+   "開発用220": {
+    "max": 183,
+    "max_length": 128,
+    "mean": 103.89090909090909,
+    "n": 220,
+    "p50": 102,
+    "p95": 143,
+    "p99": 164,
+    "truncated": 37,
+    "truncated_rate": 0.16818181818181818
+   }
+  }
+ },
+ "labels": {
+  "count": 16,
+  "sha256": "50527885e0331bc0469bbd2d794f105a3a0a1fe56dc7ea9138a55e38c403f8cb"
+ },
+ "libraries": {
+  "numpy": "2.1.3",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+  "python": "3.13.15",
+  "safetensors": "0.8.0",
+  "scikit-learn": "1.6.1",
+  "tokenizers": "0.23.1",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.16.1"
+ },
+ "model": {
+  "hf_repo_id": "ibm-granite/granite-embedding-278m-multilingual",
+  "hf_revision": {
+   "license": "apache-2.0",
+   "patterns": [
+    "*.json",
+    "*.safetensors",
+    "*.model",
+    "*.txt",
+    "sentencepiece*",
+    "tokenizer*"
+   ],
+   "repo": "ibm-granite/granite-embedding-278m-multilingual",
+   "revision": "a9cb5338491faf32b73dd17b714a31821c021bbf",
+   "top_level_files": [
+    "config.json",
+    "model.safetensors",
+    "modules.json",
+    "sentence_bert_config.json",
+    "sentencepiece.bpe.model",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json"
+   ]
+  },
+  "name_or_path": "hfmodel/ibm-granite__granite-embedding-278m-multilingual",
+  "source_files": {
+   "config.json": "1a0e6b783e85be5265ab4fa3a92b79c0d5fd733617fe3d3264411cf3e5d13c8e",
+   "special_tokens_map.json": "378eb3bf733eb16e65792d7e3fda5b8a4631387ca04d2015199c4d4f22ae554d",
+   "tokenizer.json": "2a0d7366dd7780ea36cc42431dd74cd79289b783ab01acd33013fcc96865a8e9",
+   "tokenizer_config.json": "0b3223bec744a0e449daf1ece51510681d25c935aaf16373039e836c3d94559e"
+  },
+  "source_weights": {
+   "model.safetensors": {
+    "bytes": 556109872,
+    "sha256": "b522423ae15d1a6fd48c55ef4f599c0c2c0737603da94e4b4815760c2c06ebac"
+   }
+  }
+ },
+ "replay_rows": {
+  "count": 0
+ },
+ "run": {
+  "env": {
+   "FT_ACC": "2",
+   "FT_BS": "32",
+   "FT_CKPT": "0",
+   "FT_CPU_THREADS": "2",
+   "FT_CTX_UNIT": "1",
+   "FT_FOCAL_GAMMA": "1.5",
+   "FT_FREEZE_EMB": "0",
+   "FT_FUSED": "1",
+   "FT_KEEP": "1",
+   "FT_LR": "3e-5",
+   "FT_PAD8": "1",
+   "FT_POOL": "1",
+   "FT_POOL_EXCLUDE": "b013,b014",
+   "FT_SEED": "1",
+   "FT_SORT": "1"
+  },
+  "epochs": 2.0,
+  "seed": "1"
+ },
+ "saved_model": {
+  "files": {},
+  "weights": {}
+ },
+ "schema_version": 1,
+ "status": "started",
+ "tests": {
+  "本物（一般）": {
+   "count": 383,
+   "sha256_ordered": "e53f51c9af1142f18ef055d35342a99c8848194b4b9b61c9050efc9aabf1e092",
+   "sha256_unordered": "6949b4363d6b0dab03458188c257d81fa15592b44e2669d28cc782757ddf4eb0"
+  },
+  "本物（日本の調達）": {
+   "count": 92,
+   "sha256_ordered": "9d806199e611cde8a33d8603fcda90f61e53bd5e015b6a386c3b17af753571a3",
+   "sha256_unordered": "f7a386ec15ded101fe1ea59bfc8b1d08969f8e1d8a14f5214670789ef2af5161"
+  },
+  "本物（業務2）": {
+   "count": 976,
+   "sha256_ordered": "ca0379f6daae5a100e22273686c7c4bc109254a4f8af634b8c14dd2fbfeac479",
+   "sha256_unordered": "82acd0a46442b6a8647773c9e7d96e47b1439cbda0c137410cddb9a16e28b883"
+  },
+  "本物（業務）": {
+   "count": 490,
+   "sha256_ordered": "7cd45103c7ce4aaf651795a33a1b01676bb2c088ba7acb041aaa924e4213f911",
+   "sha256_unordered": "77bdb485faad0bb08b09f928f445b383897a002b89fed1f7bdac316cc80e3e4f"
+  },
+  "開発用220": {
+   "count": 220,
+   "sha256_ordered": "6f917e68b045dec07c0d14002d19fb50583789063eae9607fd5fa32c0b890c7b",
+   "sha256_unordered": "c120d33d5b2994d1d996f74d84097b0c8d02ed3a59bd305c6adf6f7bee365ec0"
+  }
+ },
+ "train_rows": {
+  "count": 122326,
+  "sha256_ordered": "6a16a247d48e38530e011752f22b3938294aa18ab898c63eabf81a781296a947",
+  "sha256_unordered": "70fea96362306a549c008c20cd9842c42c554c535aa0fe56937616742d6b3b8b"
+ }
+}

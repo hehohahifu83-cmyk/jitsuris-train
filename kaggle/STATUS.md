@@ -1,17 +1,17 @@
 # 最新の学習・結果回収状況
 
-- GitHub Actions run: [40238566916](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/40238566916)
-- 確認更新時刻 (UTC): 2026-10-25T22:06:01+00:00
+- GitHub Actions run: [40242183928](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/40242183928)
+- 確認更新時刻 (UTC): 2026-10-25T22:55:57+00:00
 - 依頼ファイル: `done`
-- Kaggle学習状態: 学習完了（Kaggle が COMPLETE を返答）
-- Kaggle状態の最終観測時刻 (UTC): 2026-10-25T22:06:01Z
-- Kaggle状態の根拠ログ: `jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"`
-- 学習依頼ID: `2026-10-25T14:30:28Z`
+- Kaggle学習状態: 失敗（Kaggle が ERROR を返答）
+- Kaggle状態の最終観測時刻 (UTC): 2026-10-25T22:55:57Z
+- Kaggle状態の根拠ログ: `jitsurio/jitsuris-train has status "KernelWorkerStatus.ERROR"`
+- 学習依頼ID: `2026-10-25T22:53:46Z`
 - Kaggleでの開始を観測した時刻 (UTC): 未観測
-- Kaggleでの完了を観測した時刻 (UTC): 2026-10-25T15:38:33Z
-- 実学習の実行確認: 確認済み（Kaggle結果・artifactを回収）
-- 評価結果回収: 今回の更新なし（過去結果とは区別）
-- 評価レポートartifact: artifact 未確認／未作成（今回の検出JSON 0件）
+- Kaggleでの完了を観測した時刻 (UTC): 未観測
+- 実学習の実行確認: 未確認
+- 評価結果回収: 今回の実行で FINETUNE_RESULTS.md を更新
+- 評価レポートartifact: 回収 artifact ID 12617521096（3ファイル）
 - 学習済みモデル回収: artifact 未確認／未作成
 - 判定手順: [STATUS_GUIDE.md](STATUS_GUIDE.md)
 
