@@ -234,13 +234,14 @@ class Verifier:
         if self.table:
             if table is None or len(table) != len(values_list):
                 raise ValueError("検査役 v2 は同じ表の列（table）が要る")
-            X = np.hstack([X, np.asarray(table_features(table), dtype="float64")])
+            X = np.hstack([X, np.asarray(table_features(table), dtype="float32").astype("float64")])
         return X
 
     def risk_proba(self, X, P, decisions, rows):
         """重大検知役：言い切りが重大な誤りである確率（数字の種類の言い切りでない列は 0）。"""
         import numpy as np
-        R = np.asarray([risk_features(P[k], d[0], d[1], rows[k]["top3"], self.labels) for k, d in enumerate(decisions)], dtype="float64")
+        # 学習と同じく float32 に丸めてから比べる（木の線は float32 の値の間に引かれる）
+        R = np.asarray([risk_features(P[k], d[0], d[1], rows[k]["top3"], self.labels) for k, d in enumerate(decisions)], dtype="float32").astype("float64")
         z = np.full(len(X), self.risk["baseline"])
         XR = np.hstack([X, R])
         for t in self.risk["trees"]:
