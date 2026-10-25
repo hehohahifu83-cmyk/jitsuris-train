@@ -1,0 +1,87 @@
+name: 種子の平均（model soup、CPU・学習なし）
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "research/merge/soup.request"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: soup-eval
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: 依頼を読む
+        id: req
+        run: |
+          if [ "$(head -1 research/merge/soup.request)" = "run" ]; then echo "proceed=true" >> "$GITHUB_OUTPUT"; else echo "proceed=false" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-python@v5
+        if: steps.req.outputs.proceed == 'true'
+        with: { python-version: '3.11' }
+      - name: CPU の道具
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece huggingface_hub
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - uses: actions/download-artifact@v4
+        if: steps.req.outputs.proceed == 'true'
+        with:
+          name: jitsuris-model
+          run-id: 40118170559
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/c1-model
+      - name: C1 種子 1 の重みを照合
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          ck = Path("/tmp/c1-model/ft_out_job1")
+          m = json.loads((ck / "manifest.json").read_text(encoding="utf-8"))
+          name, meta = next(iter(m["saved_model"]["weights"].items()))
+          want = "a7028e711568cfa9b8647b506838db7a353b5b7edf6c1ec8f131f6ac6ec89825"
+          if hashlib.sha256((ck / name).read_bytes()).hexdigest() != want or meta["sha256"] != want:
+              raise SystemExit("weight verification failed")
+          print("verified")
+          PY
+      - name: 平均して予測する（ラベルは読まない）
+        if: steps.req.outputs.proceed == 'true'
+        env: { TOKENIZERS_PARALLELISM: 'false' }
+        run: |
+          set -eu
+          mkdir -p research/merge/preds
+          M=/tmp/c1-model
+          python research/merge/merge_eval.py soup --dirs $M/ft_out_job1 $M/ft_out_job2 $M/ft_out_job3 --out /tmp/soup
+          for spec in "seed2:$M/ft_out_job2:C1 種子 2" "seed3:$M/ft_out_job3:C1 種子 3" "soup:/tmp/soup:種子 1〜3 の重みの平均（model soup）"; do
+            t="${spec%%:*}"; rest="${spec#*:}"; dir="${rest%%:*}"; name="${rest#*:}"
+            for b in b013 b014; do
+              python evaluate_independent.py predict --set materials/pool/work/$b/set.json --checkpoint "$dir" \
+                --out research/merge/preds/${t}_${b}.json --ledger research/merge/ledger.jsonl --device cpu
+            done
+            python -c "import json,sys; json.dump({'name': sys.argv[1]}, open('research/merge/preds/${t}_meta.json', 'w'), ensure_ascii=False)" "$name"
+          done
+          python research/merge/merge_eval.py score --tags c1 seed2 seed3 soup --out research/merge/SOUP.md \
+            --title "# 種子の平均（model soup）を b013・b014 で C1 と比べる（2026-10-25 Claude。\`research/merge/merge_eval.py\`）"
+          echo done > research/merge/soup.request
+      - name: 予測と結果だけを保存
+        if: always() && steps.req.outputs.proceed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/merge/
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "種子の平均：予測と結果（自動）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

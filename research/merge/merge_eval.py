@@ -89,6 +89,28 @@ def merge(a):
     print(f"{a.tag}: weights {digest}", flush=True)
 
 
+def soup(a):
+    """種子違いの C1（同じ e5-base から同じ設定で微調整）の重みを、分類の頭も含めて平均する（model soup）。"""
+    from safetensors.torch import load_file, save_file
+    mans = [json.load(open(os.path.join(d, "manifest.json"), encoding="utf-8")) for d in a.dirs]
+    names = [next(iter(m["saved_model"]["weights"])) for m in mans]
+    sds = [load_file(os.path.join(d, n)) for d, n in zip(a.dirs, names)]
+    labels = [json.load(open(os.path.join(d, "labels.json"), encoding="utf-8")) for d in a.dirs]
+    if any(l != labels[0] for l in labels) or any(set(sd) != set(sds[0]) for sd in sds):
+        raise SystemExit("種子の重みの形・ラベルの並びが違う")
+    out = {k: (sum(sd[k].float() for sd in sds) / len(sds)).to(v.dtype).contiguous() if v.is_floating_point() else v for k, v in sds[0].items()}
+    if os.path.exists(a.out):
+        shutil.rmtree(a.out)
+    shutil.copytree(a.dirs[0], a.out)
+    save_file(out, os.path.join(a.out, names[0]), metadata={"format": "pt"})
+    digest = hashlib.sha256(open(os.path.join(a.out, names[0]), "rb").read()).hexdigest()
+    m = mans[0]
+    m["saved_model"]["weights"][names[0]]["sha256"] = digest
+    m.setdefault("extra", {})["soup"] = {"members": [mm["saved_model"]["weights"][n]["sha256"] for mm, n in zip(mans, names)]}
+    json.dump(m, open(os.path.join(a.out, "manifest.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"soup of {len(sds)}: weights {digest}", flush=True)
+
+
 def with_pred(cols, path):
     pred = json.load(open(path, encoding="utf-8"))
     by = {r["id"]: r for r in pred["rows"]}
@@ -113,7 +135,7 @@ def score(a):
     y = np.array([c["truth"] if o else "" for c, o in zip(tr, ok)])
     mv, _, _ = E.fit(Xtr[ok], y[ok])
     meta = {t: json.load(open(os.path.join(PRED, f"{t}_meta.json"), encoding="utf-8")) for t in a.tags if os.path.exists(os.path.join(PRED, f"{t}_meta.json"))}
-    L = ["# 融合の試し：C1 ＋ λ ×（候補 − e5-base）を b013・b014 で比べる（2026-10-25 Claude。`research/merge/merge_eval.py`）", "",
+    L = [a.title or "# 融合の試し：C1 ＋ λ ×（候補 − e5-base）を b013・b014 で比べる（2026-10-25 Claude。`research/merge/merge_eval.py`）", "",
          "- C1 はこの 2 陣を学習していない。検査役 v2 は b001〜b012 で学んだ（測る陣の正解は見ない）。tau＝0.05、rho_assert＝0.7（先に固定した値）",
          "- 候補と理由：`research/merge/FINDINGS.md`。λ は 0.2・0.5 を先に決めた。**ここの数字は開発用**（封印セットではない）", "",
          "| 本体 | 見張りだけ | ＋ recheck v1 ＋ 検査役 v2 ＋ rho 0.7（製品の形） | 不明 | 重大 |", "|---|---|---|---:|---:|"]
@@ -137,7 +159,7 @@ def score(a):
             f2.append((c, "assert") if c else d)
         s1, s2 = E.score([c["pred"] for c in te], te), E.score([d[0] for d in f2], te)
         m = meta.get(t, {})
-        name = "C1 そのまま" if t == "c1" else f"{m.get('candidate', t)} λ={m.get('lam', '?')}"
+        name = "C1 そのまま" if t == "c1" else m.get("name") or f"{m.get('candidate', t)} λ={m.get('lam', '?')}"
         L.append(f"| {name} | {E.fmt(s1)} | {E.fmt(s2)} | {s2['unknown'] / s2['n']:.1%} | {s2['critical'] / s2['n']:.2%} |")
         print(t, E.fmt(s1), "|", E.fmt(s2), flush=True)
     L += ["", "- 「良い」の目安（FINDINGS.md）：重大が増えず、正解率 +1.0 ポイント以上。採否は b015 で確かめてから"]
@@ -151,10 +173,13 @@ def main(argv=None):
     m.add_argument("--c1", required=True); m.add_argument("--base", required=True); m.add_argument("--cand", required=True)
     m.add_argument("--cand-file", default=None); m.add_argument("--cand-repo", default=""); m.add_argument("--cand-rev", default="")
     m.add_argument("--lam", type=float, required=True); m.add_argument("--tag", required=True); m.add_argument("--out", required=True)
+    u = sp.add_parser("soup")
+    u.add_argument("--dirs", nargs="+", required=True); u.add_argument("--out", required=True)
     s = sp.add_parser("score")
     s.add_argument("--tags", nargs="+", required=True); s.add_argument("--out", required=True)
+    s.add_argument("--title", default=None)
     a = ap.parse_args(argv)
-    merge(a) if a.cmd == "merge" else score(a)
+    {"merge": merge, "soup": soup, "score": score}[a.cmd](a)
 
 
 if __name__ == "__main__":
