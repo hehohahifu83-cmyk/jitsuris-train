@@ -969,3 +969,4 @@
 2026-10-25T15:45:19Z 重みを非公開データセット jitsuris-weights-c1-pool-40118170559 に残した（run 40118170559、SHA-256 照合済み）
 2026-10-25T15:50:55Z 重みを非公開データセット jitsuris-weights-c2-pool-title-40202377192 に残した（run 40202377192、SHA-256 照合済み）
 2026-10-25T15:52:23Z 重みを非公開データセット jitsuris-weights-v31-base-39506074807 に残した（run 39506074807、SHA-256 照合済み）
+2026-10-25T17:15:41Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
