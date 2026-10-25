@@ -21,7 +21,7 @@ OUT = Path(__file__).resolve().parent
 UA = {"User-Agent": "jitsuris-train dictionary fetch (public data)"}
 
 
-def get(url, timeout=120):
+def get(url, timeout=300):
     with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
         return r.read()
 
@@ -61,10 +61,9 @@ def jp():
 
 
 def check_digit_jp(code5):
-    """全国地方公共団体コードの検査数字（総務省の決まり：各桁に 6・5・4・3・2 を掛けた和を 11 で割った余り r、11−r の 1 の位。r＝0 なら 0）。"""
+    """全国地方公共団体コードの検査数字（総務省の決まり：各桁に 6・5・4・3・2 を掛けた和を 11 で割った余り r、11−r の 1 の位。r＝0 なら 1、r＝1 なら 0）。"""
     s = sum(int(d) * w for d, w in zip(code5, (6, 5, 4, 3, 2)))
-    r = s % 11
-    return 0 if r == 0 else (11 - r) % 10
+    return (11 - s % 11) % 10
 
 
 def br():
