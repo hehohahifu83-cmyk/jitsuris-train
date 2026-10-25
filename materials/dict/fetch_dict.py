@@ -75,9 +75,9 @@ def br():
         import csv
         alt = "https://raw.githubusercontent.com/kelvins/municipios-brasileiros/main/csv/municipios.csv"
         ufs = "https://raw.githubusercontent.com/kelvins/municipios-brasileiros/main/csv/estados.csv"
-        uf_by = {r["codigo_uf"]: r["uf"] for r in csv.DictReader(io.StringIO(get(ufs).decode("utf-8")))}
+        uf_by = {r["codigo_uf"]: r["uf"] for r in csv.DictReader(io.StringIO(get(ufs).decode("utf-8-sig")))}
         rows = [{"code": r["codigo_ibge"], "name": r["nome"], "uf": uf_by.get(r["codigo_uf"], "")}
-                for r in csv.DictReader(io.StringIO(get(alt).decode("utf-8")))]
+                for r in csv.DictReader(io.StringIO(get(alt).decode("utf-8-sig")))]
         save("br_municipios", rows, alt, "IBGE の市の表を写した公開の一覧（kelvins/municipios-brasileiros、MIT）。IBGE の API に届かなかったため")
         return
     rows = []
