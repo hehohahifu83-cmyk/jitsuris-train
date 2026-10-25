@@ -176,6 +176,18 @@ class PoolDiscoverTests(unittest.TestCase):
             D.main(["--out", "/dev/null", "--national", "--pool", "eval2"])
         D.POOL_NAME = "train"
 
+    def test_query_is_passed_to_package_search(self):
+        seen = []
+        orig = D.get_json
+        D.get_json = lambda url, tries=4: (seen.append(url), {"result": {"count": 0, "results": []}})[1]
+        try:
+            D.QUERY = "予算 OR budget"
+            D.bodik_candidates({"111111"})
+        finally:
+            D.get_json = orig
+            D.QUERY = None
+        self.assertIn("q=", seen[0])
+
 
 if __name__ == "__main__":
     unittest.main()
