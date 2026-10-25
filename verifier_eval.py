@@ -260,7 +260,7 @@ def main(argv=None):
          f"- tau の決め方（事前に固定）：ほかの陣で「下げた列のうち本体が本当に間違っていた割合」が {MIN_PRECISION:.0%} 以上になる最大の tau（候補 {', '.join(map(str, TAUS))}）",
          "", "## 場",
          f"- 教材庫 b001〜b013（{len(cols):,} 列）。本体は学習前の版 31（E5-base 種子 1）で、どの陣の列も見ていない。検査役と tau は**陣を 1 つずつ外して**学び・決め、外した陣で測った",
-         "- recheck v1 の規則は b003〜b012 を見ずに作ったが、教材庫の検証（第 1 段）で作ったので、ここでの recheck の数字はやや甘くない（作るのに使っていない）",
+         "- recheck v1 の規則は教材庫の検証（第 1 段の検証側）で作ったもの。ここでは本体が学習前の版 31 なので、recheck の数字も作るのに使った場での数字ではない",
          "", "## 結果（陣を外して測った数字を合わせたもの）",
          "| 判定 | 結果 |", "|---|---|",
          f"| 見張りだけ | {fmt(sg)} |", f"| ＋ recheck v1 | {fmt(sb)} |", f"| ＋ recheck v1 ＋ 検査役 | {fmt(sf)} |", "",
@@ -282,7 +282,7 @@ def main(argv=None):
     for t, s, n, pr in curve:
         L.append(f"| {t} | {fmt(s)} | {n} | {pr:.0%} |")
     L += ["", "## 書き出し",
-          f"- 全部の陣（{int(trainable.sum()):,} 列）で学び直したモデル：`{a.export}`（{MODEL}、tau＝{tau_all}。書き出した JSON の確率と sklearn の確率の最大の差 {meta_diff:.1e}）。`verifier.Verifier.load()` と `verifier.apply_after_recheck()` で使う",
+          f"- 全部の陣（{int(trainable.sum()):,} 列）で学び直したモデル：`{a.export}`（{MODEL}、tau＝{tau_all}、rho＝{rho_all}。書き出した JSON の確率と sklearn の確率の最大の差 {meta_diff:.1e}）。`verifier.Verifier.load()` と `verifier.apply_after_recheck()` で使う",
           "- **注意**：ここでの数字は教材庫（正解は ChatGPT と Claude の裁定）での数字。本当に重大が減るかは、封印セット #3 で事前登録して測る",
           "", "## 再現", "`python3 verifier_eval.py`（scikit-learn が要る）。試験 `python3 -m unittest tests.test_verifier`"]
     open(a.out, "w", encoding="utf-8").write("\n".join(L) + "\n")
