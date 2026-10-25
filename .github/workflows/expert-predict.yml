@@ -1,0 +1,72 @@
+name: 専門家の候補の予測（b013・b014、CPU）
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "research/experts/predict.request"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: expert-predict
+  cancel-in-progress: false
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: 依頼を読む
+        id: req
+        run: |
+          read -r cmd run_id tag <<< "$(head -1 research/experts/predict.request) "
+          if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          case "$run_id" in ''|*[!0-9]*) echo "run の番号が違う"; exit 1;; esac
+          case "$tag" in ''|*[!a-z0-9]*) echo "名前は英小文字と数字だけ"; exit 1;; esac
+          { echo "proceed=true"; echo "run_id=$run_id"; echo "tag=$tag"; } >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: steps.req.outputs.proceed == 'true'
+        with: { python-version: '3.11' }
+      - name: CPU の推論の道具
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - uses: actions/download-artifact@v4
+        if: steps.req.outputs.proceed == 'true'
+        with:
+          name: jitsuris-model
+          run-id: ${{ steps.req.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/m
+      - name: 予測（ラベルは読まない。重みは manifest の SHA-256 と照合される）
+        if: steps.req.outputs.proceed == 'true'
+        env: { TOKENIZERS_PARALLELISM: 'false' }
+        run: |
+          set -eu
+          tag=${{ steps.req.outputs.tag }}
+          for d in /tmp/m/ft_out_job*; do
+            j=$(basename "$d" | sed 's/ft_out_//')
+            for b in b013 b014; do
+              python evaluate_independent.py predict --set materials/pool/work/$b/set.json --checkpoint "$d" \
+                --out research/experts/preds/${tag}_${j}_${b}.json --ledger research/experts/ledger.jsonl --device cpu
+            done
+          done
+          echo "done ${{ steps.req.outputs.run_id }} $tag" > research/experts/predict.request
+      - name: 予測だけを保存
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/experts/
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "専門家の候補の予測（自動）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
