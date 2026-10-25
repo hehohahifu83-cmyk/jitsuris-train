@@ -4,6 +4,7 @@ C1 は b012 までの教材庫で学習したので、教材庫では測れな�
 - 検査役 v2・重大検知役は、測る陣を除いた陣（版 31 の予測）で学ぶ（測る陣の正解は見ない）
 - 重大検知役は本体の確率を入力にするので、版 31 で学んだものが C1 にそのまま効くかを見る（効かなければ C1 の予測で作り直す）
 - tau・th は verifier_eval.py（版 31、陣を外して決めた）の 0.05・0.7 をそのまま使う（ここでは選ばない）
+候補つきの不明を言い切りに戻す線（rho_assert）の曲線も出す（オーナー指示「8〜10%を目指そう」。線は測る陣で選ばず、別の陣で確かめる）。
 使い方：python verifier_c1.py --test b013 [--out bench/verifier_c1_b013.md]
 """
 from __future__ import annotations
@@ -34,6 +35,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--test", nargs="+", default=["b013"])
     ap.add_argument("--out", default=None)
+    ap.add_argument("--save", default=None, help="検査役の確率・重大検知役の確率を npz に保存（再利用）")
     a = ap.parse_args(argv)
     train_b = [b for b in E.BATCHES if b not in a.test]
     labels = list(V.LABELS)
@@ -88,6 +90,24 @@ def main(argv=None):
     keys = sorted(set().union(*cp), key=lambda k: -cp[1].get(k, 0))
     for k in keys:
         L.append(f"| {k} | " + " | ".join(str(c.get(k, 0)) for c in cp) + " |")
+    # 候補つきの不明を言い切りに戻す：本体の 1 位と検査役の 1 位が同じ数字の種類で、検査役の確率が rho 以上（verifier.candidate）
+    fin = [both[k] for k in idx]
+    n = len([c for c in te if c["truth"] and c["truth"] not in B.NOT_USED and c["truth"] != "person"])
+    L += ["", "## 候補つきの不明を言い切りに戻したら（参考の曲線。線はこの陣では選ばない）",
+          "| rho | 結果 | 不明の割合 | 重大の割合 |", "|---:|---|---:|---:|"]
+    for r in (None, 0.5, 0.7, 0.8, 0.9, 0.95, 0.98, 0.99):
+        if r is None:
+            f2 = fin
+        else:
+            f2 = []
+            for k, d in enumerate(fin):
+                c = V.candidate(d[0], d[1], te[k]["pred"], te[k]["top3"], te[k]["header"], Pte[k], labels, r)
+                f2.append((c, "assert") if c else d)
+        s2 = E.score([d[0] for d in f2], te)
+        L.append(f"| {r if r is not None else '戻さない'} | {E.fmt(s2)} | {s2['unknown'] / s2['n']:.1%} | {s2['critical'] / s2['n']:.2%} |")
+        print("rho", r, E.fmt(s2), flush=True)
+    if a.save:
+        np.savez(a.save, P=Pte, R=Rte)
     L += ["", "- **注意**：1 陣だけの数字で、列が少ない。合格判定は封印セット #3 で事前登録して測る"]
     open(out, "w", encoding="utf-8").write("\n".join(L) + "\n")
     for n, s in scores:
