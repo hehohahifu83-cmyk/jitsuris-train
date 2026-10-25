@@ -26,11 +26,21 @@ jobs:
         id: req
         run: |
           set -eu
-          read -r cmd set_path out_path <<< "$(head -1 materials/label_assist/predict.request)"
+          # 形：run <set> <out> [c1]。c1 を付けると教材庫を学習した C1（run 40118170559 の種子 1）で予測する（2026-10-25、重大検知役を C1 用に作り直すため）
+          read -r cmd set_path out_path model <<< "$(head -1 materials/label_assist/predict.request)"
           if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           case "$set_path" in materials/label_assist/*_set.json|materials/pool/work/*/set.json) ;; *) echo "set の場所が違う"; exit 1;; esac
-          case "$out_path" in materials/label_assist/*_e5base_seed1.json|materials/pool/work/*/pred_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
-          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; } >> "$GITHUB_OUTPUT"
+          model="${model:-e5}"
+          if [ "$model" = "c1" ]; then
+            case "$out_path" in materials/pool/work/*/pred_c1_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+            run_id=40118170559; want=a7028e711568cfa9b8647b506838db7a353b5b7edf6c1ec8f131f6ac6ec89825; label="C1（教材庫を学習、種子 1）"
+          elif [ "$model" = "e5" ]; then
+            case "$out_path" in materials/label_assist/*_e5base_seed1.json|materials/pool/work/*/pred_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+            run_id=39506074807; want=38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7; label="E5-base 種子 1"
+          else
+            echo "モデルの名前が違う"; exit 1
+          fi
+          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; echo "model=$model"; echo "run_id=$run_id"; echo "want=$want"; echo "label=$label"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.req.outputs.proceed == 'true'
         with: { python-version: '3.11' }
@@ -44,10 +54,10 @@ jobs:
         if: steps.req.outputs.proceed == 'true'
         with:
           name: jitsuris-model
-          run-id: 39506074807
+          run-id: ${{ steps.req.outputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: /tmp/e5-model
-      - name: 重みの SHA-256 を照合（E5-base 最終比較の種子 1）
+      - name: 重みの SHA-256 を照合（E5-base 種子 1、または C1 種子 1）
         if: steps.req.outputs.proceed == 'true'
         run: |
           python - <<'PY'
@@ -56,7 +66,7 @@ jobs:
           ck = Path("/tmp/e5-model/ft_out_job1")
           m = json.loads((ck / "manifest.json").read_text(encoding="utf-8"))
           name, meta = next(iter(m["saved_model"]["weights"].items()))
-          want = "38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7"
+          want = "${{ steps.req.outputs.want }}"
           got = hashlib.sha256((ck / name).read_bytes()).hexdigest()
           if got != want or meta["sha256"] != want:
               raise SystemExit("weight verification failed")
@@ -75,6 +85,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "${{ steps.req.outputs.out }}" materials/label_assist/ledger.jsonl materials/label_assist/predict.request
-          git commit -m "ラベルの手伝い：今のモデル（E5-base 種子 1）の予測（自動）"
+          git commit -m "ラベルの手伝い：${{ steps.req.outputs.label }} の予測（自動）"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
