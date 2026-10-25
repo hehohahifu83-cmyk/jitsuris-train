@@ -26,8 +26,12 @@ jobs:
       - name: 探す
         run: |
           set -eu
-          test "$(head -1 research/merge/search.request)" = "search"
-          python -I research/merge/hf_merge_candidates.py
+          read -r cmd ids <<< "$(head -1 research/merge/search.request) "
+          case "$cmd" in
+            search) python -I research/merge/hf_merge_candidates.py ;;
+            cards) python -I research/merge/hf_merge_candidates.py cards $ids ;;
+            *) echo "依頼が違う"; exit 1 ;;
+          esac
           echo done > research/merge/search.request
       - name: 保存
         if: always()

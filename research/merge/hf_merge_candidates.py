@@ -67,5 +67,21 @@ def main():
             f.write(f"| {r['id']} | {r['downloads']} | {r.get('pipeline_tag') or ''} | {lang} | {ds} | {arch} | {r.get('params') or ''} |\n")
 
 
+def cards(ids):
+    """候補の説明（README）だけを research/merge/cards/ に保存する。"""
+    import os
+    os.makedirs("research/merge/cards", exist_ok=True)
+    for mid in ids:
+        try:
+            with urllib.request.urlopen(f"https://huggingface.co/{mid}/raw/main/README.md", timeout=60) as r:
+                txt = r.read().decode("utf-8", "replace")
+        except Exception as e:
+            txt = f"取得できない：{e}"
+        open(f"research/merge/cards/{mid.replace('/', '__')}.md", "w", encoding="utf-8").write(txt[:20000])
+
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 2 and sys.argv[1] == "cards":
+        cards(sys.argv[2:])
+    else:
+        main()
