@@ -81,6 +81,18 @@ class VerifierTest(unittest.TestCase):
         self.assertEqual(v.labels[int(P[0].argmax())], "date")
         self.assertIsNotNone(recheck.apply_table)
 
+    def test_load_v2_with_risk(self):
+        p = Path(__file__).resolve().parents[1] / "models" / "verifier_v2.json"
+        v = V.Verifier.load(p)
+        self.assertTrue(v.table and v.risk)
+        vals = [["1", "2", "3", "4"], ["120", "80", "45", "300"], ["2019-04-01", "2019-05-01", "2019-06-01", "2019-07-01"]]
+        tab = [{"rows": x, "row_index": [0, 5, 9, 14], "total": 20} for x in vals]
+        dec = [("id", None), ("quantity", None), ("date", None)]
+        rows = [{"guarded": d[0], "top3": [{"label": d[0], "probability": 0.9}], "header": "x"} for d in dec]
+        out = V.apply_after_recheck(dec, vals, v, rows=rows, table=tab)
+        self.assertEqual(len(out), 3)
+        self.assertTrue(all(o[0] in (d[0], "unknown") for o, d in zip(out, dec)))   # 種類を付け替えない
+
 
 if __name__ == "__main__":
     unittest.main()
