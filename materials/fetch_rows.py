@@ -189,14 +189,34 @@ def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
             raise RuntimeError(f"{step}: HTTP {exc.code}") from None
 
 
+def _find_header(rows):
+    """先頭 30 行から見出しの行を探す → (行の番号, 列名の並び) か None。列名の重複は 1 つ、または 2 割までで、重複には「名前_2」のように番号を付ける。"""
+    for i, row in enumerate(rows[:30]):
+        cells = [c.strip().lstrip("\ufeff") for c in row]
+        named = [c for c in cells if c]
+        if len(named) < 2 or len(named) - len(set(named)) > max(1, 0.2 * len(named)) or all(re.fullmatch(r"[-0-9.,%]+", c) for c in named):
+            continue
+        nxt = rows[i + 1: i + 6]
+        if nxt and sum(1 for r in nxt if len(r) >= len(named)) >= max(1, len(nxt) - 1):
+            seen, out = {}, []
+            for c in cells:
+                if c:
+                    seen[c] = seen.get(c, 0) + 1
+                    c = c if seen[c] == 1 else f"{c}_{seen[c]}"
+                out.append(c)
+            return i, out
+    return None
+
+
 def parse_csv(raw, truncated=False, limit=FETCH_LIMIT):
     """CSV のバイト列 → (列名, 行の dict のリスト, 読めた行の数)。読めなければ ValueError。
-    文字コードは UTF-8（BOM あり・なし）→ CP932 の順に試す。先頭 10 行の中で、2 つ以上の異なる文字の列名が並び、
-    その次の行からも同じ数の列が続く最初の行を見出しとする（表題・注の前置きの行を飛ばすため）。"""
+    文字コードは UTF-8（BOM あり・なし）→ CP932 → CP1252 の順に試す。先頭 30 行の中で、2 つ以上の文字の列名が並び（重複は 1 つ、または 2 割まで。重複には番号を付ける）、
+    その次の行からも同じ数の列が続く最初の行を見出しとする（表題・注の前置きの行を飛ばすため）。区切りは自動判定 → カンマ → タブ → セミコロンの順に試す
+    （2026-10-26：b015 のオーストラリアの CSV 41 表のうち 23 表が「見出しの行が見つからない」、3 表が「文字コード不明」で落ちたため）。"""
     import csv
     import io
     text = None
-    for enc in ("utf-8-sig", "cp932"):
+    for enc in ("utf-8-sig", "cp932", "cp1252"):
         try:
             text = raw.decode(enc)
             break
@@ -214,25 +234,21 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT):
         text = text[: text.rfind("\n") + 1]   # 切れた最後の行を捨てる
     sample = text[:8192]
     try:
-        delim = csv.Sniffer().sniff(sample, delimiters=",\t;").delimiter
+        sniffed = [csv.Sniffer().sniff(sample, delimiters=",\t;").delimiter]
     except csv.Error:
-        delim = ","
-    try:
-        rows = list(csv.reader(io.StringIO(text), delimiter=delim))
-    except csv.Error as exc:
-        raise ValueError(f"csv: {exc}") from None
-    head = None
-    for i, row in enumerate(rows[:10]):
-        cells = [c.strip().lstrip("\ufeff") for c in row]
-        named = [c for c in cells if c]
-        if len(named) < 2 or len(set(named)) < len(named) or all(re.fullmatch(r"[-0-9.,%]+", c) for c in named):
+        sniffed = []
+    head, rows, err = None, [], None
+    for delim in sniffed + [d for d in (",", "\t", ";") if d not in sniffed]:
+        try:
+            rows = list(csv.reader(io.StringIO(text), delimiter=delim))
+        except csv.Error as exc:
+            err = exc
             continue
-        nxt = rows[i + 1: i + 6]
-        if nxt and sum(1 for r in nxt if len(r) >= len(named)) >= max(1, len(nxt) - 1):
-            head = (i, cells)
+        head = _find_header(rows)
+        if head is not None:
             break
     if head is None:
-        raise ValueError("csv: header row not found")
+        raise ValueError(f"csv: {err}" if err and not rows else "csv: header row not found")
     i, cells = head
     fields, idx = [], []
     for j, c in enumerate(cells):

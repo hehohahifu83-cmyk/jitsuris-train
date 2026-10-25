@@ -130,6 +130,18 @@ class PoolDiscoverTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             F.parse_csv(b"1,2,3\n4,5,6\n")
 
+    def test_parse_csv_robust_20261026(self):
+        import fetch_rows as F
+        # 区切りの自動判定が外れても試す・前置きの行が長い・列名の重複に番号・CP1252（b015 の取り出しの失敗から）
+        f, r, n = F.parse_csv("Report title\nSource: x\n\nRegion;Amount;Count\nA;1;2\nB;3;4\nC;5;6\nD;7;8\n".encode())
+        self.assertEqual(f, ["Region", "Amount", "Count"])
+        f, r, n = F.parse_csv("Name,Value,Value,Year\nA,1,2,2020\nB,3,4,2021\nC,5,6,2022\nD,1,1,2023\n".encode())
+        self.assertEqual(f, ["Name", "Value", "Value_2", "Year"])
+        self.assertEqual(r[0]["Value_2"], "2")
+        f, r, n = F.parse_csv(("\n".join(["note"] * 15) + "\nx,y\n1,2\n3,4\n5,6\n").encode())
+        self.assertEqual(f, ["x", "y"])
+        self.assertEqual(F.parse_csv("Caf\xe9,Price\nA,1\nB,2\nC,3\n".encode("cp1252"))[0], ["Café", "Price"])
+
     def test_budget_stops_before_searching_more_orgs(self):
         calls = []
         orig, orig_d = D.get_json, D.DEADLINE
