@@ -68,7 +68,18 @@ def check_digit_jp(code5):
 
 def br():
     url = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios"
-    data = json.loads(get(url))
+    try:
+        data = json.loads(get(url, timeout=60))
+    except Exception as e:  # GitHub の実行環境から IBGE につながらないとき（2026-10-26 に 2 回）は、IBGE の表を写した公開の一覧（MIT）を使う
+        print(f"IBGE に届かない（{e}）→ 予備の一覧", flush=True)
+        import csv
+        alt = "https://raw.githubusercontent.com/kelvins/municipios-brasileiros/main/csv/municipios.csv"
+        ufs = "https://raw.githubusercontent.com/kelvins/municipios-brasileiros/main/csv/estados.csv"
+        uf_by = {r["codigo_uf"]: r["uf"] for r in csv.DictReader(io.StringIO(get(ufs).decode("utf-8")))}
+        rows = [{"code": r["codigo_ibge"], "name": r["nome"], "uf": uf_by.get(r["codigo_uf"], "")}
+                for r in csv.DictReader(io.StringIO(get(alt).decode("utf-8")))]
+        save("br_municipios", rows, alt, "IBGE の市の表を写した公開の一覧（kelvins/municipios-brasileiros、MIT）。IBGE の API に届かなかったため")
+        return
     rows = []
     for m in data:
         uf = (((m.get("microrregiao") or {}).get("mesorregiao") or {}).get("UF") or {}) or (((m.get("regiao-imediata") or {}).get("regiao-intermediaria") or {}).get("UF") or {})
