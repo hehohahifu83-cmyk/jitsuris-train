@@ -1,1 +1,6 @@
-run
+done
+weights cast to float32 (was ['torch.bfloat16'])
+model_type=xlm-roberta params=278,055,952 attn=sdpa pooling=None config_changes={}
+| hfmodel/ibm-granite__granite-embedding-278m-multilingual 微調整 1.0周・微調整7割＋今の仕組み3割 | 検証（一般） 正0.0% 誤0 不明148 重大0 その他見送り56/56 | 検証（業務） 正0.0% 誤0 不明196 重大0 その他見送り8/8 | 検証（業務2） 正0.0% 誤0 不明382 重大0 その他見送り33/33 | 検証（日本の調達） 正0.0% 誤0 不明65 重大0 その他見送り1/1 | 検証（教材庫） 正0.0% 誤0 不明3061 重大0 その他見送り104/104 | 学習 99秒・評価 497秒 |
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  3.70it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  3.70it/s]
+manifest.json written; weights sha256 dbef86f0c04872aae888f1f455feb2cc71609d681b3bd93330d09c4dae82457d
