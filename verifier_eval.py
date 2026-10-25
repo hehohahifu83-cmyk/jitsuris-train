@@ -30,6 +30,28 @@ MIN_CAND_ACC = 0.95   # 候補の正しい割合（正解が決められる列�
 
 
 def load_batch(b):
+    """pool_bench.load_batch に、表の行の順にそろった値（row_values）・行の番号・表の行数を足す（v2 の table_features 用）。"""
+    cols = _load_batch(b)
+    corpus = B.read_jsonl(B.WORK / b / "corpus.jsonl")
+    for c in cols:
+        x = corpus[c["i"]]
+        c["tab"] = {"rows": x.get("row_values") or x["values"], "row_index": x.get("row_index"), "total": x.get("datastore_total")}
+    return cols
+
+
+def table_matrix(cols):
+    """列ごとの table_features（表ごとに計算し、cols の順に並べる）。"""
+    T = np.zeros((len(cols), V.TABLE_DIM), dtype="float32")
+    by = defaultdict(list)
+    for k, c in enumerate(cols):
+        by[(c["batch"], c["table"])].append(k)
+    for ks in by.values():
+        for k, f in zip(ks, V.table_features([cols[k]["tab"] for k in ks])):
+            T[k] = f
+    return T
+
+
+def _load_batch(b):
     """pool_bench.load_batch。b003 は予測の行が 20 多い（取り出しのやり直し）ので id で合わせる。"""
     try:
         return B.load_batch(b)
@@ -160,7 +182,7 @@ def main(argv=None):
     base = base_decisions(cols)
     guard_only = [(c["pred"], None) for c in cols]
     labels = list(V.LABELS)
-    X = V.matrix([c["values"] for c in cols])
+    X = np.hstack([V.matrix([c["values"] for c in cols]), table_matrix(cols)])
     trainable = np.array([bool(c["truth"]) and c["truth"] in labels for c in cols])
     y = np.array([c["truth"] if t else "" for c, t in zip(cols, trainable)])
     batch = np.array([c["batch"] for c in cols])
@@ -229,7 +251,7 @@ def main(argv=None):
     final_all = [V.veto(base[k][0], P[k], labels, tau_all) for k in range(len(cols))]
     final_all = [f if f[1] else base[k] for k, f in enumerate(final_all)]
     rho_all = pick_rho(final_all, P, labels, cols, list(range(len(cols))))
-    meta = {"version": "v1", "labels": labels, "dense_dim": V.DENSE_DIM, "g_dim": V.G_DIM, "tau": tau_all, "rho": rho_all,
+    meta = {"version": "v2", "table": True, "labels": labels, "table_dim": V.TABLE_DIM, "dense_dim": V.DENSE_DIM, "g_dim": V.G_DIM, "tau": tau_all, "rho": rho_all,
             "trained_on": list(BATCHES), "n_train": int(trainable.sum())}
     if MODEL == "hgb":
         meta.update(V.export_hgb(lr, labels))
@@ -243,9 +265,16 @@ def main(argv=None):
                      "mean": [round(float(x), 6) for x in mean], "scale": [round(float(x), 6) for x in scale]})
     # 書き出した JSON で同じ確率が出るかを確かめる（numpy だけの推論 ＝ ブラウザ版の手本）
     chk = V.Verifier(json.loads(json.dumps(meta)))
-    sub = np.where(trainable)[0][:300]
-    p_sk = lr.predict_proba((X[sub] - mean) / scale)
-    p_js = chk.proba([cols[k]["values"] for k in sub])[:, [labels.index(c) for c in lr.classes_]]
+    by_t = defaultdict(list)
+    for k, c in enumerate(cols):
+        by_t[(c["batch"], c["table"])].append(k)
+    p_sk, p_js = [], []
+    for ks in by_t.values():   # 表ごとに確かめる（v2 は表全体が入力）。先頭から 300 列ほど
+        p_sk.append(lr.predict_proba((X[ks] - mean) / scale))
+        p_js.append(chk.proba([cols[k]["values"] for k in ks], [cols[k]["tab"] for k in ks])[:, [labels.index(c) for c in lr.classes_]])
+        if sum(len(p) for p in p_sk) >= 300:
+            break
+    p_sk, p_js = np.vstack(p_sk), np.vstack(p_js)
     meta_diff = float(np.abs(p_sk - p_js).max())
     if meta_diff > 1e-3:
         raise SystemExit(f"書き出した検査役の確率が合わない（最大の差 {meta_diff}）")

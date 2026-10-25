@@ -1,3 +1,4 @@
+import math
 import sys
 import unittest
 from pathlib import Path
@@ -33,7 +34,7 @@ class VerifierTest(unittest.TestCase):
             labels = list(V.LABELS)
             tau = 0.01
 
-            def proba(self, values_list):
+            def proba(self, values_list, table=None):
                 import numpy as np
                 P = np.zeros((len(values_list), len(self.labels)))
                 P[:, self.labels.index("date")] = 1.0
@@ -57,10 +58,24 @@ class VerifierTest(unittest.TestCase):
         self.assertIsNone(V.candidate("unknown", "low_confidence_no_cue", "amount", top, "2015", p, labels, 0.9))  # 列名が年だけ
         self.assertIsNone(V.candidate("unknown", "low_confidence_no_cue", "amount", top, "Cost", p, labels, 0.999))
 
+    def test_table_features_subtotal_and_order(self):
+        t = [{"rows": ["1", "2", "3", "4"], "row_index": [0, 1, 2, 3], "total": 4},
+             {"rows": ["10", "20", "5", "7"], "row_index": [0, 1, 2, 3], "total": 4},
+             {"rows": ["3", "4", "5", "8"], "row_index": [0, 1, 2, 3], "total": 4},
+             {"rows": ["13", "24", "10", "15"], "row_index": [0, 1, 2, 3], "total": 4}]
+        F = V.table_features(t)
+        self.assertEqual(len(F), 4)
+        self.assertTrue(all(len(f) == V.TABLE_DIM for f in F))
+        self.assertEqual([f[12] for f in F], [0.0, 0.0, 0.0, 1.0])   # 最後の列はすぐ左の 2 列の和（合計の列）
+        self.assertAlmostEqual(F[0][7], 1.0)                                # 最初の列は行の番号と同じ順に並ぶ（番号らしさ）
+        self.assertEqual(V.table_features([{"rows": [], "row_index": [], "total": None}])[0][:3], [math.log(2), 0.0, 1.0])
+
     def test_load_exported(self):
         p = Path(__file__).resolve().parents[1] / "models" / "verifier_v1.json"
         v = V.Verifier.load(p)
-        P = v.proba([["2019-04-01", "2020-05-03"], ["12", "7", "30"]])
+        vals = [["2019-04-01", "2020-05-03"], ["12", "7", "30"]]
+        tab = [{"rows": x, "row_index": list(range(len(x))), "total": 100} for x in vals]
+        P = v.proba(vals, tab if v.table else None)
         self.assertEqual(P.shape, (2, len(V.LABELS)))
         self.assertAlmostEqual(float(P[0].sum()), 1.0, places=4)
         self.assertEqual(v.labels[int(P[0].argmax())], "date")

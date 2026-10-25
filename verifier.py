@@ -186,6 +186,7 @@ class Verifier:
     def __init__(self, d):
         import numpy as np
         self.kind = d.get("kind", "lr")
+        self.table = bool(d.get("table"))   # v2：同じ表のほかの列・行の並びの特徴（table_features）も使う
         self.labels = list(d["labels"])
         self.tau = float(d["tau"])
         self.rho = float(d["rho"]) if d.get("rho") is not None else None
@@ -216,9 +217,14 @@ class Verifier:
             left = np.where(np.isnan(x), t["m"][n], x <= t["t"][n])
             idx[r] = np.where(left, t["l"][n], t["r"][n])
 
-    def proba(self, values_list):
+    def proba(self, values_list, table=None):
+        """values_list：列ごとの値。v2（self.table）では table（table_features に渡す 1 つの表の列の並び。values_list と同じ順）も要る。"""
         import numpy as np
         X = matrix(values_list).astype("float64")
+        if self.table:
+            if table is None or len(table) != len(values_list):
+                raise ValueError("検査役 v2 は同じ表の列（table）が要る")
+            X = np.hstack([X, np.asarray(table_features(table), dtype="float64")])
         if self.kind == "hgb":
             z = np.tile(self.baseline, (len(X), 1))
             for it in self.trees:
@@ -282,10 +288,10 @@ def candidate(label: str, why, guarded: str, top3, header: str, p_row, labels, r
     return t
 
 
-def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float | None = None, rows=None, rho: float | None = None):
-    """recheck.apply_table の結果 [(判定, 理由)] に検査役を重ねる → [(判定, 理由, 候補)]。recheck が付けた種類（再検査で戻した列）も同じに見る。
-    rows（recheck に渡した {"guarded", "top3", "header"} の並び）を渡すと、不明の列に候補を添える。"""
-    P = verifier.proba(values_list)
+def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float | None = None, rows=None, rho: float | None = None, table=None):
+    """1 つの表の recheck.apply_table の結果 [(判定, 理由)] に検査役を重ねる → [(判定, 理由, 候補)]。recheck が付けた種類（再検査で戻した列）も同じに見る。
+    rows（recheck に渡した {"guarded", "top3", "header"} の並び）を渡すと、不明の列に候補を添える。v2 は table（table_features の入力）も渡す。"""
+    P = verifier.proba(values_list, table)
     t = verifier.tau if tau is None else tau
     r = getattr(verifier, "rho", None) if rho is None else rho
     out = []
