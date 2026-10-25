@@ -298,3 +298,111 @@ def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float
             cand = candidate(lab2, why3, x["guarded"], x["top3"], x["header"], p, verifier.labels, r)
         out.append((lab2, why3, cand))
     return out
+
+
+# ---------------------------------------------------------------- v2：同じ表のほかの列・行の並びも見る（列名は読まない）
+
+TABLE_DIM = 22
+
+
+def _nums_aligned(values):
+    out = []
+    for v in values or []:
+        s = unicodedata.normalize("NFKC", str(v)).strip()
+        out.append(to_float(s) if s.lower() not in JUNK and _NUM.match(s) else None)
+    return out
+
+
+def _rank(xs):
+    order = sorted(range(len(xs)), key=lambda i: xs[i])
+    r = [0.0] * len(xs)
+    for k, i in enumerate(order):
+        r[i] = float(k)
+    return r
+
+
+def _corr(a, b):
+    if len(a) < 3:
+        return 0.0
+    ma, mb = _mean(a), _mean(b)
+    sa = math.sqrt(sum((x - ma) ** 2 for x in a))
+    sb = math.sqrt(sum((x - mb) ** 2 for x in b))
+    if sa == 0 or sb == 0:
+        return 0.0
+    return sum((x - ma) * (y - mb) for x, y in zip(a, b)) / (sa * sb)
+
+
+def table_features(table):
+    """1 つの表の列 [{"rows": 行の順にそろった値, "row_index": 行の番号, "total": 表の行数}] → 列ごとの特徴の並び。
+    見るもの：表の中の位置・ほかの数の列との関係（行ごとの合計・相関・大きさ）・行の番号との相関（番号は行の順に並びやすい）・表の行数との比。"""
+    m = len(table)
+    nums = [_nums_aligned(c.get("rows")) for c in table]
+    numeric = [sum(1 for x in xs if x is not None) >= max(1, 0.6 * len(xs)) if xs else False for xs in nums]
+    texty = []
+    for c in table:
+        vs = clean_values(c.get("rows"))
+        texty.append(bool(vs) and sum(1 for v in vs if re.search(r"[^\W\d_]", v)) / len(vs) > 0.6 and len(set(vs)) / len(vs) > 0.9)
+    out = []
+    for j, c in enumerate(table):
+        xs = nums[j]
+        ri = [float(r) for r in (c.get("row_index") or range(len(xs)))][:len(xs)]
+        total = float(c.get("total") or 0)
+        pts = [(r, x) for r, x in zip(ri, xs) if x is not None]
+        f = [math.log(m + 1), j / (m - 1) if m > 1 else 0.0, 1.0 if j == 0 else 0.0, 1.0 if j == m - 1 else 0.0,
+             sum(numeric[:j] + numeric[j + 1:]) / max(1, m - 1), 1.0 if numeric[j] and not any(numeric[:j]) else 0.0,
+             sum(texty[:j] + texty[j + 1:]) / max(1, m - 1)]
+        if len(pts) >= 3:
+            rr, xx = [p[0] for p in pts], [p[1] for p in pts]
+            sp = _corr(_rank(rr), _rank(xx))
+            srt = [x for _, x in sorted(pts)]
+            inc = sum(1 for a, b in zip(srt, srt[1:]) if b > a) / (len(srt) - 1)
+        else:
+            sp, inc = 0.0, 0.0
+        fx = [x for x in xs if x is not None]
+        lt = math.log10(total + 1) if total else 0.0
+        in_total = sum(1 for x in fx if total and 1 <= x <= total and float(x).is_integer()) / len(fx) if fx else 0.0
+        mx = max(fx) if fx else 0.0
+        ratio = math.log10((abs(mx) + 1) / (total + 1)) if total else 0.0
+        # 行ごとの関係：ほかの数の列の合計と等しいか・行で一番大きいか・ほかの列との相関
+        others = [k for k in range(m) if k != j and numeric[k]]
+        eq_sum = row_max = n_rows = 0
+        for r in range(len(xs)):
+            if xs[r] is None:
+                continue
+            ov = [nums[k][r] for k in others if r < len(nums[k]) and nums[k][r] is not None]
+            if len(ov) < 2:
+                continue
+            n_rows += 1
+            # 合計の列：すぐ左かすぐ右に続く 2〜8 列の数の和と等しい（小計・合計の列は件数・金額であって番号ではない）
+            tol = max(0.5, 0.005 * abs(xs[r]))
+            hit = False
+            for side in (range(j - 1, -1, -1), range(j + 1, m)):
+                acc, cnt = 0.0, 0
+                for k in side:
+                    v = nums[k][r] if r < len(nums[k]) else None
+                    if v is None or cnt >= 8:
+                        break
+                    acc += v
+                    cnt += 1
+                    if cnt >= 2 and abs(acc - xs[r]) <= tol:
+                        hit = True
+                        break
+                if hit:
+                    break
+            eq_sum += hit
+            row_max += xs[r] >= max(ov)
+        cors = []
+        for k in others:
+            pa = [(math.copysign(math.log10(abs(a) + 1), a), math.copysign(math.log10(abs(b) + 1), b))
+                  for a, b in zip(xs, nums[k]) if a is not None and b is not None]
+            if len(pa) >= 4:
+                cors.append(abs(_corr([p[0] for p in pa], [p[1] for p in pa])))
+        own_lg = _mean([math.log10(abs(x) + 1) for x in fx]) if fx else 0.0
+        sib_lg = _mean([math.log10(abs(x) + 1) for k in others for x in nums[k] if x is not None]) if others else 0.0
+        f += [sp, inc, lt, in_total, ratio, eq_sum / n_rows if n_rows else 0.0, row_max / n_rows if n_rows else 0.0,
+              1.0 if n_rows else 0.0, max(cors) if cors else 0.0, _mean(cors), 1.0 if cors else 0.0, own_lg - sib_lg,
+              len(set(fx)) / len(fx) if fx else 0.0, 1.0 if fx and len(set(fx)) == len(fx) and in_total > 0.9 else 0.0,
+              1.0 if total and fx and len(fx) == len(xs) else 0.0]
+        assert len(f) == TABLE_DIM, len(f)
+        out.append(f)
+    return out
