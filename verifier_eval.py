@@ -25,6 +25,8 @@ from llm_baseline import score_real
 BATCHES = tuple(f"b{n:03d}" for n in range(1, 14))
 TAUS = (0.01, 0.02, 0.03, 0.05, 0.08, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5)
 MIN_PRECISION = 0.5
+RHOS = (0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 0.98, 0.99)
+MIN_CAND_ACC = 0.95   # 候補の正しい割合（正解が決められる列で）。これ以上になる最も小さい rho（事前に固定、2026-10-25）
 
 
 def load_batch(b):
@@ -115,6 +117,33 @@ def pick_tau(P, labels, base, cols, idx):
     return best
 
 
+def candidates(final, P, labels, cols, idx, rho):
+    return {k: V.candidate(final[k][0], final[k][1], cols[k]["pred"], cols[k]["top3"], cols[k]["header"], P[k], labels, rho) for k in idx}
+
+
+def cand_stats(cand, cols):
+    """候補の数・正解が決められる列での正しい割合・重大（数字の種類どうしの取り違え）。"""
+    n = ok = crit = scored = 0
+    for k, c in cand.items():
+        if c is None:
+            continue
+        n += 1
+        t = cols[k]["truth"]
+        if not t or t in B.NOT_USED or t == "person":
+            continue
+        scored += 1
+        ok += c == t
+        crit += t in V.NUMERIC and c != t
+    return {"n": n, "scored": scored, "acc": ok / scored if scored else 1.0, "critical": crit}
+
+
+def pick_rho(final, P, labels, cols, idx):
+    for r in RHOS:
+        if cand_stats(candidates(final, P, labels, cols, idx, r), cols)["acc"] >= MIN_CAND_ACC:
+            return r
+    return None
+
+
 def fmt(s):
     return f"正 {s['acc_all']:.1%}・誤 {s['wrong']}・不明 {s['unknown']}・**重大 {s['critical']}**（採点 {s['n']}）"
 
@@ -160,6 +189,17 @@ def main(argv=None):
                 final[k] = base[k]
     sg, sb, sf = score([d[0] for d in guard_only], cols), score([d[0] for d in base], cols), score([d[0] for d in final], cols)
     vc = vetoed(final, base, cols)
+    # 候補つきの要確認：rho も陣を 1 つずつ外して決める
+    cand, rhos = {}, {}
+    for b in BATCHES:
+        others = [k for k in range(len(cols)) if batch[k] != b]
+        r = pick_rho(final, P, labels, cols, others)
+        rhos[b] = r
+        if r is not None:
+            cand.update(candidates(final, P, labels, cols, [k for k in range(len(cols)) if batch[k] == b], r))
+    cs = cand_stats(cand, cols)
+    with_cand = [cand.get(k) or final[k][0] for k in range(len(cols))]
+    sc = score(with_cand, cols)
     # 種類の組ごとに残った重大
     def crit_pairs(pred):
         c = Counter()
@@ -186,7 +226,10 @@ def main(argv=None):
     # 全部の陣で学び直して書き出す
     lr, mean, scale = fit(X[trainable], y[trainable])
     tau_all = pick_tau(P, labels, base, cols, list(range(len(cols))))
-    meta = {"version": "v1", "labels": labels, "dense_dim": V.DENSE_DIM, "g_dim": V.G_DIM, "tau": tau_all,
+    final_all = [V.veto(base[k][0], P[k], labels, tau_all) for k in range(len(cols))]
+    final_all = [f if f[1] else base[k] for k, f in enumerate(final_all)]
+    rho_all = pick_rho(final_all, P, labels, cols, list(range(len(cols))))
+    meta = {"version": "v1", "labels": labels, "dense_dim": V.DENSE_DIM, "g_dim": V.G_DIM, "tau": tau_all, "rho": rho_all,
             "trained_on": list(BATCHES), "n_train": int(trainable.sum())}
     if MODEL == "hgb":
         meta.update(V.export_hgb(lr, labels))
@@ -227,6 +270,11 @@ def main(argv=None):
          "", "### 残った重大（種類の組、多い順）", "| 組 | recheck v1 まで | ＋検査役 |", "|---|---:|---:|"]
     for k, v in cb.most_common(15):
         L.append(f"| {k} | {v} | {cf.get(k, 0)} |")
+    L += ["", "## 候補つきの要確認（不明のまま、候補の答えを添える）",
+          f"- 条件：自信が足りないだけで不明にした列で、本体の 1 位と検査役の 1 位が同じ数字の種類、検査役の確率が rho 以上。列名が年・月だけの列などには付けない",
+          f"- rho の決め方（事前に固定）：ほかの陣で候補の正しい割合が {MIN_CAND_ACC:.0%} 以上になる最も小さい rho（候補 {', '.join(map(str, RHOS))}）。陣ごとの rho：{', '.join(f'{b} {r}' for b, r in rhos.items())}",
+          f"- 候補を付けた不明の列 **{cs['n']}**（不明 {sf['unknown']} のうち）。正解が決められる {cs['scored']} 列で**候補の正しい割合 {cs['acc']:.1%}**・候補の重大 {cs['critical']}",
+          f"- 言い切りの数字（上の表の最後の行）は変わらない。参考：候補も答えに数えると {fmt(sc)}"]
     L += ["", "### 陣ごと", "| 陣 | tau | recheck v1 まで | ＋検査役 |", "|---|---:|---|---|"]
     for b, t, s1, s2 in per_batch:
         L.append(f"| {b} | {t} | {fmt(s1)} | {fmt(s2)} |")
@@ -238,7 +286,7 @@ def main(argv=None):
           "- **注意**：ここでの数字は教材庫（正解は ChatGPT と Claude の裁定）での数字。本当に重大が減るかは、封印セット #3 で事前登録して測る",
           "", "## 再現", "`python3 verifier_eval.py`（scikit-learn が要る）。試験 `python3 -m unittest tests.test_verifier`"]
     open(a.out, "w", encoding="utf-8").write("\n".join(L) + "\n")
-    print(fmt(sg)); print(fmt(sb)); print(fmt(sf)); print(vc, taus, tau_all, acc_v)
+    print(fmt(sg)); print(fmt(sb)); print(fmt(sf)); print(vc, taus, tau_all, acc_v); print("cand", cs, rhos, rho_all); print(fmt(sc))
 
 
 if __name__ == "__main__":

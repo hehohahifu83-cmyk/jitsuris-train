@@ -40,7 +40,22 @@ class VerifierTest(unittest.TestCase):
                 return P
         dec = [("date", "recheck:header_date"), ("unknown", "low_confidence_no_cue")]
         out = V.apply_after_recheck(dec, [["2020"], ["x"]], Fake())
-        self.assertEqual(out, dec)   # recheck の結果（再検査で戻した日付・不明）はそのまま
+        self.assertEqual([o[:2] for o in out], dec)   # recheck の結果（再検査で戻した日付・不明）はそのまま
+        rows = [{"guarded": "date", "top3": [{"label": "date", "probability": 0.99}], "header": "日付"},
+                {"guarded": "unknown", "top3": [{"label": "date", "probability": 0.6}], "header": "開始"}]
+        out = V.apply_after_recheck(dec, [["2020"], ["x"]], Fake(), rows=rows, rho=0.9)
+        self.assertEqual(out[1], ("unknown", "low_confidence_no_cue", "date"))   # 判定は不明のまま、候補だけ添える
+        self.assertIsNone(out[0][2])
+
+    def test_candidate_skips_hard_unknown(self):
+        labels = list(V.LABELS)
+        p = [0.0] * len(labels)
+        p[labels.index("amount")] = 0.99
+        top = [{"label": "amount", "probability": 0.7}]
+        self.assertEqual(V.candidate("unknown", "low_confidence_no_cue", "amount", top, "Cost", p, labels, 0.9), "amount")
+        self.assertIsNone(V.candidate("unknown", "cue_conflict:quantity", "amount", top, "Cost", p, labels, 0.9))
+        self.assertIsNone(V.candidate("unknown", "low_confidence_no_cue", "amount", top, "2015", p, labels, 0.9))  # 列名が年だけ
+        self.assertIsNone(V.candidate("unknown", "low_confidence_no_cue", "amount", top, "Cost", p, labels, 0.999))
 
     def test_load_exported(self):
         p = Path(__file__).resolve().parents[1] / "models" / "verifier_v1.json"

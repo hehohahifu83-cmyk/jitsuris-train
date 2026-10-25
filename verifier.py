@@ -11,6 +11,11 @@
   本体の答え L が数字の種類（date・amount・quantity・rate・id）で、検査役の L の確率が tau 未満、
   かつ検査役の 1 位が L 以外の数字の種類（＝値から見ると別の数字の種類）。
 tau は陣を 1 つずつ外して決める（verifier_eval.py、結果 bench/verifier_v1.md）。
+
+候補つきの要確認（オーナー指示「より効果的と思われる方だ」2026-10-25）：不明の列のうち、自信が足りないだけで止めた列
+（見張りの不明・low_confidence_no_cue・amount_without_cue・rate_without_cue）は、本体の 1 位と検査役の 1 位が同じ数字の種類で、
+検査役の確率が rho 以上なら、その種類を「候補」として添える。判定は不明のまま（言い切りではない。製品では「要確認：たぶん〇〇」と見せる）。
+列名が年・月だけの列（recheck.period_header）と、列名・単位が別の種類を示す列（cue_conflict）などには候補を付けない。
 """
 from __future__ import annotations
 
@@ -183,6 +188,7 @@ class Verifier:
         self.kind = d.get("kind", "lr")
         self.labels = list(d["labels"])
         self.tau = float(d["tau"])
+        self.rho = float(d["rho"]) if d.get("rho") is not None else None
         if self.kind == "hgb":
             self.baseline = np.asarray(d["baseline"], dtype="float64")
             self.trees = [[{k: np.asarray(v) for k, v in t.items()} for t in it] for it in d["trees"]]
@@ -257,12 +263,38 @@ def veto(label: str, p_row, labels, tau: float):
     return label, None
 
 
-def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float | None = None):
-    """recheck.apply_table の結果 [(判定, 理由)] に検査役を重ねる。recheck が付けた種類（再検査で戻した列）も同じに見る。"""
+SOFT_UNKNOWN = {None, "low_confidence_no_cue", "amount_without_cue", "rate_without_cue"}
+
+
+def candidate(label: str, why, guarded: str, top3, header: str, p_row, labels, rho: float):
+    """不明の列に添える候補（無ければ None）。種類は付けない（判定は不明のまま）。"""
+    if label != "unknown" or not top3 or not (why in SOFT_UNKNOWN or guarded == "unknown"):
+        return None
+    import recheck
+    if recheck.period_header(header):
+        return None
+    t = top3[0]["label"]
+    if t not in NUMERIC or t not in labels:
+        return None
+    i = labels.index(t)
+    if max(range(len(labels)), key=lambda j: p_row[j]) != i or p_row[i] < rho:
+        return None
+    return t
+
+
+def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float | None = None, rows=None, rho: float | None = None):
+    """recheck.apply_table の結果 [(判定, 理由)] に検査役を重ねる → [(判定, 理由, 候補)]。recheck が付けた種類（再検査で戻した列）も同じに見る。
+    rows（recheck に渡した {"guarded", "top3", "header"} の並び）を渡すと、不明の列に候補を添える。"""
     P = verifier.proba(values_list)
     t = verifier.tau if tau is None else tau
+    r = getattr(verifier, "rho", None) if rho is None else rho
     out = []
-    for (lab, why), p in zip(decisions, P):
+    for k, ((lab, why), p) in enumerate(zip(decisions, P)):
         new, why2 = veto(lab, p, verifier.labels, t)
-        out.append((new, why2) if why2 else (lab, why))
+        lab2, why3 = (new, why2) if why2 else (lab, why)
+        cand = None
+        if rows is not None and r is not None:
+            x = rows[k]
+            cand = candidate(lab2, why3, x["guarded"], x["top3"], x["header"], p, verifier.labels, r)
+        out.append((lab2, why3, cand))
     return out
