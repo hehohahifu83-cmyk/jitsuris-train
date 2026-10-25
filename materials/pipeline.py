@@ -155,15 +155,30 @@ def normalize_license(raw):
     return v
 
 
-def license_from_pkg(pkg):
+# e-Gov データポータル（2026-10-26、オーナー許可「足していい」）：データセットの記録（API）には許諾の欄がないが、サイトの利用規約で
+# 「特記がない限り公共データ利用規約 第 1.0 版（PDL1.0）」と定め、各データセットのページにも PDL1.0 と表示している
+# （https://public-comment.e-gov.go.jp/contents/terms、https://www.digital.go.jp/resources/open_data/public_data_license_v1.0）。
+# 許諾の欄が空のときだけ pdl1.0 として扱う。説明に利用の制限・第三者の権利・転載や二次利用の禁止などの特記があるものは除く（空を返す）。
+# PDL1.0 の条件（出典の表示・加工した事実の記録）は教材庫の記録（resource_page・publisher）で満たす
+SITE_DEFAULT_LICENSE = {"data.e-gov.go.jp": "pdl1.0"}
+RESTRICTION = re.compile(r"利用制限|利用条件|利用に制[限約]|第三者.{0,10}(著作|権利)|転載.{0,4}(禁止|不可|できません)|二次利用.{0,4}(禁止|不可|できません)|"
+                         r"再配布.{0,4}(禁止|不可|できません)|営利.{0,6}(禁止|不可|できません)|別途.{0,10}(規約|条件|許諾)|許諾を得")
+
+
+def license_from_pkg(pkg, host=None):
     """CKAN のデータセットのライセンス。license_id が空なら license_title を読む（e-Gov は名前だけを書く。2026-10-24）。
-    政府標準利用規約（第2.0版）は CC BY 4.0 と互換と規約に明記されているので cc-by-4.0 と同じ扱い。"""
+    政府標準利用規約（第2.0版）は CC BY 4.0 と互換と規約に明記されているので cc-by-4.0 と同じ扱い。
+    host が SITE_DEFAULT_LICENSE にあり、どこにも許諾が書かれていないときはサイトの規定の許諾（制限の特記があれば空）。"""
     lid = normalize_license(pkg.get("license_id"))
     if lid and lid not in ("notspecified", "none"):
         return lid
     title = unicodedata.normalize("NFKC", str(pkg.get("license_title") or "")).strip()
     if not title:
         title = license_text_elsewhere(pkg)
+    if not title and not lid and host in SITE_DEFAULT_LICENSE:
+        text = " ".join([str(pkg.get("notes") or "")] + [str(e.get("value") or "") for e in pkg.get("extras") or [] if isinstance(e, dict)] +
+                        [str(r.get("description") or "") for r in pkg.get("resources") or []])
+        return "" if RESTRICTION.search(unicodedata.normalize("NFKC", text)) else SITE_DEFAULT_LICENSE[host]
     if re.search(r"政府標準利用規約.*(2\.0|第2)", title) or re.search(r"(CC|クリエイティブ・?コモンズ)\s*(BY|表示)\s*4\.0", title, re.I):
         return "cc-by-4.0"
     if re.search(r"(CC|クリエイティブ・?コモンズ)\s*(BY|表示)(?![-\s]*(NC|SA|非営利|継承))", title, re.I):

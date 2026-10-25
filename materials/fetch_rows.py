@@ -281,7 +281,7 @@ def fetch_table(item, known):
         res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
         pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
         from pipeline import license_from_pkg, csv_domains, host_in
-        lic = license_from_pkg(pkg)
+        lic = license_from_pkg(pkg, urlparse(item["resource_url"]).hostname)
         if lic not in ALLOWED_LICENSES:
             raise ValueError(f"license not allowed: {pkg.get('license_id') or pkg.get('license_title')}")
         download = res.get("url") or item["resource_url"]

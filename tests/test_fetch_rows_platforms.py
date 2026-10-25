@@ -90,6 +90,15 @@ class LicenseTitleTests(unittest.TestCase):
         self.assertEqual(P.license_from_pkg({"license_id": None, "resources": [{"license": "CC BY 4.0"}]}), "cc-by-4.0")
         self.assertEqual(P.license_from_pkg({"license_id": "", "extras": [{"key": "theme", "value": "CC BY 4.0"}]}), "")
         self.assertNotIn(P.license_from_pkg({"license_id": "", "resources": [{"license": "CC BY-NC 4.0"}]}), P.ALLOWED_LICENSES)
+        # e-Gov：許諾の欄がどこにもなければサイトの規定（PDL1.0）。制限の特記があれば使わない。ほかのホストでは空のまま（2026-10-26）
+        egov = {"license_id": "", "license_title": "", "notes": "毎月の統計表", "extras": [{"key": "creator", "value": "総務省"}]}
+        self.assertEqual(P.license_from_pkg(egov, "data.e-gov.go.jp"), "pdl1.0")
+        self.assertIn("pdl1.0", P.ALLOWED_LICENSES)
+        self.assertEqual(P.license_from_pkg(egov, "data.bodik.jp"), "")
+        self.assertEqual(P.license_from_pkg(egov), "")
+        self.assertEqual(P.license_from_pkg({**egov, "notes": "本データは第三者の著作物を含みます"}, "data.e-gov.go.jp"), "")
+        self.assertEqual(P.license_from_pkg({**egov, "notes": "転載を禁止します"}, "data.e-gov.go.jp"), "")
+        self.assertNotIn(P.license_from_pkg({**egov, "license_title": "CC BY-NC 4.0"}, "data.e-gov.go.jp"), P.ALLOWED_LICENSES)   # 明記された許諾はサイトの規定より優先
 
     def test_blocked_header_initials(self):
         for h in ("INPUT BY", "PURCHASING AGENT", "Entered_By", "namelast", "legalowner"):

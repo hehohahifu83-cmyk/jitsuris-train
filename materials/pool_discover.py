@@ -115,7 +115,7 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
         for pkg in sorted(packages, key=lambda p: p.get("metadata_modified") or "", reverse=True):
             if picked >= PER_PUBLISHER:
                 break
-            lic = license_from_pkg(pkg)
+            lic = license_from_pkg(pkg, host)
             title = str(pkg.get("title") or "")
             if lic not in ALLOWED_LICENSES:
                 stats["license"] += 1
