@@ -1,3 +1,19 @@
+# 最新確認 2026-10-25 23:50 JST（Claude。**学習し直し第 1 段の判定・第 2 段（C2）を依頼・ラベルの掃除・専門家の選定**）
+
+## 確認済み
+- 第 1 段（run 40188966177）を事前記録の規則で判定：b013・b014 は差なし、題名（FT_TITLE）が「良い」（重大 21.5→16.5）→ **第 2 段（C2：FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160 FT_KEEP=1、種子 1〜3）を依頼（run 40202377192）**。題名は教材庫の表にしかないので、b015 で題名あり・なしの両方を測る（`bench/pool_training_b014_20261025.md`）
+- ラベルの掃除（B6）：候補 502 列 → ChatGPT の確認 → Claude の裁定。直した 45・外した 19（`materials/pool/label_review/`、commit bc3ce81）。pool_bench も同じ裁定を読む
+- 融合の試し 0/8・種子の平均は失敗（`research/merge/FINDINGS.md`）。融合は必須にしない（オーナー指示）
+- 見張り・recheck の見直し（`bench/guard_recheck_review_b013_b014.md`）：low_confidence_no_cue を外す案（C2 で確かめる）
+- **専門家を内包する設計と選定の決定**（`research/experts-plan-2026-10-25.md`。ChatGPT と相談）：数字 → 名前 → 文章、検査、言語能力（Qwen3-0.6B を素で）。**最終確認は設定凍結後の b016**（b015 は線を決める陣）
+
+## 次
+- C2 が COMPLETE → b013・b014 で C1 と比べる（題名あり・なし）
+- 数字の専門家 v1 の結果（計算中）→「不明からの救済」と「危ない言い切りの再検査」を分けた v2
+- b015 の候補集め（ChatGPT の `materials/pool/b015_search_plan.md`）
+
+---
+
 # 最新確認 2026-10-25 20:30 JST（Claude。**オーナーが b013・b014 を入れた学習し直しを許可**・第 1 段を依頼）
 
 ## 確認済み
