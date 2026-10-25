@@ -990,3 +990,7 @@
     [仕事1] training rows=122326 seed=1
     [仕事2] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
     [仕事1] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
+2026-10-25T23:11:30Z push の返事：Kernel version 47 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-25T23:12:00Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-25T23:12:01Z train を依頼：hfmodel/ibm-granite__granite-embedding-278m-multilingual 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_POOL_EXCLUDE=b013,b014 FT_KEEP=1 ++ FT_SEED=2
+送ったモデル：ibm-granite/granite-embedding-278m-multilingual revision a9cb5338491faf32b73dd17b714a31821c021bbf license apache-2.0 tags ['license:apache-2.0']・束の中のモデルのファイル数 39
