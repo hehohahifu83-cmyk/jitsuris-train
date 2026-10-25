@@ -12,6 +12,11 @@
   かつ検査役の 1 位が L 以外の数字の種類（＝値から見ると別の数字の種類）。
 tau は陣を 1 つずつ外して決める（verifier_eval.py、結果 bench/verifier_v1.md）。
 
+v2（2026-10-25）：値だけの特徴に、同じ表のほかの列・行の並びの特徴（table_features。列名は読まない）を足した。
+重大検知役（ChatGPT の案、2026-10-25）：数字の種類と言い切った列だけを見て「この言い切りは重大な誤りか」を当てる二値の木のモデル。
+入力は値・表の特徴、検査役の確率、本体の上位 3 つの確率と recheck の理由。risk が th 以上なら不明に下げる（種類は付けない）。
+本体の確率を使うので、本体の版を変えたら（版 31 → C1 など）その版の予測で作り直す。
+
 候補つきの要確認（オーナー指示「より効果的と思われる方だ」2026-10-25）：不明の列のうち、自信が足りないだけで止めた列
 （見張りの不明・low_confidence_no_cue・amount_without_cue・rate_without_cue）は、本体の 1 位と検査役の 1 位が同じ数字の種類で、
 検査役の確率が rho 以上なら、その種類を「候補」として添える。判定は不明のまま（言い切りではない。製品では「要確認：たぶん〇〇」と見せる）。
@@ -187,6 +192,11 @@ class Verifier:
         import numpy as np
         self.kind = d.get("kind", "lr")
         self.table = bool(d.get("table"))   # v2：同じ表のほかの列・行の並びの特徴（table_features）も使う
+        self.risk = None
+        if d.get("risk"):
+            r = d["risk"]
+            self.risk = {"baseline": float(r["baseline"]), "th": float(r["th"]),
+                         "trees": [{k: np.asarray(v) for k, v in t.items()} for t in r["trees"]]}
         self.labels = list(d["labels"])
         self.tau = float(d["tau"])
         self.rho = float(d["rho"]) if d.get("rho") is not None else None
@@ -217,14 +227,32 @@ class Verifier:
             left = np.where(np.isnan(x), t["m"][n], x <= t["t"][n])
             idx[r] = np.where(left, t["l"][n], t["r"][n])
 
-    def proba(self, values_list, table=None):
-        """values_list：列ごとの値。v2（self.table）では table（table_features に渡す 1 つの表の列の並び。values_list と同じ順）も要る。"""
+    def inputs(self, values_list, table=None):
+        """検査役の入力の行列。v2（self.table）では table（table_features に渡す 1 つの表の列の並び。values_list と同じ順）も要る。"""
         import numpy as np
         X = matrix(values_list).astype("float64")
         if self.table:
             if table is None or len(table) != len(values_list):
                 raise ValueError("検査役 v2 は同じ表の列（table）が要る")
             X = np.hstack([X, np.asarray(table_features(table), dtype="float64")])
+        return X
+
+    def risk_proba(self, X, P, decisions, rows):
+        """重大検知役：言い切りが重大な誤りである確率（数字の種類の言い切りでない列は 0）。"""
+        import numpy as np
+        R = np.asarray([risk_features(P[k], d[0], d[1], rows[k]["top3"], self.labels) for k, d in enumerate(decisions)], dtype="float64")
+        z = np.full(len(X), self.risk["baseline"])
+        XR = np.hstack([X, R])
+        for t in self.risk["trees"]:
+            z += self._tree(t, XR)
+        p = 1.0 / (1.0 + np.exp(-z))
+        return np.where([d[0] in NUMERIC for d in decisions], p, 0.0)
+
+    def proba(self, values_list, table=None, X=None):  # noqa: D401
+        """values_list：列ごとの値 → 種類の確率（labels の順）。"""
+        import numpy as np
+        if X is None:
+            X = self.inputs(values_list, table)
         if self.kind == "hgb":
             z = np.tile(self.baseline, (len(X), 1))
             for it in self.trees:
@@ -258,6 +286,40 @@ def export_hgb(model, labels):
     return {"kind": "hgb", "baseline": base, "trees": trees}
 
 
+def export_hgb_binary(model):
+    """二値の HistGradientBoostingClassifier → JSON にできる形（risk ＝ sigmoid(baseline ＋ 木の葉の値の和)）。"""
+    trees = []
+    for it in model._predictors:
+        nd = it[0].nodes
+        trees.append({"leaf": [bool(x) for x in nd["is_leaf"]], "v": [round(float(x), 5) for x in nd["value"]],
+                      "f": [int(x) for x in nd["feature_idx"]], "t": [float(x) for x in nd["num_threshold"]],
+                      "m": [bool(x) for x in nd["missing_go_to_left"]], "l": [int(x) for x in nd["left"]], "r": [int(x) for x in nd["right"]]})
+    return {"baseline": float(model._baseline_prediction.ravel()[0]), "trees": trees}
+
+
+RISK_REASONS = ("", "recheck", "low_confidence_no_cue", "cue_conflict", "period_header_no_unit", "no_value_evidence",
+                "amount_without_cue", "rate_without_cue", "money_band_header", "amount_precision")
+
+
+def risk_features(p_row, label, why, top3, labels=LABELS) -> list[float]:
+    """重大検知役の入力（値・表の特徴のあとに足す）：検査役の確率・本体の上位 3 つ・言い切った種類・recheck の理由。"""
+    K = len(labels)
+    f = [float(x) for x in p_row]
+    tp = [0.0] * K
+    for t in top3 or []:
+        if t["label"] in labels:
+            tp[labels.index(t["label"])] = float(t["probability"])
+    ps = sorted((float(t["probability"]) for t in (top3 or [])), reverse=True) + [0.0, 0.0]
+    f += tp + [ps[0], ps[0] - ps[1], float(p_row[labels.index(label)]) if label in labels else 0.0]
+    f += [1.0 if label == n else 0.0 for n in NUMERIC]
+    r = (why or "").split(":")[0]
+    f += [1.0 if r == x else 0.0 for x in RISK_REASONS] + [0.0 if r in RISK_REASONS else 1.0]
+    return f
+
+
+RISK_DIM = len(LABELS) * 2 + 3 + len(NUMERIC) + len(RISK_REASONS) + 1
+
+
 def veto(label: str, p_row, labels, tau: float):
     """本体（と recheck）の答え label を、検査役の確率 p_row で見直す → (判定, 理由)。種類は付けない。"""
     if label not in NUMERIC or label not in labels:
@@ -288,18 +350,27 @@ def candidate(label: str, why, guarded: str, top3, header: str, p_row, labels, r
     return t
 
 
-def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float | None = None, rows=None, rho: float | None = None, table=None):
+def apply_after_recheck(decisions, values_list, verifier: "Verifier", tau: float | None = None, rows=None, rho: float | None = None,
+                        table=None, th: float | None = None):
     """1 つの表の recheck.apply_table の結果 [(判定, 理由)] に検査役を重ねる → [(判定, 理由, 候補)]。recheck が付けた種類（再検査で戻した列）も同じに見る。
-    rows（recheck に渡した {"guarded", "top3", "header"} の並び）を渡すと、不明の列に候補を添える。v2 は table（table_features の入力）も渡す。"""
-    P = verifier.proba(values_list, table)
+    rows（recheck に渡した {"guarded", "top3", "header"} の並び）を渡すと、重大検知役も使い、不明の列に候補を添える。v2 は table（table_features の入力）も渡す。"""
+    X = verifier.inputs(values_list, table) if hasattr(verifier, "inputs") else None
+    P = verifier.proba(values_list, table, X) if X is not None else verifier.proba(values_list, table)
     t = verifier.tau if tau is None else tau
     r = getattr(verifier, "rho", None) if rho is None else rho
-    out = []
-    for k, ((lab, why), p) in enumerate(zip(decisions, P)):
+    first = []
+    for (lab, why), p in zip(decisions, P):
         new, why2 = veto(lab, p, verifier.labels, t)
-        lab2, why3 = (new, why2) if why2 else (lab, why)
+        first.append((new, why2) if why2 else (lab, why))
+    risk = None
+    if rows is not None and getattr(verifier, "risk", None):
+        h = verifier.risk["th"] if th is None else th
+        risk = verifier.risk_proba(X, P, decisions, rows)
+        first = [("unknown", "risk") if f[0] in NUMERIC and risk[k] >= h else f for k, f in enumerate(first)]
+    out = []
+    for k, ((lab2, why3), p) in enumerate(zip(first, P)):
         cand = None
-        if rows is not None and r is not None:
+        if rows is not None and r is not None and why3 != "risk":
             x = rows[k]
             cand = candidate(lab2, why3, x["guarded"], x["top3"], x["header"], p, verifier.labels, r)
         out.append((lab2, why3, cand))
