@@ -64,6 +64,20 @@ if (POOL or POOL_VALONLY) and os.environ.get("FT_VAL") == "1":
 if POOL_VALONLY:
     pooltr = []
     print(f"FT_POOL_VALONLY=1: pool not trained; validation {len(poolval)}", flush=True)
+# FT_POOL_EXCLUDE=b013,b014（既定なし）：その陣の表を学習側からだけ外す（2026-10-25。新しい陣の効果を、検証（教材庫）を同じ列のまま測るため）
+POOL_EXCLUDE = [b for b in os.environ.get("FT_POOL_EXCLUDE", "").split(",") if b]
+pool_excluded_tables = set()
+if POOL_EXCLUDE:
+    if not POOL:
+        raise SystemExit("FT_POOL_EXCLUDE は FT_POOL=1 と一緒に使う")
+    for _b in POOL_EXCLUDE:
+        _fn = f"materials/pool/batch_{_b}.jsonl"
+        if _fn not in _pool_files:
+            raise SystemExit(f"FT_POOL_EXCLUDE の {_b} が教材庫に無い")
+        pool_excluded_tables |= {r[4] for r in load_real((_fn,))}
+    _n = len(pooltr)
+    pooltr = [r for r in pooltr if r[4] not in pool_excluded_tables]
+    print(f"FT_POOL_EXCLUDE={','.join(POOL_EXCLUDE)}: dropped {_n - len(pooltr)} pool rows from training", flush=True)
 if POOL:
     from pool_families import cap_tables_per_family
     pooltr, _capped = cap_tables_per_family(pooltr, POOL_FAMILY_CAP)
@@ -98,7 +112,7 @@ if POOL and POOL_UNDEC > 0:
         from pool_families import split_val_by_family
         _u_tr, _u_val = split_val_by_family(_undec, salt="jitsuris-poolval-v2", mod=8)
         _val_tables |= {r[4] for r in _u_val}
-    undec_tr = [(h, v, "other", c, t) for h, v, _l, c, t in _undec if t not in _val_tables]
+    undec_tr = [(h, v, "other", c, t) for h, v, _l, c, t in _undec if t not in _val_tables and t not in pool_excluded_tables]
 # FT_TITLE=1（既定オフ）：表の題名（materials/pool/titles.json。教材庫の表だけ。ほかの表は題名なし）を入力の文に入れる。学習・評価とも同じ対応表を通す
 TITLE = os.environ.get("FT_TITLE") == "1"
 unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all + pool_all)

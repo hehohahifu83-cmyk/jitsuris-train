@@ -52,6 +52,18 @@ class EncoderExpEnvTest(unittest.TestCase):
         self.assertEqual(valonly[1], pool[1])      # 検証（教材庫）は FT_POOL=1 と同じ列
         self.assertGreater(valonly[1], 0)
 
+    def test_pool_exclude_same_validation_fewer_training_rows(self):
+        code = "import encoder_exp as E; print(len(E.poolval)); print(len(E.pooltr)); print(len({r[4] for r in E.pooltr} & E.pool_excluded_tables))"
+        def run(**env):
+            out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, env={**os.environ, **env}, capture_output=True, text=True, timeout=900)
+            self.assertEqual(out.returncode, 0, out.stderr[-2000:])
+            return [int(x) for x in out.stdout.strip().splitlines()[-3:]]
+        pool = run(FT_VAL="1", FT_POOL="1")
+        excl = run(FT_VAL="1", FT_POOL="1", FT_POOL_EXCLUDE="b013,b014")
+        self.assertEqual(pool[0], excl[0])         # 検証（教材庫）は同じ列
+        self.assertLess(excl[1], pool[1])
+        self.assertEqual(excl[2], 0)               # 外した陣の表は学習に残らない
+
 
 if __name__ == "__main__":
     unittest.main()
