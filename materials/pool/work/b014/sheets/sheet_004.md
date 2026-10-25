@@ -282,7 +282,7 @@
 
 ## g0416（1 列）
 - 見出し：creator
-- 例1 値：Fewster, Jack | Linger, Carl, 1810-1862 | Knox, W. R. (William Robert) | Schrader, Otto W. | Fewster, Jack
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：id, title, innopac, link, coverage_place, coverage_region, fileBrowse, original_format
 
 ## g0417（1 列）
@@ -317,7 +317,7 @@
 
 ## g0423（1 列）
 - 見出し：publisher
-- 例1 値：J. von Bertouch | S. Marshall, | Jack Fewster Ltd., | Hussey &amp; Gillingham | G.A. Payne?
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：id, title, creator, innopac, link, coverage_place, coverage_region, fileBrowse
 
 ## g0424（1 列）
@@ -419,7 +419,7 @@
 
 ## g0443（1 列）
 - 見出し：Subject: People
-- 例1 値：Stirling, James, | Pericles, Leon; Pericles, Leon, | Haynes, George; Haynes, George, | Stirling, James, | Durack, Elizabeth,
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：Bib record number, Call number, Date, Subject: topical, Collection
 
 ## g0444（1 列）

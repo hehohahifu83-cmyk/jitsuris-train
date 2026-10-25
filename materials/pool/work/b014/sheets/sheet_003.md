@@ -437,7 +437,7 @@
 
 ## g0323（1 列）
 - 見出し：LGA
-- 例1 値：Golden Plains (S) | Ballarat (C); Ballarat (C) | Mornington Peninsula (S); Frankston (C)… | Mount Alexander (S) | Wangaratta (RC)
+- 例1 値：Golden Plains (S) | Ballarat (C); Ballarat (C) | Mornington Peninsula (S); Frankston (C)… | Mount ［個人名のため削除］ander (S) | Wangaratta (RC)
   - 同じ表の列：Suburb, State, Business Category, Region
 
 ## g0324（1 列）
