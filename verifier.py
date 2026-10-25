@@ -2,7 +2,8 @@
 「不明なものは再検査するルールは有効なままにしておいてくれ」）。
 
 本体（E5-base）は列名・値・同じ表の列名を文章として読む。検査役は**列名を読まない**。値の並びだけ（数の大きさ・桁・小数・
-符号・日付や時刻として読めるか・文字の形）から種類の確率を出す、小さなロジスティック回帰（係数は JSON、数百 KB）。
+符号・日付や時刻として読めるか・文字の形）から種類の確率を出す、小さな木のモデル（勾配ブースティング。木は JSON に書き出し、numpy だけで動く）。
+ロジスティック回帰も比べた（bench/verifier_v1.md）。
 列名に引きずられた本体の取り違え（例：「件数」の列を番号と言う、年の列を数量と言う）を、値の側から見つける。
 
 判定の順番（recheck v1 はそのまま有効）：見張り（guard）→ 言い切りの検査と不明の再検査（recheck.apply_table）→ 検査役。
@@ -174,29 +175,75 @@ def matrix(values_list):
 
 
 class Verifier:
-    """係数の JSON（export で作る）を読んで確率を出す。numpy だけで動く（ブラウザ版は同じ計算を JavaScript で書く）。"""
+    """書き出した JSON（verifier_eval.py の export）を読んで確率を出す。numpy だけで動く（ブラウザ版は同じ計算を JavaScript で書く）。
+    kind "hgb"：木の足し合わせ（種類ごとに baseline ＋ 各回の木の葉の値）→ softmax。kind "lr"：標準化 → 線形 → softmax。"""
 
-    def __init__(self, coef, intercept, labels, mean, scale, tau):
+    def __init__(self, d):
         import numpy as np
-        self.W = np.asarray(coef, dtype="float32")
-        self.b = np.asarray(intercept, dtype="float32")
-        self.labels = list(labels)
-        self.mean = np.asarray(mean, dtype="float32")
-        self.scale = np.asarray(scale, dtype="float32")
-        self.tau = float(tau)
+        self.kind = d.get("kind", "lr")
+        self.labels = list(d["labels"])
+        self.tau = float(d["tau"])
+        if self.kind == "hgb":
+            self.baseline = np.asarray(d["baseline"], dtype="float64")
+            self.trees = [[{k: np.asarray(v) for k, v in t.items()} for t in it] for it in d["trees"]]
+        else:
+            self.W = np.asarray(d["coef"], dtype="float32")
+            self.b = np.asarray(d["intercept"], dtype="float32")
+            self.mean = np.asarray(d["mean"], dtype="float32")
+            self.scale = np.asarray(d["scale"], dtype="float32")
 
     @classmethod
     def load(cls, path="models/verifier_v1.json"):
-        d = json.loads(Path(path).read_text(encoding="utf-8"))
-        return cls(d["coef"], d["intercept"], d["labels"], d["mean"], d["scale"], d["tau"])
+        return cls(json.loads(Path(path).read_text(encoding="utf-8")))
+
+    @staticmethod
+    def _tree(t, X):
+        import numpy as np
+        idx = np.zeros(len(X), dtype="int64")
+        while True:
+            go = ~t["leaf"][idx]
+            if not go.any():
+                return t["v"][idx]
+            r = np.where(go)[0]
+            n = idx[r]
+            x = X[r, t["f"][n]]
+            left = np.where(np.isnan(x), t["m"][n], x <= t["t"][n])
+            idx[r] = np.where(left, t["l"][n], t["r"][n])
 
     def proba(self, values_list):
         import numpy as np
-        X = (matrix(values_list) - self.mean) / self.scale
-        z = X @ self.W.T + self.b
+        X = matrix(values_list).astype("float64")
+        if self.kind == "hgb":
+            z = np.tile(self.baseline, (len(X), 1))
+            for it in self.trees:
+                for k, t in enumerate(it):
+                    z[:, k] += self._tree(t, X)
+        else:
+            z = ((X - self.mean) / self.scale) @ self.W.T + self.b
         z -= z.max(axis=1, keepdims=True)
         e = np.exp(z)
         return e / e.sum(axis=1, keepdims=True)
+
+
+def export_hgb(model, labels):
+    """sklearn の HistGradientBoostingClassifier → JSON にできる形。種類の並びは labels に合わせる（学習に無い種類は確率ほぼ 0）。"""
+    classes = list(model.classes_)
+    K = len(labels)
+    base = [-30.0] * K
+    b0 = model._baseline_prediction.ravel()
+    for j, c in enumerate(classes):
+        base[labels.index(c)] = float(b0[j]) if len(classes) > 2 else 0.0
+    trees = []
+    for it in model._predictors:
+        row = [{"leaf": [True], "v": [0.0], "f": [0], "t": [0.0], "m": [True], "l": [0], "r": [0]} for _ in range(K)]
+        for j, p in enumerate(it):
+            nd = p.nodes
+            row[labels.index(classes[j])] = {"leaf": [bool(x) for x in nd["is_leaf"]], "v": [round(float(x), 5) for x in nd["value"]],
+                                             "f": [int(x) for x in nd["feature_idx"]], "t": [float(x) for x in nd["num_threshold"]],
+                                             "m": [bool(x) for x in nd["missing_go_to_left"]], "l": [int(x) for x in nd["left"]],
+                                             "r": [int(x) for x in nd["right"]]}
+        trees.append(row)
+    return {"kind": "hgb", "baseline": base, "trees": trees}
 
 
 def veto(label: str, p_row, labels, tau: float):

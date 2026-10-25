@@ -1,4 +1,4 @@
-"""検査役（verifier.py）の学習と効き目の測り方（2026-10-25 Claude）。学習は CPU のロジスティック回帰だけ（Kaggle の GPU は使わない）。
+"""検査役（verifier.py）の学習と効き目の測り方（2026-10-25 Claude）。学習は CPU の木のモデル（勾配ブースティング）だけ（Kaggle の GPU は使わない）。--model lr でロジスティック回帰と比べられる。
 
 場：教材庫 b001〜b013（本体＝学習前の版 31・E5-base 種子 1 の予測 pred_e5base_seed1.json。本体はどの陣の列も見ていない）。
 正解は pool_bench.load_batch と同じ（裁定・一致の列。捨てた列は除く）。
@@ -59,7 +59,16 @@ def base_decisions(cols):
     return out
 
 
+MODEL = "hgb"
+
+
 def fit(X, y):
+    """種類の確率を出すモデルを学ぶ → (モデル, 平均, 幅)。木のモデルは標準化しない（平均 0・幅 1 を返す）。"""
+    if MODEL == "hgb":
+        from sklearn.ensemble import HistGradientBoostingClassifier
+        m = HistGradientBoostingClassifier(max_iter=200, learning_rate=0.1, max_leaf_nodes=31, l2_regularization=1.0, random_state=0)
+        m.fit(X, y)
+        return m, np.zeros(X.shape[1], dtype="float32"), np.ones(X.shape[1], dtype="float32")
     from sklearn.linear_model import LogisticRegression
     mean = X.mean(axis=0)
     scale = X.std(axis=0) + 1e-3
@@ -114,7 +123,10 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="bench/verifier_v1.md")
     ap.add_argument("--export", default="models/verifier_v1.json")
+    ap.add_argument("--model", default="hgb", choices=("hgb", "lr"))
     a = ap.parse_args(argv)
+    global MODEL
+    MODEL = a.model
     cols = [c for b in BATCHES for c in load_batch(b)]
     base = base_decisions(cols)
     guard_only = [(c["pred"], None) for c in cols]
@@ -174,21 +186,32 @@ def main(argv=None):
     # 全部の陣で学び直して書き出す
     lr, mean, scale = fit(X[trainable], y[trainable])
     tau_all = pick_tau(P, labels, base, cols, list(range(len(cols))))
-    coef = np.zeros((len(labels), X.shape[1]), dtype="float32")
-    icp = np.full(len(labels), -30.0, dtype="float32")
-    for j, c in enumerate(lr.classes_):
-        coef[labels.index(c)] = lr.coef_[j]
-        icp[labels.index(c)] = lr.intercept_[j]
     meta = {"version": "v1", "labels": labels, "dense_dim": V.DENSE_DIM, "g_dim": V.G_DIM, "tau": tau_all,
-            "trained_on": list(BATCHES), "n_train": int(trainable.sum()),
-            "coef": [[round(float(x), 5) for x in row] for row in coef], "intercept": [round(float(x), 5) for x in icp],
-            "mean": [round(float(x), 6) for x in mean], "scale": [round(float(x), 6) for x in scale]}
+            "trained_on": list(BATCHES), "n_train": int(trainable.sum())}
+    if MODEL == "hgb":
+        meta.update(V.export_hgb(lr, labels))
+    else:
+        coef = np.zeros((len(labels), X.shape[1]), dtype="float32")
+        icp = np.full(len(labels), -30.0, dtype="float32")
+        for j, c in enumerate(lr.classes_):
+            coef[labels.index(c)] = lr.coef_[j]
+            icp[labels.index(c)] = lr.intercept_[j]
+        meta.update({"kind": "lr", "coef": [[round(float(x), 5) for x in row] for row in coef], "intercept": [round(float(x), 5) for x in icp],
+                     "mean": [round(float(x), 6) for x in mean], "scale": [round(float(x), 6) for x in scale]})
+    # 書き出した JSON で同じ確率が出るかを確かめる（numpy だけの推論 ＝ ブラウザ版の手本）
+    chk = V.Verifier(json.loads(json.dumps(meta)))
+    sub = np.where(trainable)[0][:300]
+    p_sk = lr.predict_proba((X[sub] - mean) / scale)
+    p_js = chk.proba([cols[k]["values"] for k in sub])[:, [labels.index(c) for c in lr.classes_]]
+    meta_diff = float(np.abs(p_sk - p_js).max())
+    if meta_diff > 1e-3:
+        raise SystemExit(f"書き出した検査役の確率が合わない（最大の差 {meta_diff}）")
     with open(a.export, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, separators=(",", ":"))
     L = ["# 検査役 v1（値だけを見る別の観点の AI、2026-10-25 Claude。`verifier.py`・`verifier_eval.py`）", "",
          "オーナー指示：「本体とは別観点から調べるタイプのAIにできるならそれで実行してくれ」「不明なものは再検査するルールは有効なままにしておいてくれ」。",
          "", "## 仕組み",
-         "- 本体（E5-base）は列名・値・同じ表の列名を文章として読む。**検査役は列名を読まず、値の並びだけ**（数の大きさ・桁・小数・符号・日付や時刻として読めるか・文字の形）から種類の確率を出す小さなロジスティック回帰（CPU で学習。GPU は使っていない）",
+         "- 本体（E5-base）は列名・値・同じ表の列名を文章として読む。**検査役は列名を読まず、値の並びだけ**（数の大きさ・桁・小数・符号・日付や時刻として読めるか・文字の形）から種類の確率を出す小さな木のモデル（勾配ブースティング 200 回。CPU で学習。GPU は使っていない）",
          "- 順番：見張り → **recheck v1（言い切りの検査と不明の再検査。そのまま有効）** → 検査役。検査役は種類を付けず、言い切りを「不明」に下げるだけ",
          "- 下げる条件：本体の答えが数字の種類（date・amount・quantity・rate・id）で、検査役のその種類の確率が tau 未満、かつ検査役の 1 位が別の数字の種類",
          f"- tau の決め方（事前に固定）：ほかの陣で「下げた列のうち本体が本当に間違っていた割合」が {MIN_PRECISION:.0%} 以上になる最大の tau（候補 {', '.join(map(str, TAUS))}）",
@@ -211,7 +234,7 @@ def main(argv=None):
     for t, s, n, pr in curve:
         L.append(f"| {t} | {fmt(s)} | {n} | {pr:.0%} |")
     L += ["", "## 書き出し",
-          f"- 全部の陣（{int(trainable.sum()):,} 列）で学び直した係数：`{a.export}`（tau＝{tau_all}）。`verifier.Verifier.load()` と `verifier.apply_after_recheck()` で使う",
+          f"- 全部の陣（{int(trainable.sum()):,} 列）で学び直したモデル：`{a.export}`（{MODEL}、tau＝{tau_all}。書き出した JSON の確率と sklearn の確率の最大の差 {meta_diff:.1e}）。`verifier.Verifier.load()` と `verifier.apply_after_recheck()` で使う",
           "- **注意**：ここでの数字は教材庫（正解は ChatGPT と Claude の裁定）での数字。本当に重大が減るかは、封印セット #3 で事前登録して測る",
           "", "## 再現", "`python3 verifier_eval.py`（scikit-learn が要る）。試験 `python3 -m unittest tests.test_verifier`"]
     open(a.out, "w", encoding="utf-8").write("\n".join(L) + "\n")
