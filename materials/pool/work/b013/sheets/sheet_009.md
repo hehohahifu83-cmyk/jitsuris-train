@@ -335,7 +335,7 @@
 
 ## g1023（1 列）
 - 見出し：PhysicalDescription
-- 例1 値：Defective with a step or edge drop grea… | Pavement failure (less than 50m2) | Potholes in traffic lane of road paveme… | Defective with a step or edge drop grea… | Surface cracking bigger than 20 mm on f…
+- 例1 値：Defective with a step or edge drop grea… | Pavement failure (less than 50m［個人名のため削除］ | Potholes in traffic lane of road paveme… | Defective with a step or edge drop grea… | Surface cracking bigger than 20 mm on f…
   - 同じ表の列：LatLong, DefectNumber, PrimaryLocation, RaisedBy, CreatedOn
 
 ## g1024（1 列）
@@ -345,7 +345,7 @@
 
 ## g1025（1 列）
 - 見出し：RaisedBy
-- 例1 値：MSchirmer | acoutts | acoutts | MSchirmer | acoutts
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：LatLong, DefectNumber, PhysicalDescription, PrimaryLocation, CreatedOn
 
 ## g1026（1 列）
@@ -606,7 +606,7 @@
 
 ## g1074（1 列）
 - 見出し：Title (English)
-- 例1 値：CNSC staff review of OPG Status Update … | Pickering NGS – CNSC staff Review of Pe… | CD# NK30-CORR-00531-08580 - Pickering N… | Pickering NGS – CNSC staff Review of As… | Pickering NGS – Revised 2022 Predictive…
+- 例1 値：［個人名のため削除］ staff review of ［個人名のため削除］ Status Update … | Pickering NGS – ［個人名のため削除］ staff Review of Pe… | CD# NK30-CORR-00531-08580 - Pickering N… | Pickering NGS – ［個人名のため削除］ staff Review of As… | Pickering NGS – Revised 2022 Predictive…
   - 同じ表の列：Ref Number | Numero…, Titre (Francais), Author | Auteur, # pages, Language | Langue, Date, Availability | Disp…, Comments
 
 ## g1075（1 列）
@@ -616,7 +616,7 @@
 
 ## g1076（1 列）
 - 見出し：Author | Auteur
-- 例1 値：OPG | CNSC | DFO | OPG | OPG
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：Ref Number | Numero…, Title (English), Titre (Francais), # pages, Language | Langue, Date, Availability | Disp…, Comments
 
 ## g1077（1 列）

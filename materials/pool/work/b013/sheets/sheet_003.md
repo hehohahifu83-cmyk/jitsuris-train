@@ -495,7 +495,7 @@
 
 ## g0333（1 列）
 - 見出し：passengers
-- 例1 値：Adrienne Vaupshas, John Broadhead, Adam… | Ben Sparkes, Annabelle Archambault, Hel… | Helena Kojo, Nathalie Gahimbare, Annabe… | William Harvey-Blouin, Philip Proulx, A… | Ben Chin, Cecely Roy, Alex Tetrault, Ta…
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：reference_number, minister, purpose_en, purpose_fr, start_date, end_date, locations_en, locations_fr
 
 ## g0334（1 列）

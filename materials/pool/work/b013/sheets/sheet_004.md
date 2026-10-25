@@ -543,7 +543,7 @@
 
 ## g0465（1 列）
 - 見出し：年度
-- 例1 値：令和3 | 令和6 | 令和6 | Note: 1) The final budget includes the … | 2) The Public enterprise accounts are t…
+- 例1 値：令和3 | 令和6 | 令和6 | Note: 1) The final budget includes the … | ［個人名のため削除］ The Public enterprise accounts are t…
   - 同じ表の列：Fiscal year, 会計階層, 会計, マーク Mark, 当初予算額 Original budg…, 最終予算額 Final budget …, 決算額 Settlement
 
 ## g0466（1 列）
@@ -563,7 +563,7 @@
 
 ## g0469（1 列）
 - 見出し：マーク Mark
-- 例1 値：2)
+- 例1 値：［個人名のため削除］
   - 同じ表の列：年度, Fiscal year, 会計階層, 会計, 当初予算額 Original budg…, 最終予算額 Final budget …, 決算額 Settlement
 
 ## g0470（1 列）

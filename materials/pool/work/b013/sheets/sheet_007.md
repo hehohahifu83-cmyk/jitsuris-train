@@ -556,7 +556,7 @@
 
 ## g0828（1 列）
 - 見出し：creator
-- 例1 値：Shortland, Thomas George. | Fowkes, Francis. | Bradley, William, 1758-1833. | Bradley, William, 1758-1833. | Bradley, William, 1758-1833.
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：itemid, title, caption, albumnumber, dateofwork, collectionitemlink, digitalitemlink, digitalordernumber
 
 ## g0829（3 列）
@@ -606,7 +606,7 @@
 
 ## g0836（1 列）
 - 見出し：creator
-- 例1 値：Bradley, William, ca. 1757-1833 | Bradley, William, ca. 1757-1833 | Blackburn, David, 1753-1795 Blackburn, … | Bradley, William, ca. 1757-1833 | Bowes Smyth, Arthur, 1750-1790
+- 例1 値：［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］ | ［個人名のため削除］
   - 同じ表の列：itemid, title, collectionitemlink, digitalitemlink, albumnumber, transcriptlink, dateofwork, digitalordernumber
 
 ## g0837（1 列）
