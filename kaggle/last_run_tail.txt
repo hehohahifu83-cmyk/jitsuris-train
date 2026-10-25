@@ -1,33 +1,24 @@
 name, memory.total [MiB]\n
 Tesla T4
 Tesla T4
-GPU 1）仕事1との違い：FT_SEED=2\n
 GPU 0）FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1
+GPU 1）仕事1との違い：FT_SEED=2\n
 ---
-,{"stream_name":"stdout","time":111.847876366,"data":"[仕事1]     optimizer_state[\"found_inf_per_device\"] = self._unscale_grads_(\n"}
-,{"stream_name":"stdout","time":111.847878728,"data":"[仕事1]                                               ~~~~~~~~~~~~~~~~~~~~^\n"}
-,{"stream_name":"stdout","time":111.847881107,"data":"[仕事1]         optimizer, inv_scale, found_inf, False\n"}
-,{"stream_name":"stdout","time":111.847883309,"data":"[仕事1]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stdout","time":111.847885543,"data":"[仕事1]     )\n"}
-,{"stream_name":"stdout","time":111.847887692,"data":"[仕事1]     ^\n"}
-,{"stream_name":"stdout","time":111.847889984,"data":"[仕事1]   File \"/usr/local/lib/python3.13/dist-packages/torch/amp/grad_scaler.py\", line 294, in _unscale_grads_\n"}
-,{"stream_name":"stdout","time":111.847892363,"data":"[仕事1]     torch._amp_foreach_non_finite_check_and_unscale_(\n"}
-,{"stream_name":"stdout","time":111.847894596,"data":"[仕事1]     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n"}
-,{"stream_name":"stdout","time":111.847896842,"data":"[仕事1]         grads,\n"}
-,{"stream_name":"stdout","time":111.847899113,"data":"[仕事1]         ^^^^^^\n"}
-,{"stream_name":"stdout","time":111.847901249,"data":"[仕事1]         per_device_found_inf.get(device),\n"}
-,{"stream_name":"stdout","time":111.847903456,"data":"[仕事1]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stdout","time":111.847905647,"data":"[仕事1]         per_device_inv_scale.get(device),\n"}
-,{"stream_name":"stdout","time":111.847907921,"data":"[仕事1]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stdout","time":111.847910152,"data":"[仕事1]     )\n"}
-,{"stream_name":"stdout","time":111.847912304,"data":"[仕事1]     ^\n"}
-,{"stream_name":"stdout","time":111.847939819,"data":"[仕事1] NotImplementedError: \"_amp_foreach_non_finite_check_and_unscale_cuda\" not implemented for 'BFloat16'\n"}
-,{"stream_name":"stdout","time":116.483084622,"data":"[仕事1] 終了（終了コード 1）\n"}
-,{"stream_name":"stdout","time":116.552811173,"data":"[仕事2] 終了（終了コード 1）\n"}
-,{"stream_name":"stderr","time":118.874411325,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":118.874452648,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":119.084249412,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":119.08427601,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":119.828743296,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":120.730072014,"data":"[NbConvertApp] Writing 313449 bytes to __results__.html\n"}
+ |\n"}
+,{"stream_name":"stdout","time":1574.200898893,"data":"[仕事1] | hfmodel/ibm-granite__granite-embedding-278m-multilingual 微調整 2.0周・微調整6割＋今の仕組み4割 | 開発用220 正94.1% 誤7 不明6 重大1 | 本物（一般） 正90.2% 誤14 不明15 重大0 その他見送り83/88 | 本物（業務） 正94.9% 誤10 不明14 重大1 その他見送り14/15 | 本物（業務2） 正95.1% 誤14 不明31 重大5 その他見送り63/63 | 本物（日本の調達） 正97.8% 誤0 不明2 重大0 | 学習 1327秒・評価 23秒 |\n"}
+,{"stream_name":"stdout","time":1574.507818115,"data":"[仕事1] | hfmodel/ibm-granite__granite-embedding-278m-multilingual 微調整 2.0周・微調整7割＋今の仕組み3割 | 開発用220 正94.1% 誤8 不明5 重大1 | 本物（一般） 正90.8% 誤16 不明11 重大1 その他見送り82/88 | 本物（業務） 正94.9% 誤11 不明13 重大1 その他見送り15/15 | 本物（業務2） 正95.4% 誤15 不明27 重大6 その他見送り63/63 | 本物（日本の調達） 正95.7% 誤0 不明4 重大0 | 学習 1327秒・評価 23秒 |\n"}
+,{"stream_name":"stdout","time":1574.534109057,"data":"[仕事1] \n"}
+,{"stream_name":"stdout","time":1575.83958569,"data":"[仕事1] Writing model shards:   0%|          | 0/1 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1575.839628916,"data":"[仕事1] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.31s/it]\n"}
+,{"stream_name":"stdout","time":1575.839635405,"data":"[仕事1] Writing model shards: 100%|██████████| 1/1 [00:01\u003c00:00,  1.31s/it]\n"}
+,{"stream_name":"stdout","time":1576.695986432,"data":"[仕事2] manifest.json written; weights sha256 623df4411f5766d1e68def61cc96b57c6581a065ff3b2740c3e9745120cf6cbe\n"}
+,{"stream_name":"stdout","time":1578.850955374,"data":"[仕事1] manifest.json written; weights sha256 864e4b9dadcfe48060668acced653da09b17ddf8f51d4cf07f868e4635f6cc96\n"}
+,{"stream_name":"stdout","time":1580.821175455,"data":"[仕事2] 終了（終了コード 0）\n"}
+,{"stream_name":"stdout","time":1581.428353247,"data":"[仕事1] 終了（終了コード 0）\n"}
+,{"stream_name":"stderr","time":1583.815899007,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1583.815923593,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1584.021601302,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1584.021623631,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1584.763698531,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1585.629123132,"data":"[NbConvertApp] Writing 313450 bytes to __results__.html\n"}
 ]
