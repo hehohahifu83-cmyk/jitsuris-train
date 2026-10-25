@@ -44,9 +44,9 @@ def detail(mid):
     }
 
 
-def main():
+def main(bases=BASES, out="research/merge/candidates"):
     rows = []
-    for base in BASES:
+    for base in bases:
         for m in list_finetunes(base):
             rows.append({"base": base, "id": m["id"], "downloads": m.get("downloads", 0), "likes": m.get("likes", 0),
                          "pipeline_tag": m.get("pipeline_tag"), "tags": m.get("tags", []), "lastModified": m.get("lastModified")})
@@ -56,9 +56,9 @@ def main():
             r.update(detail(r["id"]))
         except SystemExit as e:
             r["detail_error"] = str(e)
-    json.dump(rows, open("research/merge/candidates.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    with open("research/merge/candidates.md", "w", encoding="utf-8") as f:
-        f.write(f"# multilingual-e5-base の微調整モデル（Hugging Face、{len(rows)} 件、ダウンロード順）\n\n")
+    json.dump(rows, open(out + ".json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    with open(out + ".md", "w", encoding="utf-8") as f:
+        f.write(f"# {', '.join(bases)} の微調整モデル（Hugging Face、{len(rows)} 件、ダウンロード順）\n\n")
         f.write("| 名前 | DL | 種類 | 言語 | データ | 作り | 大きさ |\n|---|---:|---|---|---|---|---:|\n")
         for r in rows:
             ds = ", ".join(r.get("datasets") or [])[:80] if isinstance(r.get("datasets"), list) else str(r.get("datasets") or "")[:80]
@@ -83,5 +83,7 @@ def cards(ids):
 if __name__ == "__main__":
     if len(sys.argv) > 2 and sys.argv[1] == "cards":
         cards(sys.argv[2:])
+    elif len(sys.argv) > 2 and sys.argv[1] == "search":
+        main([sys.argv[2]], sys.argv[3])
     else:
         main()

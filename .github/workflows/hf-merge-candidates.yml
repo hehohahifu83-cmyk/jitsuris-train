@@ -28,7 +28,7 @@ jobs:
           set -eu
           read -r cmd ids <<< "$(head -1 research/merge/search.request) "
           case "$cmd" in
-            search) python -I research/merge/hf_merge_candidates.py ;;
+            search) if [ -n "$ids" ]; then set -- $ids; python -I research/merge/hf_merge_candidates.py search "$1" "$2"; else python -I research/merge/hf_merge_candidates.py; fi ;;
             cards) python -I research/merge/hf_merge_candidates.py cards $ids ;;
             *) echo "依頼が違う"; exit 1 ;;
           esac
