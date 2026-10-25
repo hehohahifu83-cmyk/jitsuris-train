@@ -35,6 +35,14 @@ def read_jsonl(p):
     return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
 
 
+def _relabel():
+    p = ROOT / "materials" / "pool" / "label_review" / "claude_decisions.jsonl"
+    return {d["id"]: d["label"] for d in read_jsonl(p) if d["decision"] == "change"} if p.exists() else {}
+
+
+RELABEL = _relabel()
+
+
 def load_batch(batch: str) -> list[dict]:
     """陣の列を corpus の順に返す。各列：table・header・values（全部）・context・unit・pred（今のモデル）・truth・adjudicated。"""
     w = WORK / batch
@@ -57,6 +65,8 @@ def load_batch(batch: str) -> list[dict]:
             truth, adj = dec[i]["label"], kind == "to_review"
         else:
             truth, adj = l["label"], False
+        if s["id"] in RELABEL:   # ラベルの掃除（materials/pool/label_review/claude_decisions.jsonl。2026-10-25）
+            truth, adj = RELABEL[s["id"]], True
         vals = [str(v) for v in (c.get("row_values") or c["values"]) if str(v).strip() not in JUNK] or [str(v) for v in s["values"]]
         out.append({"batch": batch, "i": i, "id": s["id"], "table": c["table"], "header": str(c["header"]),
                     "values5": [str(v) for v in s["values"]], "values": vals, "context": [str(x) for x in s.get("siblings") or []],
