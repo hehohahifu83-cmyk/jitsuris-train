@@ -1,0 +1,317 @@
+{
+ "amp": {
+  "active_at_end": true,
+  "fallback_enabled": false,
+  "fallback_step": null,
+  "mode": "fp16"
+ },
+ "code": {
+  "batching.py": "63fc63c69c4aae25934b5e313a1770532e7c570757189dbaca27b7c7bf683464",
+  "encoder_context.py": "28aa52e6d1b51acfa52ca91a1dec1d8a5a7a0a310877a65d8842507adc0e5847",
+  "encoder_exp.py": "fbabdd10b8e76237b0fea2b93c3d817358b83994bb44dc1693423b9979ddb951",
+  "evaluation_records.py": "acc16dd65e8ee5473c61125dff363fafc6c43ca5121c2a853ab8ef09f32a6757",
+  "exp7.py": "8e51d4e8e01cb01844207462154dab736d8c16a2526cdc1e62c4307fc784f799",
+  "features.py": "1b5c86f902a2ff45dccd219f4daa8cc2abdd6f00d94aaf50eda600be256583ec",
+  "finetune_exp.py": "4eeb8188e5f394681ae91bf82479b9d3f1eda2aca6a499808ed65f290ddc1429",
+  "gen.py": "5c4d82d085b64b9ce48a5b62ce7082bf11ed9413bd6b51a103f42afb369123fa",
+  "jobs.py": "43f066047d8a8af34e92eaa139fb48462439bcc90d5fbf567e00c17e6ed9bf6e",
+  "llm_baseline.py": "fd997645f1f7d6cf6daea9ac4e858fbfbeda9a4ef1a832fe3c1fe9d9ba9981df",
+  "model_setup.py": "6b1de34b0c2d3e23467bc2081bc64a663c4fc74ca5a81026ff7d79f80fb5ee85",
+  "provenance.py": "7e6842f4b019a59b71898c0fcbd1e346a2a953b810a3d5a61f65694732943f90",
+  "train3.py": "87177b6f24e9b3db24b15e57d003845fd307a7e32a73a99e31ab6a7942ee2062",
+  "val_split.py": "911baee2b13c86fe5e09c4371068d5db4e7b76897a9c87d4f0afee9e3d3b1a16"
+ },
+ "commit": "33c3194dd993f05c38492d6a59489b7b8c60a30e",
+ "created_utc": "2026-10-26T08:11:32Z",
+ "extra": {
+  "config_changes": {},
+  "device": "cuda",
+  "dropout_override": null,
+  "eval_mode": "fixed_tests",
+  "gpu": "Tesla T4",
+  "max_length": 160,
+  "model_type": "xlm-roberta",
+  "no_dropout": false,
+  "prefix": "query: ",
+  "request_args": "hfmodel/intfloat__multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160 FT_KEEP=1 FT_POOL_HARD_LIST=materials/pool/hard_list_cv.jsonl FT_POOL_HARD_LIST_COPIES=3 FT_POOL_EXCLUDE=b003,b014,b015,b016,b017 ++ FT_POOL_EXCLUDE=b004,b010,b015,b016,b017 ++ FT_POOL_EXCLUDE=b005,b007,b015,b016,b017 ++ FT_POOL_EXCLUDE=b006,b011,b013,b015,b016,b017 ++ FT_POOL_EXCLUDE=b001,b002,b008,b009,b012,b015,b016,b017 ++ FT_POOL_EXCLUDE=b015,b016,b017",
+  "token_stats": {
+   "train": {
+    "max": 245,
+    "max_length": 160,
+    "mean": 76.20615369674996,
+    "n": 123568,
+    "p50": 74,
+    "p95": 123,
+    "p99": 154,
+    "truncated": 768,
+    "truncated_rate": 0.006215201346626958
+   },
+   "本物（一般）": {
+    "max": 191,
+    "max_length": 160,
+    "mean": 95.86422976501305,
+    "n": 383,
+    "p50": 99,
+    "p95": 134,
+    "p99": 170,
+    "truncated": 5,
+    "truncated_rate": 0.013054830287206266
+   },
+   "本物（日本の調達）": {
+    "max": 199,
+    "max_length": 160,
+    "mean": 109.1304347826087,
+    "n": 92,
+    "p50": 111,
+    "p95": 158,
+    "p99": 199,
+    "truncated": 3,
+    "truncated_rate": 0.03260869565217391
+   },
+   "本物（業務2）": {
+    "max": 180,
+    "max_length": 160,
+    "mean": 89.59323770491804,
+    "n": 976,
+    "p50": 90,
+    "p95": 125,
+    "p99": 158,
+    "truncated": 7,
+    "truncated_rate": 0.007172131147540984
+   },
+   "本物（業務）": {
+    "max": 150,
+    "max_length": 160,
+    "mean": 92.35510204081632,
+    "n": 490,
+    "p50": 91,
+    "p95": 138,
+    "p99": 145,
+    "truncated": 0,
+    "truncated_rate": 0.0
+   },
+   "開発用220": {
+    "max": 186,
+    "max_length": 160,
+    "mean": 106.89090909090909,
+    "n": 220,
+    "p50": 105,
+    "p95": 146,
+    "p99": 167,
+    "truncated": 5,
+    "truncated_rate": 0.022727272727272728
+   }
+  }
+ },
+ "labels": {
+  "count": 16,
+  "sha256": "50527885e0331bc0469bbd2d794f105a3a0a1fe56dc7ea9138a55e38c403f8cb"
+ },
+ "libraries": {
+  "numpy": "2.1.3",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+  "python": "3.13.15",
+  "safetensors": "0.8.0",
+  "scikit-learn": "1.6.1",
+  "tokenizers": "0.23.1",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.16.1"
+ },
+ "model": {
+  "hf_repo_id": "intfloat/multilingual-e5-base",
+  "hf_revision": {
+   "license": "mit",
+   "patterns": [
+    "*.json",
+    "*.safetensors",
+    "*.model",
+    "*.txt",
+    "sentencepiece*",
+    "tokenizer*"
+   ],
+   "repo": "intfloat/multilingual-e5-base",
+   "revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+   "top_level_files": [
+    "config.json",
+    "model.safetensors",
+    "modules.json",
+    "sentence_bert_config.json",
+    "sentencepiece.bpe.model",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json"
+   ]
+  },
+  "name_or_path": "hfmodel/intfloat__multilingual-e5-base",
+  "source_files": {
+   "config.json": "9dab198f24c8c0879e481cf7822005d5ecbceedbacb390ffafa594e28d31bac4",
+   "special_tokens_map.json": "06e405a36dfe4b9604f484f6a1e619af1a7f7d09e34a8555eb0b77b66318067f",
+   "tokenizer.json": "62c24cdc13d4c9952d63718d6c9fa4c287974249e16b7ade6d5a85e7bbb75626",
+   "tokenizer_config.json": "efb5c0d09722e5fe59a462cd2a9976ee216d55b037597d997cd3fe833216da15"
+  },
+  "source_weights": {
+   "model.safetensors": {
+    "bytes": 1112201288,
+    "sha256": "a18a44fad1d0b46ded15928144138cff1135d5cc8233bdd90be5f18822de09a7"
+   }
+  }
+ },
+ "model_config": {
+  "attn_implementation": "sdpa",
+  "classifier_pooling": null,
+  "hidden_size": 768,
+  "layers": 12,
+  "model_type": "xlm-roberta",
+  "parameters": 278055952,
+  "vocab_size": 250002
+ },
+ "outputs": {
+  "FINETUNE_RESULTS.md": "82dbd347cb668909de228898f9bc56d0938a2bf4601b13e2b21b29997aff49c1",
+  "errors_business2_blend50.json": "1e0870e4cc9a8fb70121be3d1392b49e82b8bdd6bb22cd9bf42858c9878e1b77",
+  "errors_business2_blend60.json": "fb6e4379491b0f90f13f153b01f8176fefb908f64bccd1902b5efbea0059f37d",
+  "errors_business2_blend70.json": "306d71a5a43c08926a478c4dbceaa7a46047d540aafdd2f5f90917b50d2fc3b6",
+  "errors_business2_ft.json": "f5a42a2538fcbbd9542ccfe160e1184e3b1fbe7c4a894cc5f350643ffe519aa8",
+  "errors_business2_sparse.json": "c6d83a83523db249ea8a4f09685d3079feb3e7457d95326a6fb951573e74768b",
+  "errors_business_blend50.json": "1099eeac2f656b48e5508c77878cd97a8414adece80b5e69a7a675ea858bff13",
+  "errors_business_blend60.json": "6740b6655f4fa52f3d392f2619d8914e330024b22f412deecfbfa36f2091fb7f",
+  "errors_business_blend70.json": "8ef3b10f16c1ad33f288dded751af9bcd0a0768da758dc8b6320f5e41383e1f6",
+  "errors_business_ft.json": "3fa77db5376dd4633c356e829c2ce9bf37bb01d1113b1607f5ee622accd6a9d7",
+  "errors_business_sparse.json": "58c08ce31334748b2fecb9c62b41ffb9ba9aca854acbbdcf5d262e2530728483",
+  "errors_dev220_blend50.json": "acf7b95c4bb597c8955230fad399c205c57048fa507a3c6ace2eb9826cdac0ef",
+  "errors_dev220_blend60.json": "5469a42cc0d8a72da1a36cd124c53945a603ec3728aacdb5644f4e20ec4903ba",
+  "errors_dev220_blend70.json": "49b5cbb5e3c736f0703b0b0c1ee9c7d6dac8301fdb1aa77f109837d89ca5260a",
+  "errors_dev220_ft.json": "76b67db102b0fa7dfaa34205d288c1ccd91222586bbe9edceb4883a4060d0525",
+  "errors_dev220_sparse.json": "b561f99cff1fe9b7f12233ea38720528fa1f5032270ca814d923930016ce7093",
+  "errors_general_blend50.json": "9d4dd64fde50ac8347ade331c3ea091b79a7c4606c296216ca78999bdac5f354",
+  "errors_general_blend60.json": "aeb96bca6b1ac6e102a7d29ae45bea149fac770c7a22cace8a60278844b8196a",
+  "errors_general_blend70.json": "b65fe6cc030e21b8cd8c2217889f5963ee92c34c6c1e985b60dd08781cdf851f",
+  "errors_general_ft.json": "4c326370001cb72e521c17a2cf6d204d5ff8fdd600c5eb3afe0f8612647c0109",
+  "errors_general_sparse.json": "6e54cd469499329b802c8ca04b3d3646d2246f6efd58ee7648825210cd5299e0",
+  "errors_japan_procurement_blend50.json": "0aa0dba44f176b2ca58819d5f3e06f58726687e69d047f636310e024d39a0912",
+  "errors_japan_procurement_blend60.json": "eedadd0af0fa4942ba05c957402879ceb879fc6d13cffe3a6dd5cf73e75a0517",
+  "errors_japan_procurement_blend70.json": "89008b443dafdaaaf9f21d2148c93ec246743547a634b2b08e6dc950771eeb9d",
+  "errors_japan_procurement_ft.json": "2676b4a93c8ab3d2202821e45fca5e434a3b5941818da7caa44b833448c3a5a9",
+  "errors_japan_procurement_sparse.json": "3cc4ef5ff713fa3d1c52a11b324032a587b864445f49a229ce6d7c98b47106bf",
+  "probs_business2_blend50.json": "85322b1e35f3a04b76c0c685593a2f7d472ad3da3f4cff0b84100ed78e8dd427",
+  "probs_business2_blend60.json": "a6dd8bf41f8a236e1400dcd9aa06ec354d554699bdc0d5dd939ea767c67b64ff",
+  "probs_business2_blend70.json": "cc83f3138b43811c3b07c25d9147f731f97a7276c28385e2a8e54a4ae4c84ec3",
+  "probs_business2_ft.json": "f251208e6e8ed62f7b2d7f4f2c72b8fdb9db9b90f92d7c208102989943f12b46",
+  "probs_business2_sparse.json": "4e2cb62590ac80773083320b046873d10d0ebdd755a3992f3e896fdc4f6e3c23",
+  "probs_business_blend50.json": "5ca3eee18ae648e92026941f000e98ac32e5adc03ea5eab046aca70c126f2ceb",
+  "probs_business_blend60.json": "2f6931d38c8be69256e22d9dec6f1275ab2334f16a27eb25e64f15465c2d43e6",
+  "probs_business_blend70.json": "3d32e0821d6ec13d79542f22113ceceef608fae80980745d5454a65d4e18d588",
+  "probs_business_ft.json": "ffaa398b7fdaf0468a91e29b786ed3bd95c8d3118e582409b6bcd4cef6a7bc72",
+  "probs_business_sparse.json": "1ab321598c2b804da13bc6fa3d4a965f648dfb01279afc89095993b3355c21f1",
+  "probs_dev220_blend50.json": "d1a144938ef4068878ffb630e75e775756b1a51c183f8301b9520633a4219a70",
+  "probs_dev220_blend60.json": "be51657f60361f438e56714ddcc625b35b1e2bbc15d9d4d41e6d5ad792bf6e2e",
+  "probs_dev220_blend70.json": "660d615d42886ff7fc6136ccbc5ba121705de7eaceab1d195a9458d4d3ead6f2",
+  "probs_dev220_ft.json": "7cf7b654de230fd53deedf63ddaeab43eef1bfb07a92ec719a620552eb85da09",
+  "probs_dev220_sparse.json": "ad7241ccaf2bfbeb6192c5bd172272c0f9e8ca050c327c5c9cf3daffc94cb2df",
+  "probs_general_blend50.json": "57fead80048838941813a7cf045ff969d875d76e64ee0c41fe007ea4377b762f",
+  "probs_general_blend60.json": "973470a15b1d9ce771ad1fc3fe27e253fa755a2377f58980127a0b8cd3b2fe26",
+  "probs_general_blend70.json": "a796d9b0888a069bcd4d850584c6f4a4f965e2191a179aeb19c7c9d9f7b0febf",
+  "probs_general_ft.json": "018ad1e073d9c2a8c30392faea57e19490db942aa823f27ea2c729e4430f88fb",
+  "probs_general_sparse.json": "07dba49336018c9d80bd0fffdf55ae105755ba54ee9726939c6857c2b9ff48e8",
+  "probs_japan_procurement_blend50.json": "802a0febf8d16fc78af82b5a53d4d3728e6bf39df6df668965798913bbb53184",
+  "probs_japan_procurement_blend60.json": "e1fe9da8a1dc88d13551cfdcff193c11e6104f309961182694ab74d8288b591b",
+  "probs_japan_procurement_blend70.json": "c6a66c455ce844b92cc9eaab01ad868baa0e24ebde51ef169f4b19558a6dc9ec",
+  "probs_japan_procurement_ft.json": "03b1e8931f4be80b637b1ba787006e59c277d1ffae7b8d7c8d759cef183efa4a",
+  "probs_japan_procurement_sparse.json": "38752b115df0281b40733ecae08646f825690034a6297e90d80003e3bef960da"
+ },
+ "replay_rows": {
+  "count": 0
+ },
+ "run": {
+  "env": {
+   "FT_ACC": "2",
+   "FT_BS": "32",
+   "FT_CKPT": "0",
+   "FT_CPU_THREADS": "2",
+   "FT_CTX_UNIT": "1",
+   "FT_FOCAL_GAMMA": "1.5",
+   "FT_FREEZE_EMB": "0",
+   "FT_FUSED": "1",
+   "FT_KEEP": "1",
+   "FT_LR": "3e-5",
+   "FT_MAX_LEN": "160",
+   "FT_PAD8": "1",
+   "FT_POOL": "1",
+   "FT_POOL_EXCLUDE": "b001,b002,b008,b009,b012,b015,b016,b017",
+   "FT_POOL_HARD_LIST": "materials/pool/hard_list_cv.jsonl",
+   "FT_POOL_HARD_LIST_COPIES": "3",
+   "FT_SEED": "1",
+   "FT_SORT": "1",
+   "FT_TITLE": "1"
+  },
+  "epochs": 2.0,
+  "seed": "1"
+ },
+ "saved_model": {
+  "files": {
+   "config.json": "121508af5fc9d6b72c94cd0fb4a313d482b322839af75560eb1b86b6a82f7e3f",
+   "labels.json": "fc7e758c07c6b2107cc587a5d50981c7107c1f9a04ab4dc7753c063167ffa3bf",
+   "tokenizer.json": "7e46326c545ff6da42f5474c4845979f724e537dcc2ad6c20bc061b73b5f9472",
+   "tokenizer_config.json": "be6a8a750e107313ee6d27f17135d8dfe7bbee506787f44d9434ae2dff012024"
+  },
+  "weights": {
+   "model.safetensors": {
+    "bytes": 1112248072,
+    "sha256": "658a44edea805e1a3509371ab5bdff8551a1d715962a2d724ad67b45f38277bd"
+   }
+  }
+ },
+ "schema_version": 1,
+ "status": "completed",
+ "tests": {
+  "本物（一般）": {
+   "count": 383,
+   "sha256_ordered": "e53f51c9af1142f18ef055d35342a99c8848194b4b9b61c9050efc9aabf1e092",
+   "sha256_unordered": "6949b4363d6b0dab03458188c257d81fa15592b44e2669d28cc782757ddf4eb0"
+  },
+  "本物（日本の調達）": {
+   "count": 92,
+   "sha256_ordered": "9d806199e611cde8a33d8603fcda90f61e53bd5e015b6a386c3b17af753571a3",
+   "sha256_unordered": "f7a386ec15ded101fe1ea59bfc8b1d08969f8e1d8a14f5214670789ef2af5161"
+  },
+  "本物（業務2）": {
+   "count": 976,
+   "sha256_ordered": "ca0379f6daae5a100e22273686c7c4bc109254a4f8af634b8c14dd2fbfeac479",
+   "sha256_unordered": "82acd0a46442b6a8647773c9e7d96e47b1439cbda0c137410cddb9a16e28b883"
+  },
+  "本物（業務）": {
+   "count": 490,
+   "sha256_ordered": "7cd45103c7ce4aaf651795a33a1b01676bb2c088ba7acb041aaa924e4213f911",
+   "sha256_unordered": "77bdb485faad0bb08b09f928f445b383897a002b89fed1f7bdac316cc80e3e4f"
+  },
+  "開発用220": {
+   "count": 220,
+   "sha256_ordered": "6f917e68b045dec07c0d14002d19fb50583789063eae9607fd5fa32c0b890c7b",
+   "sha256_unordered": "c120d33d5b2994d1d996f74d84097b0c8d02ed3a59bd305c6adf6f7bee365ec0"
+  }
+ },
+ "timing": {
+  "eval_seconds": 21.5,
+  "inference_rows": {
+   "本物（一般）": 383,
+   "本物（日本の調達）": 92,
+   "本物（業務2）": 976,
+   "本物（業務）": 490,
+   "開発用220": 220
+  },
+  "inference_seconds": {
+   "本物（一般）": 2.63,
+   "本物（日本の調達）": 0.66,
+   "本物（業務2）": 5.6,
+   "本物（業務）": 3.02,
+   "開発用220": 1.52
+  },
+  "peak_gpu_gib": 5.46,
+  "train_loop_seconds": 1369.1,
+  "train_total_seconds": 1394.6
+ },
+ "train_rows": {
+  "count": 123568,
+  "sha256_ordered": "a7a707cd70e2d5ba68d389d059b4e71cbd0d94d99a84f7e57b5bd5bbb79ebb35",
+  "sha256_unordered": "eac6285b26874c2c933eb58054c86def795800fa991a18f2eb894c303fd74a4d"
+ }
+}
