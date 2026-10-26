@@ -1029,3 +1029,7 @@
     training rows=146209 seed=1
     train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
     peak GPU memory 5.6 GiB; training loop 1626s
+2026-10-26T04:16:54Z push の返事：Kernel version 49 successfully pushed.  Please check progress at https://www.kaggle.com/code/jitsurio/jitsuris-train 
+2026-10-26T04:17:24Z 依頼直後の状態：jitsurio/jitsuris-train has status "KernelWorkerStatus.RUNNING" 
+2026-10-26T04:17:24Z train を依頼：hfmodel/intfloat__multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160 FT_KEEP=1 FT_POOL_EXCLUDE=b003,b014,b015,b016 ++ FT_POOL_EXCLUDE=b004,b010,b015,b016 ++ FT_POOL_EXCLUDE=b005,b007,b015,b016 ++ FT_POOL_EXCLUDE=b006,b011,b013,b015,b016 ++ FT_POOL_EXCLUDE=b001,b002,b008,b009,b012,b015,b016
+送ったモデル：intfloat/multilingual-e5-base revision d128750597153bb5987e10b1c3493a34e5a4502a license mit tags ['license:mit']・束の中のモデルのファイル数 56
