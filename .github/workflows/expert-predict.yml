@@ -56,8 +56,11 @@ jobs:
           set -eu
           tag=${{ steps.req.outputs.tag }}
           spec="${{ steps.req.outputs.batches }}"
-          for d in /tmp/m/ft_out_job*; do
-            j=$(basename "$d" | sed 's/ft_out_//')
+          ls -la /tmp/m
+          # 学習が 1 ジョブだけのときは置き場が ft_out（2026-10-26：H の 1 ジョブの学習で ft_out_job* が無く止まった）→ job1 として扱う
+          for d in /tmp/m/ft_out_job* /tmp/m/ft_out; do
+            [ -d "$d" ] || continue
+            j=$(basename "$d" | sed 's/ft_out_//'); [ "$j" = "ft_out" ] && j=job1
             mine=$(for t in $spec; do case "$t" in "$j="*) echo "${t#*=}" | tr ',' ' ';; esac; done)
             if [ -z "$mine" ]; then case "$spec" in *=*) continue;; esac; mine="$spec"; fi
             for b in $mine; do
