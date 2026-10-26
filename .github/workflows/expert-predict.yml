@@ -1,4 +1,4 @@
-name: 専門家の候補の予測（b013・b014、CPU）
+name: 専門家の候補の予測（b013・b014 など、CPU）
 
 on:
   workflow_dispatch:
@@ -25,11 +25,13 @@ jobs:
       - name: 依頼を読む
         id: req
         run: |
-          read -r cmd run_id tag <<< "$(head -1 research/experts/predict.request) "
+          read -r cmd run_id tag batches <<< "$(head -1 research/experts/predict.request) "
           if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           case "$run_id" in ''|*[!0-9]*) echo "run の番号が違う"; exit 1;; esac
           case "$tag" in ''|*[!a-z0-9]*) echo "名前は英小文字と数字だけ"; exit 1;; esac
-          { echo "proceed=true"; echo "run_id=$run_id"; echo "tag=$tag"; } >> "$GITHUB_OUTPUT"
+          batches="${batches:-b013 b014}"
+          for b in $batches; do case "$b" in b[0-9][0-9][0-9]) ;; *) echo "陣の名前が違う"; exit 1;; esac; done
+          { echo "proceed=true"; echo "run_id=$run_id"; echo "tag=$tag"; echo "batches=$batches"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.req.outputs.proceed == 'true'
         with: { python-version: '3.11' }
@@ -54,7 +56,7 @@ jobs:
           tag=${{ steps.req.outputs.tag }}
           for d in /tmp/m/ft_out_job*; do
             j=$(basename "$d" | sed 's/ft_out_//')
-            for b in b013 b014; do
+            for b in ${{ steps.req.outputs.batches }}; do
               python evaluate_independent.py predict --set materials/pool/work/$b/set.json --checkpoint "$d" \
                 --out research/experts/preds/${tag}_${j}_${b}.json --ledger research/experts/ledger.jsonl --device cpu
             done
