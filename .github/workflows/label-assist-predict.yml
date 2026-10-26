@@ -34,6 +34,10 @@ jobs:
           if [ "$model" = "c1" ]; then
             case "$out_path" in materials/pool/work/*/pred_c1_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
             run_id=40118170559; want=a7028e711568cfa9b8647b506838db7a353b5b7edf6c1ec8f131f6ac6ec89825; label="C1（教材庫を学習、種子 1）"
+          elif [ "$model" = "c2" ]; then
+            # 2026-10-26：C2（教材庫 b014 まで＋題名、run 40202377192 の種子 1）。b015 以降で C2 の線を決め直すため。題名は予測ファイルの経路では入れない（＝題名なしの形）
+            case "$out_path" in materials/pool/work/*/pred_c2_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+            run_id=40202377192; want=44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4; label="C2（教材庫 b014 まで＋題名、種子 1）"
           elif [ "$model" = "e5" ]; then
             case "$out_path" in materials/label_assist/*_e5base_seed1.json|materials/pool/work/*/pred_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
             run_id=39506074807; want=38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7; label="E5-base 種子 1"

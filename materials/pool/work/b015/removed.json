@@ -1,0 +1,52 @@
+{
+ "removed_utc": "2026-10-26",
+ "by": "Claude",
+ "note": "rows は取り出したときの corpus の番号（1 から。ラベルの前なので行を取り除いた）",
+ "items": [
+  {
+   "table": "https://opendata.transport.vic.gov.au/dataset/174fbf40-bef0-434a-8af0-891c7f3d2323/resource/1b73f806-1565-4243-96d7-78f9002c3e8f/download/household_vista_2024_2025.csv",
+   "rows": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "headers": [
+    "hhid",
+    "surveyperiod",
+    "hhsize",
+    "dwelltype",
+    "owndwell",
+    "totalbikes",
+    "totalvehs",
+    "travmonth",
+    "travdow",
+    "homelga"
+   ],
+   "reason": "個人単位の記録（世帯ごとの旅行調査の個票）"
+  },
+  {
+   "table": "https://opendata.transport.vic.gov.au/dataset/bb77800e-1857-4edc-bf9e-e188437a1c8e/resource/20772c1a-8b19-424a-a733-eb84f725f611/download/accident.csv",
+   "rows": "（1 回目の取り除きのあとの corpus から外したので番号は記録しない）",
+   "headers": [
+    "ACCIDENT_NO",
+    "ACCIDENT_DATE",
+    "ACCIDENT_TIME",
+    "ACCIDENT_TYPE",
+    "ACCIDENT_TYPE_DESC",
+    "DAY_OF_WEEK",
+    "DAY_WEEK_DESC",
+    "DCA_CODE",
+    "DCA_DESC",
+    "LIGHT_CONDITION"
+   ],
+   "reason": "事故 1 件ごとの記録（b014 で crash locations を題名の規則で外したのと同じ扱い）"
+  }
+ ]
+}
