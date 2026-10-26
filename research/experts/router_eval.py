@@ -21,12 +21,13 @@ from research.merge.merge_eval import with_pred  # noqa: E402
 NUM = set(V.NUMERIC)
 TS = (0.7, 0.8, 0.9, 0.95, 0.98)
 TRAIN = tuple(f"b{n:03d}" for n in range(1, 15))
+HARD_PREFIX = "hard_job1"   # --hard で変える（交差検証の全部の教材の H は hcv_job6）
 
 
 def hard_preds(batches):
     out = {}
     for b in batches:
-        for r in json.load(open(os.path.join(ROOT, "research", "experts", "preds", f"hard_job1_{b}.json"), encoding="utf-8"))["rows"]:
+        for r in json.load(open(os.path.join(ROOT, "research", "experts", "preds", f"{HARD_PREFIX}_{b}.json"), encoding="utf-8"))["rows"]:
             out[r["id"]] = (r["guarded_prediction"], r["top3"])
     return out
 
@@ -35,7 +36,10 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--batches", nargs="+", default=["b015", "b016"])
     ap.add_argument("--out", default=None)
+    ap.add_argument("--hard", default="hard_job1")
     a = ap.parse_args(argv)
+    global HARD_PREFIX
+    HARD_PREFIX = a.hard
     labels = list(V.LABELS)
     train = [c for b in TRAIN for c in E.load_batch(b)]
     ok = np.array([bool(c["truth"]) and c["truth"] in labels for c in train])
