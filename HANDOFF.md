@@ -1,5 +1,15 @@
 # 最新確認 2026-10-26 10:40 JST（Claude。**b015・b016 確定・granite は採らない・e-Gov の許諾・C2 を新しい公開元で測った**）
 
+
+## 2026-10-26 07:15 UTC 引き継ぎ（Claude、利用制限が近いため）
+- 進行中：交差検証の段 B（H の 5 分割＋全部の教材、6 ジョブ）Kaggle 学習中（Actions run 40284280654、07:11 UTC 開始）。完了の確認は `kaggle/kaggle.request`＝done と、この run の artifact で行う（定時 run が STATUS.md を上書きするため）
+- 次の手順：
+  1. `research/experts/predict.request` に `run 40284280654 hcv job1=b003,b014 job2=b004,b010 job3=b005,b007 job4=b006,b011,b013 job5=b001,b002,b008,b009,b012 job6=b015,b016,b017` を書いて push（出力は `research/experts/preds/hcv_jobK_<陣>.json`）
+  2. `python3 research/experts/router_cv.py --out bench/crossval_body_h_20261026.md`（教材庫の全列で T_H を決める）
+  3. `python3 research/experts/router_eval.py --hard hcv_job6`（b015〜b017 で確かめる。題名あり・なし）
+  4. 構成を凍結 → 最終確認の陣 → 封印セット #3（事前記録 `independent_eval/PREREG_sealed3-20261025-v1.md` を C2＋手順書に書き直してから）
+- 予約：08:54 UTC に確認の予約（trig_016wYFhPnt1Buyh7ghBZKrgS）
+
 ## 確認済み
 - 数字の専門家（木のモデル v1〜v3・辞書）は、難しい列で正しさが線（95%）に届かず止めた（`bench/numeric_expert_v1〜v3.md`）。辞書：自治体コードの検査数字が合う列は id 100%（`materials/dict/README.md`）
 - granite-embedding（オーナー許可）：本体の入れ替えは差なし（−1.0）、2 モデルの専門家も「良い」なし（救済で重大 3→29、誤りの 66% が重なる）→ 本体は e5-base のまま（`bench/granite_expert_20261026.md`）。1 回目の ERROR は bfloat16 の重み → `finetune_exp.py` で float32 にそろえる直し
