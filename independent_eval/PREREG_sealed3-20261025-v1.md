@@ -26,7 +26,7 @@
 - 予測：`.github/workflows/sealed3-predict.yml`、CPU、各重み 1 回だけ（台帳 `independent_eval/predictions_sealed3/ledger.jsonl`）。ERROR なら再実行しない
 
 ## ラベル
-- LABEL_GUIDE **v1.9**。Claude と ChatGPT が別々に、予測ファイルを開かずに付ける。unknown と S の約束は主セットと同じ。非公開の `ai-bridge/labels/` に保存
+- LABEL_GUIDE **v2.0**（2026-10-26、オーナーの決定で #3 のラベル付けより前に v1.9 から上げた。下書きの段階の変更で、まだ凍結していない）。Claude と ChatGPT が別々に、予測ファイルを開かずに付ける。unknown と S の約束は主セットと同じ。非公開の `ai-bridge/labels/` に保存
 - 照合と裁定は Claude（第 4 章）。決め方を足したくなったら LP 番号で記録し、ガイドは評価の後に改訂する
 - **裁定はモデルの答えを見ずに行う**（ChatGPT の案、2026-10-25）：Claude は裁定が済むまで予測ファイル・採点の結果を開かない。初回の 2 つのラベル・裁定のラベル・根拠・食い違いの理由を消さずに残す
 
