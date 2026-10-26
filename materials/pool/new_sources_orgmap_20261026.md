@@ -82,7 +82,7 @@
 | カタログ | 組織一覧・件数 | ライセンスのメタデータと確認できた内訳 |
 | --- | --- | --- |
 | New Zealand data.govt.nz | CKAN APIを使用。公式ガイドにJSON APIと `package_search` のページ分割例がある。今回、組織名の全件一覧は取得していない。 | APIで見たデータ・メタデータには、各データセットのダウンロード版と同じライセンスが適用される。個別の件数内訳は未集計。 |
-| リオ州 Portal de Dados Abertos | 公式ホームページは99組織、約1.1k件。組織ディレクトリの別スナップショットは98組織、データセット一覧は1,136件だった。更新時点／ページ間で1組織の差があるため、最終数はAPIで再確認が必要。今回、全組織名の取得は未完了。 | カタログのライセンス欄で595件が「未指定」と表示されたスナップショットを確認。ライセンス表示例に `cc-by`、`cc-zero`、`odc-pddl`、`other-pd` があるが、未指定以外の全件数は未集計。 |
+| リオ州 Portal de Dados Abertos | 公式ホームページは99組織、約1.1k件。組織ディレクトリの検索スナップショットは98組織、一覧の検索スナップショットは1,134〜1,136件で揺れていた。更新時点／ページ間で差があるため、最終数はAPIで再確認が必要。今回、全組織名の取得は未完了。 | 公式カタログのフィルター結果で、未指定595件（約2週前）、`odc-pddl` 207件（約2週前）、`other-open` 26件（約6か月前の索引）、`cc-by` 6件（約1〜2週前）を確認した。クロール時点が異なり、全ライセンスの同一時点の完全な内訳ではない。ほかに `cc-zero`、`other-pd` 等の表示例もあるが件数は未確認。ライセンス欄は個別datasetで再確認する。 |
 | UK data.gov.uk / National Data Library | 現行ディレクトリは Publisher フィルターを提供。公式API資料はCKANの `organization_list` を案内する。今回、組織名の全件一覧は取得していない。 | 公式のCKAN項目仕様はデータ単位の `license_id` を定義し、例として `uk-ogl` と OS OpenData Licence を挙げる。全ライセンスの件数は未集計。 |
 
 ### メタデータだけで全件一覧・ライセンス件数を再現するAPI手順
@@ -101,7 +101,7 @@ CKANの公式APIでは `organization_list` で組織名を取得し、`package_s
 - 山口県カタログ：[団体一覧](https://yamaguchi-opendata.jp/ckan/organization)、[API説明](https://yamaguchi-opendata.jp/www/api-manual.html)、[利用ルール](https://yamaguchi-opendata.jp/www/terms.html)
 - 山口県コード：[J-LIS 山口県内市町](https://www.j-lis.go.jp/spd/code-address/chuugoku/cms_15614184.html)
 - New Zealand：[API guide](https://www.data.govt.nz/catalogue-guide/using-data-govt-nz-apis)、[dataset metadata API](https://data.govt.nz/catalogue-guide/using-data-govt-nz-apis/accessing-dataset-metadata-via-api)
-- Rio：[Portal](https://dadosabertos.rj.gov.br/)、[organization directory](https://dadosabertos.rj.gov.br/pt_BR/organization/)、[dataset directory](https://dadosabertos.rj.gov.br/pt_BR/dataset/)
+- Rio：[Portal](https://dadosabertos.rj.gov.br/)、[organization directory](https://dadosabertos.rj.gov.br/pt_BR/organization/)、[dataset directory](https://dadosabertos.rj.gov.br/pt_BR/dataset/)、[未指定](https://dadosabertos.rj.gov.br/pt_BR/dataset/?license_id=notspecified)、[PDDL](https://dadosabertos.rj.gov.br/pt_BR/dataset/?license_id=odc-pddl)、[other-open](https://dadosabertos.rj.gov.br/pt_BR/dataset/?license_id=other-open)、[CC BY](https://dadosabertos.rj.gov.br/pt_BR/dataset/?license_id=cc-by)
 - UK：[API documentation](https://guidance.data.gov.uk/get_data/api_documentation/)、[accepted CKAN fields](https://guidance.data.gov.uk/publish_and_manage_data/harvest_or_add_data/harvest_data/ckan/)、[current directory](https://www.data.gov.uk/search)
 - CKAN API reference：[API Guide](https://docs.ckan.org/en/latest/api/)
 
