@@ -30,7 +30,8 @@ jobs:
           case "$run_id" in ''|*[!0-9]*) echo "run の番号が違う"; exit 1;; esac
           case "$tag" in ''|*[!a-z0-9]*) echo "名前は英小文字と数字だけ"; exit 1;; esac
           batches="${batches:-b013 b014}"
-          for b in $batches; do case "$b" in b[0-9][0-9][0-9]) ;; *) echo "陣の名前が違う"; exit 1;; esac; done
+          # 2026-10-26：「job1=b003,b014 job2=…」と書くと、ジョブごとに予測する陣を分ける（交差検証：その組を外して学んだモデルで、その組だけを予測）
+          for b in $batches; do case "$b" in b[0-9][0-9][0-9]|job[0-9]=b[0-9][0-9][0-9]*) ;; *) echo "陣の名前が違う：$b"; exit 1;; esac; done
           { echo "proceed=true"; echo "run_id=$run_id"; echo "tag=$tag"; echo "batches=$batches"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.req.outputs.proceed == 'true'
@@ -54,9 +55,12 @@ jobs:
         run: |
           set -eu
           tag=${{ steps.req.outputs.tag }}
+          spec="${{ steps.req.outputs.batches }}"
           for d in /tmp/m/ft_out_job*; do
             j=$(basename "$d" | sed 's/ft_out_//')
-            for b in ${{ steps.req.outputs.batches }}; do
+            mine=$(for t in $spec; do case "$t" in "$j="*) echo "${t#*=}" | tr ',' ' ';; esac; done)
+            if [ -z "$mine" ]; then case "$spec" in *=*) continue;; esac; mine="$spec"; fi
+            for b in $mine; do
               python evaluate_independent.py predict --set materials/pool/work/$b/set.json --checkpoint "$d" \
                 --out research/experts/preds/${tag}_${j}_${b}.json --ledger research/experts/ledger.jsonl --device cpu
             done
