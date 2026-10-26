@@ -6,7 +6,8 @@
 3. 似た教材（列名）：苦手の列と同じ列名の列（1 つの列名につき 10 列まで。「名称」などで偏らないように）
 出力：materials/pool/hard_list.jsonl（table・header・reason）。学習は encoder_exp の FT_POOL_HARD_LIST（この一覧の列を FT_POOL_HARD_LIST_COPIES 回ぶん重ねる）
 b015 以降（線を決める陣・確かめる陣）は使わない
-使い方：python research/experts/hard_list.py
+使い方：python research/experts/hard_list.py                 （版 31 の答えで選ぶ。1 回目の H）
+        python research/experts/hard_list.py --crossval      （交差検証の本体の答えで選ぶ。段 B、bench/crossval_body_h_20261026.md）
 """
 import json
 import os
@@ -28,8 +29,28 @@ def nh(h):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(h))).strip().casefold()
 
 
-def main():
-    cols = [c for b in BATCHES for c in E.load_batch(b)]
+FOLDS = {"job1": ("b003", "b014"), "job2": ("b004", "b010"), "job3": ("b005", "b007"), "job4": ("b006", "b011", "b013"),
+         "job5": ("b001", "b002", "b008", "b009", "b012")}
+
+
+def load_cols(crossval):
+    if not crossval:
+        return [c for b in BATCHES for c in E.load_batch(b)]
+    from research.merge.merge_eval import with_pred
+    cols = []
+    for job, bs in FOLDS.items():
+        for b in bs:
+            cs, _ = with_pred(E.load_batch(b), os.path.join(ROOT, "research", "experts", "preds", f"cvbody_{job}_{b}.json"))
+            cols += cs
+    return cols
+
+
+def main(argv=None):
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--crossval", action="store_true")
+    a = ap.parse_args(argv)
+    cols = load_cols(a.crossval)
     sc = [c for c in cols if c["truth"] and c["truth"] not in B.NOT_USED and c["truth"] != "person"]
     hard = [c for c in sc if c["pred"] != c["truth"] and not (c["truth"] == "other" and c["pred"] == "unknown")]
     ids = {c["id"] for c in hard}
@@ -48,7 +69,8 @@ def main():
             continue
         per[h] += 1
         out.append((c, "similar_header"))
-    with open(os.path.join(ROOT, "materials", "pool", "hard_list.jsonl"), "w", encoding="utf-8") as f:
+    name = "hard_list_cv.jsonl" if a.crossval else "hard_list.jsonl"
+    with open(os.path.join(ROOT, "materials", "pool", name), "w", encoding="utf-8") as f:
         for c, why in out:
             f.write(json.dumps({"table": c["table"], "header": c["header"], "batch": c["batch"], "truth": c["truth"], "reason": why}, ensure_ascii=False) + "\n")
     print(len(out), Counter(w for _, w in out))
