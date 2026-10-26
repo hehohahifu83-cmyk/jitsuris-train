@@ -143,6 +143,18 @@ if POOL and POOL_HARD_COPIES > 0:
     _hard = [r for r in pooltr if (str(r[4]), r[0]) in _hard_keys]
     real_rows += real_train_rows_with_units(_hard, POOL_HARD_COPIES, 11, True, unit_by_table, perturb, per_table=60)
     print(f"FT_POOL_HARD_COPIES={POOL_HARD_COPIES}: +{len(_hard)} adjudicated pool rows x{POOL_HARD_COPIES}", flush=True)
+# FT_POOL_HARD_LIST=<一覧>（既定なし）：苦手克服モデル（2026-10-26、オーナー指示）。一覧（research/experts/hard_list.py が作る materials/pool/hard_list.jsonl。
+# 本体が間違えた・不明になった列と、それに似た教材）の列を FT_POOL_HARD_LIST_COPIES 回（既定 3）ぶん余分に足す。検証側の表には足さない（pooltr の中だけ）
+POOL_HARD_LIST = os.environ.get("FT_POOL_HARD_LIST")
+POOL_HARD_LIST_COPIES = int(os.environ.get("FT_POOL_HARD_LIST_COPIES", "3") or 3)
+pool_hard_list_rows = []
+if POOL_HARD_LIST:
+    if not POOL:
+        raise SystemExit("FT_POOL_HARD_LIST は FT_POOL=1 と一緒に使う")
+    _keys = {(d["table"], d["header"]) for d in (json.loads(l) for l in open(POOL_HARD_LIST, encoding="utf-8") if l.strip())}
+    pool_hard_list_rows = [r for r in pooltr if (str(r[4]), r[0]) in _keys]
+    real_rows += real_train_rows_with_units(pool_hard_list_rows, POOL_HARD_LIST_COPIES, 13, True, unit_by_table, perturb, per_table=60)
+    print(f"FT_POOL_HARD_LIST={POOL_HARD_LIST}: +{len(pool_hard_list_rows)} listed pool rows x{POOL_HARD_LIST_COPIES} (list {len(_keys)})", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
 y = np.array([r[2] for r in rows])

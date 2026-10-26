@@ -38,7 +38,7 @@ if [ "$mode" = train ]; then
   printf '%s\n' "${GITHUB_SHA:-unknown}" > commit.txt   # 学習の記録（manifest.json）に、どの commit のコードで流したかを残す
   ( cd .. && tar -cf /tmp/ds/bundle.tar --exclude='blind_set*' --exclude='__pycache__' \
       *.py kaggle/args.txt kaggle/commit.txt "kaggle/nonce-$NONCE.txt" materials/__init__.py materials/teacher_labels.py materials/jp_municipal_fields.json \
-      materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl materials/real_labels_jp3.jsonl $(ls materials/pool/batch_*.jsonl materials/pool/titles.json materials/pool/undecidable.jsonl 2>/dev/null) \
+      materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl materials/real_labels_jp3.jsonl $(ls materials/pool/batch_*.jsonl materials/pool/titles.json materials/pool/undecidable.jsonl materials/pool/hard_list.jsonl 2>/dev/null) \
       cpu_lab/self_learning.py cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/progress_probe.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
   printf '{"title":"jitsuris-data","id":"%s","licenses":[{"name":"other"}]}' "$DS" > /tmp/ds/dataset-metadata.json
