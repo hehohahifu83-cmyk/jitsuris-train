@@ -1,0 +1,48 @@
+# 教材集めの自動化：ChatGPT 向けの使い方（2026-10-26 Claude）
+
+オーナー指示（2026-10-26）：Claude の利用制限が解けるまでの約 1 日、ChatGPT が教材を集める。
+
+## 1. 道具：1 行書くだけでラベル用シートまでできる
+`materials/pool/auto.request` の 1 行目を次の形で書き換えて main に push する（Actions `pool-auto.yml` が動く）：
+
+```
+auto <陣> <探し方>
+```
+
+自動でやること：試験 → 候補を集める（メタデータだけ）→ 採用（規則は `pipeline.py adopt` のまま。train の公開元・許可ライセンス・使っていない表・1 公開元の上限）→ 値の取り出し → `set.json` → ラベル用シート。終わると `auto.request` が `done …` になり、`materials/pool/work/<陣>/auto_log.md` に「採用した表・取り出した列・シートの枚数」が書かれる。
+
+守ること：
+- **1 回に 1 つ**。`auto.request` が `done …` になってから次を書く（1 回 30 分〜2 時間）
+- 陣の番号は **1 回ごとに新しい番号**（b018、b019 …）。採用が 0 表でも、その番号は使えなくなる（次の番号で探し方を変える）
+- `--query` の語は **1 つだけ**（空白を入れない）
+- 採用の規則・`allowed_hosts.json`・`allocation.json`・`pipeline.py` は変えない（評価の独立のため。変えたいときは Claude への提案に書く）
+
+## 2. 集めるもののリスト（上から順に）
+今の苦手（交差検証で間違えた・不明だった列の種類）：quantity 952、date 656、address 653、category 611、org 506、text 293、id 265。この種類が多そうな表を語で探す。
+
+| 順 | 依頼の 1 行 | ねらい |
+|---|---|---|
+| 1 | `auto b018 --national --only-national data.e-gov.go.jp` | e-Gov の残り（約 40 表）。**b018 は最終確認の陣**（学習に入れない。Claude が使う） |
+| 2 | `auto b019 --national --only-national catalog.data.metro.tokyo.lg.jp --query 所在地` | address |
+| 3 | `auto b020 --national --only-national catalog.data.metro.tokyo.lg.jp --query 件数` | quantity |
+| 4 | `auto b021 --national --only-national data.e-gov.go.jp --query 年月日` | date |
+| 5 | `auto b022 --national --only-national data.gov.au --query address` | address（英語） |
+| 6 | `auto b023 --national --only-national data.gov.au --query count` | quantity（英語） |
+| 7 | `auto b024 --socrata --query permit` | date・address・id・category（米国の train の公開元だけ） |
+| 8 | `auto b025 --national --only-national data.gov.ie --query register` | org・category |
+| 9 | `auto b026 --national --only-national open.canada.ca --query inventory` | category・quantity |
+| 10 | `auto b027 --ckan --only-host data.boston.gov --query inspection` | date・address |
+
+採用が 0 表のときは、語を変える（日本語：住所・施設・一覧・事業者・区分・種別・実績・統計・人数・届出、英語：facility・location・inspection・license・grant・contract・schedule・survey）。同じ語で 2 回やらない。
+
+## 3. ラベル付け（今までと同じ）
+- `materials/pool/work/<陣>/sheets/sheet_NNN.md` を LABEL_GUIDE v2.0 だけで答え、`materials/pool/work/<陣>/sheets/answers/sheet_NNN.tsv` に保存する（予測は見ない。予測ファイルはまだ無い）
+- 1 人・1 件ごとの記録（名簿・通報・受験者・違反者など）に見える表は、その表の列を全部 `S` にし、`work/<陣>/sheets/answers/notes.md` に表の名前と理由を書く
+- 突き合わせ・裁定・確定（`merge`・`reconcile`・`finalize`）は Claude が戻ってからやる
+
+## 4. 新しい公開元（調べるだけ。取り込みは Claude）
+`materials/pool/new_sources_20261026.md` の候補の扱い（Claude が割り当てを確かめた結果）：
+- **横浜市・神戸市：使わない**（主セットの公開元。`allocation.py` の FIXED_ASSIGNMENTS で main）
+- **神奈川県（140007）：使わない**（eval2 に当たる）
+- 仙台市（041009）・山口県（350001）：train に当たる。取り込むには組織ごとの公開元の決め方が要る（山口のカタログは県内の市町が混ざる。市町は自分の団体コードで割り当てる必要がある）→ **組織の一覧と、各組織がどの団体（団体コード）かの対応表**を `materials/pool/new_sources_orgmap_20261026.md` に作ってほしい（メタデータだけ）
+- ニュージーランド・リオ州・英国：組織の一覧とライセンスの内訳（メタデータだけ）を同じファイルに

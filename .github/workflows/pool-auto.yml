@@ -1,0 +1,88 @@
+name: 教材を自動で集める（候補→採用→取り出し→ラベル用シート）
+
+# 2026-10-26 Claude。ChatGPT が materials/pool/auto.request に 1 行書くだけで、ラベル用シートまで作る。
+# 形：auto <陣> <pool_discover.py の探し方>   例：auto b018 --national --only-national data.e-gov.go.jp --query 人口
+# 採用の規則（train・ライセンス・1 公開元の上限・使っていない表）は pipeline.py adopt のまま。eval の公開元は通らない
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "materials/pool/auto.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pool-auto
+  cancel-in-progress: false
+
+jobs:
+  auto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 試験
+        run: |
+          python -m unittest tests.test_pool_discover tests.test_pipeline
+          python -I materials/fetch_rows.py --self-test
+      - name: 依頼を読む
+        id: req
+        run: |
+          set -eu
+          read -r cmd batch opts <<< "$(head -1 materials/pool/auto.request) "
+          test "$cmd" = "auto"
+          echo "$batch" | grep -Eq '^b0[0-9]{2}$' || { echo "陣の名前が違う（b018 の形）"; exit 1; }
+          test ! -e "materials/pool/batch_$batch.jsonl" || { echo "$batch は確定済み。次の番号を使う"; exit 1; }
+          test ! -e "materials/pool/work/$batch/adopted.json" || { echo "$batch は採用済み。次の番号を使う"; exit 1; }
+          echo "batch=$batch" >> "$GITHUB_OUTPUT"
+          echo "opts=$opts" >> "$GITHUB_OUTPUT"
+          mkdir -p "materials/pool/work/$batch"
+          echo "- 依頼：\`$(head -1 materials/pool/auto.request)\`（$(date -u +%FT%TZ)）" > "materials/pool/work/$batch/auto_log.md"
+      - name: 候補を集める（メタデータだけ）
+        timeout-minutes: 100
+        run: |
+          set -eu
+          b="${{ steps.req.outputs.batch }}"
+          python -I materials/pool_discover.py --out "materials/pool/candidates_${b}_auto.json" --budget-minutes 90 ${{ steps.req.outputs.opts }} | tail -3 | tee -a "materials/pool/work/$b/auto_log.md"
+      - name: 採用
+        run: |
+          set -eu
+          b="${{ steps.req.outputs.batch }}"
+          python -I materials/pipeline.py adopt --batch "$b" --candidates "materials/pool/candidates_${b}_auto.json" | tail -5 | tee -a "materials/pool/work/$b/auto_log.md"
+          n=$(python -c "import json;print(len(json.load(open('materials/pool/work/$b/adopted.json')).get('adopted',[])))")
+          echo "- 採用した表：$n" >> "materials/pool/work/$b/auto_log.md"
+          test "$n" -gt 0 || { echo "- 採用できる表が 0。探し方を変えて、次の番号で依頼し直す" >> "materials/pool/work/$b/auto_log.md"; exit 0; }
+      - name: 取り出し・ラベル用シート
+        run: |
+          set -eu
+          b="${{ steps.req.outputs.batch }}"
+          d="materials/pool/work/$b"
+          test -s "$d/adopted.json" || exit 0
+          python -c "import json,sys;sys.exit(0 if json.load(open('$d/adopted.json')).get('adopted') else 1)" || exit 0
+          python -I materials/fetch_rows.py --adopted "$d/adopted.json" --out "$d/corpus.jsonl" --log "$d/corpus_log.json"
+          python -I materials/corpus_to_set.py "$d/corpus.jsonl" "$d/set.json" "$b"
+          python -I materials/label_sheets.py make --batch "$b"
+          python - "$d" >> "$d/auto_log.md" <<'PY'
+          import json, sys, glob, os
+          d = sys.argv[1]
+          rows = [json.loads(l) for l in open(os.path.join(d, "corpus.jsonl"), encoding="utf-8")]
+          print(f"- 取り出した列：{len(rows)}（表 {len({r['table'] for r in rows})}）")
+          print(f"- ラベル用シート：{len(glob.glob(os.path.join(d, 'sheets', 'sheet_*.md')))} 枚（{d}/sheets/）")
+          PY
+      - name: 保存
+        if: always()
+        run: |
+          b="${{ steps.req.outputs.batch }}"
+          echo "done $(head -1 materials/pool/auto.request)" > materials/pool/auto.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A materials/pool/candidates_*_auto.json materials/pool/auto.request materials/pool/work independent_eval/allocation.json
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "教材を自動で集めた：$b（候補→採用→取り出し→シート）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
