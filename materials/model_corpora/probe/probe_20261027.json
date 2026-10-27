@@ -1,0 +1,2148 @@
+{
+ "created_utc": "2026-10-27T15:02:36Z",
+ "note": "メタデータのみ。データ本体は取得していない",
+ "zenodo": {
+  "11559814": {
+   "label": "WikiDBs 100k（Wikidata 由来の関係DB）",
+   "title": "WikiDBs - A Large-Scale Corpus Of Relational Databases From Wikidata",
+   "license": {
+    "id": "cc-by-4.0"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2024-10-30",
+   "doi": "10.5281/zenodo.11559814",
+   "files": 6,
+   "bytes": 48907618343,
+   "file_names": [
+    "part-3.zip",
+    "part-1.zip",
+    "part-4.zip",
+    "part-2.zip",
+    "part-0.zip",
+    "wikidbs.py"
+   ],
+   "description": "<p><a href=\"https://wikidbs.github.io/\" target=\"_blank\" rel=\"noopener\">WikiDBs</a>&nbsp; is an open-source corpus of 100,000 relational databases. We aim to support research on tabular representation learning on multi-table data. The corpus is based on <a href=\"https://www.wikidata.org/\" target=\"_blank\" rel=\"noopener\">Wikidata</a> and aims to follow certain characteristics of real-world databases.</p>\n<p>WikiDBs was published as a <a href=\"https://openreview.net/pdf?id=abXaOcvujs\" target=\"_blank\" rel=\"noopener\">spotlight paper</a> at the Dataset &amp; Benchmarks track at NeurIPS 2024.</p>\n<p>WikiDBs contains the database schemas, as well as table contents. The database tables are provided as CSV files, and each database schema as JSON. The 100,000 databases are available in five splits, containing 20k databases each. In total, around 165 GB of disk space are needed for the full corpus. We also provide a script to convert the databases into SQLite.</p>"
+  },
+  "8227452": {
+   "label": "WikiDBs 10k（先行版）",
+   "title": "WikiDBs 10k - A Corpus Of Relational Databases From Wikidata",
+   "license": {
+    "id": "cc-by-4.0"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2023-08-29",
+   "doi": "10.5281/zenodo.8227452",
+   "files": 2,
+   "bytes": 761112901,
+   "file_names": [
+    "wikidbs_10k.zip",
+    "wikidbs_10k_sqlite.zip"
+   ],
+   "description": "<p>WikiDBs-10k (<a href=\"https://wikidbs.github.io/\" target=\"_blank\" rel=\"noopener\">https://wikidbs.github.io/</a>) is a corpus of relational databases built from Wikidata (<a href=\"https://www.wikidata.org/\" target=\"_blank\" rel=\"noopener\">https://www.wikidata.org/</a>). This is the preliminary 10k version, the newer version of 100k databases (<a href=\"https://zenodo.org/records/11559814\">https://zenodo.org/records/11559814</a>)&nbsp; includes more coherent databases and more diverse table and column names.</p>\n<p>The WikiDBs-10k corpus consists of 10,000 databases, for more details read our paper: <a href=\"https://ceur-ws.org/Vol-3462/TADA3.pdf\" target=\"_blank\" rel=\"noopener\">https://ceur-ws.org/Vol-3462/TADA3.pdf</a> (TaDA@VLDB'23)</p>\n<p>Each database is saved in a sub-folder, the table files are provided as csv files and the database schema as a json file.</p>\n<p>We thank Till D&ouml;hmen and Madelon Hulsebos for generously providing the table statistics from their <a href=\"https://github.com/tdoehmen/gitschemas\">GitSchemas dataset</a> and Jan-Micha Bodensohn for converting the dataset to SQLite files. This work has been supported by the BMBF and the state of Hesse as part of the NHR Program and the BMBF project KompAKI (grant number 02L19C150), as well as the HMWK cluster project 3AI. Finally, we want to thank hessian.AI, and DFKI Darmstadt for their support.</p>"
+  },
+  "6517052": {
+   "label": "GitTables 1M v0.0.6",
+   "title": "GitTables 1M",
+   "license": {
+    "id": "cc-zero"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2022-05-04",
+   "doi": "10.5281/zenodo.6517052",
+   "files": 96,
+   "bytes": 16253928856,
+   "file_names": [
+    "beats_per_minute_tables_licensed.zip",
+    "abstraction_tables_licensed.zip",
+    "bits_per_second_tables_licensed.zip",
+    "attrition_rate_tables_licensed.zip",
+    "beauty_sleep_tables_licensed.zip",
+    "cardiac_output_tables_licensed.zip",
+    "allegro_con_spirito_tables_licensed.zip",
+    "cease_tables_licensed.zip",
+    "entr'acte_tables_licensed.zip",
+    "dwarf_tables_licensed.zip",
+    "show_time_tables_licensed.zip",
+    "dose_rate_tables_licensed.zip",
+    "dogwatch_tables_licensed.zip",
+    "dead_air_tables_licensed.zip",
+    "data_rate_tables_licensed.zip",
+    "multistage_tables_licensed.zip",
+    "solar_constant_tables_licensed.zip",
+    "speed_of_light_tables_licensed.zip",
+    "split_shift_tables_licensed.zip",
+    "rate_of_return_tables_licensed.zip",
+    "metabolic_rate_tables_licensed.zip",
+    "miles_per_hour_tables_licensed.zip",
+    "musth_tables_licensed.zip",
+    "neonatal_mortality_tables_licensed.zip",
+    "object_tables_licensed.zip",
+    "rainy_day_tables_licensed.zip",
+    "orbit_period_tables_licensed.zip",
+    "organism_tables_licensed.zip",
+    "radial_velocity_tables_licensed.zip",
+    "parent_tables_licensed.zip"
+   ],
+   "description": "<p><strong>Summary</strong></p>\n\n<p>GitTables 1M (<a href=\"https://gittables.github.io/\">https://gittables.github.io</a>) is a corpus of currently 1M relational tables extracted from CSV files in GitHub repositories, that are associated with&nbsp;a license that&nbsp;allows&nbsp;distribution. We aim to grow this to at least 10M tables.</p>\n\n<p>Each parquet file in this corpus represents a table with the original content (e.g. values and header) as extracted from the corresponding CSV file. Table columns are enriched with annotations&nbsp;corresponding to &gt;2K semantic types from Schema.org and DBpedia (provided as metadata of the parquet file). These column annotations consist of, for example, semantic types, hierarchical relations to other types, and descriptions.</p>\n\n<p>We believe GitTables can facilitate many use-cases, among which:</p>\n\n<ul>\n\t<li>\n\t<p>Data integration, search and validation.</p>\n\t</li>\n\t<li>\n\t<p>Data visualization and analysis recommendation.</p>\n\t</li>\n\t<li>\n\t<p>Schema analysis and completion for e.g. database or knowledge base design.</p>\n\t</li>\n</ul>\n\n<p>If you have questions, the paper, documentation, and contact details are provided on the website: <a href=\"https://gittables.github.io/\">https://gittables.github.io</a>. We recommend using Zenodo&#39;s API to easily download the full dataset (i.e. all zipped topic subsets).</p>\n\n<p>&nbsp;</p>\n\n<p><strong>Dataset contents</strong></p>\n\n<p>The data is provided in subsets of tables stored in parquet fil"
+  },
+  "5706316": {
+   "label": "GitTables CTA ベンチマーク",
+   "title": "GitTables benchmark - column type detection",
+   "license": {
+    "id": "cc-by-4.0"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2021-11-16",
+   "doi": "10.5281/zenodo.5706316",
+   "files": 7,
+   "bytes": 3632005,
+   "file_names": [
+    "schema_gt.csv",
+    "schema_labels.csv",
+    "dbpedia_gt.csv",
+    "dbpedia_labels.csv",
+    "dbpedia_targets.csv",
+    "tables.zip",
+    "schema_targets.csv"
+   ],
+   "description": "<p><strong>Note:&nbsp;the download page of the entire GitTables corpus is here: <a href=\"https://zenodo.org/record/4943312\">https://zenodo.org/record/4943312</a>.</strong></p>\n\n<p>This dataset&nbsp;represents a <strong>small&nbsp;subset</strong> of tables from <a href=\"https://gittables.github.io\">GitTables</a>&nbsp;curated for benchmarking column type detection methods.&nbsp;This benchmark evaluates systems that match table columns to semantic types from the <a href=\"http://wikidata.dbpedia.org/services-resources/ontology\">DBpedia</a> and <a href=\"https://schema.org/docs/schemas.html\">Schema.org</a> ontologies. It&nbsp;is featured in&nbsp;the <a href=\"https://www.cs.ox.ac.uk/isg/challenges/sem-tab/2021/index.html\">SemTab 2021 challenge</a>&nbsp;(CTA task).</p>\n\n<p>This&nbsp;dataset consists of the following files:</p>\n\n<ul>\n\t<li>&ldquo;tables.zip&rdquo;: directory with a sample of 1101 tables from&nbsp;GitTables.&nbsp;Filenames correspond to table IDs, the first column (without column name) corresponds to row indices, column names are replaced with &quot;col_0&quot;, &quot;col_1&quot;, etc. which match to the targets and labels (semantic types).</li>\n\t<li>&ldquo;&lt;ontology&gt;_targets.csv&rdquo;: target columns per table ID, 1 file per ontology (DBpedia or Schema.org): columns are &ldquo;table_id&rdquo; (ignore the &quot;_&lt;ontology&gt;&quot; suffix) and &ldquo;target_column&rdquo; (i.e. the column that should be annotated).</li>\n\t<li>&ldquo;&lt;ontology&gt;_gt.csv&rdquo"
+  },
+  "8422037": {
+   "label": "SOTAB V2 for SemTab 2023",
+   "title": "SOTAB V2 for SemTab 2023",
+   "license": {
+    "id": "cc-by-4.0"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2023-10-09",
+   "doi": "10.5281/zenodo.8422037",
+   "files": 1,
+   "bytes": 4012926170,
+   "file_names": [
+    "SOTAB V2 for SemTab 2023.zip"
+   ],
+   "description": "<p>SOTAB V2 for SemTab 2023 includes datasets used to evaluate <a href=\"https://paperswithcode.com/task/column-type-annotation\">Column Type Annotation </a>(CTA)&nbsp;and <a href=\"https://paperswithcode.com/task/columns-property-annotation\">Columns Property Annotation</a> (CPA)&nbsp;systems in the 2023 edition of the <a href=\"https://www.cs.ox.ac.uk/isg/challenges/sem-tab/\">SemTab challenge</a>. The datasets for both rounds of the challenge were down-sampled from the full train, test and validation splits of the&nbsp;<a href=\"http://webdatacommons.org/structureddata/sotab/v2/\">SOTAB V2</a> (WDC Schema.org Table Annotation Benchmark version 2) benchmark, so that the datasets of the first round have a smaller vocabulary&nbsp;of 40 and 50 labels for CTA and CPA respectively corresponding to easier/more general domains, and the datasets of the second round include the full vocabulary size of 80 and 105 labels and are therefore considered to be harder to annotate. The columns and the relationships between columns are annotated using the Schema.org and DBpedia vocabulary.</p>\n\n<p>SOTAB V2 for SemTab 2023&nbsp;contains the splits used in Round 1 and Round 2 of the challenge. Each round includes a training, validation and test split together with the ground truth for the test splits and the vocabulary list. The ground truth of the test sets of both rounds are manually verified.</p>\n\n<p>Files contained in&nbsp;SOTAB V2 for SemTab 2023:</p>\n\n<ol>\n\t<li>Round1-SOTAB-CPA-DatasetsAndGroundT"
+  },
+  "8393535": {
+   "label": "SemTab 2023 WikidataTables",
+   "title": "SemTab 2023: Semantic Web Challenge on Tabular Data to Knowledge Graph Matching Data Sets - \"Wikidata Tables\" R1",
+   "license": {
+    "id": "cc-by-4.0"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2023-09-29",
+   "doi": "10.5281/zenodo.8393535",
+   "files": 1,
+   "bytes": 9431371,
+   "file_names": [
+    "WikidataTables2023R1.zip"
+   ],
+   "description": "<p>Data Sets from the ISWC 2023 Semantic Web Challenge on Tabular Data to Knowledge Graph Matching, Round 1, Wikidata Tables. Links to other datasets can be found on the challenge website: https://sem-tab-challenge.github.io/2023/ as well as the proceedings of the challenge published on CEUR.</p>\n\n<p>For details about the challenge, see: http://www.cs.ox.ac.uk/isg/challenges/sem-tab/</p>\n\n<p>For 2023 edition, see: https://sem-tab-challenge.github.io/2023/</p>\n\n<p>Note on License: This data includes data from the following sources. Refer to each source for license details:<br>\n- Wikidata&nbsp;https://www.wikidata.org/</p>\n\n<p>THIS DATA IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>"
+  },
+  "6153449": {
+   "label": "SemTab 2021 Wikidata",
+   "title": "Wikidata Truthy Dump from August 28, 2021",
+   "license": {
+    "id": "cc-by-4.0"
+   },
+   "rights": null,
+   "access_right": "open",
+   "publication_date": "2021-08-28",
+   "doi": "10.5281/zenodo.6153449",
+   "files": 1,
+   "bytes": 29890007354,
+   "file_names": [
+    "wikidata-20210828-truthy.nt.bz2"
+   ],
+   "description": "<p>This is the so-called &quot;truthy&quot; dump of Wikidata from on or about August 28, 2021, shared for usage in&nbsp;<a href=\"http://www.cs.ox.ac.uk/isg/challenges/sem-tab/2021/index.html\">SemTab 2021 Challenge</a>.</p>\n\n<p>Downloaded from&nbsp;https://www.wikidata.org/wiki/Wikidata:Database_download</p>\n\n<p>See the <a href=\"https://www.wikidata.org/wiki/Wikidata:Database_download#License\">License section of the above page</a> for license information.</p>\n\n<p><br>\nTHIS DATA IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>"
+  }
+ },
+ "zenodo_search": {
+  "column type annotation": [
+   {
+    "id": 3384388,
+    "title": "MIMII Dataset: Sound Dataset for Malfunctioning Industrial Machine Investigation and Inspection",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 100243834344,
+    "date": "2019-09-20"
+   },
+   {
+    "id": 7788422,
+    "title": "Swiss Dwellings: A large dataset of apartment models including aggregated geolocation-based simulation results covering viewshed, natural light, traffic noise, centrality and geometric analysis",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 931868205,
+    "date": "2022-09-20"
+   },
+   {
+    "id": 4060432,
+    "title": "FSD50K",
+    "license": {
+     "id": "other-at"
+    },
+    "bytes": 24678734449,
+    "date": "2020-10-02"
+   },
+   {
+    "id": 7923702,
+    "title": "Crowdsourced air traffic data from The OpenSky Network 2020",
+    "license": {
+     "id": "other-nc"
+    },
+    "bytes": 8147422745,
+    "date": "2023-05-11"
+   },
+   {
+    "id": 21654811,
+    "title": "Mammal Diversity Database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 79314862,
+    "date": "2026-07-28"
+   },
+   {
+    "id": 22876287,
+    "title": "The PRIMAP-hist national historical emissions time series (1750-2025) v2.8",
+    "license": {
+     "id": "cc-by-nc-sa-4.0"
+    },
+    "bytes": 934157190,
+    "date": "2026-09-29"
+   },
+   {
+    "id": 18491922,
+    "title": "Electrical half hourly raw and cleaned datasets for Great Britain from 2008-11-05",
+    "license": {
+     "id": "cc-by-nc-4.0"
+    },
+    "bytes": 93907864,
+    "date": "2026-02-05"
+   },
+   {
+    "id": 10419064,
+    "title": "Pl@ntNet-300K-v2 image dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 41847489052,
+    "date": "2026-02-11"
+   },
+   {
+    "id": 3939038,
+    "title": "Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2015: Globe",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 39256983013,
+    "date": "2020-09-08"
+   },
+   {
+    "id": 3606810,
+    "title": "Dataset: Raiders of the Lost Kek: 3.5 Years of Augmented 4chan Posts from the Politically Incorrect Board",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 24039707199,
+    "date": "2020-01-13"
+   },
+   {
+    "id": 3222451,
+    "title": "The FluPRINT database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 10024898,
+    "date": "2019-05-23"
+   },
+   {
+    "id": 3939050,
+    "title": "Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2019: Globe",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 41207135373,
+    "date": "2020-09-08"
+   },
+   {
+    "id": 1442513,
+    "title": "VocalSet: A Singing Voice Dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 8068816772,
+    "date": "2018-03-08"
+   },
+   {
+    "id": 4916206,
+    "title": "CODE-15%: a large scale annotated dataset of 12-lead ECGs",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 46303010761,
+    "date": "2021-06-09"
+   },
+   {
+    "id": 11209325,
+    "title": "6000 ground truth of VOC and notarial deeds 3.000.000 HTR of VOC, WIC and notarial deeds",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 106647499957,
+    "date": "2024-05-17"
+   },
+   {
+    "id": 56198,
+    "title": "im2latex-100k ,  arXiv:1609.04938",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 306848520,
+    "date": "2016-06-21"
+   },
+   {
+    "id": 16640595,
+    "title": "National contributions to climate change due to historical emissions of carbon dioxide, methane and nitrous oxide",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 121818625,
+    "date": "2025-11-13"
+   },
+   {
+    "id": 5815448,
+    "title": "Crowdsourced air traffic data from The OpenSky Network 2020 [CC-BY]",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 6987808470,
+    "date": "2022-01-03"
+   },
+   {
+    "id": 20428976,
+    "title": "OpenAIRE Graph Dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 378405108072,
+    "date": "2026-06-08"
+   },
+   {
+    "id": 7024894,
+    "title": "The COUGHVID crowdsourcing dataset: A corpus for the study of large-scale cough analysis algorithms",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 2297542075,
+    "date": "2021-02-03"
+   },
+   {
+    "id": 3459420,
+    "title": "A global network of biomedical relationships derived from text",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 8037626747,
+    "date": "2019-09-24"
+   },
+   {
+    "id": 10782978,
+    "title": "A Comprehensive Dataset of Classified Citations with Identifiers from English Wikipedia (2024)",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 8470093968,
+    "date": "2024-03-01"
+   },
+   {
+    "id": 8419340,
+    "title": "Global map of Local Climate Zones",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 12042680724,
+    "date": "2023-10-08"
+   },
+   {
+    "id": 53894,
+    "title": "Crowd-sourced Fitbit datasets 03.12.2016-05.12.2016",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 45702654,
+    "date": "2016-05-31"
+   },
+   {
+    "id": 3931963,
+    "title": "K-EmoCon, a multimodal sensor dataset for continuous emotion recognition in naturalistic conversations",
+    "license": null,
+    "bytes": 0,
+    "date": "2020-07-07"
+   }
+  ],
+  "semantic type detection tables": [
+   {
+    "id": 18180184,
+    "title": "The 30 m annual land cover datasets and its dynamics in China from 1985 to 2025",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 60566523891,
+    "date": "2026-01-08"
+   },
+   {
+    "id": 23039074,
+    "title": "EXIOBASE 3",
+    "license": null,
+    "bytes": 15097077533,
+    "date": "2026-09-30"
+   },
+   {
+    "id": 14974867,
+    "title": "The Japanese Female Facial Expression (JAFFE) Dataset",
+    "license": null,
+    "bytes": 12309017,
+    "date": "1997"
+   },
+   {
+    "id": 23687160,
+    "title": "Denormalized occurrence and taxon tables of the Paleobiology Database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 734159606,
+    "date": "2026-10-25"
+   },
+   {
+    "id": 3384388,
+    "title": "MIMII Dataset: Sound Dataset for Malfunctioning Industrial Machine Investigation and Inspection",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 100243834344,
+    "date": "2019-09-20"
+   },
+   {
+    "id": 7788422,
+    "title": "Swiss Dwellings: A large dataset of apartment models including aggregated geolocation-based simulation results covering viewshed, natural light, traffic noise, centrality and geometric analysis",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 931868205,
+    "date": "2022-09-20"
+   },
+   {
+    "id": 15063683,
+    "title": "GLC_FCS30D: the first global 30-m land-cover dynamic monitoring product with fine classification system from 1985 to 2022",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 135815129160,
+    "date": "2025-03-21"
+   },
+   {
+    "id": 7923702,
+    "title": "Crowdsourced air traffic data from The OpenSky Network 2020",
+    "license": {
+     "id": "other-nc"
+    },
+    "bytes": 8147422745,
+    "date": "2023-05-11"
+   },
+   {
+    "id": 21654811,
+    "title": "Mammal Diversity Database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 79314862,
+    "date": "2026-07-28"
+   },
+   {
+    "id": 22876287,
+    "title": "The PRIMAP-hist national historical emissions time series (1750-2025) v2.8",
+    "license": {
+     "id": "cc-by-nc-sa-4.0"
+    },
+    "bytes": 934157190,
+    "date": "2026-09-29"
+   },
+   {
+    "id": 15264903,
+    "title": "dlexDB – annotated lexical data",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 2164015221,
+    "date": "2025-04-22"
+   },
+   {
+    "id": 18491922,
+    "title": "Electrical half hourly raw and cleaned datasets for Great Britain from 2008-11-05",
+    "license": {
+     "id": "cc-by-nc-4.0"
+    },
+    "bytes": 93907864,
+    "date": "2026-02-05"
+   },
+   {
+    "id": 10419064,
+    "title": "Pl@ntNet-300K-v2 image dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 41847489052,
+    "date": "2026-02-11"
+   },
+   {
+    "id": 3939038,
+    "title": "Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2015: Globe",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 39256983013,
+    "date": "2020-09-08"
+   },
+   {
+    "id": 3606810,
+    "title": "Dataset: Raiders of the Lost Kek: 3.5 Years of Augmented 4chan Posts from the Politically Incorrect Board",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 24039707199,
+    "date": "2020-01-13"
+   },
+   {
+    "id": 3369582,
+    "title": "3PFL: Database of Patents and Publications with a Public-Funding Linkage",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 37829328,
+    "date": "2019-07-23"
+   },
+   {
+    "id": 10063218,
+    "title": "Archive of Neptune (NSB) database backups",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 118625560,
+    "date": "2023-11-01"
+   },
+   {
+    "id": 3222451,
+    "title": "The FluPRINT database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 10024898,
+    "date": "2019-05-23"
+   },
+   {
+    "id": 3939050,
+    "title": "Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2019: Globe",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 41207135373,
+    "date": "2020-09-08"
+   },
+   {
+    "id": 1442513,
+    "title": "VocalSet: A Singing Voice Dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 8068816772,
+    "date": "2018-03-08"
+   },
+   {
+    "id": 11209325,
+    "title": "6000 ground truth of VOC and notarial deeds 3.000.000 HTR of VOC, WIC and notarial deeds",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 106647499957,
+    "date": "2024-05-17"
+   },
+   {
+    "id": 56198,
+    "title": "im2latex-100k ,  arXiv:1609.04938",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 306848520,
+    "date": "2016-06-21"
+   },
+   {
+    "id": 4940267,
+    "title": "A dataset of neonatal EEG recordings with seizures annotations",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 4336766847,
+    "date": "2018-06-05"
+   },
+   {
+    "id": 5815448,
+    "title": "Crowdsourced air traffic data from The OpenSky Network 2020 [CC-BY]",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 6987808470,
+    "date": "2022-01-03"
+   },
+   {
+    "id": 6894273,
+    "title": "Global Mangrove Watch (1996 - 2020) Version 3.0 Dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 5286160794,
+    "date": "2022-07-24"
+   }
+  ],
+  "table annotation benchmark": [
+   {
+    "id": 23039074,
+    "title": "EXIOBASE 3",
+    "license": null,
+    "bytes": 15097077533,
+    "date": "2026-09-30"
+   },
+   {
+    "id": 23687160,
+    "title": "Denormalized occurrence and taxon tables of the Paleobiology Database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 734159606,
+    "date": "2026-10-25"
+   },
+   {
+    "id": 7788422,
+    "title": "Swiss Dwellings: A large dataset of apartment models including aggregated geolocation-based simulation results covering viewshed, natural light, traffic noise, centrality and geometric analysis",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 931868205,
+    "date": "2022-09-20"
+   },
+   {
+    "id": 19388272,
+    "title": "OpenFoodTox 3.0: EFSA's chemical hazards database",
+    "license": {
+     "id": "cc-by-nd-4.0"
+    },
+    "bytes": 1076492383,
+    "date": "2026-04-30"
+   },
+   {
+    "id": 4060432,
+    "title": "FSD50K",
+    "license": {
+     "id": "other-at"
+    },
+    "bytes": 24678734449,
+    "date": "2020-10-02"
+   },
+   {
+    "id": 10519652,
+    "title": "[MedMNIST+] 18x Standardized Datasets for 2D and 3D Biomedical Image Classification with Multiple Size Options: 28 (MNIST-Like), 64, 128, and 224",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 46104620217,
+    "date": "2024-01-16"
+   },
+   {
+    "id": 22876287,
+    "title": "The PRIMAP-hist national historical emissions time series (1750-2025) v2.8",
+    "license": {
+     "id": "cc-by-nc-sa-4.0"
+    },
+    "bytes": 934157190,
+    "date": "2026-09-29"
+   },
+   {
+    "id": 15264903,
+    "title": "dlexDB – annotated lexical data",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 2164015221,
+    "date": "2025-04-22"
+   },
+   {
+    "id": 3757476,
+    "title": "COVID-19 CT Lung and Infection Segmentation Dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 1129779215,
+    "date": "2020-04-20"
+   },
+   {
+    "id": 10419064,
+    "title": "Pl@ntNet-300K-v2 image dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 41847489052,
+    "date": "2026-02-11"
+   },
+   {
+    "id": 18771597,
+    "title": "Corpus of Resolutions: UN Security Council (CR-UNSC)",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 6762247580,
+    "date": "2026-08-23"
+   },
+   {
+    "id": 7711810,
+    "title": "EuroSAT: A Novel Dataset and Deep Learning Benchmark for Land Use and Land Cover Classification",
+    "license": {
+     "id": "mit-license"
+    },
+    "bytes": 2160061050,
+    "date": "2018-07-22"
+   },
+   {
+    "id": 10063218,
+    "title": "Archive of Neptune (NSB) database backups",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 118625560,
+    "date": "2023-11-01"
+   },
+   {
+    "id": 3222451,
+    "title": "The FluPRINT database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 10024898,
+    "date": "2019-05-23"
+   },
+   {
+    "id": 7262581,
+    "title": "Amos: A large-scale abdominal multi-organ benchmark for versatile medical image segmentation",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 24234371725,
+    "date": "2022-11-28"
+   },
+   {
+    "id": 4916206,
+    "title": "CODE-15%: a large scale annotated dataset of 12-lead ECGs",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 46303010761,
+    "date": "2021-06-09"
+   },
+   {
+    "id": 22090940,
+    "title": "Problematic images in vendor antibody verification data",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 1620902964,
+    "date": "2026-08-25"
+   },
+   {
+    "id": 19360665,
+    "title": "The LOTUS Initiative for Open Natural Products Research: frozen dataset union wikidata (with metadata)",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 111000359,
+    "date": "2026-04-13"
+   },
+   {
+    "id": 7118517,
+    "title": "PURE: a Dataset of Public Requirements Documents",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 34007720,
+    "date": "2018-09-12"
+   },
+   {
+    "id": 15846963,
+    "title": "Wind Turbine SCADA Data For Early Fault Detection",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 5503439673,
+    "date": "2025-07-09"
+   },
+   {
+    "id": 10390295,
+    "title": "ARCADE: Automatic Region-based Coronary Artery Disease diagnostics using x-ray angiography imagEs Dataset",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 451573813,
+    "date": "2023-12-15"
+   },
+   {
+    "id": 3765780,
+    "title": "CODE-test: An annotated 12-lead ECG dataset",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 218189452,
+    "date": "2020-01-22"
+   },
+   {
+    "id": 3371780,
+    "title": "GuitarSet",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 8197291438,
+    "date": "2019-08-20"
+   },
+   {
+    "id": 14916843,
+    "title": "Bakta database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 55631742054,
+    "date": "2025-02-24"
+   },
+   {
+    "id": 10159290,
+    "title": "SPIDER - Lumbar spine segmentation in MR images: a dataset and a public benchmark",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 3758940056,
+    "date": "2023-11-20"
+   }
+  ],
+  "tabular data knowledge graph matching": [
+   {
+    "id": 18180184,
+    "title": "The 30 m annual land cover datasets and its dynamics in China from 1985 to 2025",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 60566523891,
+    "date": "2026-01-08"
+   },
+   {
+    "id": 7559361,
+    "title": "BIP4COVID19: Impact metrics and indicators for coronavirus related publications",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 330389295,
+    "date": "2023-01-23"
+   },
+   {
+    "id": 23039074,
+    "title": "EXIOBASE 3",
+    "license": null,
+    "bytes": 15097077533,
+    "date": "2026-09-30"
+   },
+   {
+    "id": 7834392,
+    "title": "A large-scale COVID-19 Twitter chatter dataset for open scientific research - an international collaboration",
+    "license": {
+     "id": "other-pd"
+    },
+    "bytes": 16119572036,
+    "date": "2023-04-16"
+   },
+   {
+    "id": 1188976,
+    "title": "The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS)",
+    "license": {
+     "id": "cc-by-nc-sa-4.0"
+    },
+    "bytes": 25600214208,
+    "date": "2018-04-05"
+   },
+   {
+    "id": 23685063,
+    "title": "SARS-CoV-2 Infektionen in Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 413649182,
+    "date": "2026-10-27"
+   },
+   {
+    "id": 23685031,
+    "title": "COVID-19-Hospitalisierungen in Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 13652273,
+    "date": "2026-10-27"
+   },
+   {
+    "id": 22812707,
+    "title": "Updated list of QPS-recommended microorganisms for safety risk assessments carried out by EFSA",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 118818,
+    "date": "2026-09-17"
+   },
+   {
+    "id": 23685046,
+    "title": "COVID-19-Todesfälle in Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 454527,
+    "date": "2026-10-27"
+   },
+   {
+    "id": 18149369,
+    "title": "DAO Analyzer dataset",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 24981851,
+    "date": "2026-01-05"
+   },
+   {
+    "id": 23667198,
+    "title": "Intensivkapazitäten und COVID-19-Intensivbettenbelegung in Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 56304926,
+    "date": "2026-10-26"
+   },
+   {
+    "id": 23684988,
+    "title": "7-Tage-Inzidenz der COVID-19-Fälle in Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 54365399,
+    "date": "2026-10-27"
+   },
+   {
+    "id": 8214871,
+    "title": "SinoLC-1: the first 1-meter resolution national-scale land-cover map of China created with the deep learning framework and open-access data (User guide V2.4)",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 7341309,
+    "date": "2023-08-04"
+   },
+   {
+    "id": 3723295,
+    "title": "LUNA16 Part 1/2",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 47691594659,
+    "date": "2019-03-16"
+   },
+   {
+    "id": 23687160,
+    "title": "Denormalized occurrence and taxon tables of the Paleobiology Database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 734159606,
+    "date": "2026-10-25"
+   },
+   {
+    "id": 21844811,
+    "title": "Gene Ontology Data Archive",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 1340419512,
+    "date": "2026-08-05"
+   },
+   {
+    "id": 23500708,
+    "title": "ROR Data",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 39263398,
+    "date": "2026-10-20"
+   },
+   {
+    "id": 3384388,
+    "title": "MIMII Dataset: Sound Dataset for Malfunctioning Industrial Machine Investigation and Inspection",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 100243834344,
+    "date": "2019-09-20"
+   },
+   {
+    "id": 8062328,
+    "title": "SARS-CoV-2-Nowcasting und -R-Schaetzung",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 14696448,
+    "date": "2023-06-21"
+   },
+   {
+    "id": 23534815,
+    "title": "SARS-CoV-2 Sequenzdaten aus Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 234067944,
+    "date": "2026-10-21"
+   },
+   {
+    "id": 7788422,
+    "title": "Swiss Dwellings: A large dataset of apartment models including aggregated geolocation-based simulation results covering viewshed, natural light, traffic noise, centrality and geometric analysis",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 931868205,
+    "date": "2022-09-20"
+   },
+   {
+    "id": 22967630,
+    "title": "Reliance on Science",
+    "license": {
+     "id": "cc-by-nc-4.0"
+    },
+    "bytes": 1442520866,
+    "date": "2026-09-25"
+   },
+   {
+    "id": 12697471,
+    "title": "COVID-19-Impfungen in Deutschland",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 50372476,
+    "date": "2024-07-09"
+   },
+   {
+    "id": 19388272,
+    "title": "OpenFoodTox 3.0: EFSA's chemical hazards database",
+    "license": {
+     "id": "cc-by-nd-4.0"
+    },
+    "bytes": 1076492383,
+    "date": "2026-04-30"
+   },
+   {
+    "id": 23690933,
+    "title": "Daten der Notaufnahmesurveillance",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 28499553,
+    "date": "2026-10-27"
+   }
+  ],
+  "web tables corpus": [
+   {
+    "id": 18180184,
+    "title": "The 30 m annual land cover datasets and its dynamics in China from 1985 to 2025",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 60566523891,
+    "date": "2026-01-08"
+   },
+   {
+    "id": 7559361,
+    "title": "BIP4COVID19: Impact metrics and indicators for coronavirus related publications",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 330389295,
+    "date": "2023-01-23"
+   },
+   {
+    "id": 23039074,
+    "title": "EXIOBASE 3",
+    "license": null,
+    "bytes": 15097077533,
+    "date": "2026-09-30"
+   },
+   {
+    "id": 14974867,
+    "title": "The Japanese Female Facial Expression (JAFFE) Dataset",
+    "license": null,
+    "bytes": 12309017,
+    "date": "1997"
+   },
+   {
+    "id": 23687160,
+    "title": "Denormalized occurrence and taxon tables of the Paleobiology Database",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 734159606,
+    "date": "2026-10-25"
+   },
+   {
+    "id": 22967630,
+    "title": "Reliance on Science",
+    "license": {
+     "id": "cc-by-nc-4.0"
+    },
+    "bytes": 1442520866,
+    "date": "2026-09-25"
+   },
+   {
+    "id": 1227121,
+    "title": "DEMAND: a collection of multi-channel recordings of acoustic noise in diverse environments",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 7363293564,
+    "date": "2013-06-09"
+   },
+   {
+    "id": 22876287,
+    "title": "The PRIMAP-hist national historical emissions time series (1750-2025) v2.8",
+    "license": {
+     "id": "cc-by-nc-sa-4.0"
+    },
+    "bytes": 934157190,
+    "date": "2026-09-29"
+   },
+   {
+    "id": 15264903,
+    "title": "dlexDB – annotated lexical data",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 2164015221,
+    "date": "2025-04-22"
+   },
+   {
+    "id": 4587955,
+    "title": "Silva 138.1 prokaryotic SSU taxonomic training data formatted for DADA2",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 354270682,
+    "date": "2021-03-07"
+   },
+   {
+    "id": 1117372,
+    "title": "MUSDB18 - a corpus for music separation",
+    "license": {
+     "id": "other-nc"
+    },
+    "bytes": 4684228845,
+    "date": "2017-12-17"
+   },
+   {
+    "id": 18771597,
+    "title": "Corpus of Resolutions: UN Security Council (CR-UNSC)",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 6762247580,
+    "date": "2026-08-23"
+   },
+   {
+    "id": 3606810,
+    "title": "Dataset: Raiders of the Lost Kek: 3.5 Years of Augmented 4chan Posts from the Politically Incorrect Board",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 24039707199,
+    "date": "2020-01-13"
+   },
+   {
+    "id": 3369582,
+    "title": "3PFL: Database of Patents and Publications with a Public-Funding Linkage",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 37829328,
+    "date": "2019-07-23"
+   },
+   {
+    "id": 10063218,
+    "title": "Archive of Neptune (NSB) database backups",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 118625560,
+    "date": "2023-11-01"
+   },
+   {
+    "id": 6382554,
+    "title": "IPCC AR6 Sea Level Projections",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 18882481556,
+    "date": "2021-08-09"
+   },
+   {
+    "id": 7024894,
+    "title": "The COUGHVID crowdsourcing dataset: A corpus for the study of large-scale cough analysis algorithms",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 2297542075,
+    "date": "2021-02-03"
+   },
+   {
+    "id": 7118517,
+    "title": "PURE: a Dataset of Public Requirements Documents",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 34007720,
+    "date": "2018-09-12"
+   },
+   {
+    "id": 22259077,
+    "title": "SWOT River Database (SWORD)",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 27337729993,
+    "date": "2026-09-02"
+   },
+   {
+    "id": 23082200,
+    "title": "Corpus des Deutschen Bundesrechts (C-DBR)",
+    "license": {
+     "id": "cc-zero"
+    },
+    "bytes": 1560268512,
+    "date": "2026-10-04"
+   },
+   {
+    "id": 3986799,
+    "title": "Silva SSU taxonomic training data formatted for DADA2 (Silva version 138)",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 358868433,
+    "date": "2020-08-15"
+   },
+   {
+    "id": 11179644,
+    "title": "GlobPOP: A 33-year (1990-2022) global gridded population dataset generated by cluster analysis and statistical learning",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 23318726775,
+    "date": "2024-05"
+   },
+   {
+    "id": 5642694,
+    "title": "WaveFake: A data set to facilitate audio DeepFake detection",
+    "license": {
+     "id": "cc-by-sa-4.0"
+    },
+    "bytes": 28918807591,
+    "date": "2021-08-26"
+   },
+   {
+    "id": 19954082,
+    "title": "Tab and comma delimited versions of Discover Life bee species guide and world checklist (Hymenoptera: Apoidea: Anthophila)",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 57836928,
+    "date": "2026-05-01"
+   },
+   {
+    "id": 22835235,
+    "title": "Oil and Gas Infrastructure Mapping (OGIM) database v3.0",
+    "license": {
+     "id": "cc-by-4.0"
+    },
+    "bytes": 3422806016,
+    "date": "2026-09-18"
+   }
+  ]
+ },
+ "huggingface": {
+  "osunlp/TableInstruct": {
+   "license": "cc-by-4.0",
+   "tags": [
+    "language:en",
+    "license:cc-by-4.0",
+    "size_categories:1M<n<10M"
+   ],
+   "downloads": 752,
+   "gated": false,
+   "last_modified": "2024-03-22T03:19:37.000Z",
+   "siblings": 29
+  },
+  "aidalab/rwt-rutabert": {
+   "license": "mit",
+   "tags": [
+    "task_categories:tabular-classification",
+    "language:ru",
+    "license:mit",
+    "size_categories:1M<n<10M"
+   ],
+   "downloads": 51,
+   "gated": false,
+   "last_modified": "2025-09-25T07:15:37.000Z",
+   "siblings": 26
+  },
+  "approximatelabs/tablib-v1-full": {
+   "license": "other",
+   "tags": [
+    "license:other",
+    "size_categories:10B<n<100B"
+   ],
+   "downloads": 758,
+   "gated": "auto",
+   "last_modified": "2023-10-13T22:33:46.000Z",
+   "siblings": 76215
+  },
+  "approximatelabs/tablib-v1-sample": {
+   "license": "other",
+   "tags": [
+    "license:other",
+    "size_categories:10K<n<100K"
+   ],
+   "downloads": 155,
+   "gated": "auto",
+   "last_modified": "2023-10-13T22:34:05.000Z",
+   "siblings": 79
+  },
+  "TheFinAI/sotab": {
+   "_error": "HTTPError: HTTP Error 401: Unauthorized"
+  },
+  "wdc/sotab": {
+   "_error": "HTTPError: HTTP Error 401: Unauthorized"
+  }
+ },
+ "huggingface_search": {
+  "column type annotation": [],
+  "table annotation": [
+   {
+    "id": "Tommy-DING/table-column-annotation-benchmark",
+    "license": [
+     "license:cc-by-4.0"
+    ],
+    "size": [],
+    "downloads": 76
+   },
+   {
+    "id": "CheneyWong/wtw-table-annotations",
+    "license": [
+     "license:other"
+    ],
+    "size": [
+     "size_categories:n<1K"
+    ],
+    "downloads": 49
+   }
+  ],
+  "semantic type": [],
+  "sotab": [
+   {
+    "id": "shivangibithel/SOTAB",
+    "license": [
+     "license:cc-by-4.0"
+    ],
+    "size": [],
+    "downloads": 61
+   },
+   {
+    "id": "penfever/archetype-ft-sotab",
+    "license": [],
+    "size": [
+     "size_categories:100K<n<1M"
+    ],
+    "downloads": 7
+   },
+   {
+    "id": "humairmunirawn/sota-ben",
+    "license": [],
+    "size": [
+     "size_categories:1K<n<10K"
+    ],
+    "downloads": 10
+   },
+   {
+    "id": "humair025/sota-ben",
+    "license": [],
+    "size": [
+     "size_categories:n<1K"
+    ],
+    "downloads": 3
+   }
+  ],
+  "gittables": [
+   {
+    "id": "yuansui/GitTables",
+    "license": [
+     "license:cc-by-nc-nd-3.0"
+    ],
+    "size": [],
+    "downloads": 395
+   },
+   {
+    "id": "target-benchmark/gittables-corpus",
+    "license": [
+     "license:apache-2.0"
+    ],
+    "size": [
+     "size_categories:10K<n<100K"
+    ],
+    "downloads": 228
+   },
+   {
+    "id": "lamthuy/TabularFM-GitTables",
+    "license": [
+     "license:apache-2.0"
+    ],
+    "size": [],
+    "downloads": 10
+   }
+  ],
+  "wikitables": [
+   {
+    "id": "TableQAKit/WikiTables-WithLinks",
+    "license": [],
+    "size": [],
+    "downloads": 398
+   },
+   {
+    "id": "penfever/wikitables",
+    "license": [],
+    "size": [
+     "size_categories:1M<n<10M"
+    ],
+    "downloads": 532
+   },
+   {
+    "id": "hfhgj/wikitables",
+    "license": [],
+    "size": [
+     "size_categories:1K<n<10K"
+    ],
+    "downloads": 154
+   },
+   {
+    "id": "hfhgj/wikitables-sql",
+    "license": [],
+    "size": [
+     "size_categories:1K<n<10K"
+    ],
+    "downloads": 15
+   },
+   {
+    "id": "anhaidgroup/polaris-wikitables-v2",
+    "license": [
+     "license:odc-by"
+    ],
+    "size": [
+     "size_categories:1K<n<10K"
+    ],
+    "downloads": 60
+   },
+   {
+    "id": "anhaidgroup/polaris-wikitables-v1",
+    "license": [
+     "license:odc-by"
+    ],
+    "size": [
+     "size_categories:1K<n<10K"
+    ],
+    "downloads": 42
+   }
+  ]
+ },
+ "github": {
+  "megagonlabs/sato": {
+   "license": "Apache-2.0",
+   "stars": 118,
+   "pushed_at": "2024-02-23T19:37:53Z",
+   "description": "Code and data for Sato https://arxiv.org/abs/1911.06311. ",
+   "archived": false
+  },
+  "megagonlabs/doduo": {
+   "license": "Apache-2.0",
+   "stars": 35,
+   "pushed_at": "2022-06-10T23:51:17Z",
+   "description": "Annotating Columns with Pre-trained Language Models",
+   "archived": false
+  },
+  "mitmedialab/sherlock-project": {
+   "license": "MIT",
+   "stars": 191,
+   "pushed_at": "2024-07-30T21:02:35Z",
+   "description": "This repository provides data and scripts to use Sherlock, a DL-based model for semantic data type detection: https://sherlock.media.mit.edu.",
+   "archived": false
+  },
+  "sunlab-osu/TURL": {
+   "license": "Apache-2.0",
+   "stars": 137,
+   "pushed_at": "2025-11-23T05:05:39Z",
+   "description": "Code and data for \"TURL: Table Understanding through Representation Learning\"",
+   "archived": false
+  },
+  "OSU-NLP-Group/TableLlama": {
+   "license": "MIT",
+   "stars": 136,
+   "pushed_at": "2024-05-14T03:04:55Z",
+   "description": "[NAACL'24] Dataset, code and models for \"TableLlama: Towards Open Large Generalist Models for Tables\".",
+   "archived": false
+  },
+  "hoseinzadeehsan/ZTab": {
+   "license": null,
+   "stars": 1,
+   "pushed_at": "2026-03-13T02:40:46Z",
+   "description": "ZTab: Domain-based Zero-shot Annotation for Table Columns (ICDE 2026)",
+   "archived": false
+  },
+  "hoseinzadeehsan/TabEmb": {
+   "license": null,
+   "stars": 3,
+   "pushed_at": "2026-04-20T09:25:08Z",
+   "description": "TabEmb: Joint Semantic-Structure Embedding for Table Annotation (ACL 2026)",
+   "archived": false
+  },
+  "madelonhulsebos/AdaTyper": {
+   "license": null,
+   "stars": 7,
+   "pushed_at": "2024-09-14T12:01:29Z",
+   "description": "Repository for the AdaTyper system for adaptive semantic (table) column type detection.",
+   "archived": false
+  },
+  "DataManagementLab/wikidbs-public": {
+   "license": "CC-BY-4.0",
+   "stars": 12,
+   "pushed_at": "2025-01-23T14:28:23Z",
+   "description": null,
+   "archived": false
+  },
+  "viznetauthors/viznet": {
+   "license": null,
+   "stars": 2,
+   "pushed_at": "2018-11-27T21:29:20Z",
+   "description": "VizNet is a repository providing real-world datasets that enable, among other things, (re)running empirical studies with higher ecological validity",
+   "archived": false
+  },
+  "ysunbp/RECA": {
+   "_error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  "Ehsanhoseinzadeh/ZTab": {
+   "_error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  "sem-tab-challenge/2023": {
+   "license": null,
+   "stars": 0,
+   "pushed_at": "2024-04-02T22:05:23Z",
+   "description": "SemTab 2023: Semantic Web Challenge on Tabular Data to Knowledge Graph Matching ",
+   "archived": false
+  },
+  "sem-tab-challenge/2024": {
+   "license": null,
+   "stars": 0,
+   "pushed_at": "2024-12-17T22:58:36Z",
+   "description": "SemTab 2024: Semantic Web Challenge on Tabular Data to Knowledge Graph Matching",
+   "archived": false
+  },
+  "wbsg-uni-mannheim/TableAnnotation": {
+   "_error": "HTTPError: HTTP Error 404: Not Found"
+  }
+ },
+ "github_search": {
+  "column type annotation": [
+   {
+    "repo": "kaiko-ai/typedspark",
+    "license": "Apache-2.0",
+    "stars": 109,
+    "pushed_at": "2026-10-23T18:06:53Z",
+    "description": "Column-wise type annotations for pyspark DataFrames"
+   },
+   {
+    "repo": "Saturnremabtc64/supreme-octo-roboticeyx",
+    "license": null,
+    "stars": 30,
+    "pushed_at": "2021-08-04T13:22:22Z",
+    "description": " Gear61 / Random-Number-Generator Code Issues 5 Pull requests 0 Projects 0 Wiki Pulse projectFilesBackup/.idea/workspace.xml  <?xml version=\"1.0\" encoding=\"UTF-8\"?> <project version=\"4\">   <component "
+   },
+   {
+    "repo": "Orange-OpenSource/Table-Annotation",
+    "license": "GPL-3.0",
+    "stars": 18,
+    "pushed_at": "2024-01-04T09:25:14Z",
+    "description": "TableAnnotation is a semantic annotation tool for tables leveraging three steps: table preprocessing, entity lookup and annotation (Cell-Entity Annotation, Column-Type Annotation, Column-Pair Annotati"
+   },
+   {
+    "repo": "wbsg-uni-mannheim/TabAnnGPT",
+    "license": null,
+    "stars": 12,
+    "pushed_at": "2025-03-05T13:13:17Z",
+    "description": "This repository contains code and data for reproducing the experiments of three papers that focus on two subtasks of table annotation: column type annotation (CTA) the task of annotating table columns"
+   },
+   {
+    "repo": "ysunbp/RECA-paper",
+    "license": "MIT",
+    "stars": 12,
+    "pushed_at": "2025-05-07T03:15:15Z",
+    "description": "Code and data for the VLDB 2023 paper: RECA: Related Tables Enhanced Column Semantic Type Annotation Framework"
+   },
+   {
+    "repo": "YRL-AIDA/RuTaBERT",
+    "license": "MIT",
+    "stars": 7,
+    "pushed_at": "2025-03-27T09:55:19Z",
+    "description": "RuTaBERT is a framework for solving column type and property annotation problems based on fine-tuning a pre-trained language model (e.g., BERT) using a large-scale corpus of Russian-language tables."
+   },
+   {
+    "repo": "gayoreo/Server-crash",
+    "license": null,
+    "stars": 7,
+    "pushed_at": "2019-12-21T19:39:07Z",
+    "description": "[14:27:46] [main/INFO] [LaunchWrapper]: Loading tweak class name net.minecraftforge.fml.common.launcher.FMLServerTweaker [14:27:46] [main/INFO] [LaunchWrapper]: Using primary tweak class name net.mine"
+   },
+   {
+    "repo": "rameez523/Grafana-Dasboard-for-K8s-Monitoring",
+    "license": null,
+    "stars": 5,
+    "pushed_at": "2022-02-24T09:39:55Z",
+    "description": "{   \"annotations\": {     \"list\": [       {         \"$$hashKey\": \"object:3607\",         \"builtIn\": 1,         \"datasource\": \"-- Grafana --\",         \"enable\": true,         \"hide\": true,         \"iconC"
+   },
+   {
+    "repo": "YRL-AIDA/CoLeM",
+    "license": "Apache-2.0",
+    "stars": 4,
+    "pushed_at": "2025-03-13T11:14:34Z",
+    "description": "CoLeM framework is a table model based on contrastive learning techniques for solving the problem of Column Type Annotation."
+   },
+   {
+    "repo": "akardapolov/dimension-tt",
+    "license": "Apache-2.0",
+    "stars": 3,
+    "pushed_at": "2026-10-18T12:20:12Z",
+    "description": "Typed table layer for Swing JTable/JXTable. Annotation-driven columns, type-safe data operations, and fast MethodHandle accessors."
+   },
+   {
+    "repo": "whnhch/ACCIO",
+    "license": null,
+    "stars": 1,
+    "pushed_at": "2024-11-07T05:11:18Z",
+    "description": "Column Type Annotation"
+   },
+   {
+    "repo": "drafiei/llms-for-cta",
+    "license": null,
+    "stars": 1,
+    "pushed_at": "2025-07-03T14:27:27Z",
+    "description": "Column Type Annotation using LLMs"
+   },
+   {
+    "repo": "chradam/PUT_CTA_Round1",
+    "license": "MIT",
+    "stars": 1,
+    "pushed_at": "2022-06-21T23:28:09Z",
+    "description": "Column-Type Annotation (CTA) Challenge (Round #1)"
+   },
+   {
+    "repo": "Wyb0627/KBLink",
+    "license": null,
+    "stars": 1,
+    "pushed_at": "2024-03-10T03:42:17Z",
+    "description": "Code of paper: KBLink: A column type annotation method that combines Knowledge Graph and pre-trained language model"
+   },
+   {
+    "repo": "AkshatUpadhyay24/Movie_Review_Analysis",
+    "license": null,
+    "stars": 1,
+    "pushed_at": "2021-12-07T17:58:42Z",
+    "description": "You have the data for the 100 top-rated movies from the past decade along with various pieces of information about the movie, its actors, and the voters who have rated these movies online. In this ass"
+   },
+   {
+    "repo": "cbool/w",
+    "license": null,
+    "stars": 1,
+    "pushed_at": "2013-10-07T13:29:56Z",
+    "description": "############################################### # Trinity Core Auth Server configuration file # ############################################### [authserver]  ##########################################"
+   },
+   {
+    "repo": "maxiior/Column-Type-Annotation",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2021-12-02T11:37:35Z",
+    "description": ""
+   },
+   {
+    "repo": "mattlos00/cta_clustering",
+    "license": "MIT",
+    "stars": 0,
+    "pushed_at": "2025-11-03T16:52:32Z",
+    "description": "Deep Clustering per la Column Type Annotation"
+   },
+   {
+    "repo": "Cyberrebell/DoctrineEntityReader",
+    "license": "GPL-3.0",
+    "stars": 0,
+    "pushed_at": "2015-02-03T21:39:41Z",
+    "description": "use doctrine annotation reader to get entity properties and column type"
+   },
+   {
+    "repo": "ysunbp/LakeHopper",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2025-04-24T07:55:30Z",
+    "description": "Code and data for the paper: LakeHopper: Cross Data Lakes Column Type Annotation through Model Adaptation"
+   }
+  ],
+  "semantic column type detection": [
+   {
+    "repo": "madelonhulsebos/AdaTyper",
+    "license": null,
+    "stars": 7,
+    "pushed_at": "2024-09-14T12:01:29Z",
+    "description": "Repository for the AdaTyper system for adaptive semantic (table) column type detection."
+   },
+   {
+    "repo": "LarenHernandezCalderon/tabsynth",
+    "license": null,
+    "stars": 2,
+    "pushed_at": "2026-10-12T11:56:23Z",
+    "description": "Privacy-preserving synthetic tabular data generator. Auto-adaptive pipeline: column type detection, GPT semantic classification, distribution profiling & correlation analysis. Built with PyTorch, Pand"
+   },
+   {
+    "repo": "MBadriNarayanan/ColumnTypeDetection",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2024-12-04T02:57:17Z",
+    "description": "Leveraging large language models to enhance the accuracy of semantic type detection in tabular datasets through fine-tuning."
+   },
+   {
+    "repo": "wmarkb-git/semantic-type-detection",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2026-01-17T12:14:35Z",
+    "description": "Identify what data is stored in each column based on its values vs headers or labels using ML and Deep Learning"
+   },
+   {
+    "repo": "nareshmreddy/excel-schema-analyzer",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2025-12-04T04:34:10Z",
+    "description": "AI-powered Excel schema detection and analysis tool using Gemini API. Analyzes Excel files, detects tables, infers column types and semantic roles, with an interactive review interface."
+   }
+  ],
+  "table column semantic type": [
+   {
+    "repo": "vohidjon123/google",
+    "license": null,
+    "stars": 44,
+    "pushed_at": "2022-04-13T14:01:22Z",
+    "description": "(function(sttc){/*     Copyright The Closure Library Authors.   SPDX-License-Identifier: Apache-2.0  */  var n;function aa(a){var b=0;return function(){return b<a.length?{done:!1,value:a[b++]}:{done:!"
+   },
+   {
+    "repo": "Orange-OpenSource/Table-Annotation",
+    "license": "GPL-3.0",
+    "stars": 18,
+    "pushed_at": "2024-01-04T09:25:14Z",
+    "description": "TableAnnotation is a semantic annotation tool for tables leveraging three steps: table preprocessing, entity lookup and annotation (Cell-Entity Annotation, Column-Type Annotation, Column-Pair Annotati"
+   },
+   {
+    "repo": "drissi1990/googletagservices",
+    "license": null,
+    "stars": 16,
+    "pushed_at": "2019-08-17T21:36:17Z",
+    "description": "(function(){var l;function aa(a){var b=0;return function(){return b<a.length?{done:!1,value:a[b++]}:{done:!0}}}function ba(a){var b=\"undefined\"!=typeof Symbol&&Symbol.iterator&&a[Symbol.iterator];retu"
+   },
+   {
+    "repo": "wbsg-uni-mannheim/TabAnnGPT",
+    "license": null,
+    "stars": 12,
+    "pushed_at": "2025-03-05T13:13:17Z",
+    "description": "This repository contains code and data for reproducing the experiments of three papers that focus on two subtasks of table annotation: column type annotation (CTA) the task of annotating table columns"
+   },
+   {
+    "repo": "ysunbp/RECA-paper",
+    "license": "MIT",
+    "stars": 12,
+    "pushed_at": "2025-05-07T03:15:15Z",
+    "description": "Code and data for the VLDB 2023 paper: RECA: Related Tables Enhanced Column Semantic Type Annotation Framework"
+   },
+   {
+    "repo": "madelonhulsebos/AdaTyper",
+    "license": null,
+    "stars": 7,
+    "pushed_at": "2024-09-14T12:01:29Z",
+    "description": "Repository for the AdaTyper system for adaptive semantic (table) column type detection."
+   },
+   {
+    "repo": "FarmingWon/SphereTab",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2026-08-18T06:27:39Z",
+    "description": "[CIKM 2026] Official implementation of Table-Guided Hyperspherical Diffusion for Preserving Semantic Dependencies in Column Type Annotation."
+   },
+   {
+    "repo": "nareshmreddy/excel-schema-analyzer",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2025-12-04T04:34:10Z",
+    "description": "AI-powered Excel schema detection and analysis tool using Gemini API. Analyzes Excel files, detects tables, infers column types and semantic roles, with an interactive review interface."
+   },
+   {
+    "repo": "altigran/Join-Discovery-CTA-References",
+    "license": null,
+    "stars": 0,
+    "pushed_at": "2025-05-01T23:05:50Z",
+    "description": "This repository is designed to maintain a curated list of references related to semantic table annotation, dataset discovery, and semantic join discovery. The included references span various topics s"
+   }
+  ]
+ },
+ "ckan": {
+  "catalog.data.gov": {
+   "_error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  "data.gov.uk": {
+   "packages": 59640,
+   "licenses": {
+    "unpublished": 9,
+    "ogl": 1,
+    "__other__": 1,
+    "uk-ogl": 20447,
+    "other-pd": 13,
+    "other-open": 6,
+    "other-closed": 25,
+    "other-nc": 50,
+    "other-at": 3,
+    "odc-pddl": 3,
+    "odc-odbl": 8,
+    "odc-by": 5,
+    "OGL-UK-3.0": 444,
+    "notspecified": 169,
+    "cc-zero": 17,
+    "cc-by-sa": 6,
+    "cc-by": 1069
+   },
+   "formats": {
+    "https://www.iana.org/assignments/media-types/text/turtle": 389,
+    "https://www.iana.org/assignments/media-types/text/plain": 103,
+    "https://www.iana.org/assignments/media-types/text/n3": 389,
+    "https://www.iana.org/assignments/media-types/text/csv": 389,
+    "https://www.iana.org/assignments/media-types/application/zip": 103,
+    "https://www.iana.org/assignments/media-types/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": 389,
+    "https://www.iana.org/assignments/media-types/application/vnd.google-earth.kml+xml": 103,
+    "https://www.iana.org/assignments/media-types/application/rdf+xml": 389,
+    "https://www.iana.org/assignments/media-types/application/parquet": 389,
+    "https://www.iana.org/assignments/media-types/application/octet-stream": 103,
+    "https://www.iana.org/assignments/media-types/application/ld+json": 389,
+    "https://www.iana.org/assignments/media-types/application/json": 389,
+    "https://www.iana.org/assignments/media-types/application/gpx+xml": 103,
+    "ZIP": 9970,
+    "XML": 776,
+    "XLSX": 3093,
+    "XLS": 2386,
+    "WMS": 1267,
+    "WFS": 322,
+    "TXT": 1856,
+    "SPARQL": 144,
+    "SHP": 765,
+    "RDF": 108,
+    "PDF": 2287,
+    "OGC WMS": 155,
+    "OGC WFS": 175,
+    "ODS": 393,
+    "KML": 4419,
+    "JSON": 2184,
+    "HTML": 10497,
+    "GeoJSON": 4530,
+    "GPKG": 1850,
+    "GDB": 1807,
+    "Esri REST": 213,
+    "DOCX": 165,
+    "CSV": 12456,
+    "ArcGIS GeoServices REST API": 3238,
+    ".xlsx": 163,
+    ".pdf": 105,
+    ".csv": 331
+   }
+  },
+  "data.go.jp": {
+   "packages": 18827,
+   "licenses": {},
+   "formats": {}
+  },
+  "opendata.swiss": {
+   "packages": 16133,
+   "licenses": {},
+   "formats": {
+    "ZIP": 2073,
+    "XML": 65,
+    "XLS": 3156,
+    "WMTS": 975,
+    "WMS": 3965,
+    "WFS": 1967,
+    "TXT": 426,
+    "TIFF": 370,
+    "SPARQL": 187,
+    "SHP": 1082,
+    "SERVICE": 2300,
+    "RDF XML": 1139,
+    "RDF Turtle": 1136,
+    "PNG": 12,
+    "PDF": 723,
+    "PARQUET": 1345,
+    "ODS": 261,
+    "OCTET": 906,
+    "N3": 1135,
+    "N/A": 3763,
+    "KMZ": 2,
+    "KML": 310,
+    "JSON-LD": 1137,
+    "JSON": 2817,
+    "HTML": 6837,
+    "GeoTIFF": 13,
+    "GeoJSON": 1188,
+    "GPX": 293,
+    "GPKG": 1816,
+    "GML": 14,
+    "GDB": 19,
+    "DXF": 246,
+    "CSV": 4974,
+    "API": 1548
+   }
+  },
+  "catalogue.data.govt.nz": {
+   "_error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+  },
+  "open.canada.ca": {
+   "packages": 48175,
+   "licenses": {
+    "mb-omb": 261,
+    "pei-oglpei": 69,
+    "on-oglo": 993,
+    "ns-oglns": 751,
+    "nl-oglnl": 76,
+    "nwt-tno": 168,
+    "yk-oglyk": 2965,
+    "nb-oglnb": 226,
+    "ca-ogl-lgo": 36141,
+    "bc-oglbc": 1684,
+    "ab-ogla": 2901,
+    "ca-odla-aldg": 2,
+    "sk-suudl": 413,
+    "qc-cc-by": 1525
+   },
+   "formats": {
+    "other": 10344,
+    "ZIP": 3550,
+    "XML": 12952,
+    "XLSX": 2249,
+    "XLS": 1011,
+    "WMS": 1222,
+    "WFS": 80,
+    "WCS": 52,
+    "TXT": 568,
+    "TIFF": 180,
+    "SHP": 4990,
+    "SEGY": 253,
+    "RSS": 885,
+    "RDF": 601,
+    "PPTX": 44,
+    "PDF/A-1": 43,
+    "PDF": 8403,
+    "NetCDF": 80,
+    "MXD": 110,
+    "KMZ": 444,
+    "KML": 1547,
+    "JSON": 402,
+    "JPG": 713,
+    "JP2": 1228,
+    "HTML": 32523,
+    "GeoTIF": 365,
+    "GPKG": 381,
+    "GML": 194,
+    "GIF": 97,
+    "GEOJSON": 1600,
+    "GDB": 131,
+    "FGDB/GDB": 918,
+    "ESRI REST": 2638,
+    "EDI": 1881,
+    "ECW": 63,
+    "DOCX": 493,
+    "DOC": 69,
+    "CSV": 15839,
+    "CDR": 91,
+    "ASCII Grid": 236
+   }
+  },
+  "data.gov.au": {
+   "packages": 141332,
+   "licenses": {
+    "oeh": 27,
+    "notspecified": 92825,
+    "lsba": 11096,
+    "custom_other": 272,
+    "custom_active_acceptance": 203,
+    "cc-nc-nd": 33,
+    "cc-by-nc-nd-4.0": 117,
+    "cc-by-4": 2839,
+    "Restricted access. This dataset is not available for public distribution.": 369,
+    "other-open": 519,
+    "other": 2789,
+    "ODBL-1": 24,
+    "Limited access. Requests to the Bioregional Assesment Programme http://www.bioregionalassessments.gov.au/data": 145,
+    "DL-Geoscape": 24,
+    "DL-AEDC": 40,
+    "Creative Commons CC-BY 4.0": 112,
+    "cc-by-sa": 298,
+    "cc-nc": 201,
+    "Creative Commons Attribution 4.0 International, http://creativecommons.org/licenses/by/4.0/, (c) Crown in right of the state of South Australia, DEWNR": 81,
+    "Creative Commons Attribution 4.0 International, http://creativecommons.org/licenses/by/4.0/, (c) Commonwealth of Australia (Bioregional Assessment Programme http://www.bioregionalassessments.gov.au), (c) State of Queensland (Department of Natural Resources and Mines)": 23,
+    "Creative Commons Attribution 4.0 International, http://creativecommons.org/licenses/by/4.0/, (c) Commonwealth of Australia (Bioregional Assessment Programme http://www.bioregionalassessments.gov.au), (c) Commonwealth of Australia (Geoscience Australia) 2014": 32,
+    "Creative Commons Attribution 4.0 International, http://creativecommons.org/licenses/by/4.0/, (c) Commonwealth of Australia (Bioregional Assessment Programme http://www.bioregionalassessments.gov.au)": 54,
+    "Creative Commons Attribution 4.0 International\nhttp://creativecommons.org/licenses/by/4.0/\n(c) Crown in right of the state of South Australia, DEWNR": 75,
+    "cc-by-4.0": 1891,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) State of Victoria (Department of Environment and Primary Industries)": 22,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) State of Victoria": 35,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) State of Queensland (Department of Natural Resources and Mines)": 26,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) State of New South Wales (Office of Water)": 28,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) Office of Environment and Heritage NSW": 28,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) Commonwealth of Australia (Geoscience Australia) 2014": 20,
+    "Creative Commons Attribution 3.0 Australia, http://creativecommons.org/licenses/by/3.0/au/, (c) Commonwealth of Australia (Geoscience Australia)": 21,
+    "cc-by": 18413,
+    "cc-by-2.5": 1910,
+    "CC-BY-NC-SA-4.0": 23,
+    "CC-BY-NC-SA-3.0-AU": 675,
+    "CC-BY-NC-4.0": 54,
+    "CC-BY-4.0": 1868,
+    "CC-BY-3.0-AU": 465,
+    "CC-BY-3.0": 30,
+    "CC-BY-2.5-AU": 2705
+   },
+   "formats": {
+    "zip mapinfo": 695,
+    "tif": 4484,
+    "excel (.xlsx)": 516,
+    "audio/basic": 1672,
+    "application/x-netcdf": 7273,
+    "ZIP": 15393,
+    "XML": 1162,
+    "XLSX": 5570,
+    "XLS": 2644,
+    "WMTS": 349,
+    "WMS": 13907,
+    "WFS": 4763,
+    "WCS": 3099,
+    "TXT": 1301,
+    "TAB": 1947,
+    "SHP": 3885,
+    "PNG": 18786,
+    "PDF": 49183,
+    "OGC WMS": 627,
+    "MIF": 1915,
+    "KMZ": 560,
+    "KML": 3194,
+    "JSON": 1502,
+    "JPEG": 1264,
+    "HTML": 94378,
+    "GeoPackage": 490,
+    "GeoJSON": 4975,
+    "GPKG": 494,
+    "GDB": 2398,
+    "FGDB": 500,
+    "Extended TAB": 1915,
+    "Esri REST": 579,
+    "DXF": 1690,
+    "DWG": 1694,
+    "DOCX": 1386,
+    "CSV": 9795,
+    "ArcGIS GeoServices REST API": 2133,
+    "ARCGIS REST SERVICE": 1200,
+    "API ArcGIS Server Map Service": 740,
+    ".pdf": 272
+   }
+  },
+  "data.gov.ie": {
+   "packages": 22904,
+   "licenses": {
+    "other-nc": 1,
+    "cc-zero": 28,
+    "cc-by-nc-sa": 6,
+    "cc-by-nc": 13,
+    "other-open": 1,
+    "ODbL-1.0": 1,
+    "oir-psi": 1,
+    "me-custom": 4,
+    "notspecified": 31,
+    "psi": 3,
+    "cc-by-nc-nd": 53,
+    "CC-BY-SA-4.0": 457,
+    "CC-BY-4.0": 22127
+   },
+   "formats": {
+    "ZIP": 1204,
+    "XML": 149,
+    "XLSX": 14437,
+    "XLS": 73,
+    "WWW:DOWNLOAD-1.0-HTTP--DOWNLOAD": 72,
+    "WMS": 577,
+    "WFS": 48,
+    "TXT": 2225,
+    "TIFF": 14,
+    "SHP / ZIP": 125,
+    "SHP": 240,
+    "SHAPEFILES": 35,
+    "SHAPE FILE": 27,
+    "REST": 14,
+    "PX": 14003,
+    "PDF": 423,
+    "ODS": 15,
+    "NETCDF": 14,
+    "MAPVIEWER": 11,
+    "KML": 1152,
+    "JSON-STAT": 14003,
+    "JSON": 1872,
+    "HTML": 3047,
+    "GPKG": 283,
+    "GML": 36,
+    "GEOPACKAGE": 90,
+    "GEOJSON": 1170,
+    "GDB": 286,
+    "ESRI REST SERVICE": 44,
+    "ESRI REST": 97,
+    "DOCX": 9,
+    "DB_TABLE": 36,
+    "DATA VIEWER": 20,
+    "CSV": 20475,
+    "ATOM SYNDICATION FORMAT": 39,
+    "ARCSDE CONNECTION": 85,
+    "ARCGIS GEOSERVICES REST API": 990,
+    "API": 19,
+    ".XLSX": 82,
+    ".CSV": 8
+   }
+  }
+ }
+}
