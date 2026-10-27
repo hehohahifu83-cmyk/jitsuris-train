@@ -139,12 +139,30 @@ def as_text(value) -> str:
 
 
 def license_record(meta: dict) -> tuple[str, dict]:
+    def canonical(value) -> str:
+        text = str(value or "").strip().casefold()
+        compact = re.sub(r"[^a-z0-9.+]+", "-", text).strip("-")
+        aliases = {
+            "mit-license": "mit",
+            "apache-license-2.0": "apache-2.0",
+            "apache-2": "apache-2.0",
+            "bsd-2-clause-simplified-license": "bsd-2-clause",
+            "bsd-3-clause-new-or-revised-license": "bsd-3-clause",
+            "creative-commons-attribution-4.0-international": "cc-by-4.0",
+            "cc0-1.0-universal": "cc0-1.0",
+            "isc-license": "isc",
+            "mozilla-public-license-2.0": "mpl-2.0",
+        }
+        return aliases.get(compact, compact)
+
     raw = meta.get("license") or {}
     if isinstance(raw, dict) and isinstance(raw.get("license"), dict):
         raw = raw["license"]
+    if isinstance(raw, str):
+        return canonical(raw), {"name": raw.strip()}
     if not isinstance(raw, dict):
         return "", {}
-    spdx = str(raw.get("spdx_id") or "").strip().lower()
+    spdx = canonical(raw.get("spdx_id") or raw.get("key") or raw.get("name") or "")
     return spdx, raw
 
 
@@ -263,7 +281,7 @@ def main() -> int:
                         excluded.append({"file": member.filename, "reason": "missing_gittables_metadata"})
                         continue
                     meta = json.loads(raw_meta.decode("utf-8"))
-                    source_url = str(meta.get("table_csv_url") or "")
+                    source_url = str(meta.get("table_csv_url") or meta.get("csv_url") or "")
                     spdx, raw_license = license_record(meta)
                     if not source_url or not spdx:
                         license_value = meta.get("license")
