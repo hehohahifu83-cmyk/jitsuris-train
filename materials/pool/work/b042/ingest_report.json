@@ -1,17 +1,24 @@
 {
-  "status": "label_ready",
+  "status": "rejected_after_manual_source_privacy_review",
   "batch": "b042",
   "topic": "attrition_rate",
-  "tables": 3,
-  "columns": 25,
+  "tables": 0,
+  "columns": 0,
   "excluded_tables": 3,
   "archive_md5_verified": true,
   "only_allowlisted_per_table_licenses": true,
   "exact_source_url_dedup": true,
   "raw_archive_committed": false,
-  "groups": 13,
-  "sheets": 1,
+  "groups": 0,
+  "sheets": 0,
   "label_guide": "LABEL_GUIDE.md v2.0",
   "answers_filled": 0,
-  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions."
+  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions.",
+  "candidate_tables_before_manual_review": 3,
+  "candidate_columns_before_manual_review": 25,
+  "manual_source_privacy_review": {
+    "status": "reject",
+    "reason": "The candidate source is a public Hacker News dump containing contributor handles and user-generated titles/comments. It was not suitable for this privacy-conscious pilot.",
+    "raw_column_data_removed": true
+  }
 }
