@@ -1,0 +1,326 @@
+{
+ "created_by": "Claude 2026-10-28（オーナー指示「外れた列を使えるように」。外れた列の多い順の 100 まとまりを、シートの例・値の形ごとの代表・C2 の予測を見て裁定）",
+ "note": "Claude 1 人の裁定（ChatGPT の答えを見たあと）なので独立の 2 票ではない。銀 B として銀 A（ChatGPT×C2 の一致）と分けて置く。mode=all は全部の値の形、c2_agree は C2 がこのラベルの形だけ。drop_c2 は C2 がその予測の形を外す。shape_digits=none は数字のない値の形だけ、some は数字のある値の形だけ（値の形の 9 で判断）",
+ "label_guide": "v2.0",
+ "labels": {
+  "g0007": {
+   "label": "other",
+   "why": "学名（LABEL_GUIDE other）"
+  },
+  "g0001": {
+   "label": "category",
+   "why": "項目の種類（protein・city or town など決まった語）",
+   "drop_c2": [
+    "unknown"
+   ]
+  },
+  "g0011": {
+   "label": "category",
+   "why": "通貨コード EUR・USD・$。数字を含む値の形は外す（金額の列が混ざる）",
+   "shape_digits": "none"
+  },
+  "g0012": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0014": {
+   "label": "amount",
+   "why": "価格（0 でも列名がお金なら amount）"
+  },
+  "g0017": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0018": {
+   "label": "other",
+   "why": "URL"
+  },
+  "g0020": {
+   "label": "other",
+   "why": "遺伝子名"
+  },
+  "g0022": {
+   "label": "other",
+   "why": "面積（測定値）"
+  },
+  "g0023": {
+   "label": "quantity",
+   "why": "期間の長さ（PT1H など）"
+  },
+  "g0029": {
+   "label": "category",
+   "why": "GO の決まった語"
+  },
+  "g0032": {
+   "label": "other",
+   "why": "ゲノム上の位置（座標）"
+  },
+  "g0033": {
+   "label": "other",
+   "why": "ゲノム上の位置（座標）"
+  },
+  "g0035": {
+   "label": "other",
+   "why": "遺伝子・たんぱく質の名前"
+  },
+  "g0036": {
+   "label": "other",
+   "why": "学名"
+  },
+  "g0038": {
+   "label": "other",
+   "why": "URL"
+  },
+  "g0045": {
+   "label": "id",
+   "why": "ISBN など。C2 も id の値の形だけ（URL・語の混ざりを除く）",
+   "mode": "c2_agree"
+  },
+  "g0051": {
+   "label": "id",
+   "why": "識別子。浮動小数で崩れた値もあるが形は番号",
+   "mode": "c2_agree"
+  },
+  "g0053": {
+   "label": "other",
+   "why": "重さ（測定値）"
+  },
+  "g0059": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0062": {
+   "label": "category",
+   "why": "GO の決まった語"
+  },
+  "g0066": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0040": {
+   "label": "category",
+   "why": "時間帯の決まった語"
+  },
+  "g0030": {
+   "label": "category",
+   "why": "GO の決まった語"
+  },
+  "g0071": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0072": {
+   "label": "other",
+   "why": "標高（測定値）"
+  },
+  "g0027": {
+   "label": "other",
+   "why": "栄養の値（LABEL_GUIDE：献立の栄養の値は other）。ChatGPT・C2 の quantity を直す"
+  },
+  "g0041": {
+   "label": "category",
+   "why": "在庫の状態の決まった語",
+   "drop_c2": [
+    "quantity"
+   ]
+  },
+  "g0073": {
+   "label": "address",
+   "why": "郵便番号（LABEL_GUIDE address）"
+  },
+  "g0075": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0078": {
+   "label": "other",
+   "why": "URL"
+  },
+  "g0079": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0082": {
+   "label": "category",
+   "why": "決まった一覧の名前"
+  },
+  "g0084": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0085": {
+   "label": "other",
+   "why": "座標"
+  },
+  "g0096": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0097": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0101": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0105": {
+   "label": "category",
+   "why": "商品の状態の決まった語"
+  },
+  "g0013": {
+   "label": "date",
+   "why": "日付・日時。数字のない値の形は外す（undefined だけの列が混ざる）",
+   "shape_digits": "some"
+  },
+  "g0114": {
+   "label": "other",
+   "why": "身長（測定値）"
+  },
+  "g0116": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0129": {
+   "label": "id",
+   "why": "番号の識別子"
+  },
+  "g0139": {
+   "label": "id",
+   "why": "見出しが id（countries/be は語彙の識別子）"
+  },
+  "g0125": {
+   "label": "category",
+   "why": "本の形の決まった語"
+  },
+  "g0148": {
+   "label": "other",
+   "why": "ファイル名"
+  },
+  "g0154": {
+   "label": "other",
+   "why": "座標"
+  },
+  "g0156": {
+   "label": "id",
+   "why": "外部の識別子（記事のパス）"
+  },
+  "g0153": {
+   "label": "org",
+   "why": "ホテルのブランド（会社）"
+  },
+  "g0142": {
+   "label": "category",
+   "why": "染色体の名前（決まった語）"
+  },
+  "g0169": {
+   "label": "other",
+   "why": "座標"
+  },
+  "g0170": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0171": {
+   "label": "text",
+   "why": "記事の題名"
+  },
+  "g0168": {
+   "label": "text",
+   "why": "記事の題名"
+  },
+  "g0173": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0174": {
+   "label": "other",
+   "why": "座標"
+  },
+  "g0175": {
+   "label": "other",
+   "why": "座標"
+  },
+  "g0176": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0187": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0188": {
+   "label": "other",
+   "why": "栄養の値（エネルギー）"
+  },
+  "g0192": {
+   "label": "rate",
+   "why": "0〜1 の指数（LABEL_GUIDE：剥奪指数のような 0〜1 は rate）"
+  },
+  "g0194": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0196": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0199": {
+   "label": "address",
+   "why": "国コード（LABEL_GUIDE address）"
+  },
+  "g0200": {
+   "label": "address",
+   "why": "国コード"
+  },
+  "g0201": {
+   "label": "address",
+   "why": "国コード"
+  },
+  "g0205": {
+   "label": "other",
+   "why": "電圧（測定値）"
+  },
+  "g0216": {
+   "label": "id",
+   "why": "見出しが id"
+  },
+  "g0217": {
+   "label": "id",
+   "why": "見出しが id"
+  }
+ },
+ "exclude": {
+  "g0002": "label：表ごとに種類が違う（たんぱく質・地名・賞）",
+  "g0006": "part of：混ざる",
+  "g0005": "commons category：地名と「People of …」が混ざる",
+  "g0015": "Number：評価点と数が混ざる",
+  "g0016": "has part(s)：混ざる",
+  "g0039": "題名と URL が混ざる",
+  "g0043": "混ざる",
+  "g0044": "混ざる",
+  "g0057": "人の名前が混ざる",
+  "g0061": "地名と人の名が混ざる",
+  "g0063": "記号の選択肢と金額の幅が混ざる",
+  "g0088": "役職の名前：category か text か決まらない",
+  "g0104": "数・時間・幅が混ざる",
+  "g0070": "素材名・作品名が混ざる（C2 と一致した形だけの今の銀のまま）",
+  "g0113": "単位コード：category か id か決まらない",
+  "g0121": "旗の項目名：決まらない",
+  "g0122": "住民の呼び名：決まらない",
+  "g0135": "ポータルのページ名：決まらない",
+  "g0145": "subreddit の名前：決まらない",
+  "g0103": "会場の名前：org と address が混ざる",
+  "g0152": "紋章の項目名：決まらない",
+  "g0157": "IAB コード：category か id か決まらない",
+  "g0159": "市外局番：phone か id か決まらない",
+  "g0165": "GitHub の話題名：決まらない",
+  "g0181": "ハッシュタグ：決まらない",
+  "g0185": "役職の名前：決まらない",
+  "g0197": "国番号：phone か id か決まらない",
+  "g0198": "トップレベルドメイン：決まらない",
+  "g0207": "体の部位の名前：決まらない",
+  "g0211": "平均寿命：quantity か other（平均）か決まらない",
+  "g0215": "海上の国の番号：address か id か決まらない"
+ }
+}

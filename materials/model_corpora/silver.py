@@ -11,7 +11,7 @@
   python materials/model_corpora/silver.py reps
   python materials/model_corpora/silver.py status [--teacher grok]
   python materials/model_corpora/silver.py check    # 大きいまとまりの中が 1 種類かを、抜き取った列ごとに確かめるシート（c3 計画の段 1 の 3）
-  python materials/model_corpora/silver.py silver   # ChatGPT の答え（確かめの裁定を反映）と C2 の予測が一致した「まとまり×値の形」を銀にする
+  python materials/model_corpora/silver.py silver   # 銀 A：ChatGPT の答え（確かめの裁定を反映）× C2 の予測の一致／銀 B：Claude の裁定（silver_b_decisions.json）
 """
 import argparse
 import gzip
@@ -240,8 +240,22 @@ def cmd_check(_a):
 PRED = REP_SET.parent / "pred_c2_seed1.json"
 
 
+def b_keeps(dec, shape, pred):
+    """Claude の裁定（silver_b_decisions.json の 1 まとまり）で、この値の形を使うか。"""
+    if dec.get("mode") == "c2_agree" and pred != dec["label"]:
+        return False
+    if pred in dec.get("drop_c2", []):
+        return False
+    digits = dec.get("shape_digits")
+    if digits == "none" and "9" in shape or digits == "some" and "9" not in shape:
+        return False
+    return True
+
+
 def cmd_silver(_a):
-    """2026-10-28 オーナー判断で Grok 抜き：ChatGPT の答え × C2 の予測（guard 後）の一致だけを銀にする。列そのものは書かず、規則（まとまり×値の形）を書く。"""
+    """2026-10-28 オーナー判断で Grok 抜き。銀 A：ChatGPT の答え（確かめの裁定を反映）× C2 の予測（guard 後）の一致。
+    銀 B：外れた列の多いまとまりを Claude が裁定したもの（silver_b_decisions.json。独立の 2 票ではないので A と分ける）。
+    列そのものは書かず、規則（まとまり×値の形）を書く。"""
     meta = json.loads((OUT / "groups.json").read_text(encoding="utf-8"))
     got, problems = LS.read_answers(OUT, meta["groups"], "chatgpt")
     if problems or len(got) != len(meta["groups"]):
@@ -251,6 +265,7 @@ def cmd_silver(_a):
         if got[gid] != v["from"]:
             raise SystemExit(f"{gid}：裁定の from と答えが違う")
         got[gid] = v["to"]
+    bdec = json.loads((OUT / "silver_b_decisions.json").read_text(encoding="utf-8"))
     pred = json.loads(PRED.read_text(encoding="utf-8"))
     want_sha = __import__("hashlib").sha256(REP_SET.read_bytes()).hexdigest()
     if pred["set_sha256"] != want_sha:
@@ -261,24 +276,37 @@ def cmd_silver(_a):
     for rep in json.loads((OUT / "reps.json").read_text(encoding="utf-8")):
         gid, n, lab = rep["group"], rep["columns"], got[rep["group"]]
         p = by_id[rep["id"]]["guarded_prediction"]
-        if gid in dec["exclude"]:
+        b = bdec["labels"].get(gid)
+        rule = {"group": gid, "key": key_of[gid], "shape": rep["shape"], "columns": n}
+        if b:
+            if not b_keeps(b, rep["shape"], p):
+                why["Claude の裁定で外した値の形"] += n
+            elif p == b["label"] == lab and gid not in dec["exclude"]:
+                rules.append({**rule, "label": lab, "tier": "A"})
+                why["銀 A"] += n
+            else:
+                rules.append({**rule, "label": b["label"], "tier": "B"})
+                why["銀 B"] += n
+        elif gid in dec["exclude"]:
             why["確かめで外した"] += n
         elif lab in ("unknown", "S"):
             why["ChatGPT が unknown・S"] += n
         elif p == lab:
-            rules.append({"group": gid, "key": key_of[gid], "shape": rep["shape"], "label": lab, "columns": n})
-            why["銀"] += n
+            rules.append({**rule, "label": lab, "tier": "A"})
+            why["銀 A"] += n
         else:
             why["C2 が不明" if p == "unknown" else "C2 と割れた"] += n
-    by_label = Counter()
+    by_label = {t: Counter() for t in ("A", "B")}
     for r in rules:
-        by_label[r["label"]] += r["columns"]
-    doc = {"created_by": "materials/model_corpora/silver.py silver", "teachers": "ChatGPT（answers/）× C2 種子 1（guard 後）",
+        by_label[r["tier"]][r["label"]] += r["columns"]
+    doc = {"created_by": "materials/model_corpora/silver.py silver", "teachers": "A：ChatGPT（answers/）× C2 種子 1（guard 後）／B：Claude の裁定（silver_b_decisions.json）",
            "pred_sha256": __import__("hashlib").sha256(PRED.read_bytes()).hexdigest(), "set_sha256": want_sha,
-           "check_decisions": "check_decisions.json", "columns": dict(why), "by_label": dict(by_label.most_common()), "rules": rules}
+           "check_decisions": "check_decisions.json", "b_decisions": "silver_b_decisions.json", "columns": dict(why),
+           "by_label": {t: dict(c.most_common()) for t, c in by_label.items()}, "rules": rules}
     (OUT / "silver_rules.json").write_text(json.dumps(doc, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
     total = sum(why.values())
-    print(f"銀 {why['銀']:,} / {total:,} 列（{why['銀'] / total:.1%}）・規則 {len(rules):,}：{dict(why)}")
+    ab = why["銀 A"] + why["銀 B"]
+    print(f"銀 {ab:,} / {total:,} 列（{ab / total:.1%}。A {why['銀 A']:,}・B {why['銀 B']:,}）・規則 {len(rules):,}：{dict(why)}")
 
 
 def main(argv=None):
