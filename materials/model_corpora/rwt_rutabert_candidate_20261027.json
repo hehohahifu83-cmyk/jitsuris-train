@@ -1,7 +1,7 @@
 {
   "source": "RWT-RuTaBERT (LoReTA) training dataset",
   "observed_at": "2026-10-27",
-  "status": "metadata_only_candidate_rights_hold_not_downloaded",
+  "status": "metadata_only_candidate_rights_hold_page_mapping_verified_upstream_rights_unresolved",
   "official_dataset": "https://huggingface.co/datasets/aidalab/rwt-rutabert",
   "source_repository": "https://github.com/YRL-AIDA/LoReTA",
   "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
@@ -15,32 +15,153 @@
   },
   "construction": {
     "source_description": "Russian Web Tables (RWT), described by the dataset repository as tables from Russian Wikipedia.",
-    "selection_and_labeling": "Relational tables selected by headers matching 170 DBpedia semantic types; treat labels as weak/header-derived annotations, not independently verified gold labels.",
-    "split": "Fixed train/test split. Keep all 115,448 test columns sealed and exclude them from training and mapping decisions."
+    "selection_and_labeling": "The 170 semantic labels are weak/header-derived annotations, not human gold labels. The LoReTA labeling notebook says it assumes the first noun in a header reflects the entity and chooses the most similar semantic type using a Russian word-vector model; the export retains label and label_id but drops the original column header. Do not expose label/label_id to independent annotators. Recover the original header from the RWT metadata and use raw RWT table rows for review.",
+    "split": "Fixed train/test split. Keep all 115,448 test columns sealed and exclude them from training and mapping decisions.",
+    "table_id_mapping": "Verified against YRL-AIDA/LoReTA at pinned commit f12d7f83a70a065c90eb314a14e35bf177bade22: collect_headers.cpp derives the identifier from Dataset/data/<page_id>/table_<offset>_meta.json; collection code reads the corresponding table CSV. Thus the numeric path component is the Wikipedia page ID and table_N is the within-page table offset. This confirms the ID shape, but not the exact historical page revision.",
+    "header_recovery": "LoReTA's collect_headers.cpp reads each RWT table's _meta.json and extracts columns[column_id].name. Use the pinned source mapping to restore headers; the flattened CTA CSV does not contain them."
   },
   "licensing": {
     "dataset_card_license_tag": "MIT",
-    "source_repository_license": "MIT",
-    "unresolved_issue": "The LoReTA repository and Hugging Face card report MIT, but the upstream RWT repository lists no license file and describes data extracted from Russian Wikipedia. The source-page attribution/provenance mapping and rights for embedded table content have not been confirmed. Do not treat the MIT label as clearing every underlying table.",
-    "wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/3.0/",
-    "upstream_repository": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
+    "LoReTA_repository_license": "The pinned LoReTA repository includes a MIT LICENSE (Copyright (c) 2025 YRL-AIDA) and the train/test CSV artifacts. Retain its notice for the LoReTA artifact layer; this does not override underlying Russian Wikipedia rights.",
+    "LoReTA_pinned_commit": "f12d7f83a70a065c90eb314a14e35bf177bade22",
+    "LoReTA_license_blob_sha": "c7e1e0441158f214639817bdc9f1066d98f255a3",
+    "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
     "upstream_license_file_observed": false,
-    "upstream_repository_listing": "README.md and dataset.zip; no LICENSE file is listed.",
-    "upstream_readme_note": "The upstream RWT repository describes the corpus as extracted from Russian Wikipedia and asks users to cite its paper; it does not state a dataset license in the README.",
-    "underlying_source_license": "Russian Wikipedia contributions at the RWT corpus's September 13, 2021 snapshot were under CC BY-SA 3.0; Wikimedia moved future text contributions to CC BY-SA 4.0 in 2023. Verify each reused page/revision and any imported-content exceptions.",
-    "current_wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/4.0/",
-    "attribution_requirement": "Wikimedia Terms of Use allow attribution by a link/URL to the reused page or pages; retain that page-level attribution and a license notice.",
-    "rwt_corpus_license": "No license file is listed in the upstream RWT corpus repository. The separate MIT tag on LoReTA/RuTaBERT does not establish permission to redistribute the upstream RWT database/selection.",
-    "table_id_mapping": "The RuTaBERT card preview exposes IDs like dataset/Dataset/data/1000006/table_0. The RWT paper says its surrogate table ID contains a Wikipedia page ID and table offset and that metadata stores source URL/page title, but that ID-to-source mapping has not been verified against the upstream archive.",
-    "clearance_blocker": "Verify the RuTaBERT table IDs against RWT's per-table source metadata, preserve source page/revision and applicable historical license/attribution for every selected table, and establish permission to reuse the RWT corpus/selection itself. Until then, keep all 1,441,349 columns out of label staging."
+    "upstream_rights": "The RWT source repository listing shows README.md and dataset.zip but no separate dataset license file. Its paper calls the corpus publicly available/open source and says to cite the paper, but does not state an exact data license. Permission for the RWT corpus/database and selection must be established.",
+    "underlying_source": "RWT is extracted from Russian Wikipedia; the RWT paper reports a 2021-09-13 snapshot. Check the exact page/history/discussion for each reused page, applicable license version, and any imported-content attribution notices. Do not assume a uniform license solely from the snapshot date.",
+    "table_id_mapping": "Verified from the pinned LoReTA collection code. A page URL can be reconstructed from page_id as https://ru.wikipedia.org/?curid=<page_id>; the exact 2021 revision and page-level notices remain to be audited.",
+    "attribution_requirement": "Wikimedia Terms of Use accept a page hyperlink/URL for attribution and require applicable license notices, modification disclosure, and preservation of extra attribution requirements for imported text.",
+    "clearance_blocker": "Before content staging, resolve the RWT corpus/selection rights, pin the exact source snapshot, and audit all distinct source pages for their revision/license and additional attribution notices. Until then, all rows remain out of label staging."
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
-  "handling": "Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl until the table-ID-to-page attribution map, RWT corpus rights, underlying Wikipedia license/version, PII screen, label quality, and deduplication are resolved. If cleared, split only the train portion into bounded staging chunks, preserve CC BY-SA attribution/licensing, and keep all 115,448 test columns sealed.",
+  "handling": "Rights hold. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. The metadata-only preflight can enumerate every train column's page/table ID and reconstructed page URL after the pinned LoReTA files are obtained. Once rights are cleared, reconstruct original headers from RWT metadata, discard/hide LoReTA label and label_id, and produce bounded blank-answer batches with per-page attribution. Keep all 115,448 test columns sealed.",
   "source_links": [
     "https://huggingface.co/datasets/aidalab/rwt-rutabert",
-    "https://github.com/YRL-AIDA/LoReTA",
+    "https://github.com/YRL-AIDA/LoReTA/tree/f12d7f83a70a065c90eb314a14e35bf177bade22",
+    "https://github.com/YRL-AIDA/LoReTA/blob/f12d7f83a70a065c90eb314a35bf177bade22/LICENSE",
     "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
     "https://arxiv.org/abs/2210.06353",
-    "https://creativecommons.org/licenses/by-sa/4.0/"
-  ]
+    "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+    "https://creativecommons.org/licenses/by-sa/3.0/"
+  ],
+  "source_artifacts": {
+    "LoReTA_commit": "f12d7f83a70a065c90eb314a14e35bf177bade22",
+    "LoReTA_license_file_blob_sha": "c7e1e0441158f214639817bdc9f1066d98f255a3",
+    "train_shards": [
+      {
+        "path": "dataset/cta_dataset/train/data_0.csv",
+        "blob_sha": "a374fd7077438bcf7086c7c7f628d863a1ea4c9e",
+        "size_bytes": 18443297
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_1.csv",
+        "blob_sha": "fd7bbd79b6ed3a7a7294c0905e9a00a979919cef",
+        "size_bytes": 30318013
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_2.csv",
+        "blob_sha": "90037f6d0e455ad76b9b9d4b1a171b9f383ccb6d",
+        "size_bytes": 28810332
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_3.csv",
+        "blob_sha": "66764af658e2ad7a1ce05303f07ad2be4cc8d8e0",
+        "size_bytes": 28664420
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_4.csv",
+        "blob_sha": "888b0d4f9d363208378c791d657ef8530b464e2b",
+        "size_bytes": 29950591
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_5.csv",
+        "blob_sha": "184fc9a7e4207bec1a9aa154943f89da939fa110",
+        "size_bytes": 28773095
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_6.csv",
+        "blob_sha": "4801f8ff0db7c5f355f7d2c0f85ac93b6ccc4cce",
+        "size_bytes": 32052390
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_7.csv",
+        "blob_sha": "92e73289c84fc0ca413587b0481fc3223891598e",
+        "size_bytes": 29608132
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_8.csv",
+        "blob_sha": "1a2c641aa530df3fffd2b4c2f93c2aa1657225e6",
+        "size_bytes": 22397227
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_9.csv",
+        "blob_sha": "86603848bb981fd6ddbdd19244a6705e602da63d",
+        "size_bytes": 28706951
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_10.csv",
+        "blob_sha": "7848e3f594f2125d407252d15705781bfd70d842",
+        "size_bytes": 29015482
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_11.csv",
+        "blob_sha": "75028e3c077f017bf89c59db00c1e9f89433fae5",
+        "size_bytes": 23801904
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_12.csv",
+        "blob_sha": "4330666d8ca581964eb20201e8495be315d3afeb",
+        "size_bytes": 26218356
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_13.csv",
+        "blob_sha": "d0d9a0fec1adb50e3896615c0706fe2532ac7085",
+        "size_bytes": 23924136
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_14.csv",
+        "blob_sha": "7937768e38e531a30d02e25cf2ecc7f4e74c9e9a",
+        "size_bytes": 24602261
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_15.csv",
+        "blob_sha": "dc515c598301d7e6ef2ef6f3f836e9adc2238398",
+        "size_bytes": 24275495
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_16.csv",
+        "blob_sha": "194d2fec8327c3ee21fb01fb49c2feb6e12dbc96",
+        "size_bytes": 26053673
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_17.csv",
+        "blob_sha": "fb5ca2f15d745ff6ddd3777d28644be3141fd1b0",
+        "size_bytes": 26614498
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_18.csv",
+        "blob_sha": "cab63575a36b5e3634bdf1acdf607d024875ac8d",
+        "size_bytes": 27614702
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_19.csv",
+        "blob_sha": "53830a35de0afe8f9edd3642773cbc7d040a9f1c",
+        "size_bytes": 31986009
+      },
+      {
+        "path": "dataset/cta_dataset/train/data_20.csv",
+        "blob_sha": "1d3174244d877e0732930b7840ba4249a15bc080",
+        "size_bytes": 33795207
+      }
+    ],
+    "train_bytes": 575626171,
+    "test_shard": {
+      "path": "dataset/cta_dataset/test/data.csv",
+      "blob_sha": "9937479417b2dabf3e7cf23fc879cd408ff3407c",
+      "size_bytes": 50028284,
+      "columns": 115448,
+      "status": "sealed_excluded"
+    },
+    "page_mapping": "dataset/Dataset/data/<page_id>/table_<offset>"
+  }
 }
