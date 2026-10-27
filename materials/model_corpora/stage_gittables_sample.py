@@ -319,7 +319,41 @@ def main() -> int:
                 except Exception as exc:
                     excluded.append({"file": member.filename, "reason": f"parse_error:{type(exc).__name__}"})
         if not table_records:
-            raise RuntimeError("no tables passed source, license, deduplication, and privacy filters")
+            reason_counts = {
+                reason: sum(1 for item in excluded if item["reason"] == reason)
+                for reason in sorted({item["reason"] for item in excluded})
+            }
+            extension_counts = {}
+            for member in zf.infolist():
+                if member.is_dir():
+                    continue
+                suffix = Path(member.filename).suffix.lower() or "(no extension)"
+                extension_counts[suffix] = extension_counts.get(suffix, 0) + 1
+            diagnostic = {
+                "status": "error",
+                "message": "no tables passed source, license, deduplication, and privacy filters",
+                "topic_archive": filename,
+                "archive_member_count": len(zf.infolist()),
+                "parquet_member_count": len(members),
+                "archive_extensions": extension_counts,
+                "excluded_count": len(excluded),
+                "excluded_summary": reason_counts,
+                "excluded_examples": [
+                    {
+                        "file": Path(item["file"]).name,
+                        "reason": item["reason"],
+                        **({"spdx_id": item["spdx_id"]} if item.get("spdx_id") else {}),
+                    }
+                    for item in excluded[:12]
+                ],
+            }
+            (out_dir / "ingest_error.json").write_text(
+                json.dumps(diagnostic, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            raise SystemExit(
+                "RuntimeError: no tables passed filters; see ingest_error.json for aggregate reasons"
+            )
         write_jsonl(out_dir / "corpus.jsonl", selected)
         (out_dir / "source_manifest.json").write_text(
             json.dumps({
