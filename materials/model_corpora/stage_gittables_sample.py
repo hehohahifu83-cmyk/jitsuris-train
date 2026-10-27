@@ -33,7 +33,7 @@ ALLOWED_SPDX = {
 PII_HEADER = re.compile(
     r"(^|[^a-z0-9])(e-?mail|phone|telephone|mobile|fax|ssn|social security|"
     r"passport|national id|personal id|first name|last name|full name|given name|"
-    r"family name|person name|contact name|username|user name|patient|client|customer|"
+    r"family name|person name|contact name|author|byline|posted by|username|user name|patient|client|customer|"
     r"employee|student|home address|street address|postal address|postcode|zip code|"
     r"date of birth|birth date)([^a-z0-9]|$)", re.I
 )
@@ -47,6 +47,10 @@ PERSON_RECORD_PATH = re.compile(
     r"(patient|employee|student|customer|contact|user[-_ ]?record|person[-_ ]?record|"
     r"obituar|birth[-_ ]?record|court[-_ ]?record|immigration[-_ ]?record|"
     r"complaint|case[-_ ]?file|criminal|offender|beneficiar)", re.I
+)
+USER_GENERATED_SOURCE = re.compile(
+    r"(hacker[._ -]?news|dump[._ -]?hn|reddit|twitter|facebook|"
+    r"stack[._ -]?exchange|stackoverflow|disqus|mastodon|telegram|youtube)", re.I
 )
 
 
@@ -311,6 +315,9 @@ def main() -> int:
                         continue
                     if PERSON_RECORD_PATH.search(urlparse(source_url).path):
                         excluded.append({"file": member.filename, "reason": "personal_record_source_path", "source_url": source_url})
+                        continue
+                    if USER_GENERATED_SOURCE.search(source_url):
+                        excluded.append({"file": member.filename, "reason": "user_generated_content_source"})
                         continue
                     if canonical_url(source_url) in known:
                         excluded.append({"file": member.filename, "reason": "exact_source_url_already_in_pool", "source_url": source_url})
