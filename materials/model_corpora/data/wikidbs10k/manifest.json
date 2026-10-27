@@ -1,0 +1,38 @@
+{
+ "corpus": "wikidbs10k",
+ "source_url": "https://zenodo.org/records/8227452/files/wikidbs_10k.zip?download=1",
+ "license": "CC-BY-4.0",
+ "attribution": "WikiDBs (10k), Vogel, Bodensohn, Binnig, DOI 10.5281/zenodo.8227452; built from Wikidata (CC0)",
+ "archive_bytes": 590589131,
+ "columns": 618506,
+ "labels": {
+  "string": 320612,
+  "wikibase-entityid": 254953,
+  "quantity": 32466,
+  "monolingualtext": 6231,
+  "globecoordinate": 4008,
+  "time": 236
+ },
+ "stats": {
+  "dropped_header": 92843,
+  "dropped_sensitive_values": 16828,
+  "dropped_person_table": 1578,
+  "empty": 2
+ },
+ "files": {
+  "part-000.jsonl.gz": "1885db24e5a448e62dcc9f7739bef454eff2714ecf455efa2f87a4a2daae67f2",
+  "part-001.jsonl.gz": "85a7e24285aab5b8010550e8a61d3fb835f9c5e92c0ff7daa54f5d8a5a3fc761",
+  "part-002.jsonl.gz": "24d9b4042c73661922c79c284b6457099831296fcd1e4b247adad48c9ce0cc76",
+  "part-003.jsonl.gz": "7b71236a718b60a0b2d1409d30c944ad4b890abdb900b6f86ca4ec05f971b8e4",
+  "part-004.jsonl.gz": "a23325c939e8b05fbd44901bebeff3e5efb58fe0c24b2a5ab4dcecbd42ec6847",
+  "part-005.jsonl.gz": "0bfcf94114136ec82fa9e75c42c143559291bc7a9ca86a5653773d8766a23feb",
+  "part-006.jsonl.gz": "6ff191e18f64558b414f5580b4b1a4bcebfce4780695f9d33c95a609322c84f7"
+ },
+ "rules": [
+  "元のアーカイブは commit しない",
+  "値は 1 列 5 つまで・60 字まで",
+  "test の分割は使わない",
+  "人の名前・メール・電話・番地の種類と、個人情報に見える値のある列は落とした（fetch_rows.py の決まり）",
+  "source_label は元のラベル。16 種への読み替えは別に決める（弱いラベル）。教材庫には先生 2 人の確認なしに入れない"
+ ]
+}
