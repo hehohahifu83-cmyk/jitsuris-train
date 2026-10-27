@@ -1,5 +1,5 @@
 {
-  "status": "label_ready",
+  "status": "rights_hold",
   "batch": "b046",
   "topic": "radial_velocity",
   "tables": 4,
@@ -13,7 +13,7 @@
   "sheets": 1,
   "label_guide": "LABEL_GUIDE.md v2.0",
   "answers_filled": 0,
-  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions.",
+  "next_action": "Do not label b046. The one exact-source-cleared table is restaged as b047; other three source tables remain held.",
   "manual_source_privacy_review": {
     "status": "passed_for_independent_labeling",
     "reviewed_by": "ChatGPT",
@@ -27,5 +27,22 @@
     ],
     "limitation": "This screening is for label staging only; it does not establish final training-data approval."
   },
-  "final_pool_imported": false
+  "final_pool_imported": false,
+  "label_ready": false,
+  "rights_review": {
+    "status": "b046_superseded_before_labeling",
+    "reviewed_by": "ChatGPT",
+    "review_date_utc": "2026-10-27",
+    "exact_source_allowlist_required": true,
+    "eligible_tables": 1,
+    "held_tables": 3,
+    "eligible_columns_restaged_as_b047": 3,
+    "held_columns": 17,
+    "basis": [
+      "GitTables per-table SPDX metadata is not enough by itself to establish the provenance of table contents.",
+      "Exact StraboSpot CSV and MIT LICENSE were checked at the pinned source commit; its source notice is carried into b047.",
+      "The other three source tables lack a completed content-origin/license check; they are excluded from independent labeling."
+    ],
+    "final_pool_imported": false
+  }
 }
