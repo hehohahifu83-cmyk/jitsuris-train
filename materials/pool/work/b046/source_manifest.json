@@ -1,5 +1,5 @@
 {
-  "status": "label_ready_for_independent_labeling",
+  "status": "superseded_by_exact_source_rights_gate",
   "batch": "b046",
   "dataset": "GitTables 1M v0.0.6",
   "dataset_doi": "10.5281/zenodo.6517052",
@@ -327,6 +327,10 @@
             "superproperties": null
           }
         }
+      },
+      "rights_review": {
+        "status": "hold",
+        "decision": "Source repository license label is present, but table-content provenance/third-party rights are not fully established; do not label or import."
       }
     },
     {
@@ -458,6 +462,12 @@
             "superproperties": null
           }
         }
+      },
+      "rights_review": {
+        "status": "eligible_for_separate_staging_only",
+        "decision": "Move to b047; exact file and LICENSE verified at pinned commit.",
+        "license_file_url": "https://github.com/StraboSpot/strabo-mobile/blob/164c0d19e3f003ec55eb82a5f520da37af9efbc7/LICENSE",
+        "license_blob_sha": "0e4271d55e78beaaaba9d08bde34548fc9cb7244"
       }
     },
     {
@@ -507,6 +517,10 @@
             "superproperties": null
           }
         }
+      },
+      "rights_review": {
+        "status": "hold",
+        "decision": "Source repository license label is present, but table-content provenance/third-party rights are not fully established; do not label or import."
       }
     },
     {
@@ -611,6 +625,10 @@
             "superproperty": null
           }
         }
+      },
+      "rights_review": {
+        "status": "hold",
+        "decision": "Source repository license label is present, but table-content provenance/third-party rights are not fully established; do not label or import."
       }
     }
   ],
@@ -643,5 +661,14 @@
       "Per-table licenses are MIT or Apache-2.0."
     ],
     "limitation": "This screening is for label staging only; it does not establish final training-data approval."
+  },
+  "rights_gate": {
+    "status": "reviewed",
+    "policy": "Only exact source URLs in materials/model_corpora/rights_approved_sources.json can be staged for labeling.",
+    "dataset_attribution": "GitTables 1M v0.0.6; apply CC BY 4.0 attribution and retain each table's original source license.",
+    "label_ready": false,
+    "rights_hold_table_count": 3,
+    "eligible_table_count": 1,
+    "note": "The StraboSpot row is moved to b047 under its exact MIT notice. The three other source tables are held because project-level SPDX metadata alone does not establish the origin/licensing of their table contents."
   }
 }
