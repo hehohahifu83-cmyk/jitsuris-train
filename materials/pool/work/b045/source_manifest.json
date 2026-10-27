@@ -1,0 +1,797 @@
+{
+  "status": "staged_for_independent_labeling",
+  "batch": "b045",
+  "dataset": "GitTables 1M v0.0.6",
+  "dataset_doi": "10.5281/zenodo.6517052",
+  "topic_archive": "radial_velocity_tables_licensed.zip",
+  "archive_size_bytes": 1065479,
+  "archive_md5": "8547e9a82cf9580d73256b17c003a805",
+  "dataset_license_page": "https://gittables.github.io/",
+  "selected_table_count": 3,
+  "selected_column_count": 20,
+  "selected_tables": [
+    {
+      "n": 1,
+      "table_id": 69,
+      "source_url": "https://github.com/ag-gipp/PhysWikiQuiz/blob/4247207c3be339b5a7e80ae8983bab82c4aa9e8b/evaluation/module_workflow/unit_test_module_workflow_vmext_generated.csv",
+      "publisher": "github:ag-gipp/physwikiquiz",
+      "license": {
+        "spdx_id": "apache-2.0",
+        "name": "Apache License 2.0",
+        "url": "",
+        "key": ""
+      },
+      "rows": 66,
+      "columns": 14,
+      "parquet_sha256": "7c172004964d8746c13992a5f93a5aa2b843f3061f6d7d4231a2dc7997f97c56",
+      "archive_member": "unit_test_module_workflow_vmext_generated.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 0,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "GoldID": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Name": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "Working": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "work",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/FictionalCharacter"
+            ],
+            "id": "http://dbpedia.org/ontology/work",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:workHours",
+            "cleaned_label": "work hours",
+            "description": "The typical working hours for this job (e.g. 1st shift, night shift, 8am-5pm).",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Formula": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          }
+        },
+        "Identifiers": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "location identifier",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Airport"
+            ],
+            "id": "http://dbpedia.org/ontology/locationIdentifier",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:legislationIdentifier",
+            "cleaned_label": "legislation identifier",
+            "description": "An identifier for the legislation. This can be either a string-based identifier, like the CELEX at EU level or the NOR in France, or a web-based, URL/URI identifier, like an ELI (European Legislation Identifier) or an URN-Lex.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Legislation"
+            ],
+            "range": [
+              "schema:Text",
+              "schema:URL"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "schema:identifier"
+            ]
+          }
+        },
+        "Properties": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "number of properties",
+            "description": "number of defined properties in DBpedia ontology",
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/numberOfProperties",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:Property",
+            "cleaned_label": "property",
+            "description": "A property, used to indicate attributes and relationships of some Thing; equivalent to rdf:Property.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Intangible"
+            ],
+            "superproperties": null
+          }
+        },
+        "Formula unit": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:strengthUnit",
+            "cleaned_label": "strength unit",
+            "description": "The units of an active ingredient's strength, e.g. mg.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:DrugStrength"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Identifier units": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "location identifier",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Airport"
+            ],
+            "id": "http://dbpedia.org/ontology/locationIdentifier",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:unitCode",
+            "cleaned_label": "unit code",
+            "description": "The unit of measurement given using the UN/CEFACT Common Code (3 characters) or a URL. Other codes than the UN/CEFACT Common Code may be used with a prefix followed by a colon.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:TypeAndQuantityNode",
+              "schema:PropertyValue",
+              "schema:QuantitativeValue",
+              "schema:UnitPriceSpecification"
+            ],
+            "range": [
+              "schema:Text",
+              "schema:URL"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Formula sympy": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          }
+        },
+        "Sympy rhs": {
+          "schema_semantic_column_types": {
+            "id": "schema:xpath",
+            "cleaned_label": "xpath",
+            "description": "An XPath, e.g. of a [[SpeakableSpecification]] or [[WebPageElement]]. In the latter case, multiple matches within a page can constitute a single conceptual \"Web page element\".",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:WebPageElement",
+              "schema:SpeakableSpecification"
+            ],
+            "range": [
+              "schema:XPathType"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Sympy solve": {
+          "schema_semantic_column_types": {
+            "id": "schema:SolveMathAction",
+            "cleaned_label": "solve math action",
+            "description": "The action that takes in a math expression and directs users to a page potentially capable of solving/simplifying that expression.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Action"
+            ],
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 13,
+      "table_id": 70,
+      "source_url": "https://github.com/sotorrent/metric-evaluation/blob/f559874e8f331d1cd8e1d01672fd5fcfc418096a/testdata/samples_comparison/PostId_VersionCount_SO_17-06_sample_100_1%2B/files/40207874.csv",
+      "publisher": "github:sotorrent/metric-evaluation",
+      "license": {
+        "spdx_id": "apache-2.0",
+        "name": "Apache License 2.0",
+        "url": "",
+        "key": ""
+      },
+      "rows": 7,
+      "columns": 9,
+      "parquet_sha256": "501550333c19be21c018f4a071c6d24dedb635a2d78d082fab76a81d9fcb33dc",
+      "archive_member": "40207874_1.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 2,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "Id": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "PostId": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:postOp",
+            "cleaned_label": "post op",
+            "description": "A description of the postoperative procedures, care, and/or followups for this device.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:MedicalDevice"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "UserId": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "PostHistoryTypeId": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "wiki page history link",
+            "description": "Reserved for DBpedia.",
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/wikiPageHistoryLink",
+            "range": null,
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:eduQuestionType",
+            "cleaned_label": "edu question type",
+            "description": "For questions that are part of learning resources (e.g. Quiz), eduQuestionType indicates the format of question being given. Example: \"Multiple choice\", \"Open ended\", \"Flashcard\".",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:SolveMathAction",
+              "schema:Question"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "RevisionGUID": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "wiki page revision id",
+            "description": "Reserved for DBpedia.",
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/wikiPageRevisionID",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#integer"
+            ],
+            "superproperty": null
+          }
+        },
+        "CreationDate": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "date",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/date",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#date"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:dateCreated",
+            "cleaned_label": "date created",
+            "description": "The date on which the CreativeWork was created or the item was added to a DataFeed.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:DataFeedItem",
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:DateTime",
+              "schema:Date"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Text": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "source text",
+            "description": "Source of something (eg an image) as text. Use dct:source if the source is described using a resource",
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/sourceText",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:Text",
+            "cleaned_label": "text",
+            "description": "Data type: Text.",
+            "type": [
+              "rdfs:Class",
+              "schema:DataType"
+            ],
+            "domain": null,
+            "range": null,
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:Text",
+            "cleaned_label": "text",
+            "description": "Data type: Text.",
+            "type": [
+              "rdfs:Class",
+              "schema:DataType"
+            ],
+            "domain": null,
+            "range": null,
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "UserDisplayName": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:broadcastDisplayName",
+            "cleaned_label": "broadcast display name",
+            "description": "The name displayed in the channel guide. For many US affiliates, it is the network name.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:BroadcastService"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Comment": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "comment",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/comment",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "comment",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/comment",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:comment",
+            "cleaned_label": "comment",
+            "description": "Comments, typically from users.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:RsvpAction",
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Comment"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:comment",
+            "cleaned_label": "comment",
+            "description": "Comments, typically from users.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:RsvpAction",
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Comment"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 18,
+      "table_id": 17,
+      "source_url": "https://github.com/StraboSpot/strabo-mobile/blob/164c0d19e3f003ec55eb82a5f520da37af9efbc7/www/app/data-models/micro/experimental-general-testing-conditions-choices.csv",
+      "publisher": "github:strabospot/strabo-mobile",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 59,
+      "columns": 3,
+      "parquet_sha256": "749cf852a11fa6a9aa58a95e3da3033dea265ffb9a9c42fcc394e3165f2e3187",
+      "archive_member": "experimental-general-testing-conditions-choices.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 0,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "list_name": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "name": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "label": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "record label",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/recordLabel",
+            "range": [
+              "http://dbpedia.org/ontology/RecordLabel"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:recordLabel",
+            "cleaned_label": "record label",
+            "description": "The label that issued the release.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:MusicRelease"
+            ],
+            "range": [
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        }
+      }
+    }
+  ],
+  "excluded_count": 1,
+  "excluded_summary": {
+    "too_few_safe_columns": 1
+  },
+  "license_allowlist": [
+    "apache-2.0",
+    "bsd-2-clause",
+    "bsd-3-clause",
+    "cc-by-4.0",
+    "cc0-1.0",
+    "isc",
+    "mit",
+    "mpl-2.0"
+  ],
+  "test_benchmark_included": false
+}
