@@ -10,10 +10,12 @@
   python materials/model_corpora/silver.py sheets
   python materials/model_corpora/silver.py reps
   python materials/model_corpora/silver.py status [--teacher grok]
+  python materials/model_corpora/silver.py check    # 大きいまとまりの中が 1 種類かを、抜き取った列ごとに確かめるシート（c3 計画の段 1 の 3）
 """
 import argparse
 import gzip
 import json
+import random
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -159,15 +161,91 @@ def cmd_status(a):
     return 1 if problems else 0
 
 
+CHECK_GROUPS = 60       # 列の多い順に、ChatGPT の答えが unknown・S でないまとまりをこの数だけ
+CHECK_PER_GROUP = 5     # まとまりごとに抜き取る列（なるべく別の表から）
+CHECK_SEED = 20261028
+
+
+def cmd_check(_a):
+    """大きいまとまりから列を抜き取り、まとまりの名前・答えを伏せて並べたシートを作る。誤りが 5% を超えるまとまりは銀にしない。"""
+    meta = json.loads((OUT / "groups.json").read_text(encoding="utf-8"))
+    got, problems = LS.read_answers(OUT, meta["groups"], "chatgpt")
+    if problems or len(got) != len(meta["groups"]):
+        raise SystemExit("ChatGPT の答えがそろっていない")
+    pick = [g for g in sorted(meta["groups"], key=lambda g: -g["columns"]) if got[g["group"]] not in ("unknown", "S")][:CHECK_GROUPS]
+    want = {g["key"]: g["group"] for g in pick}
+    rng = random.Random(CHECK_SEED)
+    seen, res = defaultdict(int), defaultdict(list)
+    for r in read_rows():          # 表ごとに 1 列までの貯め置き抜き取り（同じ表の列が並ばないように）
+        gid = want.get(map_key(r))
+        if not gid or not r["values"]:
+            continue
+        seen[gid] += 1
+        bucket = res[gid]
+        if len(bucket) < CHECK_PER_GROUP * 4:
+            bucket.append(r)
+        else:
+            j = rng.randrange(seen[gid])
+            if j < len(bucket):
+                bucket[j] = r
+    items = []
+    for gid in want.values():
+        tables, chosen = set(), []
+        for r in sorted(res[gid], key=lambda r: rng.random()):
+            if r["table"] not in tables:
+                tables.add(r["table"])
+                chosen.append(r)
+            if len(chosen) == CHECK_PER_GROUP:
+                break
+        items += [(gid, r) for r in chosen]
+    rng.shuffle(items)
+    d = OUT / "check"
+    d.mkdir(exist_ok=True)
+    (OUT / "answers_check").mkdir(exist_ok=True)
+    (OUT / "answers_check" / ".keep").write_text("", encoding="utf-8")
+    index, sheets = [], defaultdict(list)
+    for i, (gid, r) in enumerate(items, 1):
+        cid = f"c{i:04d}"
+        index.append({"id": cid, "group": gid, "table": r["table"]})
+        sheets[(i - 1) // SHEET_SIZE + 1].append((cid, r))
+    total = len(sheets)
+    for no, rows in sheets.items():
+        lines = [f"# 銀ラベルの確かめ {no:03d} / {total:03d}（1 列ずつ）", "",
+                 "- **1 列ずつ**、LABEL_GUIDE.md v2.0 のどの種類かを答える。まとまりの名前・前の答えは伏せてある。前のシートの自分の答えは見ないで、その列だけで決める",
+                 "- 読み方は銀ラベルのシート（`sheets/sheet_001.md` の冒頭）と同じ。決められない → `unknown`、人の名前・連絡先・崩れた値 → `S`",
+                 f"- 使えるラベル：{' '.join(LS.ALL_LABELS)}",
+                 f"- 答え：末尾の雛形を `answers_check/check_{no:03d}.tsv` に写して埋める", ""]
+        for cid, r in rows:
+            if r["corpus"] == "sotab_v2":
+                head = f"見出しなし（SOTAB、元の種類 `{r['source_label']}`）"
+            else:
+                head = f"見出し「{LS.cut(r['header'], 60)}」（WikiDBs、Wikidata の型 `{r['source_label']}`）"
+            vals = " | ".join(LS.cut(v, 40) for v in r["values"][:8])
+            extra = []
+            if r.get("table_title"):
+                extra.append(f"表：{LS.cut(r['table_title'], 40)}")
+            if r.get("context"):
+                extra.append("同じ表の列：" + ", ".join(LS.cut(c, 20) for c in r["context"][:6]))
+            lines += [f"## {cid} — {head}", f"- 値：{vals}"] + ([f"- {'／'.join(extra)}"] if extra else []) + [""]
+        lines += ["## 答えの雛形", "", "```"] + [f"{cid}\t" for cid, _ in rows] + ["```", ""]
+        (d / f"check_{no:03d}.md").write_text("\n".join(lines), encoding="utf-8")
+    (OUT / "check_index.json").write_text(json.dumps({"created_by": "materials/model_corpora/silver.py check", "seed": CHECK_SEED,
+                                                     "groups": [g["group"] for g in pick], "columns": index},
+                                                    ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
+    cov = sum(g["columns"] for g in pick)
+    print(f"まとまり {len(pick)}（{cov:,} 列を覆う）・抜き取り {len(items)} 列・シート {total} 枚")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("sheets")
     sub.add_parser("reps")
+    sub.add_parser("check")
     p = sub.add_parser("status")
     p.add_argument("--teacher", choices=sorted(LS.TEACHERS), default="chatgpt")
     a = ap.parse_args(argv)
-    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status}[a.cmd](a) or 0
+    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":
