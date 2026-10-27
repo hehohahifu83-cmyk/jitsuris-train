@@ -28,6 +28,7 @@ CORPORA = ("sotab_v2", "wikidbs10k")
 MIN_COLUMNS = 5        # WikiDBs の「型＋見出し」で、列がこれより少ないまとまりはシートに出さない（使わない）
 SHEET_SIZE = 150
 EXAMPLES = 3
+NO_HEADER = "（見出しなし）"   # SOTAB の列には見出しがない。予測の道具は空の見出しを受け付けないので、決まった語を入れる
 REP_SET = HERE.parent / "pool" / "work" / "silver1" / "set.json"   # label-assist-predict.yml が読める場所
 
 
@@ -137,7 +138,7 @@ def cmd_reps(_a):
         for s, v in sorted(groups[key]["shapes"].items(), key=lambda x: -x[1]["n"]):
             r = v["rep"]
             cid = f"s1-{len(cols) + 1:06d}"
-            cols.append({"id": cid, "table": r["table"], "source": r["corpus"], "language": "en", "header": r["header"],
+            cols.append({"id": cid, "table": r["table"], "source": r["corpus"], "language": "en", "header": r["header"] or NO_HEADER,
                          "values": r["values"][:5] or [""], "siblings": r.get("context") or [], "unit": ""})
             index.append({"id": cid, "group": gid, "shape": s, "columns": v["n"]})
     REP_SET.parent.mkdir(parents=True, exist_ok=True)
