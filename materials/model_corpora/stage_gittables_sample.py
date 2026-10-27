@@ -22,6 +22,7 @@ import pyarrow.parquet as pq
 
 ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = ROOT / "materials/model_corpora/gittables_1m_v0.0.6_inventory_20261027.json"
+RIGHTS_REGISTER = ROOT / "materials/model_corpora/rights_approved_sources.json"
 REQUEST = ROOT / "materials/model_corpora/gittables_sample.request"
 WORK_ROOT = ROOT / "materials/pool/work"
 
@@ -175,7 +176,28 @@ def license_record(meta: dict) -> tuple[str, dict]:
     return spdx, raw
 
 
-def publisher_from_url(url: str) -> str:
+def load_rights_register() -> tuple[dict, dict[str, dict]]:
+    register = json.loads(RIGHTS_REGISTER.read_text(encoding="utf-8"))
+    sources: dict[str, dict] = {}
+    for item in register.get("sources", []):
+        if item.get("status") != "cleared_for_label_staging":
+            continue
+        required = (
+            "exact_source_url", "source_file_blob_sha", "spdx_id",
+            "license_url", "license_file_blob_sha", "copyright_notice",
+        )
+        if any(not item.get(key) for key in required):
+            raise ValueError(f"incomplete rights-register entry: {item.get('exact_source_url', '<missing URL>')}")
+        url = str(item["exact_source_url"])
+        if url in sources:
+            raise ValueError(f"duplicate exact source URL in rights register: {url}")
+        sources[url] = item
+    if not sources:
+        raise ValueError("no exact sources cleared for label staging in rights register")
+    return register, sources
+
+
+def publisher_from_url(url: str):
     p = urlparse(url)
     parts = [x for x in p.path.split("/") if x]
     if p.hostname in ("github.com", "raw.githubusercontent.com") and len(parts) >= 2:
@@ -266,6 +288,7 @@ def main() -> int:
             raise ValueError(f"{out_dir} already exists; use a new batch id")
         out_dir.mkdir(parents=True)
         inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
+        rights_register, approved_sources = load_rights_register()
         filename = f"{req['topic']}_tables_licensed.zip"
         entry = next((f for f in inventory.get("files", []) if f.get("name") == filename), None)
         if not entry:
@@ -315,6 +338,19 @@ def main() -> int:
                             ),
                         })
                         continue
+                    rights_entry = approved_sources.get(source_url)
+                    if not rights_entry:
+                        excluded.append({"file": member.filename, "reason": "source_not_cleared_in_exact_url_rights_register", "source_url": source_url})
+                        continue
+                    if str(rights_entry["spdx_id"]).casefold() != spdx:
+                        excluded.append({
+                            "file": member.filename,
+                            "reason": "rights_register_license_mismatch",
+                            "source_url": source_url,
+                            "metadata_spdx_id": spdx,
+                            "registered_spdx_id": rights_entry["spdx_id"],
+                        })
+                        continue
                     if spdx not in ALLOWED_SPDX:
                         excluded.append({"file": member.filename, "reason": "license_outside_pilot_allowlist", "spdx_id": spdx})
                         continue
@@ -335,9 +371,11 @@ def main() -> int:
                     table_id = meta.get("table_id")
                     license_info = {
                         "spdx_id": spdx,
-                        "name": raw_license.get("name", ""),
-                        "url": raw_license.get("url", ""),
-                        "key": raw_license.get("key", ""),
+                        "name": rights_entry["license_name"],
+                        "url": rights_entry["license_url"],
+                        "key": spdx,
+                        "copyright_notice": rights_entry["copyright_notice"],
+                        "license_file_blob_sha": rights_entry["license_file_blob_sha"],
                     }
                     # Keep provenance and original weak annotations out of the label sheet.
                     annotations = {
@@ -350,6 +388,14 @@ def main() -> int:
                         "source_url": source_url,
                         "publisher": publisher_from_url(source_url),
                         "license": license_info,
+                        "rights_review": {
+                            "status": rights_entry["status"],
+                            "exact_source_url": rights_entry["exact_source_url"],
+                            "source_file_blob_sha": rights_entry["source_file_blob_sha"],
+                            "license_url": rights_entry["license_url"],
+                            "license_file_blob_sha": rights_entry["license_file_blob_sha"],
+                            "limits": rights_entry["limits"],
+                        },
                         "rows": int(table.num_rows),
                         "columns": int(table.num_columns),
                         "parquet_sha256": digest,
@@ -425,6 +471,14 @@ def main() -> int:
                 "archive_size_bytes": int(entry["size_bytes"]),
                 "archive_md5": expected_md5,
                 "dataset_license_page": "https://gittables.github.io/",
+                "dataset_license_spdx": rights_register["gittables_dataset"]["license_spdx"],
+                "dataset_doi_attribution": rights_register["gittables_dataset"]["attribution"],
+                "rights_gate": {
+                    "status": "exact_source_register_passed",
+                    "registered_source_count": len(approved_sources),
+                    "unknown_sources_allowed": False,
+                    "source_level_limit": "Label staging only; no final training-pool or model-release approval.",
+                },
                 "selected_table_count": len(table_records),
                 "selected_column_count": len(selected),
                 "selected_tables": table_records,
@@ -470,10 +524,39 @@ def main() -> int:
             "excluded_tables": len(excluded),
             "archive_md5_verified": True,
             "only_allowlisted_per_table_licenses": True,
+            "exact_source_url_rights_register_passed": True,
             "exact_source_url_dedup": True,
             "raw_archive_committed": False,
         }
         (out_dir / "ingest_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        rights_lines = [
+            "# Rights and attribution",
+            "",
+            "Status: approved for independent label staging only. This does not approve final training-pool or model-release use.",
+            "",
+            f"- Dataset: GitTables 1M v0.0.6, DOI {rights_register['gittables_dataset']['doi']}.",
+            f"- Dataset terms: {rights_register['gittables_dataset']['license_spdx']} ({rights_register['gittables_dataset']['license_url']}).",
+            f"- Attribution: {rights_register['gittables_dataset']['attribution']}",
+            "- The GitTables project page states CC BY 4.0; the Zenodo record metadata separately reports CC0. This batch retains the stricter CC BY attribution and the per-table source notices.",
+            "",
+            "## Source files",
+            "",
+        ]
+        for item in table_records:
+            rights = item["rights_review"]
+            rights_lines.extend([
+                f"- Source table: {item['source_url']}",
+                f"  - Source license: {item['license']['spdx_id']} ({item['license']['url']})",
+                f"  - {item['license']['copyright_notice']}",
+                f"  - Pinned source-file blob: {rights['source_file_blob_sha']}; pinned license-file blob: {rights['license_file_blob_sha']}",
+                f"  - Scope: {rights['limits']}",
+            ])
+        rights_lines.extend([
+            "",
+            "The raw GitTables archive was used transiently by the importer and is not included in this batch.",
+            "",
+        ])
+        (out_dir / "RIGHTS_AND_ATTRIBUTION.md").write_text("\n".join(rights_lines), encoding="utf-8")
         print(json.dumps(report, ensure_ascii=False))
         return 0
     except Exception as exc:
