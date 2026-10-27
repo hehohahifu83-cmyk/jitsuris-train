@@ -266,7 +266,24 @@ def main() -> int:
                     source_url = str(meta.get("table_csv_url") or "")
                     spdx, raw_license = license_record(meta)
                     if not source_url or not spdx:
-                        excluded.append({"file": member.filename, "reason": "missing_source_or_spdx"})
+                        license_value = meta.get("license")
+                        reason = (
+                            "missing_source_url_and_spdx" if not source_url and not spdx
+                            else "missing_source_url" if not source_url
+                            else "missing_spdx_id"
+                        )
+                        excluded.append({
+                            "file": member.filename,
+                            "reason": reason,
+                            "source_url_present": bool(source_url),
+                            "spdx_present": bool(spdx),
+                            "metadata_keys": sorted(str(key) for key in meta.keys()),
+                            "license_value_type": type(license_value).__name__,
+                            "license_value_keys": (
+                                sorted(str(key) for key in license_value.keys())
+                                if isinstance(license_value, dict) else []
+                            ),
+                        })
                         continue
                     if spdx not in ALLOWED_SPDX:
                         excluded.append({"file": member.filename, "reason": "license_outside_pilot_allowlist", "spdx_id": spdx})
@@ -342,7 +359,14 @@ def main() -> int:
                     {
                         "file": Path(item["file"]).name,
                         "reason": item["reason"],
-                        **({"spdx_id": item["spdx_id"]} if item.get("spdx_id") else {}),
+                        **{
+                            key: item[key]
+                            for key in (
+                                "spdx_id", "source_url_present", "spdx_present",
+                                "metadata_keys", "license_value_type", "license_value_keys",
+                            )
+                            if key in item
+                        },
                     }
                     for item in excluded[:12]
                 ],
