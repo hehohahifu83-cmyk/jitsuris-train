@@ -9,6 +9,7 @@
 import io
 import json
 import os
+import re
 import sys
 import urllib.request
 import zipfile
@@ -135,7 +136,43 @@ def cmd_inspect(name, out):
 N_VALUES = 5
 SHARD_ROWS = 100_000
 # 人の名前・連絡先・番地の種類は列ごと使わない（教材庫の決まり：公開データの人の名前は入れない。2026-10-24）
-SOTAB_DROP = {"Person/name", "Person", "email", "telephone", "faxNumber", "streetAddress", "PostalAddress", "GenderType"}
+SOTAB_DROP = {"Person/name", "Person", "email", "telephone", "faxNumber", "streetAddress", "PostalAddress", "GenderType",
+              "MusicArtistAT",   # 音楽家の名前（人の名前）。2026-10-28 に見つけて足した
+              "https://dbpedia.org/ontology/Person", "https://dbpedia.org/ontology/MusicalArtist",
+              "https://dbpedia.org/ontology/Street", "https://dbpedia.org/ontology/address"}
+
+
+def tidy_sotab(out_dir):
+    """Round2 は同じ列に Schema.org（SCH）と DBpedia（DBP）の 2 つの正解があり、列が 2 回入る。1 列 1 行にまとめ、
+    DBpedia のラベルは dbpedia_label に残す。どちらかのラベルが SOTAB_DROP なら列ごと落とす（2026-10-28）。"""
+    import gzip
+    out = Path(out_dir)
+    rows = []
+    for f in sorted(out.glob("part-*.jsonl.gz")):
+        with gzip.open(f, "rt", encoding="utf-8") as fh:
+            rows += [json.loads(line) for line in fh]
+    merged, order = {}, []
+    for r in rows:
+        key = (r["round"], r["table"], r["col"])
+        if key not in merged:
+            merged[key] = {**r, "source_label": None, "dbpedia_label": None}
+            order.append(key)
+        slot = "dbpedia_label" if r["source_label"].startswith("https://dbpedia.org/") else "source_label"
+        merged[key][slot] = r["source_label"]
+    writer = Writer(out_dir)
+    stats = {"rows_before": len(rows), "columns": 0, "dropped_person_contact": 0, "labels": {}}
+    for key in order:
+        r = merged[key]
+        if r["source_label"] in SOTAB_DROP or r["dbpedia_label"] in SOTAB_DROP:
+            stats["dropped_person_contact"] += 1
+            continue
+        if r["source_label"] is None:   # DBpedia だけの列（ふつうは無い）
+            r["source_label"], r["dbpedia_label"] = r["dbpedia_label"], None
+        writer.write(r)
+        stats["labels"][r["source_label"]] = stats["labels"].get(r["source_label"], 0) + 1
+    writer.close()
+    stats["columns"] = writer.n
+    return stats
 
 
 def _pii():
@@ -257,6 +294,42 @@ def convert_sotab(path, writer, stats):
             inner.unlink()
 
 
+# 人を指す Wikidata の属性（値が人の名前になる列）。人の名前は教材に入れない（2026-10-28）
+WIKIDBS_PERSON_PROP = re.compile(
+    r"^(head of (government|state)|winner|author|director|composer|performer|cast member|screenwriter|producer|creator|"
+    r"founded by|founder|chairperson|chief executive officer|director ?/ ?manager|spouse|child|father|mother|sibling|relative|"
+    r"doctoral (advisor|student)|student( of)?|influenced by|architect|designer|editor|illustrator|lyricist|librettist|"
+    r"(head )?coach|participant|candidate|commander|leader|mayor|president|monarch|owned by|operator|"
+    r"different from|notable person|significant person|partner|employer of|has (list of )?members?|member|"
+    r"nominated for|said to be the same as|given name|family name|first appearance|depicts|"
+    r"category of associated people|category for people (born|who died) here)$", re.I)
+
+
+def wikidbs_person_column(header, dtype):
+    return dtype == "wikibase-entityid" and bool(WIKIDBS_PERSON_PROP.match(str(header or "").strip()))
+
+
+def tidy_wikidbs(out_dir):
+    """変換済みの WikiDBs から、人を指す属性の列を落として書き直す（2026-10-28）。"""
+    import gzip
+    out = Path(out_dir)
+    rows = []
+    for f in sorted(out.glob("part-*.jsonl.gz")):
+        with gzip.open(f, "rt", encoding="utf-8") as fh:
+            rows += [json.loads(line) for line in fh]
+    writer = Writer(out_dir)
+    stats = {"rows_before": len(rows), "dropped_person_property": 0, "labels": {}}
+    for r in rows:
+        if wikidbs_person_column(r["header"], r["source_label"]):
+            stats["dropped_person_property"] += 1
+            continue
+        writer.write(r)
+        stats["labels"][r["source_label"]] = stats["labels"].get(r["source_label"], 0) + 1
+    writer.close()
+    stats["columns"] = writer.n
+    return stats
+
+
 def parse_wikidbs_cell(v):
     s = str(v or "").strip()
     if s.startswith("['") and s.endswith("']") and "', 'Q" in s:   # 項目は ['名前', 'Q123'] の形
@@ -322,6 +395,11 @@ def cmd_convert(name, out_dir):
     stats = {"labels": {}}
     {"sotab_v2": convert_sotab, "wikidbs10k": convert_wikidbs}[name](p, writer, stats)
     writer.close()
+    if name in ("sotab_v2", "wikidbs10k"):
+        tidy = (tidy_sotab if name == "sotab_v2" else tidy_wikidbs)(out_dir)
+        stats["labels"] = tidy.pop("labels")
+        stats["tidy"] = tidy
+        writer.n = tidy["columns"]
     out = Path(out_dir)
     manifest = {"corpus": name, "source_url": c["url"], "license": c["license"], "attribution": c["attribution"],
                 "archive_bytes": p.stat().st_size, "columns": writer.n,
