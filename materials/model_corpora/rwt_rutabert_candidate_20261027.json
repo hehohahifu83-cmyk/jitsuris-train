@@ -1,7 +1,7 @@
 {
   "source": "RWT-RuTaBERT (LoReTA) training dataset",
   "observed_at": "2026-10-27",
-  "status": "metadata_only_candidate_rights_unresolved_not_downloaded",
+  "status": "metadata_only_candidate_rights_hold_not_downloaded",
   "official_dataset": "https://huggingface.co/datasets/aidalab/rwt-rutabert",
   "source_repository": "https://github.com/YRL-AIDA/LoReTA",
   "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
@@ -19,17 +19,23 @@
     "split": "Fixed train/test split. Keep all 115,448 test columns sealed and exclude them from training and mapping decisions."
   },
   "licensing": {
-    "dataset_card_license_tag": "mit",
+    "dataset_card_license_tag": "MIT",
     "source_repository_license": "MIT",
     "unresolved_issue": "The LoReTA repository and Hugging Face card report MIT, but the upstream RWT repository lists no license file and describes data extracted from Russian Wikipedia. The source-page attribution/provenance mapping and rights for embedded table content have not been confirmed. Do not treat the MIT label as clearing every underlying table.",
-    "wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/3.0/",
     "upstream_repository": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
     "upstream_license_file_observed": false,
     "upstream_repository_listing": "README.md and dataset.zip; no LICENSE file is listed.",
-    "upstream_readme_note": "The upstream RWT repository describes the corpus as extracted from Russian Wikipedia and asks users to cite its paper; it does not state a dataset license in the README."
+    "upstream_readme_note": "The upstream RWT repository describes the corpus as extracted from Russian Wikipedia and asks users to cite its paper; it does not state a dataset license in the README.",
+    "underlying_source_license": "Russian Wikipedia contributions at the RWT corpus's September 13, 2021 snapshot were under CC BY-SA 3.0; Wikimedia moved future text contributions to CC BY-SA 4.0 in 2023. Verify each reused page/revision and any imported-content exceptions.",
+    "current_wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution_requirement": "Wikimedia Terms of Use allow attribution by a link/URL to the reused page or pages; retain that page-level attribution and a license notice.",
+    "rwt_corpus_license": "No license file is listed in the upstream RWT corpus repository. The separate MIT tag on LoReTA/RuTaBERT does not establish permission to redistribute the upstream RWT database/selection.",
+    "table_id_mapping": "The RuTaBERT card preview exposes IDs like dataset/Dataset/data/1000006/table_0. The RWT paper says its surrogate table ID contains a Wikipedia page ID and table offset and that metadata stores source URL/page title, but that ID-to-source mapping has not been verified against the upstream archive.",
+    "clearance_blocker": "Verify the RuTaBERT table IDs against RWT's per-table source metadata, preserve source page/revision and applicable historical license/attribution for every selected table, and establish permission to reuse the RWT corpus/selection itself. Until then, keep all 1,441,349 columns out of label staging."
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
-  "handling": "Do not download, redistribute, or import into materials/pool/batch_*.jsonl until source attribution, underlying data rights, label quality, and deduplication are resolved. If cleared, use train only and preserve source table identifiers and attribution.",
+  "handling": "Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl until the table-ID-to-page attribution map, RWT corpus rights, underlying Wikipedia license/version, PII screen, label quality, and deduplication are resolved. If cleared, split only the train portion into bounded staging chunks, preserve CC BY-SA attribution/licensing, and keep all 115,448 test columns sealed.",
   "source_links": [
     "https://huggingface.co/datasets/aidalab/rwt-rutabert",
     "https://github.com/YRL-AIDA/LoReTA",
