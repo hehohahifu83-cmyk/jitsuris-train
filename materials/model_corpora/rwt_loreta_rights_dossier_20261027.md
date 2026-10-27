@@ -95,6 +95,8 @@ RWT作者の個別許諾がなくても、日本国内で行う「列の意味�
 - Hugging Face/LoReTAのMIT表示だけで上流権利は解決しない。第30条の4は著作権上の利用を扱うもので、配布サービスの契約条項・個人情報等の別問題も自動では解決しない。
 
 ### 作業判断
+GitHub API confirmed `hehohahifu83-cmyk/jitsuris-train` is public as of 2026-10-27 (https://github.com/hehohahifu83-cmyk/jitsuris-train). Therefore it is not a private staging location: do not commit raw RWT values, full page/table manifests, or annotated extracts containing source content there. Keep any Art. 30-4 internal-use material in a private local workspace or another access-controlled location; check separate conditions before sending it to Claude/ChatGPT or another external service.
+
 現時点では「国内分析ルートの候補を特定した」段階であり、全件をlabel-readyへ切り替えない。人手作業の当てはまり、実施場所、データベースの販売市場、サービス契約・アクセス条件を確認してから、内部ラベル準備だけを独立に解除できるか判定する。公開・再配布のholdは継続する。
 
 ### 追加した公的根拠
