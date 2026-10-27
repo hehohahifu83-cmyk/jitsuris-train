@@ -1,17 +1,24 @@
 {
-  "status": "label_ready",
+  "status": "rejected_after_manual_source_privacy_review",
   "batch": "b045",
   "topic": "radial_velocity",
-  "tables": 3,
-  "columns": 20,
+  "tables": 0,
+  "columns": 0,
   "excluded_tables": 1,
   "archive_md5_verified": true,
   "only_allowlisted_per_table_licenses": true,
   "exact_source_url_dedup": true,
   "raw_archive_committed": false,
-  "groups": 20,
-  "sheets": 1,
+  "groups": 0,
+  "sheets": 0,
   "label_guide": "LABEL_GUIDE.md v2.0",
   "answers_filled": 0,
-  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions."
+  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions.",
+  "candidate_tables_before_manual_review": 3,
+  "candidate_columns_before_manual_review": 20,
+  "manual_source_privacy_review": {
+    "status": "reject",
+    "reason": "One selected source is Stack Overflow post-history data and includes UserId identifiers and user-generated text. The mixed batch was excluded.",
+    "raw_column_data_removed": true
+  }
 }
