@@ -1,0 +1,77 @@
+{
+  "status": "error",
+  "message": "no tables passed source, license, deduplication, and privacy filters",
+  "topic_archive": "attrition_rate_tables_licensed.zip",
+  "archive_member_count": 163,
+  "parquet_member_count": 163,
+  "archive_extensions": {
+    ".parquet": 163
+  },
+  "excluded_count": 163,
+  "excluded_summary": {
+    "license_outside_pilot_allowlist": 23,
+    "parse_error:AttributeError": 127,
+    "personal_record_source_path": 5,
+    "too_few_safe_columns": 8
+  },
+  "excluded_examples": [
+    {
+      "file": "myates_paradigmgeo_com.parquet",
+      "reason": "too_few_safe_columns"
+    },
+    {
+      "file": "prediction_data.parquet",
+      "reason": "personal_record_source_path"
+    },
+    {
+      "file": "03-04.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "text_9.parquet",
+      "reason": "license_outside_pilot_allowlist",
+      "spdx_id": "creative-commons-attribution-share-alike-4.0-international"
+    },
+    {
+      "file": "07-08_4.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "02-03_2.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "CaseStudy2CompSet%20No%20Salary%202.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "08-09_4.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "attrition_newdata_1.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "16-17_1.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "03-04_1.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    },
+    {
+      "file": "CaseStudy2CompSet%20No%20Salary_14.parquet",
+      "reason": "parse_error:AttributeError",
+      "detail": "'str' object has no attribute 'get'"
+    }
+  ]
+}
