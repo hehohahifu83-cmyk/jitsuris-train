@@ -1,5 +1,5 @@
 {
-  "status": "staged_for_independent_labeling",
+  "status": "rejected_after_manual_source_privacy_review",
   "batch": "b042",
   "dataset": "GitTables 1M v0.0.6",
   "dataset_doi": "10.5281/zenodo.6517052",
@@ -7,9 +7,29 @@
   "archive_size_bytes": 4008559,
   "archive_md5": "07ce67ed497012079238c857b3729af7",
   "dataset_license_page": "https://gittables.github.io/",
-  "selected_table_count": 3,
-  "selected_column_count": 25,
-  "selected_tables": [
+  "selected_table_count": 0,
+  "selected_column_count": 0,
+  "selected_tables": [],
+  "excluded_count": 3,
+  "excluded_summary": {
+    "license_outside_pilot_allowlist": 1,
+    "personal_record_source_path": 1,
+    "too_few_safe_columns": 1
+  },
+  "license_allowlist": [
+    "apache-2.0",
+    "bsd-2-clause",
+    "bsd-3-clause",
+    "cc-by-4.0",
+    "cc0-1.0",
+    "isc",
+    "mit",
+    "mpl-2.0"
+  ],
+  "test_benchmark_included": false,
+  "candidate_table_count": 3,
+  "candidate_column_count": 25,
+  "candidate_tables": [
     {
       "n": 1,
       "table_id": 41,
@@ -1430,21 +1450,9 @@
       }
     }
   ],
-  "excluded_count": 3,
-  "excluded_summary": {
-    "license_outside_pilot_allowlist": 1,
-    "personal_record_source_path": 1,
-    "too_few_safe_columns": 1
-  },
-  "license_allowlist": [
-    "apache-2.0",
-    "bsd-2-clause",
-    "bsd-3-clause",
-    "cc-by-4.0",
-    "cc0-1.0",
-    "isc",
-    "mit",
-    "mpl-2.0"
-  ],
-  "test_benchmark_included": false
+  "manual_source_privacy_review": {
+    "status": "reject",
+    "reason": "The candidate source is a public Hacker News dump containing contributor handles and user-generated titles/comments. It was not suitable for this privacy-conscious pilot.",
+    "raw_column_data_removed": true
+  }
 }
