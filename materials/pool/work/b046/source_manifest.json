@@ -1,5 +1,5 @@
 {
-  "status": "staged_for_independent_labeling",
+  "status": "label_ready_for_independent_labeling",
   "batch": "b046",
   "dataset": "GitTables 1M v0.0.6",
   "dataset_doi": "10.5281/zenodo.6517052",
@@ -630,5 +630,18 @@
     "mit",
     "mpl-2.0"
   ],
-  "test_benchmark_included": false
+  "test_benchmark_included": false,
+  "manual_source_privacy_review": {
+    "status": "passed_for_independent_labeling",
+    "reviewed_by": "ChatGPT",
+    "review_date_utc": "2026-10-27",
+    "selected_tables": 4,
+    "basis": [
+      "Selected source URLs and all 20 label-sheet examples reviewed.",
+      "No forum, sentiment, dialogue, transcript, or post-history source remains in the selected set.",
+      "No person, author, username, or user-id columns remain; header and sampled-value PII filters found no additional hits.",
+      "Per-table licenses are MIT or Apache-2.0."
+    ],
+    "limitation": "This screening is for label staging only; it does not establish final training-data approval."
+  }
 }
