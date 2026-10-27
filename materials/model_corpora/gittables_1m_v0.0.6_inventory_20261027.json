@@ -15,7 +15,7 @@
   "file_count": 96,
   "total_file_bytes": 16253928856,
   "status": "metadata_only_not_downloaded",
-  "license_review_note": "GitTables website states CC BY 4.0 for the corpus and that all tables in Zenodo v0.0.6 have distribution-permitting source licenses; the Zenodo API record metadata reports license id cc-zero, while the HTML Rights section has no visible license value. Preserve per-table source/license metadata and resolve this record-level discrepancy before bulk redistribution or training import.",
+  "license_review_note": "GitTables project page states CC BY 4.0 for the corpus and says every Zenodo v0.0.6 table has a distribution-permitting source license, with the source license attached to per-table metadata. The Zenodo API record-level metadata reports cc-zero while the HTML Rights field is blank. For any staged sample, apply the stricter CC BY 4.0 attribution and preserve the original per-table source license and pinned URL. This does not clear all 1M tables: stage_gittables_sample.py now accepts only exact source URLs with verified evidence in rights_approved_sources.json. The inventory remains metadata-only; 96 files total 16,253,928,856 bytes.",
   "files": [
     {
       "name": "abstraction_tables_licensed.zip",
