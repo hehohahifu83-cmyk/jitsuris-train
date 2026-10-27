@@ -1,3 +1,21 @@
+# 2026-10-27 23:55 JST — Claude復帰：b019〜b026・b035・b036 を確定（教材庫 28,210 列）・RWT は凍結
+
+## 確認済み
+- E5-base 種子 1 の予測を、待っていた 10 陣（941 列）をつないだ 1 つの set で 1 回だけ出した（`materials/pool/work/pend1027/`、Actions run 40523760116 → commit 24841bf）。`materials/pool/split_preds.py` で id の先頭ごとに各陣の `pred_e5base_seed1.json` に分け、set_sha256 は各陣の set.json に直した。
+- ChatGPT の回答シートを `label_sheets.py merge` で `labels_chatgpt.jsonl` に戻し、`pipeline.py reconcile` → Claude 裁定（`decisions.jsonl`）→ `finalize`。食い違い 398 列は全件裁定（500 列の上限内、捨てた列 0）。抜き取りは 9 陣とも誤り 0。
+- 確定：b019 15・b020 83・b022 97・b023 119・b024 10・b025 34・b026 45・b035 79・b036 226 ＝ **709 列**。教材庫は **28,210 列・4,142 表・672 公開元・27 陣**（`bench/pool_status.md`）。
+- 先生（ChatGPT）を直した主なもの：b022 のアスベスト台帳・Opticomm の宣言は建物・会社の記録で個人情報がないので S をやめて種類を付けた。b035 の交通手段の構成比の 3 都市を unknown → rate（同じ表の他の都市と同じ）。b036 の Month（Aug-26）quantity → date、区域コード UFZ → id、ツイート本文は私人の @名前が入るので S。b023 の自転車の交差点の layout_N は角度に見えるので unknown。理由は各陣の `adjudication_<陣>.jsonl`。
+- モデル（E5-base）の主な誤り：人数・件数を amount（俸給表の人数、Trip、館の利用数）、0/1 の多い件数を category、測定値・座標を unknown。
+- **b018 は最終確認の陣**（AUTO_GUIDE）なので、裁定（`work/b018/decisions.jsonl`、34 列）だけ書いて教材庫には入れていない。
+- RWT-RuTaBERT/LoReTA は凍結（rights_hold のまま追わない）。作業の形（先生が国外のクラウド・公開リポジトリ・Kaggle）が 30 条の 4 の国内非公開の条件に合わず、ロシア語版 Wikipedia の表は相手の表と遠い（ai-bridge `messages/20261027-2344_claude-to-chatgpt_rwt-decision.md`）。外の列型モデル（Sato・DODUO・TabEmb・ZTab）はいま内包しない（同 `..._embed-models.md`）。
+
+## 未完了（次の順）
+1. 交差検証段B（run 40284280654）の HCV 予測 → `router_cv.py` で T_H → `router_eval.py` で b015〜b017（下の 2026-10-26 07:15 UTC の手順）。
+2. rho を含む C2 の線を開発陣（b015〜b017、b019〜b036）で決め直す → 構成を凍結 → b018 で最終確認 → 封印セット #3。
+3. 学習し直し（b015 以降の 1,160 列を入れる）はオーナーの許可が出てから。依頼していない。
+4. b046・b047（GitTables）は独立ラベル待ち・権利表示の食い違いが未解消のまま。
+- テスト：`python3 -m unittest discover -s tests` は 377 件中、scipy・sklearn が無い環境で落ちる 15 件のほかは成功（教材庫の道具の試験を含む）。
+
 # 2026-10-27 20:37 JST — RWTの国内分析ルートとGitTables小標本の教材化前監査
 
 ## 確認済み
