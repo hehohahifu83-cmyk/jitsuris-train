@@ -1,0 +1,36 @@
+{
+  "source": "RWT-RuTaBERT (LoReTA) training dataset",
+  "observed_at": "2026-10-27",
+  "status": "metadata_only_candidate_rights_unresolved_not_downloaded",
+  "official_dataset": "https://huggingface.co/datasets/aidalab/rwt-rutabert",
+  "source_repository": "https://github.com/YRL-AIDA/LoReTA",
+  "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
+  "dataset_paper": "https://arxiv.org/abs/2210.06353",
+  "stats": {
+    "total_columns": 1441349,
+    "train_columns": 1325901,
+    "test_columns": 115448,
+    "semantic_label_count": 170,
+    "hosted_dataset_size": "626 MB"
+  },
+  "construction": {
+    "source_description": "Russian Web Tables (RWT), described by the dataset repository as tables from Russian Wikipedia.",
+    "selection_and_labeling": "Relational tables selected by headers matching 170 DBpedia semantic types; treat labels as weak/header-derived annotations, not independently verified gold labels.",
+    "split": "Fixed train/test split. Keep all 115,448 test columns sealed and exclude them from training and mapping decisions."
+  },
+  "licensing": {
+    "dataset_card_license_tag": "mit",
+    "source_repository_license": "MIT",
+    "unresolved_issue": "The dataset is described as derived from Russian Wikipedia tables. The repository and Hugging Face card report MIT, but the source-page attribution/provenance mapping and rights for the embedded Wikipedia-derived table content have not been confirmed. Do not treat the MIT label as clearing every underlying table.",
+    "wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
+  "handling": "Do not download, redistribute, or import into materials/pool/batch_*.jsonl until source attribution, underlying data rights, label quality, and deduplication are resolved. If cleared, use train only and preserve source table identifiers and attribution.",
+  "source_links": [
+    "https://huggingface.co/datasets/aidalab/rwt-rutabert",
+    "https://github.com/YRL-AIDA/LoReTA",
+    "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
+    "https://arxiv.org/abs/2210.06353",
+    "https://creativecommons.org/licenses/by-sa/4.0/"
+  ]
+}
