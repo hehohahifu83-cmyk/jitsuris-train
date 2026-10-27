@@ -148,6 +148,14 @@ def normalize_license(raw):
         return "cc0"
     if v in ("ogl-canada-2.0", "ogl-canada", "open-government-licence-canada"):   # 出典表示だけの政府ライセンス（OGL-UK と同じ扱い。2026-10-24）
         return "ogl-canada-2.0"
+    if v in ("uk-ogl", "ogl", "open-government-licence", "ogl-uk-2.0"):   # data.gov.uk の書き方（2026-10-27）
+        return "ogl-uk-3.0"
+    # opendata.swiss の利用条件（2026-10-27）：terms_open は条件なしの自由な利用、terms_by は出典表示だけ。
+    # terms_ask・terms_by_ask（商用には許可が要る）はそのまま返して落とす
+    if v == "terms-open":
+        return "public-domain"
+    if v == "terms-by":
+        return "cc-by"
     if v in ("cc-30-by", "cc-by-3.0"):
         return "cc-by-30"
     if v in ("cc-40-by", "cc-by-40"):
@@ -223,6 +231,8 @@ TITLE_DENY = re.compile(r"(crime|arrest|police|incident|complaint|311|service re
                         r"fraud reporting|tenancy survey|parking ticket|expiation|unclaimed|line list|政治団体名簿|"
                         r"cadastro [uú]nico|credit representative|financial adviser|planning application|development application|covid-19 (?:cases|tests)|"
                         r"remuneration|insolvent debtor|integrated survey of travel|road crash|public use microdata|pumf|personal insolvenc|audit committee|mobility provision|rental bond|prisoner|deceased estate|naturalisation|authorised representative|travel expenses|service record|tasmanian marriages|crash locations|banned and disqualified persons|inquests|persons called before|officers and men|adopt a soldier|住宅宿泊事業届出|"
+                        r"straftat|verurteil|polizei|anzeige|beschwerde|bewilligung|lohn|löhne|mitarbeitende|personal(?:bestand|daten)|schüler|patient|wahlen|abstimmungs?ergebnis|"
+                        r"infraction|plainte|condamn|élève|salaire|personnel|élection|permis de|"
                         r"admission|enrol+ment|allegation|internal affairs|student|patient|victim|offender|inmate|payroll|employee|salar|"
                         r"犯罪|逮捕|通報|苦情|選挙|寄付者|申請者|利用者|患者|児童|生徒|職員|在籍者|入学者|"
                         r"crime|ocorr[eê]ncia|den[uú]ncia|reclama[cç]|elei[cç]|servidor|sal[aá]rio|remunera[cç]|folha de pagamento|"

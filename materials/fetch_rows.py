@@ -57,12 +57,23 @@ PT_HEADER_DENY = re.compile(
     r"matr[ií]cula|servidor|servidora|respons[aá]vel|propriet[aá]rio|contato|observa[cç][aã]o|observa[cç][oõ]es|"
     r"descri[cç][aã]o|coment[aá]rio|nascimento|idade|sexo|ra[cç]a|cor)($|[^a-z])", re.I)
 
+# 英国・スイス（2026-10-27、data.gov.uk・opendata.swiss を足すため）：電話・英国の郵便番号、ドイツ語・フランス語の個人情報の列名
+UK_PHONE_RE = re.compile(r"(?<![\d.])0\d{2,4}\s\d{3,4}\s?\d{3,4}(?![\d.])")
+CH_PHONE_RE = re.compile(r"(?<![\d.])0\d{2}\s\d{3}\s\d{2}\s\d{2}(?![\d.])")
+UK_POSTCODE_RE = re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b")
+DE_FR_HEADER_DENY = re.compile(
+    r"(^|[^a-zäöüéèàç])(?:vorname|nachname|familienname|strasse|straße|hausnummer|telefon|e-?mail|geburtsdatum|geburtsjahr|"
+    r"geschlecht|inhaber|inhaberin|eigentümer|eigentümerin|besitzer|kontakt|ansprechperson|"
+    r"prénom|prenom|nom de famille|adresse|rue|téléphone|telephone|courriel|date de naissance|propriétaire|proprietaire|"
+    r"titulaire|contact|surname|forename|postcode)($|[^a-zäöüéèàç])", re.I)
+
 
 def sensitive_value(value) -> bool:
     v = unicodedata.normalize("NFKC", str(value or "")).strip()
     return bool(v and (EMAIL_RE.search(v) or JP_PHONE_RE.search(v) or INTL_PHONE_RE.search(v)
                        or JP_POSTAL_RE.search(v) or STREET_RE.search(v)
-                       or BR_CPF_RE.search(v) or BR_PHONE_RE.search(v) or BR_CEP_RE.search(v) or BR_STREET_RE.search(v)))
+                       or BR_CPF_RE.search(v) or BR_PHONE_RE.search(v) or BR_CEP_RE.search(v) or BR_STREET_RE.search(v)
+                       or UK_PHONE_RE.search(v) or CH_PHONE_RE.search(v) or UK_POSTCODE_RE.search(v)))
 
 
 # 語がつながった英語の列名（namelast・legalowner・contactphone など）。区切りが無いと HEADER_DENY をすり抜けるので、
@@ -75,7 +86,7 @@ COMPACT_DENY = re.compile(r"(name|owner|holder|contact|applicant|email|phone|add
 def blocked_header(header) -> bool:
     h = normalize_header(header)
     compact = re.sub(r"[^a-z]", "", h)
-    return bool(HEADER_DENY.search(h) or PT_HEADER_DENY.search(h) or COMPACT_DENY.search(compact))
+    return bool(HEADER_DENY.search(h) or PT_HEADER_DENY.search(h) or DE_FR_HEADER_DENY.search(h) or COMPACT_DENY.search(compact))
 
 
 def _h(*parts) -> int:

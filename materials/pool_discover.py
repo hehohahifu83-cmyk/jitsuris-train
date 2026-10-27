@@ -39,6 +39,9 @@ NATIONAL = [
     {"parent": "australia", "host": "data.gov.au", "site": "https://data.gov.au/data"},
     {"parent": "ireland", "host": "data.gov.ie", "site": "https://data.gov.ie"},
     {"parent": "canada", "host": "open.canada.ca", "site": "https://open.canada.ca/data"},
+    # 英国・スイス（2026-10-27、オーナー指示「教材もあるだけ」）。datagov_uk は FIXED_ASSIGNMENTS で train、swiss はこの日に train に固定
+    {"parent": "datagov_uk", "host": "data.gov.uk", "site": "https://data.gov.uk"},
+    {"parent": "swiss", "host": "opendata.swiss", "site": "https://opendata.swiss"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
