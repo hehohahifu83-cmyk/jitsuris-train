@@ -31,7 +31,7 @@ OUTPUT_COLUMN_FIELDS = [
 def git_blob_sha(path: Path) -> str:
     size = path.stat().st_size
     digest = hashlib.sha1()
-    digest.update(f"blob {size}\\0".encode("ascii"))
+    digest.update(f"blob {size}\0".encode("ascii"))
     with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
@@ -82,7 +82,7 @@ def main() -> int:
     with gzip.open(column_path, "wt", encoding="utf-8", newline="") as compressed:
         writer = csv.DictWriter(compressed, fieldnames=OUTPUT_COLUMN_FIELDS)
         writer.writeheader()
-        for name in sorted(expected, key=lambda value: int(re.search(r"data_(\\d+)\\.csv$", value).group(1))):
+        for name in sorted(expected, key=lambda value: int(re.search(r"data_(\d+)\.csv$", value).group(1))):
             with actual[name].open("r", encoding="utf-8-sig", newline="") as source:
                 reader = csv.DictReader(source)
                 fields = set(reader.fieldnames or [])
@@ -139,7 +139,7 @@ def main() -> int:
         "outputs": [column_path.name, page_path.name],
     }
     (args.output_dir / "rwt_train_rights_audit_summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2) + "\\n",
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
