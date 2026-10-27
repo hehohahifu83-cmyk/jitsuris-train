@@ -35,6 +35,20 @@ auto <陣> <探し方>
 
 採用が 0 表のときは、語を変える（日本語：住所・施設・一覧・事業者・区分・種別・実績・統計・人数・届出、英語：facility・location・inspection・license・grant・contract・schedule・survey）。同じ語で 2 回やらない。
 
+### 2026-10-28 追加（Claude）：次の順
+これまでの取れ高：data.gov.au が一番多い（語なし b036 276 列、address 141・count 130・population 87）。次に data.gov.ie（53）・open.canada.ca（45）・東京都（103）。**data.gov.uk は使わない**（b049：採用 396 表すべて resource_show が HTTP 403 で取り出し 0。原因を Claude が直すまで）。data.boston.gov は候補がすべて使用済み（b027〜b034）。
+
+| 順 | 依頼の 1 行 | ねらい |
+|---|---|---|
+| 11 | `auto b050 --national --only-national data.gov.au --query register` | org・category・date（Claude が出した） |
+| 12 | `auto b051 --national --only-national data.gov.au --query facilities` | address・category |
+| 13 | `auto b052 --national --only-national data.gov.au --query grants` | org・amount・date |
+| 14 | `auto b053 --national --only-national open.canada.ca` | 語なし（英語・仏語） |
+| 15 | `auto b054 --national --only-national data.gov.ie` | 語なし |
+| 16 | `auto b055 --national --only-national catalog.data.metro.tokyo.lg.jp --query 一覧` | 日本語の category・address |
+| 17 | `auto b056 --national --only-national data.gov.au --query schedule` | date |
+| 18 | `auto b057 --national --only-national open.canada.ca --query licence` | date・id・org |
+
 ## 3. ラベル付け（今までと同じ）
 - `materials/pool/work/<陣>/sheets/sheet_NNN.md` を LABEL_GUIDE v2.0 だけで答え、`materials/pool/work/<陣>/sheets/answers/sheet_NNN.tsv` に保存する（予測は見ない。予測ファイルはまだ無い）
 - 1 人・1 件ごとの記録（名簿・通報・受験者・違反者など）に見える表は、その表の列を全部 `S` にし、`work/<陣>/sheets/answers/notes.md` に表の名前と理由を書く
