@@ -37,6 +37,8 @@ jobs:
           set -euo pipefail
           batch="$(python -c 'import json; print(json.load(open("materials/model_corpora/gittables_sample.request", encoding="utf-8"))["batch"])')"
           dir="materials/pool/work/$batch"
+          mkdir -p "$dir/licenses"
+          cp materials/model_corpora/licenses/MIT-StraboSpot-2014.txt "$dir/licenses/"
           python -I materials/corpus_to_set.py "$dir/corpus.jsonl" "$dir/set.json" "$batch"
           python -I materials/label_sheets.py make --batch "$batch"
           python - "$dir" <<'PY'
