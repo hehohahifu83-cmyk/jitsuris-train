@@ -21,8 +21,12 @@
   "licensing": {
     "dataset_card_license_tag": "mit",
     "source_repository_license": "MIT",
-    "unresolved_issue": "The dataset is described as derived from Russian Wikipedia tables. The repository and Hugging Face card report MIT, but the source-page attribution/provenance mapping and rights for the embedded Wikipedia-derived table content have not been confirmed. Do not treat the MIT label as clearing every underlying table.",
-    "wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/4.0/"
+    "unresolved_issue": "The LoReTA repository and Hugging Face card report MIT, but the upstream RWT repository lists no license file and describes data extracted from Russian Wikipedia. The source-page attribution/provenance mapping and rights for embedded table content have not been confirmed. Do not treat the MIT label as clearing every underlying table.",
+    "wikipedia_license_reference": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "upstream_repository": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
+    "upstream_license_file_observed": false,
+    "upstream_repository_listing": "README.md and dataset.zip; no LICENSE file is listed.",
+    "upstream_readme_note": "The upstream RWT repository describes the corpus as extracted from Russian Wikipedia and asks users to cite its paper; it does not state a dataset license in the README."
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
   "handling": "Do not download, redistribute, or import into materials/pool/batch_*.jsonl until source attribution, underlying data rights, label quality, and deduplication are resolved. If cleared, use train only and preserve source table identifiers and attribution.",
