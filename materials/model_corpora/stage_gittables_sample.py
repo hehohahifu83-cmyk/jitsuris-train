@@ -181,7 +181,10 @@ def get_weak_annotations(meta: dict, column: str) -> dict:
         "dbpedia_semantic_column_types", "dbpedia_syntactic_column_types",
         "schema_semantic_column_types", "schema_syntactic_column_types",
     ):
-        value = (meta.get(key) or {}).get(column)
+        annotations = meta.get(key)
+        if not isinstance(annotations, dict):
+            continue
+        value = annotations.get(column)
         if value:
             out[key] = value
     return out
@@ -352,7 +355,10 @@ def main() -> int:
                     selected.extend(col_rows)
                     table_records.append(table_record)
                 except Exception as exc:
-                    excluded.append({"file": member.filename, "reason": f"parse_error:{type(exc).__name__}"})
+                    item = {"file": member.filename, "reason": f"parse_error:{type(exc).__name__}"}
+                    if isinstance(exc, AttributeError):
+                        item["detail"] = str(exc)[:160]
+                    excluded.append(item)
         if not table_records:
             reason_counts = {
                 reason: sum(1 for item in excluded if item["reason"] == reason)
@@ -381,7 +387,7 @@ def main() -> int:
                             key: item[key]
                             for key in (
                                 "spdx_id", "source_url_present", "spdx_present",
-                                "metadata_keys", "license_value_type", "license_value_keys",
+                                "metadata_keys", "license_value_type", "license_value_keys", "detail",
                             )
                             if key in item
                         },
