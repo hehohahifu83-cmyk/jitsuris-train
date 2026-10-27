@@ -1,0 +1,46 @@
+name: 上位モデルの学習データ・公開データのメタデータ調査
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "materials/model_corpora/probe.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: probe-sources
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 依頼を読む
+        id: req
+        run: |
+          read -r cmd out <<< "$(head -1 materials/model_corpora/probe.request)"
+          if [ "$cmd" != "probe" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          case "$out" in materials/model_corpora/probe/*.json) ;; *) echo "出力の場所が違う"; exit 1;; esac
+          { echo "proceed=true"; echo "out=$out"; } >> "$GITHUB_OUTPUT"
+      - name: メタデータだけを集める
+        if: steps.req.outputs.proceed == 'true'
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: python -I materials/model_corpora/probe_sources.py "${{ steps.req.outputs.out }}"
+      - name: 保存
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          echo "done ${{ steps.req.outputs.out }}" > materials/model_corpora/probe.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${{ steps.req.outputs.out }}" materials/model_corpora/probe.request
+          git commit -m "上位モデルの学習データ・公開データのメタデータ調査（自動）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
