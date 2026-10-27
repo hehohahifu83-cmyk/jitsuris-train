@@ -1,0 +1,634 @@
+{
+  "status": "staged_for_independent_labeling",
+  "batch": "b046",
+  "dataset": "GitTables 1M v0.0.6",
+  "dataset_doi": "10.5281/zenodo.6517052",
+  "topic_archive": "radial_velocity_tables_licensed.zip",
+  "archive_size_bytes": 1065479,
+  "archive_md5": "8547e9a82cf9580d73256b17c003a805",
+  "dataset_license_page": "https://gittables.github.io/",
+  "selected_table_count": 4,
+  "selected_column_count": 20,
+  "selected_tables": [
+    {
+      "n": 1,
+      "table_id": 69,
+      "source_url": "https://github.com/ag-gipp/PhysWikiQuiz/blob/4247207c3be339b5a7e80ae8983bab82c4aa9e8b/evaluation/module_workflow/unit_test_module_workflow_vmext_generated.csv",
+      "publisher": "github:ag-gipp/physwikiquiz",
+      "license": {
+        "spdx_id": "apache-2.0",
+        "name": "Apache License 2.0",
+        "url": "",
+        "key": ""
+      },
+      "rows": 66,
+      "columns": 14,
+      "parquet_sha256": "7c172004964d8746c13992a5f93a5aa2b843f3061f6d7d4231a2dc7997f97c56",
+      "archive_member": "unit_test_module_workflow_vmext_generated.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 0,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "GoldID": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Name": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "Working": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "work",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/FictionalCharacter"
+            ],
+            "id": "http://dbpedia.org/ontology/work",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:workHours",
+            "cleaned_label": "work hours",
+            "description": "The typical working hours for this job (e.g. 1st shift, night shift, 8am-5pm).",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Formula": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          }
+        },
+        "Identifiers": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "location identifier",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Airport"
+            ],
+            "id": "http://dbpedia.org/ontology/locationIdentifier",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:legislationIdentifier",
+            "cleaned_label": "legislation identifier",
+            "description": "An identifier for the legislation. This can be either a string-based identifier, like the CELEX at EU level or the NOR in France, or a web-based, URL/URI identifier, like an ELI (European Legislation Identifier) or an URN-Lex.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Legislation"
+            ],
+            "range": [
+              "schema:Text",
+              "schema:URL"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "schema:identifier"
+            ]
+          }
+        },
+        "Properties": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "number of properties",
+            "description": "number of defined properties in DBpedia ontology",
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/numberOfProperties",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:Property",
+            "cleaned_label": "property",
+            "description": "A property, used to indicate attributes and relationships of some Thing; equivalent to rdf:Property.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Intangible"
+            ],
+            "superproperties": null
+          }
+        },
+        "Formula unit": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:strengthUnit",
+            "cleaned_label": "strength unit",
+            "description": "The units of an active ingredient's strength, e.g. mg.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:DrugStrength"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Identifier units": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "location identifier",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Airport"
+            ],
+            "id": "http://dbpedia.org/ontology/locationIdentifier",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:unitCode",
+            "cleaned_label": "unit code",
+            "description": "The unit of measurement given using the UN/CEFACT Common Code (3 characters) or a URL. Other codes than the UN/CEFACT Common Code may be used with a prefix followed by a colon.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:TypeAndQuantityNode",
+              "schema:PropertyValue",
+              "schema:QuantitativeValue",
+              "schema:UnitPriceSpecification"
+            ],
+            "range": [
+              "schema:Text",
+              "schema:URL"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Formula sympy": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "formula",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/ChemicalSubstance"
+            ],
+            "id": "http://dbpedia.org/ontology/formula",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          }
+        },
+        "Sympy rhs": {
+          "schema_semantic_column_types": {
+            "id": "schema:xpath",
+            "cleaned_label": "xpath",
+            "description": "An XPath, e.g. of a [[SpeakableSpecification]] or [[WebPageElement]]. In the latter case, multiple matches within a page can constitute a single conceptual \"Web page element\".",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:WebPageElement",
+              "schema:SpeakableSpecification"
+            ],
+            "range": [
+              "schema:XPathType"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Sympy solve": {
+          "schema_semantic_column_types": {
+            "id": "schema:SolveMathAction",
+            "cleaned_label": "solve math action",
+            "description": "The action that takes in a math expression and directs users to a page potentially capable of solving/simplifying that expression.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Action"
+            ],
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 13,
+      "table_id": 17,
+      "source_url": "https://github.com/StraboSpot/strabo-mobile/blob/164c0d19e3f003ec55eb82a5f520da37af9efbc7/www/app/data-models/micro/experimental-general-testing-conditions-choices.csv",
+      "publisher": "github:strabospot/strabo-mobile",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 59,
+      "columns": 3,
+      "parquet_sha256": "749cf852a11fa6a9aa58a95e3da3033dea265ffb9a9c42fcc394e3165f2e3187",
+      "archive_member": "experimental-general-testing-conditions-choices.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 0,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "list_name": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "name": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "name",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/name",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "label": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "record label",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/recordLabel",
+            "range": [
+              "http://dbpedia.org/ontology/RecordLabel"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:recordLabel",
+            "cleaned_label": "record label",
+            "description": "The label that issued the release.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:MusicRelease"
+            ],
+            "range": [
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 16,
+      "table_id": 30,
+      "source_url": "https://github.com/shankyemcee/EECS6322_PROJECT/blob/64c11fb01bab2842a7384a619b740decf839645f/data/tables/2-10932739-2.html.csv",
+      "publisher": "github:shankyemcee/eecs6322_project",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 9,
+      "columns": 2,
+      "parquet_sha256": "3350ba815824b753c4ecfe92912bf76cb65008ef0ea8b3e40965ac073d98401c",
+      "archive_member": "2-10932739-2.html_4.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 0,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "plane": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "aircraft helicopter",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/MilitaryUnit"
+            ],
+            "id": "http://dbpedia.org/ontology/aircraftHelicopter",
+            "range": [
+              "http://dbpedia.org/ontology/MeanOfTransportation"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:Flight",
+            "cleaned_label": "flight",
+            "description": "An airline flight.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Trip"
+            ],
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 18,
+      "table_id": 24,
+      "source_url": "https://github.com/scarnyc/Revisiting-Hubbles-Law-with-OLS-and-Hacker-Stats/blob/a667bf784dbc4f22f51b38920b98482353af549b/hubble_data.csv",
+      "publisher": "github:scarnyc/revisiting-hubbles-law-with-ols-and-hacker-stats",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 24,
+      "columns": 3,
+      "parquet_sha256": "c7a351a3c7f3698271436bb336036482f59f7a021f947570be6a6d2592586c66",
+      "archive_member": "hubble_data_9.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 0,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "names": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "names",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Openswarm"
+            ],
+            "id": "http://dbpedia.org/ontology/names",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "names",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Openswarm"
+            ],
+            "id": "http://dbpedia.org/ontology/names",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:name",
+            "cleaned_label": "name",
+            "description": "The name of the item.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": [
+              "rdfs:label"
+            ]
+          }
+        },
+        "distances": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "distance",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/distance",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#double"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:distance",
+            "cleaned_label": "distance",
+            "description": "The distance travelled, e.g. exercising or travelling.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:ExerciseAction",
+              "schema:TravelAction"
+            ],
+            "range": [
+              "schema:Distance"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "velocities": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "escape velocity",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Planet"
+            ],
+            "id": "http://dbpedia.org/ontology/escapeVelocity",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#double"
+            ],
+            "superproperty": null
+          }
+        }
+      }
+    }
+  ],
+  "excluded_count": 5,
+  "excluded_summary": {
+    "license_outside_pilot_allowlist": 2,
+    "too_few_safe_columns": 2,
+    "user_generated_content_source": 1
+  },
+  "license_allowlist": [
+    "apache-2.0",
+    "bsd-2-clause",
+    "bsd-3-clause",
+    "cc-by-4.0",
+    "cc0-1.0",
+    "isc",
+    "mit",
+    "mpl-2.0"
+  ],
+  "test_benchmark_included": false
+}
