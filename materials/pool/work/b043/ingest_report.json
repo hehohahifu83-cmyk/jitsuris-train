@@ -1,17 +1,24 @@
 {
-  "status": "label_ready",
+  "status": "rejected_after_manual_source_privacy_review",
   "batch": "b043",
   "topic": "return_on_invested_capital",
-  "tables": 3,
-  "columns": 21,
+  "tables": 0,
+  "columns": 0,
   "excluded_tables": 33,
   "archive_md5_verified": true,
   "only_allowlisted_per_table_licenses": true,
   "exact_source_url_dedup": true,
   "raw_archive_committed": false,
-  "groups": 21,
-  "sheets": 1,
+  "groups": 0,
+  "sheets": 0,
   "label_guide": "LABEL_GUIDE.md v2.0",
   "answers_filled": 0,
-  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions."
+  "next_action": "Fill sheets/answers/sheet_NNN.tsv independently; do not use GitTables weak labels as predictions.",
+  "candidate_tables_before_manual_review": 3,
+  "candidate_columns_before_manual_review": 21,
+  "manual_source_privacy_review": {
+    "status": "reject",
+    "reason": "Two selected repositories are a stock-sentiment dataset and a Bitcointalk topic scraper; both can contain user-generated posts, contributor identifiers, or personal data. The entire mixed batch was excluded.",
+    "raw_column_data_removed": true
+  }
 }
