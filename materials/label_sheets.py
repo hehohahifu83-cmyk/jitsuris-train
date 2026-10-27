@@ -109,11 +109,16 @@ def cmd_make(a):
     print(f"{a.batch}: {len(corpus)} 列 → {len(groups)} グループ、シート {len(sheets)} 枚（{d}）")
 
 
-def read_answers(d, groups):
+# 先生ごとの答えの置き場と、まとめたラベルのファイル（2026-10-28 Claude。Grok を 2 人目の先生に足した）。
+# 2 人は相手の答えの置き場を見ない（独立に付ける）
+TEACHERS = {"chatgpt": ("answers", "labels_chatgpt.jsonl", "ChatGPT"), "grok": ("answers_grok", "labels_grok.jsonl", "Grok")}
+
+
+def read_answers(d, groups, teacher="chatgpt"):
     """答えのファイルを読む → (グループ→ラベル, 問題のリスト)。"""
     sheet_of = {g["group"]: g["sheet"] for g in groups}
     got, problems = {}, []
-    for f in sorted((d / "answers").glob("sheet_*.tsv")):
+    for f in sorted((d / TEACHERS[teacher][0]).glob("sheet_*.tsv")):
         m = re.fullmatch(r"sheet_(\d{3})\.tsv", f.name)
         if not m:
             problems.append(f"{f.name}：ファイル名は sheet_NNN.tsv")
@@ -152,20 +157,20 @@ def load(a):
 
 def cmd_status(a):
     _, d, meta = load(a)
-    got, problems = read_answers(d, meta["groups"])
+    got, problems = read_answers(d, meta["groups"], a.teacher)
     per = Counter(g["sheet"] for g in meta["groups"])
     done = Counter(g["sheet"] for g in meta["groups"] if g["group"] in got)
     full = [s for s in sorted(per) if done[s] == per[s]]
     part = [s for s in sorted(per) if 0 < done[s] < per[s]]
     rows_done = sum(len(g["rows"]) for g in meta["groups"] if g["group"] in got)
-    print(f"{a.batch}: グループ {len(got)}/{len(meta['groups'])}、列 {rows_done}/{meta['rows']}、"
+    print(f"{a.batch}（{TEACHERS[a.teacher][2]}）: グループ {len(got)}/{len(meta['groups'])}、列 {rows_done}/{meta['rows']}、"
           f"済んだシート {len(full)}/{len(per)}" + (f"、途中 {', '.join(f'{s:03d}' for s in part)}" if part else ""))
     for p in problems:
         print("問題：" + p)
     return 0 if not problems else 1
 
 
-def merge(corpus, groups, got):
+def merge(corpus, groups, got, teacher_name="ChatGPT"):
     missing = [g["group"] for g in groups if g["group"] not in got]
     if missing:
         raise ValueError(f"答えの無いグループ {len(missing)} 件（最初：{', '.join(missing[:5])}）")
@@ -175,7 +180,7 @@ def merge(corpus, groups, got):
             if labels[i] is not None:
                 raise ValueError(f"{i} 行目が 2 つのグループに入っている")
             labels[i] = {"table": corpus[i]["table"], "header": corpus[i]["header"], "label": got[g["group"]],
-                         "teacher": "ChatGPT", "group": g["group"]}
+                         "teacher": teacher_name, "group": g["group"]}
     if any(x is None for x in labels):
         raise ValueError("どのグループにも入っていない行がある")
     return labels
@@ -186,14 +191,14 @@ def cmd_merge(a):
     corpus = read_jsonl(w / "corpus.jsonl")
     if len(corpus) != meta["rows"]:
         raise SystemExit(f"corpus の行数 {len(corpus)} がシートを作ったとき（{meta['rows']}）と違う。シートを作り直す")
-    got, problems = read_answers(d, meta["groups"])
+    got, problems = read_answers(d, meta["groups"], a.teacher)
     if problems:
         raise SystemExit("答えに問題がある：\n" + "\n".join(problems))
     try:
-        labels = merge(corpus, meta["groups"], got)
+        labels = merge(corpus, meta["groups"], got, TEACHERS[a.teacher][2])
     except ValueError as exc:
         raise SystemExit(f"まだまとめられない：{exc}（`status` で確かめる）")
-    out = w / "labels_chatgpt.jsonl"
+    out = w / TEACHERS[a.teacher][1]
     if out.exists() and not a.force:
         raise SystemExit(f"{out} がもうある（上書きするなら --force）")
     write_jsonl(out, labels)
@@ -204,8 +209,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("make"); p.add_argument("--batch", required=True); p.add_argument("--size", type=int, default=SHEET_SIZE)
-    p = sub.add_parser("status"); p.add_argument("--batch", required=True)
+    p = sub.add_parser("status"); p.add_argument("--batch", required=True); p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
     p = sub.add_parser("merge"); p.add_argument("--batch", required=True); p.add_argument("--force", action="store_true")
+    p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
     a = ap.parse_args(argv)
     return {"make": cmd_make, "status": cmd_status, "merge": cmd_merge}[a.cmd](a) or 0
 

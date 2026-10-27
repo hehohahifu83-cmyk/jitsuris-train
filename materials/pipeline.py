@@ -382,7 +382,11 @@ def align_preds(set_columns, pred_rows):
     return [by_id[c["id"]] for c in set_columns]
 
 
-def load_preds(w):
+def load_preds(w, second=None):
+    """2 人目の票。既定はモデル（E5-base 種子 1）の予測。second="grok" なら Grok の独立の答え（labels_grok.jsonl）を
+    予測と同じ形（guarded_prediction）にして返す（2026-10-28 Claude。先生 2 人の突き合わせ）。"""
+    if second == "grok":
+        return [{"guarded_prediction": r["label"]} for r in read_jsonl(w / "labels_grok.jsonl")]
     preds = json.load(open(w / "pred_e5base_seed1.json", encoding="utf-8"))["rows"]
     cols = json.load(open(w / "set.json", encoding="utf-8"))["columns"]
     return align_preds(cols, preds)
@@ -392,7 +396,7 @@ def cmd_reconcile(a):
     w = work(a.batch)
     corpus = read_jsonl(w / "corpus.jsonl")
     labels = read_jsonl(w / "labels_chatgpt.jsonl")
-    preds = load_preds(w)
+    preds = load_preds(w, a.second)
     split, rows = reconcile(corpus, labels, preds, seed=f"jitsuris-pool-audit|{a.batch}")
     write_jsonl(w / "review.jsonl", rows)
     print(f"agree {len(split['agree'])} disagree {len(split['disagree'])} → review {len(split['to_review'])}, "
@@ -401,7 +405,7 @@ def cmd_reconcile(a):
 
 # ---------------------------------------------------------------- 7. 確定
 
-def finalize(corpus, labels, preds, review, decisions, batch, teacher_name):
+def finalize(corpus, labels, preds, review, decisions, batch, teacher_name, second_name="e5base"):
     dec = {d["i"]: d for d in decisions}
     need = [r["i"] for r in review if r["kind"] in ("to_review", "audit")]
     missing = [i for i in need if i not in dec]
@@ -425,7 +429,7 @@ def finalize(corpus, labels, preds, review, decisions, batch, teacher_name):
         if i in dec:
             lab, who = dec[i]["label"], f"claude-{batch}"
         else:
-            lab, who = labels[i]["label"], f"{teacher_name}+e5base-agree"
+            lab, who = labels[i]["label"], f"{teacher_name}+{second_name}-agree"
         if lab == "person":
             # 公開データの表の人の名前は教材庫に入れない（個人情報。2026-10-24）。person の教材は仕様由来の偽の名前で作る
             stat["not_used_person"] += 1
@@ -449,11 +453,11 @@ def cmd_finalize(a):
         raise SystemExit(f"{final} がもうある")
     corpus = read_jsonl(w / "corpus.jsonl")
     labels = read_jsonl(w / "labels_chatgpt.jsonl")
-    preds = load_preds(w)
+    preds = load_preds(w, a.second)
     review = read_jsonl(w / "review.jsonl")
     decisions = read_jsonl(w / "decisions.jsonl")
     teacher = (labels[0].get("teacher") if labels else "chatgpt") or "chatgpt"
-    out, record, stat, audit = finalize(corpus, labels, preds, review, decisions, a.batch, teacher)
+    out, record, stat, audit = finalize(corpus, labels, preds, review, decisions, a.batch, teacher, a.second or "e5base")
     write_jsonl(final, out)
     write_jsonl(POOL / f"adjudication_{a.batch}.jsonl", record)
     m = manifest()
@@ -461,8 +465,10 @@ def cmd_finalize(a):
                          "columns": len(out), "tables": len({r["table"] for r in out}),
                          "publishers": len({r["publisher"] for r in out}), "labels": dict(Counter(r["label"] for r in out)),
                          "stats": dict(stat), **audit, "sha256": sha256(final),
+                         "second": a.second or "e5base",
                          "inputs": {n: sha256(w / n) for n in ("adopted.json", "corpus.jsonl", "labels_chatgpt.jsonl",
-                                                                "pred_e5base_seed1.json", "review.jsonl", "decisions.jsonl")}})
+                                                                "labels_grok.jsonl" if a.second == "grok" else "pred_e5base_seed1.json",
+                                                                "review.jsonl", "decisions.jsonl")}})
     save_manifest(m)
     print(f"batch {a.batch}: {len(out)} columns into the pool; {dict(stat)}; audit {audit}")
 
@@ -490,8 +496,8 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("adopt"); p.add_argument("--batch", required=True); p.add_argument("--candidates", nargs="+", required=True)
-    p = sub.add_parser("reconcile"); p.add_argument("--batch", required=True)
-    p = sub.add_parser("finalize"); p.add_argument("--batch", required=True)
+    p = sub.add_parser("reconcile"); p.add_argument("--batch", required=True); p.add_argument("--second", choices=["grok"])
+    p = sub.add_parser("finalize"); p.add_argument("--batch", required=True); p.add_argument("--second", choices=["grok"])
     p = sub.add_parser("status"); p.add_argument("--out")
     a = ap.parse_args(argv)
     {"adopt": cmd_adopt, "reconcile": cmd_reconcile, "finalize": cmd_finalize, "status": cmd_status}[a.cmd](a)
