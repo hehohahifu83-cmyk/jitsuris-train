@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "updated_utc": "2026-10-27",
-  "purpose": "Exact-source rights gate for label staging. An unlisted or changed source URL is excluded.",
+  "purpose": "Exact-source rights gate for label staging. Only entries in sources with status cleared_for_label_staging are admitted; held_sources are evidence records only.",
   "gittables_dataset": {
     "name": "GitTables 1M v0.0.6",
     "doi": "10.5281/zenodo.6517052",
@@ -23,6 +23,138 @@
       "copyright_notice": "Copyright (c) 2014 StraboSpot",
       "rationale": "The exact pinned CSV is a project-maintained controlled-vocabulary choices file in the application's data-model directory. The repository README describes the application, and the same pinned revision contains the MIT license. Clearance is limited to this exact file and commit.",
       "limits": "Label staging only. This does not approve other files in the repository or final training-pool/model redistribution."
+    }
+  ],
+  "held_sources": [
+    {
+      "id": "rwt_loreta_rutabert",
+      "status": "rights_hold_metadata_audit_only",
+      "repository": "YRL-AIDA/LoReTA",
+      "pinned_commit": "f12d7f83a70a065c90eb314a14e35bf177bade22",
+      "repo_license_spdx": "MIT",
+      "repo_license_url": "https://github.com/YRL-AIDA/LoReTA/blob/f12d7f83a70a065c90eb314a14e35bf177bade22/LICENSE",
+      "repo_license_blob_sha": "c7e1e0441158f214639817bdc9f1066d98f255a3",
+      "copyright_notice": "Copyright (c) 2025 YRL-AIDA",
+      "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
+      "upstream_corpus_license": "No separate dataset license file observed in the upstream repository listing; upstream rights/selection remain unresolved.",
+      "source_content": "Russian Wikipedia tables in RWT; paper reports a 2021-09-13 snapshot. Per-page/per-revision license and imported-content notices still require review.",
+      "train_columns": 1325901,
+      "train_bytes": 575626171,
+      "train_shards": [
+        {
+          "path": "dataset/cta_dataset/train/data_0.csv",
+          "blob_sha": "a374fd7077438bcf7086c7c7f628d863a1ea4c9e",
+          "size_bytes": 18443297
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_1.csv",
+          "blob_sha": "fd7bbd79b6ed3a7a7294c0905e9a00a979919cef",
+          "size_bytes": 30318013
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_2.csv",
+          "blob_sha": "90037f6d0e455ad76b9b9d4b1a171b9f383ccb6d",
+          "size_bytes": 28810332
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_3.csv",
+          "blob_sha": "66764af658e2ad7a1ce05303f07ad2be4cc8d8e0",
+          "size_bytes": 28664420
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_4.csv",
+          "blob_sha": "888b0d4f9d363208378c791d657ef8530b464e2b",
+          "size_bytes": 29950591
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_5.csv",
+          "blob_sha": "184fc9a7e4207bec1a9aa154943f89da939fa110",
+          "size_bytes": 28773095
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_6.csv",
+          "blob_sha": "4801f8ff0db7c5f355f7d2c0f85ac93b6ccc4cce",
+          "size_bytes": 32052390
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_7.csv",
+          "blob_sha": "92e73289c84fc0ca413587b0481fc3223891598e",
+          "size_bytes": 29608132
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_8.csv",
+          "blob_sha": "1a2c641aa530df3fffd2b4c2f93c2aa1657225e6",
+          "size_bytes": 22397227
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_9.csv",
+          "blob_sha": "86603848bb981fd6ddbdd19244a6705e602da63d",
+          "size_bytes": 28706951
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_10.csv",
+          "blob_sha": "7848e3f594f2125d407252d15705781bfd70d842",
+          "size_bytes": 29015482
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_11.csv",
+          "blob_sha": "75028e3c077f017bf89c59db00c1e9f89433fae5",
+          "size_bytes": 23801904
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_12.csv",
+          "blob_sha": "4330666d8ca581964eb20201e8495be315d3afeb",
+          "size_bytes": 26218356
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_13.csv",
+          "blob_sha": "d0d9a0fec1adb50e3896615c0706fe2532ac7085",
+          "size_bytes": 23924136
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_14.csv",
+          "blob_sha": "7937768e38e531a30d02e25cf2ecc7f4e74c9e9a",
+          "size_bytes": 24602261
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_15.csv",
+          "blob_sha": "dc515c598301d7e6ef2ef6f3f836e9adc2238398",
+          "size_bytes": 24275495
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_16.csv",
+          "blob_sha": "194d2fec8327c3ee21fb01fb49c2feb6e12dbc96",
+          "size_bytes": 26053673
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_17.csv",
+          "blob_sha": "fb5ca2f15d745ff6ddd3777d28644be3141fd1b0",
+          "size_bytes": 26614498
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_18.csv",
+          "blob_sha": "cab63575a36b5e3634bdf1acdf607d024875ac8d",
+          "size_bytes": 27614702
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_19.csv",
+          "blob_sha": "53830a35de0afe8f9edd3642773cbc7d040a9f1c",
+          "size_bytes": 31986009
+        },
+        {
+          "path": "dataset/cta_dataset/train/data_20.csv",
+          "blob_sha": "1d3174244d877e0732930b7840ba4249a15bc080",
+          "size_bytes": 33795207
+        }
+      ],
+      "sealed_test": {
+        "path": "dataset/cta_dataset/test/data.csv",
+        "blob_sha": "9937479417b2dabf3e7cf23fc879cd408ff3407c",
+        "size_bytes": 50028284,
+        "columns": 115448,
+        "status": "sealed_excluded"
+      },
+      "policy": "The train shard pins support metadata-only rights preflight. They do not authorize content staging, public redistribution, pool inclusion, training, or model release."
     }
   ]
 }
