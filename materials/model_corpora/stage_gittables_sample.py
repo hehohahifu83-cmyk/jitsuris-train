@@ -50,7 +50,8 @@ PERSON_RECORD_PATH = re.compile(
 )
 USER_GENERATED_SOURCE = re.compile(
     r"(hacker[._ -]?news|dump[._ -]?hn|reddit|twitter|facebook|"
-    r"stack[._ -]?exchange|stackoverflow|disqus|mastodon|telegram|youtube)", re.I
+    r"stack[._ -]?exchange|stackoverflow|disqus|mastodon|telegram|youtube|"
+    r"bitcointalk|forum|sentiment|topic[._ -]?scraper|tweet)", re.I
 )
 
 
