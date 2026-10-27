@@ -1,0 +1,1450 @@
+{
+  "status": "staged_for_independent_labeling",
+  "batch": "b042",
+  "dataset": "GitTables 1M v0.0.6",
+  "dataset_doi": "10.5281/zenodo.6517052",
+  "topic_archive": "attrition_rate_tables_licensed.zip",
+  "archive_size_bytes": 4008559,
+  "archive_md5": "07ce67ed497012079238c857b3729af7",
+  "dataset_license_page": "https://gittables.github.io/",
+  "selected_table_count": 3,
+  "selected_column_count": 25,
+  "selected_tables": [
+    {
+      "n": 1,
+      "table_id": 41,
+      "source_url": "https://github.com/alixaxel/dump.HN/blob/11fd7291c89c68daf4196a47e8cfa47e4df30c8d/data/items/2015/08/22/03-04.csv",
+      "publisher": "github:alixaxel/dump.hn",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 94,
+      "columns": 11,
+      "parquet_sha256": "a3c8f2d5fc8078701d4d66cde88b6ad5bef3d1d75392e7839835574e53f3ecf1",
+      "archive_member": "03-04.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 4,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "ID": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Type": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "type",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/type",
+            "range": null,
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isClassifiedBy"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "type",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/type",
+            "range": null,
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isClassifiedBy"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:procedureType",
+            "cleaned_label": "procedure type",
+            "description": "The type of procedure, for example Surgical, Noninvasive, or Percutaneous.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:MedicalProcedure"
+            ],
+            "range": [
+              "schema:MedicalProcedureType"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Story": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "story editor",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/TelevisionShow"
+            ],
+            "id": "http://dbpedia.org/ontology/storyEditor",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:ShortStory",
+            "cleaned_label": "short story",
+            "description": "Short story or tale. A brief work of literature, usually written in narrative prose.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:CreativeWork"
+            ],
+            "superproperties": null
+          }
+        },
+        "Parent": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "parent",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/parent",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "parent",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/parent",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:parent",
+            "cleaned_label": "parent",
+            "description": "A parent of this person.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Person"
+            ],
+            "range": [
+              "schema:Person"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:parent",
+            "cleaned_label": "parent",
+            "description": "A parent of this person.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Person"
+            ],
+            "range": [
+              "schema:Person"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Points": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "career points",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/FormulaOneRacer"
+            ],
+            "id": "http://dbpedia.org/ontology/careerPoints",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#integer"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:contactPoints",
+            "cleaned_label": "contact points",
+            "description": "A contact point for a person or organization.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Organization",
+              "schema:Person"
+            ],
+            "range": [
+              "schema:ContactPoint"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Comments": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "comment",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/comment",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:comment",
+            "cleaned_label": "comment",
+            "description": "Comments, typically from users.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:RsvpAction",
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Comment"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Author": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "author",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "id": "http://dbpedia.org/ontology/author",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "author",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "id": "http://dbpedia.org/ontology/author",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:author",
+            "cleaned_label": "author",
+            "description": "The author of this content or rating. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork",
+              "schema:Rating"
+            ],
+            "range": [
+              "schema:Person",
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:author",
+            "cleaned_label": "author",
+            "description": "The author of this content or rating. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork",
+              "schema:Rating"
+            ],
+            "range": [
+              "schema:Person",
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Title": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "title",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/title",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "title",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/title",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:title",
+            "cleaned_label": "title",
+            "description": "The title of the job.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:title",
+            "cleaned_label": "title",
+            "description": "The title of the job.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "URL": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "file url",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/File"
+            ],
+            "id": "http://dbpedia.org/ontology/fileURL",
+            "range": [
+              "http://dbpedia.org/ontology/File"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:URL",
+            "cleaned_label": "url",
+            "description": "Data type: URL.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Text"
+            ],
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:URL",
+            "cleaned_label": "url",
+            "description": "Data type: URL.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Text"
+            ],
+            "superproperties": null
+          }
+        },
+        "Content": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "open access content",
+            "description": "Availability of open access content.",
+            "domain": [
+              "http://dbpedia.org/ontology/PeriodicalLiterature"
+            ],
+            "id": "http://dbpedia.org/ontology/openAccessContent",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:WebContent",
+            "cleaned_label": "web content",
+            "description": "WebContent is a type representing all [[WebPage]], [[WebSite]] and [[WebPageElement]] content. It is sometimes the case that detailed distinctions between Web pages, sites and their parts is not always important or obvious. The  [[WebContent]] type makes it easier to describe Web-addressable content without requiring such distinctions to always be stated. (The intent is that the existing types [[WebPage]], [[WebSite]] and [[WebPageElement]] will eventually be declared as subtypes of [[WebContent]]).",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:CreativeWork"
+            ],
+            "superproperties": null
+          }
+        },
+        "Created": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "created",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/created",
+            "range": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "created",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/created",
+            "range": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:locationCreated",
+            "cleaned_label": "location created",
+            "description": "The location where the CreativeWork was created, which may not be the same as the location depicted in the CreativeWork.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Place"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 8,
+      "table_id": 91,
+      "source_url": "https://github.com/alixaxel/dump.HN/blob/11fd7291c89c68daf4196a47e8cfa47e4df30c8d/data/items/2015/02/12/07-08.csv",
+      "publisher": "github:alixaxel/dump.hn",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 119,
+      "columns": 11,
+      "parquet_sha256": "469cfe85fa2dd2fd2caddd62951e101383162b8dc8bf17c7e6c0b1afa325bdea",
+      "archive_member": "07-08_4.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 3,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "ID": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Type": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "type",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/type",
+            "range": null,
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isClassifiedBy"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "type",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/type",
+            "range": null,
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isClassifiedBy"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:procedureType",
+            "cleaned_label": "procedure type",
+            "description": "The type of procedure, for example Surgical, Noninvasive, or Percutaneous.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:MedicalProcedure"
+            ],
+            "range": [
+              "schema:MedicalProcedureType"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Story": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "story editor",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/TelevisionShow"
+            ],
+            "id": "http://dbpedia.org/ontology/storyEditor",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:ShortStory",
+            "cleaned_label": "short story",
+            "description": "Short story or tale. A brief work of literature, usually written in narrative prose.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:CreativeWork"
+            ],
+            "superproperties": null
+          }
+        },
+        "Parent": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "parent",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/parent",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "parent",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/parent",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:parent",
+            "cleaned_label": "parent",
+            "description": "A parent of this person.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Person"
+            ],
+            "range": [
+              "schema:Person"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:parent",
+            "cleaned_label": "parent",
+            "description": "A parent of this person.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Person"
+            ],
+            "range": [
+              "schema:Person"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Points": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "career points",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/FormulaOneRacer"
+            ],
+            "id": "http://dbpedia.org/ontology/careerPoints",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#integer"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:contactPoints",
+            "cleaned_label": "contact points",
+            "description": "A contact point for a person or organization.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Organization",
+              "schema:Person"
+            ],
+            "range": [
+              "schema:ContactPoint"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Comments": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "comment",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/comment",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:comment",
+            "cleaned_label": "comment",
+            "description": "Comments, typically from users.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:RsvpAction",
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Comment"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Author": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "author",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "id": "http://dbpedia.org/ontology/author",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "author",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "id": "http://dbpedia.org/ontology/author",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:author",
+            "cleaned_label": "author",
+            "description": "The author of this content or rating. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork",
+              "schema:Rating"
+            ],
+            "range": [
+              "schema:Person",
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:author",
+            "cleaned_label": "author",
+            "description": "The author of this content or rating. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork",
+              "schema:Rating"
+            ],
+            "range": [
+              "schema:Person",
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Title": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "title",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/title",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "title",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/title",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:title",
+            "cleaned_label": "title",
+            "description": "The title of the job.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:title",
+            "cleaned_label": "title",
+            "description": "The title of the job.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "URL": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "file url",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/File"
+            ],
+            "id": "http://dbpedia.org/ontology/fileURL",
+            "range": [
+              "http://dbpedia.org/ontology/File"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:URL",
+            "cleaned_label": "url",
+            "description": "Data type: URL.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Text"
+            ],
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:URL",
+            "cleaned_label": "url",
+            "description": "Data type: URL.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Text"
+            ],
+            "superproperties": null
+          }
+        },
+        "Content": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "open access content",
+            "description": "Availability of open access content.",
+            "domain": [
+              "http://dbpedia.org/ontology/PeriodicalLiterature"
+            ],
+            "id": "http://dbpedia.org/ontology/openAccessContent",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:WebContent",
+            "cleaned_label": "web content",
+            "description": "WebContent is a type representing all [[WebPage]], [[WebSite]] and [[WebPageElement]] content. It is sometimes the case that detailed distinctions between Web pages, sites and their parts is not always important or obvious. The  [[WebContent]] type makes it easier to describe Web-addressable content without requiring such distinctions to always be stated. (The intent is that the existing types [[WebPage]], [[WebSite]] and [[WebPageElement]] will eventually be declared as subtypes of [[WebContent]]).",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:CreativeWork"
+            ],
+            "superproperties": null
+          }
+        },
+        "Created": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "created",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/created",
+            "range": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "created",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/created",
+            "range": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:locationCreated",
+            "cleaned_label": "location created",
+            "description": "The location where the CreativeWork was created, which may not be the same as the location depicted in the CreativeWork.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Place"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        }
+      }
+    },
+    {
+      "n": 16,
+      "table_id": 142,
+      "source_url": "https://github.com/alixaxel/dump.HN/blob/11fd7291c89c68daf4196a47e8cfa47e4df30c8d/data/items/2013/06/23/02-03.csv",
+      "publisher": "github:alixaxel/dump.hn",
+      "license": {
+        "spdx_id": "mit",
+        "name": "MIT License",
+        "url": "",
+        "key": ""
+      },
+      "rows": 123,
+      "columns": 11,
+      "parquet_sha256": "fb7481955d9a82c82803cbae268ec893305d82fc86d008c08dea0eb98335b022",
+      "archive_member": "02-03_2.parquet",
+      "dropped_pii_headers": 0,
+      "dropped_pii_values": 1,
+      "anonymized_columns": [],
+      "weak_annotations": {
+        "ID": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "id",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/WorldHeritageSite"
+            ],
+            "id": "http://dbpedia.org/ontology/id",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:identifier",
+            "cleaned_label": "id",
+            "description": "The identifier property represents any kind of identifier for any kind of [[Thing]], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See [background notes](/docs/datamodel.html#identifierBg) for more details.\n        ",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Thing"
+            ],
+            "range": [
+              "schema:PropertyValue",
+              "schema:URL",
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Type": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "type",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/type",
+            "range": null,
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isClassifiedBy"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "type",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/type",
+            "range": null,
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isClassifiedBy"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:procedureType",
+            "cleaned_label": "procedure type",
+            "description": "The type of procedure, for example Surgical, Noninvasive, or Percutaneous.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:MedicalProcedure"
+            ],
+            "range": [
+              "schema:MedicalProcedureType"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Story": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "story editor",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/TelevisionShow"
+            ],
+            "id": "http://dbpedia.org/ontology/storyEditor",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:ShortStory",
+            "cleaned_label": "short story",
+            "description": "Short story or tale. A brief work of literature, usually written in narrative prose.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:CreativeWork"
+            ],
+            "superproperties": null
+          }
+        },
+        "Parent": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "parent",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/parent",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "parent",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/parent",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#sameSettingAs"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:parent",
+            "cleaned_label": "parent",
+            "description": "A parent of this person.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Person"
+            ],
+            "range": [
+              "schema:Person"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:parent",
+            "cleaned_label": "parent",
+            "description": "A parent of this person.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Person"
+            ],
+            "range": [
+              "schema:Person"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Points": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "career points",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/FormulaOneRacer"
+            ],
+            "id": "http://dbpedia.org/ontology/careerPoints",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#integer"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:contactPoints",
+            "cleaned_label": "contact points",
+            "description": "A contact point for a person or organization.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:Organization",
+              "schema:Person"
+            ],
+            "range": [
+              "schema:ContactPoint"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Comments": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "comment",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/comment",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:comment",
+            "cleaned_label": "comment",
+            "description": "Comments, typically from users.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:RsvpAction",
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Comment"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Author": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "author",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "id": "http://dbpedia.org/ontology/author",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "author",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "id": "http://dbpedia.org/ontology/author",
+            "range": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "superproperty": [
+              "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#coparticipatesWith"
+            ]
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:author",
+            "cleaned_label": "author",
+            "description": "The author of this content or rating. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork",
+              "schema:Rating"
+            ],
+            "range": [
+              "schema:Person",
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:author",
+            "cleaned_label": "author",
+            "description": "The author of this content or rating. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork",
+              "schema:Rating"
+            ],
+            "range": [
+              "schema:Person",
+              "schema:Organization"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "Title": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "title",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/title",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "title",
+            "description": null,
+            "domain": null,
+            "id": "http://dbpedia.org/ontology/title",
+            "range": [
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:title",
+            "cleaned_label": "title",
+            "description": "The title of the job.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:title",
+            "cleaned_label": "title",
+            "description": "The title of the job.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:JobPosting"
+            ],
+            "range": [
+              "schema:Text"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        },
+        "URL": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "file url",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/File"
+            ],
+            "id": "http://dbpedia.org/ontology/fileURL",
+            "range": [
+              "http://dbpedia.org/ontology/File"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:URL",
+            "cleaned_label": "url",
+            "description": "Data type: URL.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Text"
+            ],
+            "superproperties": null
+          },
+          "schema_syntactic_column_types": {
+            "id": "schema:URL",
+            "cleaned_label": "url",
+            "description": "Data type: URL.",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:Text"
+            ],
+            "superproperties": null
+          }
+        },
+        "Content": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "open access content",
+            "description": "Availability of open access content.",
+            "domain": [
+              "http://dbpedia.org/ontology/PeriodicalLiterature"
+            ],
+            "id": "http://dbpedia.org/ontology/openAccessContent",
+            "range": [
+              "http://www.w3.org/2001/XMLSchema#string"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:WebContent",
+            "cleaned_label": "web content",
+            "description": "WebContent is a type representing all [[WebPage]], [[WebSite]] and [[WebPageElement]] content. It is sometimes the case that detailed distinctions between Web pages, sites and their parts is not always important or obvious. The  [[WebContent]] type makes it easier to describe Web-addressable content without requiring such distinctions to always be stated. (The intent is that the existing types [[WebPage]], [[WebSite]] and [[WebPageElement]] will eventually be declared as subtypes of [[WebContent]]).",
+            "type": "rdfs:Class",
+            "domain": null,
+            "range": null,
+            "superclasses": [
+              "schema:CreativeWork"
+            ],
+            "superproperties": null
+          }
+        },
+        "Created": {
+          "dbpedia_semantic_column_types": {
+            "cleaned_label": "created",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/created",
+            "range": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "superproperty": null
+          },
+          "dbpedia_syntactic_column_types": {
+            "cleaned_label": "created",
+            "description": null,
+            "domain": [
+              "http://dbpedia.org/ontology/Person"
+            ],
+            "id": "http://dbpedia.org/ontology/created",
+            "range": [
+              "http://dbpedia.org/ontology/Work"
+            ],
+            "superproperty": null
+          },
+          "schema_semantic_column_types": {
+            "id": "schema:locationCreated",
+            "cleaned_label": "location created",
+            "description": "The location where the CreativeWork was created, which may not be the same as the location depicted in the CreativeWork.",
+            "type": "rdf:Property",
+            "domain": [
+              "schema:CreativeWork"
+            ],
+            "range": [
+              "schema:Place"
+            ],
+            "superclasses": null,
+            "superproperties": null
+          }
+        }
+      }
+    }
+  ],
+  "excluded_count": 3,
+  "excluded_summary": {
+    "license_outside_pilot_allowlist": 1,
+    "personal_record_source_path": 1,
+    "too_few_safe_columns": 1
+  },
+  "license_allowlist": [
+    "apache-2.0",
+    "bsd-2-clause",
+    "bsd-3-clause",
+    "cc-by-4.0",
+    "cc0-1.0",
+    "isc",
+    "mit",
+    "mpl-2.0"
+  ],
+  "test_benchmark_included": false
+}
