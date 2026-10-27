@@ -40,7 +40,7 @@ Until these questions are resolved, the complete 1,441,349 rows stay out of labe
 ## Primary sources
 
 - LoReTA repository: https://github.com/YRL-AIDA/LoReTA/tree/f12d7f83a70a065c90eb314a14e35bf177bade22
-- LoReTA MIT license: https://github.com/YRL-AIDA/LoReTA/blob/f12d7f83a70a065c90eb314a35bf177bade22/LICENSE
+- LoReTA MIT license: https://github.com/YRL-AIDA/LoReTA/blob/f12d7f83a70a065c90eb314a14e35bf177bade22/LICENSE
 - RWT paper: https://arxiv.org/abs/2210.06353
 - RWT upstream corpus: https://gitlab.com/unidata-labs/ru-wiki-tables-dataset
 - Wikimedia Terms of Use: https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use
