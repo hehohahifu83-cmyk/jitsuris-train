@@ -27,11 +27,14 @@
     "LoReTA_license_blob_sha": "c7e1e0441158f214639817bdc9f1066d98f255a3",
     "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
     "upstream_license_file_observed": false,
-    "upstream_rights": "The RWT source repository listing shows README.md and dataset.zip but no separate dataset license file. Its paper calls the corpus publicly available/open source and says to cite the paper, but does not state an exact data license. Permission for the RWT corpus/database and selection must be established.",
+    "upstream_rights": "RWT paper describes corpus/toolkit as open-source and publicly available, but the public dataset repository listing has no separate dataset license identified. The exact license/permission for the RWT corpus, selection, and database rights remains unresolved.",
     "underlying_source": "RWT is extracted from Russian Wikipedia; the RWT paper reports a 2021-09-13 snapshot. Check the exact page/history/discussion for each reused page, applicable license version, and any imported-content attribution notices. Do not assume a uniform license solely from the snapshot date.",
     "table_id_mapping": "Verified from the pinned LoReTA collection code. A page URL can be reconstructed from page_id as https://ru.wikipedia.org/?curid=<page_id>; the exact 2021 revision and page-level notices remain to be audited.",
     "attribution_requirement": "Wikimedia Terms of Use accept a page hyperlink/URL for attribution and require applicable license notices, modification disclosure, and preservation of extra attribution requirements for imported text.",
-    "clearance_blocker": "Before content staging, resolve the RWT corpus/selection rights, pin the exact source snapshot, and audit all distinct source pages for their revision/license and additional attribution notices. Until then, all rows remain out of label staging."
+    "clearance_blocker": "Keep the full 1,441,349-column candidate on rights hold pending (1) a specific RWT corpus/selection/database permission or a documented conclusion that none is required, and (2) source-page historical revision/license and imported-content notice audit. LoReTA MIT does not by itself resolve upstream rights.",
+    "historical_wikipedia_default": "RWT paper reports a 2021-09-13 snapshot; Wikimedia's 2014-2023 Terms were then effective and licensed standard contributor text CC BY-SA 3.0 Unported plus GFDL (reuse may follow either/both). This is a baseline only; page-specific imports/notices and exact historical revision remain to audit.",
+    "database_rights": "Creative Commons' data guidance says CC 3.0 Unported does not expressly license sui generis database rights where those rights alone are implicated; assess RWT corpus/selection rights separately.",
+    "rights_dossier": "https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/materials/model_corpora/rwt_loreta_rights_dossier_20261027.md"
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
   "handling": "Rights hold. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. The metadata-only preflight can enumerate every train column's page/table ID and reconstructed page URL after the pinned LoReTA files are obtained. Once rights are cleared, reconstruct original headers from RWT metadata, discard/hide LoReTA label and label_id, and produce bounded blank-answer batches with per-page attribution. Keep all 115,448 test columns sealed.",
@@ -42,7 +45,8 @@
     "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
     "https://arxiv.org/abs/2210.06353",
     "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
-    "https://creativecommons.org/licenses/by-sa/3.0/"
+    "https://creativecommons.org/licenses/by-sa/3.0/",
+    "https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/materials/model_corpora/rwt_loreta_rights_dossier_20261027.md"
   ],
   "source_artifacts": {
     "LoReTA_commit": "f12d7f83a70a065c90eb314a14e35bf177bade22",
