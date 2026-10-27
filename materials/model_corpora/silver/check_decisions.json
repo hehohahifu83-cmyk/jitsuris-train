@@ -1,0 +1,20 @@
+{
+ "created_by": "Claude 2026-10-28（check_index.json と answers_check/ の突き合わせ・裁定）",
+ "rule": "確かめの 5 列のうち、まとまりの答えが当てはまらない列が 1 列でもあれば（＞5%）銀にしない。答えそのものが誤りなら直す",
+ "exclude": {
+  "g0039": "MusicAlbum/name：URL と題名が混ざる列（c0235）",
+  "g0043": "follows：月名（c0016）・選挙・レースが混ざる",
+  "g0044": "followed by：年（c0228 495 BC・c0261 981）が混ざる",
+  "g0045": "IdentifierAT：URL（c0017）・品番と品名の混ざり（c0097）",
+  "g0051": "J9U ID：値が浮動小数の表記で崩れた列（c0288）",
+  "g0057": "Organization：人の名前（c0052・c0184）・組織・「Organization」だけの列が混ざる。答え person も不適",
+  "g0063": "priceRange：moderate・$$$-$$$$ など選択肢（c0025・c0276）が混ざる"
+ },
+ "relabel": {
+  "g0053": {
+   "from": "quantity",
+   "to": "other",
+   "why": "weight：商品の重さは測定値（LABEL_GUIDE「重さ・長さ・濃度などの測定値は other」）。確かめの 5 列とも other"
+  }
+ }
+}
