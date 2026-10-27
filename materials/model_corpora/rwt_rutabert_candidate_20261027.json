@@ -31,13 +31,32 @@
     "underlying_source": "RWT is extracted from Russian Wikipedia; the RWT paper reports a 2021-09-13 snapshot. Check the exact page/history/discussion for each reused page, applicable license version, and any imported-content attribution notices. Do not assume a uniform license solely from the snapshot date.",
     "table_id_mapping": "Verified from the pinned LoReTA collection code. A page URL can be reconstructed from page_id as https://ru.wikipedia.org/?curid=<page_id>; the exact 2021 revision and page-level notices remain to be audited.",
     "attribution_requirement": "Wikimedia Terms of Use accept a page hyperlink/URL for attribution and require applicable license notices, modification disclosure, and preservation of extra attribution requirements for imported text.",
-    "clearance_blocker": "Keep the full 1,441,349-column candidate on rights hold pending (1) a specific RWT corpus/selection/database permission or a documented conclusion that none is required, and (2) source-page historical revision/license and imported-content notice audit. LoReTA MIT does not by itself resolve upstream rights.",
+    "clearance_blocker": "No blanket clearance. A conditional Japanese Copyright Act Article 30-4 route may support nonpublic train labeling/model development after the documented conditions and human-annotation scope are reviewed; public redistribution still requires separate upstream and page-level clearance.",
     "historical_wikipedia_default": "RWT paper reports a 2021-09-13 snapshot; Wikimedia's 2014-2023 Terms were then effective and licensed standard contributor text CC BY-SA 3.0 Unported plus GFDL (reuse may follow either/both). This is a baseline only; page-specific imports/notices and exact historical revision remain to audit.",
     "database_rights": "Creative Commons' data guidance says CC 3.0 Unported does not expressly license sui generis database rights where those rights alone are implicated; assess RWT corpus/selection rights separately.",
-    "rights_dossier": "https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/materials/model_corpora/rwt_loreta_rights_dossier_20261027.md"
+    "rights_dossier": "https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/materials/model_corpora/rwt_loreta_rights_dossier_20261027.md",
+    "japan_internal_analysis_route": {
+      "status": "conditional_review_pending_not_cleared",
+      "basis": "Japanese Copyright Act Article 30-4, non-enjoyment information analysis; Bunka Agency describes information analysis as extracting elements from large information and comparing/classifying them, and explicitly gives AI-training data collection/copying and model development as examples.",
+      "scope_if_confirmed": "Potentially internal, nonpublic column-type annotation and model training performed in Japan on train columns only.",
+      "inference_limit": "Applying Article 30-4 to human annotation itself is a reasoned inference; the official guidance reviewed does not expressly decide that exact workflow.",
+      "conditions_to_verify": [
+        "Confirm the relevant copying, annotation, and training acts are within Japan; assess any third-party AI service, processing location, and contract separately.",
+        "Fix the purpose as column semantic classification and model development, without using source expression for enjoyment or aiming to reproduce it.",
+        "Confirm no known pirated source, no access-control or robots.txt bypass, and no paid or planned AI-training database market whose interests would be unreasonably prejudiced.",
+        "Limit display to material necessary for classification, restrict access, and preserve source, checksum, purpose, method, and decision records.",
+        "Do not publicly redistribute raw RWT/Wikipedia tables or the extracted annotation corpus under this exception."
+      ],
+      "authority_urls": [
+        "https://www.bunka.go.jp/seisaku/chosakuken/pdf/93903601_01.pdf",
+        "https://www.bunka.go.jp/seisaku/bunkashingikai/chosakuken/workingteam/r06_02/pdf/94150601_07.pdf",
+        "https://laws.e-gov.go.jp/law/345AC0000000048"
+      ],
+      "next_decision": "Keep rights hold until the conditions and human-annotation scope are reviewed; if approved, record a separate Japan-internal label-staging permission without approving redistribution."
+    }
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
-  "handling": "Rights hold. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. The metadata-only preflight can enumerate every train column's page/table ID and reconstructed page URL after the pinned LoReTA files are obtained. Once rights are cleared, reconstruct original headers from RWT metadata, discard/hide LoReTA label and label_id, and produce bounded blank-answer batches with per-page attribution. Keep all 115,448 test columns sealed.",
+  "handling": "Rights hold for label staging remains in force until the Japan-internal Article 30-4 conditions and human-annotation scope are reviewed. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. The metadata-only preflight can enumerate train page/table IDs. If the conditional internal route is cleared, reconstruct original headers from RWT metadata, hide LoReTA label and label_id, use only necessary values for annotation, add provenance records, and keep all 115,448 test columns sealed.",
   "source_links": [
     "https://huggingface.co/datasets/aidalab/rwt-rutabert",
     "https://github.com/YRL-AIDA/LoReTA/tree/f12d7f83a70a065c90eb314a14e35bf177bade22",
