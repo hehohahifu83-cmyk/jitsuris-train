@@ -1,7 +1,7 @@
 {
   "source": "RWT-RuTaBERT (LoReTA) training dataset",
   "observed_at": "2026-10-27",
-  "status": "metadata_only_candidate_rights_hold_page_mapping_verified_upstream_rights_unresolved",
+  "status": "metadata_only_rights_hold_frozen_not_pursued",
   "official_dataset": "https://huggingface.co/datasets/aidalab/rwt-rutabert",
   "source_repository": "https://github.com/YRL-AIDA/LoReTA",
   "upstream_corpus": "https://gitlab.com/unidata-labs/ru-wiki-tables-dataset",
@@ -31,12 +31,12 @@
     "underlying_source": "RWT is extracted from Russian Wikipedia; the RWT paper reports a 2021-09-13 snapshot. Check the exact page/history/discussion for each reused page, applicable license version, and any imported-content attribution notices. Do not assume a uniform license solely from the snapshot date.",
     "table_id_mapping": "Verified from the pinned LoReTA collection code. A page URL can be reconstructed from page_id as https://ru.wikipedia.org/?curid=<page_id>; the exact 2021 revision and page-level notices remain to be audited.",
     "attribution_requirement": "Wikimedia Terms of Use accept a page hyperlink/URL for attribution and require applicable license notices, modification disclosure, and preservation of extra attribution requirements for imported text.",
-    "clearance_blocker": "No blanket clearance. A conditional Japanese Copyright Act Article 30-4 route may support nonpublic train labeling/model development after the documented conditions and human-annotation scope are reviewed; public redistribution still requires separate upstream and page-level clearance.",
+    "clearance_blocker": "No blanket clearance. Upstream RWT corpus/selection/database rights and page-level terms remain unresolved. The proposed Japan-internal Article 30-4 route is not being pursued under the current overseas-labeling, public-repository, and Kaggle workflow; public redistribution would require separate clearance.",
     "historical_wikipedia_default": "RWT paper reports a 2021-09-13 snapshot; Wikimedia's 2014-2023 Terms were then effective and licensed standard contributor text CC BY-SA 3.0 Unported plus GFDL (reuse may follow either/both). This is a baseline only; page-specific imports/notices and exact historical revision remain to audit.",
     "database_rights": "Creative Commons' data guidance says CC 3.0 Unported does not expressly license sui generis database rights where those rights alone are implicated; assess RWT corpus/selection rights separately.",
     "rights_dossier": "https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/materials/model_corpora/rwt_loreta_rights_dossier_20261027.md",
     "japan_internal_analysis_route": {
-      "status": "conditional_review_pending_not_cleared",
+      "status": "not_pursued_frozen",
       "basis": "Japanese Copyright Act Article 30-4, non-enjoyment information analysis; Bunka Agency describes information analysis as extracting elements from large information and comparing/classifying them, and explicitly gives AI-training data collection/copying and model development as examples.",
       "scope_if_confirmed": "Potentially internal, nonpublic column-type annotation and model training performed in Japan on train columns only.",
       "inference_limit": "Applying Article 30-4 to human annotation itself is a reasoned inference; the official guidance reviewed does not expressly decide that exact workflow.",
@@ -53,11 +53,11 @@
         "https://www.bunka.go.jp/seisaku/bunkashingikai/chosakuken/workingteam/r06_02/pdf/94150601_07.pdf",
         "https://laws.e-gov.go.jp/law/345AC0000000048"
       ],
-      "next_decision": "Keep rights hold until the conditions and human-annotation scope are reviewed; if approved, record a separate Japan-internal label-staging permission without approving redistribution."
+      "next_decision": "Keep rights hold and do not resume review unless the owner explicitly reopens the candidate after a material workflow or relevance change."
     }
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
-  "handling": "Rights hold for label staging remains in force until the Japan-internal Article 30-4 conditions and human-annotation scope are reviewed. The public jitsuris-train repository is not a valid internal staging location: do not commit raw values, full page/table manifests, or source-bearing annotation extracts there. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. If the conditional route is cleared, stage privately, limit displayed values, hide LoReTA label and label_id, preserve provenance, check external AI service/location/terms separately, and keep all 115,448 test columns sealed.",
+  "handling": "Frozen as metadata-only under rights_hold. Do not download or inspect raw RWT/Wikipedia tables, recover headers, label, stage, redistribute, import into materials/pool/batch_*.jsonl, train on, or contact the authors. Preserve the metadata dossier only. The 115,448 test columns remain sealed. This records a project disposition, not legal clearance.",
   "source_links": [
     "https://huggingface.co/datasets/aidalab/rwt-rutabert",
     "https://github.com/YRL-AIDA/LoReTA/tree/f12d7f83a70a065c90eb314a14e35bf177bade22",
@@ -187,5 +187,12 @@
       "status": "sealed_excluded"
     },
     "page_mapping": "dataset/Dataset/data/<page_id>/table_<offset>"
+  },
+  "decision": {
+    "date_jst": "2026-10-27",
+    "status": "frozen_rights_hold_not_pursued",
+    "basis": "The current workflow relies on overseas hosted labelers, public repository staging, and Kaggle training, so it does not fit the proposed domestic, private Article 30-4 route. Rebuilding the workflow and performing page-level clearance is disproportionate to this Russian Wikipedia corpus's expected relevance to the target data.",
+    "legal_status": "Project handling decision only; this is not legal clearance or a legal opinion. Upstream dataset rights, page-level revision and attribution requirements, and redistribution permission remain unresolved.",
+    "reopen_if": "Only if the owner explicitly reopens review after the workflow can meet the required domestic/private conditions or the source's relevance materially changes."
   }
 }
