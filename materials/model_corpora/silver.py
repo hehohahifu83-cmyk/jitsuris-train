@@ -11,6 +11,7 @@
   python materials/model_corpora/silver.py reps
   python materials/model_corpora/silver.py status [--teacher grok]
   python materials/model_corpora/silver.py check    # 大きいまとまりの中が 1 種類かを、抜き取った列ごとに確かめるシート（c3 計画の段 1 の 3）
+  python materials/model_corpora/silver.py silver   # ChatGPT の答え（確かめの裁定を反映）と C2 の予測が一致した「まとまり×値の形」を銀にする
 """
 import argparse
 import gzip
@@ -236,16 +237,61 @@ def cmd_check(_a):
     print(f"まとまり {len(pick)}（{cov:,} 列を覆う）・抜き取り {len(items)} 列・シート {total} 枚")
 
 
+PRED = REP_SET.parent / "pred_c2_seed1.json"
+
+
+def cmd_silver(_a):
+    """2026-10-28 オーナー判断で Grok 抜き：ChatGPT の答え × C2 の予測（guard 後）の一致だけを銀にする。列そのものは書かず、規則（まとまり×値の形）を書く。"""
+    meta = json.loads((OUT / "groups.json").read_text(encoding="utf-8"))
+    got, problems = LS.read_answers(OUT, meta["groups"], "chatgpt")
+    if problems or len(got) != len(meta["groups"]):
+        raise SystemExit("ChatGPT の答えがそろっていない")
+    dec = json.loads((OUT / "check_decisions.json").read_text(encoding="utf-8"))
+    for gid, v in dec["relabel"].items():
+        if got[gid] != v["from"]:
+            raise SystemExit(f"{gid}：裁定の from と答えが違う")
+        got[gid] = v["to"]
+    pred = json.loads(PRED.read_text(encoding="utf-8"))
+    want_sha = __import__("hashlib").sha256(REP_SET.read_bytes()).hexdigest()
+    if pred["set_sha256"] != want_sha:
+        raise SystemExit("予測の set と今の set が違う")
+    by_id = {r["id"]: r for r in pred["rows"]}
+    key_of = {g["group"]: g["key"] for g in meta["groups"]}
+    rules, why = [], Counter()
+    for rep in json.loads((OUT / "reps.json").read_text(encoding="utf-8")):
+        gid, n, lab = rep["group"], rep["columns"], got[rep["group"]]
+        p = by_id[rep["id"]]["guarded_prediction"]
+        if gid in dec["exclude"]:
+            why["確かめで外した"] += n
+        elif lab in ("unknown", "S"):
+            why["ChatGPT が unknown・S"] += n
+        elif p == lab:
+            rules.append({"group": gid, "key": key_of[gid], "shape": rep["shape"], "label": lab, "columns": n})
+            why["銀"] += n
+        else:
+            why["C2 が不明" if p == "unknown" else "C2 と割れた"] += n
+    by_label = Counter()
+    for r in rules:
+        by_label[r["label"]] += r["columns"]
+    doc = {"created_by": "materials/model_corpora/silver.py silver", "teachers": "ChatGPT（answers/）× C2 種子 1（guard 後）",
+           "pred_sha256": __import__("hashlib").sha256(PRED.read_bytes()).hexdigest(), "set_sha256": want_sha,
+           "check_decisions": "check_decisions.json", "columns": dict(why), "by_label": dict(by_label.most_common()), "rules": rules}
+    (OUT / "silver_rules.json").write_text(json.dumps(doc, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
+    total = sum(why.values())
+    print(f"銀 {why['銀']:,} / {total:,} 列（{why['銀'] / total:.1%}）・規則 {len(rules):,}：{dict(why)}")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("sheets")
     sub.add_parser("reps")
     sub.add_parser("check")
+    sub.add_parser("silver")
     p = sub.add_parser("status")
     p.add_argument("--teacher", choices=sorted(LS.TEACHERS), default="chatgpt")
     a = ap.parse_args(argv)
-    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check}[a.cmd](a) or 0
+    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check, "silver": cmd_silver}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":
