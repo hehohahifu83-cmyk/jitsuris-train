@@ -45,3 +45,11 @@ Until these questions are resolved, the complete 1,441,349 rows stay out of labe
 - RWT upstream corpus: https://gitlab.com/unidata-labs/ru-wiki-tables-dataset
 - Wikimedia Terms of Use: https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use
 - CC BY-SA 3.0: https://creativecommons.org/licenses/by-sa/3.0/
+
+## Historical license evidence addendum (2026-10-27)
+
+The 2021-09-13 RWT snapshot predates the Wikimedia Terms effective 2023-06-07. The archived 2014–2023 Terms state that standard contributor text is offered under CC BY-SA 3.0 Unported and GFDL, and permit attribution through a page URL. They also direct reusers to inspect page footer/history/discussion and preserve additional attribution notices for imported material. This establishes the default historical license route but not a blanket clearance for every page.
+
+Creative Commons' database guidance says CC 3.0 Unported does not expressly license sui generis database rights when only those rights are implicated. The RWT paper calls its corpus and toolkit open-source/publicly available, but we have not identified a specific dataset license for the archive. Accordingly the RWT corpus/selection/database-right question remains open; LoReTA's MIT tag does not erase third-party rights.
+
+Full evidence, decision, and release path: https://github.com/hehohahifu83-cmyk/jitsuris-train/blob/main/materials/model_corpora/rwt_loreta_rights_dossier_20261027.md
