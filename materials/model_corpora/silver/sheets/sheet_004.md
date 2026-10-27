@@ -3,6 +3,8 @@
 - **このまとまりの列は、ジツリスの決まり（LABEL_GUIDE.md v2.0）のどの種類か**を 1 つ答える。例は別々の表から最大 3 列
 - まとまりの中で種類が混ざって 1 つに決められない、または例では決められない → `unknown`。人の名前・連絡先が入っている、値が崩れている → `S`
 - SOTAB の列には見出しがない（Web の表の値だけ）。元の種類（Schema.org・DBpedia）は参考。WikiDBs の見出しは Wikidata の属性の名前
+- **Wikidata の型の読み方**：`wikibase-entityid` は「ほかの項目へのつながり」で、**値は名前**（首都なら都市の名前、議会なら組織の名前）。**番号（id）という意味ではない**ので、値で決める。`string` は文字列（コード・ファイル名・URL も入る）、`quantity` は数、`time` は日付、`globecoordinate` は座標、`monolingualtext` はある言語の文字
+- SOTAB の元の種類は Schema.org の名前（`postalCode`＝郵便番号、`price`＝価格、`Date`＝日付、`addressLocality`＝市町村 など）。値と元の種類で LABEL_GUIDE の種類に読み替える
 - 使えるラベル：account address amount category date email id org other person phone product quantity rate tax_class text unknown S
 - 答え：末尾の雛形を、ChatGPT は `answers/sheet_004.tsv`、Grok は `answers_grok/sheet_004.tsv` に写して埋める。**相手の答えは見ない**
 
