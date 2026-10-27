@@ -231,7 +231,7 @@ def safe_columns(table, meta: dict) -> tuple[list[dict], dict]:
             "resource_page": source_url,
             "publisher": publisher,
             "pool": "train",
-            "license": str((meta.get("license") or {}).get("license", {}).get("spdx_id") or ""),
+            "license": license_record(meta)[0],
             "unit": "",
             "header": str(name),
             "values": values,
