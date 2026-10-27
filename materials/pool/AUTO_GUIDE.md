@@ -40,14 +40,16 @@ auto <陣> <探し方>
 
 | 順 | 依頼の 1 行 | ねらい |
 |---|---|---|
-| 11 | `auto b050 --national --only-national data.gov.au --query register` | org・category・date（Claude が出した） |
-| 12 | `auto b051 --national --only-national data.gov.au --query facilities` | address・category |
-| 13 | `auto b052 --national --only-national data.gov.au --query grants` | org・amount・date |
+| 11 | `auto b050 --national --only-national data.gov.au --query register` | org・category・date（Claude が出した。data.gov.au は語なしでも 2,227 候補のうち 2,038 表がもう使った表で、残りは少ない） |
+| 12 | `auto b051 --national --only-national opendata.swiss` | **まだ一度も集めていない公開元**（2026-10-27 に train に固定・許可済み）。ドイツ語・フランス語。1 陣 600 表までなので、採用が多ければ同じ形で b052 も |
+| 13 | `auto b052 --national --only-national opendata.swiss` | b051 の残り（b051 の auto_log で「残りは次の陣へ」があるときだけ。無ければ飛ばす） |
 | 14 | `auto b053 --national --only-national open.canada.ca` | 語なし（英語・仏語） |
 | 15 | `auto b054 --national --only-national data.gov.ie` | 語なし |
 | 16 | `auto b055 --national --only-national catalog.data.metro.tokyo.lg.jp --query 一覧` | 日本語の category・address |
-| 17 | `auto b056 --national --only-national data.gov.au --query schedule` | date |
+| 17 | `auto b056 --national --only-national data.gov.au --query grants` | org・amount・date |
 | 18 | `auto b057 --national --only-national open.canada.ca --query licence` | date・id・org |
+
+**列が減った理由（2026-10-28 Claude）**：b003〜b014 は 1 陣 1,100〜4,500 列だったが、b015 から 15〜320 列。①大きい公開元（東京都・豪州・世界の CKAN）の表をもう使った（b012 で候補 13,748 のうち 10,221、b036 で 2,227 のうち 2,038）②`--query` の 1 語で候補が 30〜230 に絞られる ③採用しても取り出しで落ちる（b036：採用 133 表のうち取り出せたのは 47。見出しの行が見つからない 42、datastore が 302 で 16）。増やすには**新しい公開元**が要る
 
 ## 3. ラベル付け（今までと同じ）
 - `materials/pool/work/<陣>/sheets/sheet_NNN.md` を LABEL_GUIDE v2.0 だけで答え、`materials/pool/work/<陣>/sheets/answers/sheet_NNN.tsv` に保存する（予測は見ない。予測ファイルはまだ無い）
