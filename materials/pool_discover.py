@@ -85,8 +85,12 @@ def csv_on_host(res, site):
     """カタログと同じホスト、または allowed_hosts.json の csv_domains に書いた組織のドメインの https の CSV。"""
     url = str(res.get("url") or "")
     fmt = str(res.get("format") or "").lower()
+    try:   # URL の欄が壊れている資料（data.gov.uk の「[wpdm_package id='15516']」など）は使わない（2026-10-27）
+        parsed = urlparse(url)
+    except ValueError:
+        return False
     return (fmt in ("csv", "text/csv") or url.lower().split("?")[0].endswith(".csv")) and \
-        urlparse(url).scheme == "https" and host_in(urlparse(url).hostname, csv_domains(urlparse(site).hostname or ""))
+        parsed.scheme == "https" and host_in(parsed.hostname, csv_domains(urlparse(site).hostname or ""))
 
 
 def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
