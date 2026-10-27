@@ -1,4 +1,4 @@
-# 2026-10-27 20:31 JST — RWTの国内分析ルートとGitTables小標本の教材化前監査
+# 2026-10-27 20:37 JST — RWTの国内分析ルートとGitTables小標本の教材化前監査
 
 ## 確認済み
 - RWT-RuTaBERT: 文化庁資料・e-Govから、国内の非公開な列型分類/学習を著作権法30条の4で扱う条件付きルートを追加。情報解析・AI学習は公的説明に明記される一方、人手annotationは推論。条件（国内行為、非享受目的、不当な利益侵害なし、合法アクセス・販売DB/robots.txt/契約の確認、必要最小限、記録保存）未確認のため、全1,325,901 train列のlabel stagingはrights_hold継続。**jitsuris-trainは公開repoなのでraw values・全manifest・source-bearing annotationを置かない**。内部ルートでは非公開環境を使い、Claude/ChatGPT等の外部サービスは処理場所・規約を別確認。公開再配布は別許諾が必要。詳細は rights dossier 第7節とClaude宛て報告。
