@@ -33,7 +33,7 @@ ALLOWED_SPDX = {
 PII_HEADER = re.compile(
     r"(^|[^a-z0-9])(e-?mail|phone|telephone|mobile|fax|ssn|social security|"
     r"passport|national id|personal id|first name|last name|full name|given name|"
-    r"family name|person name|contact name|author|byline|posted by|username|user name|patient|client|customer|"
+    r"family name|person name|contact name|author|byline|posted by|username|user name|user[-_ ]?id|patient|client|customer|"
     r"employee|student|home address|street address|postal address|postcode|zip code|"
     r"date of birth|birth date)([^a-z0-9]|$)", re.I
 )
@@ -50,7 +50,8 @@ PERSON_RECORD_PATH = re.compile(
 )
 USER_GENERATED_SOURCE = re.compile(
     r"(hacker[._ -]?news|dump[._ -]?hn|reddit|twitter|facebook|"
-    r"stack[._ -]?exchange|stackoverflow|disqus|mastodon|telegram|youtube|"
+    r"stack[._ -]?exchange|stack[._ -]?overflow|stackoverflow|sotorrent|"
+    r"disqus|mastodon|telegram|youtube|"
     r"bitcointalk|forum|sentiment|topic[._ -]?scraper|tweet|"
     r"intent.?classifier|reviews?|conversation|transcript|dialog|"
     r"natural[._ -]?language[._ -]?processing|applied[._ -]?nlp|"
