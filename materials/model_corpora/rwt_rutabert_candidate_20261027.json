@@ -45,7 +45,8 @@
         "Fix the purpose as column semantic classification and model development, without using source expression for enjoyment or aiming to reproduce it.",
         "Confirm no known pirated source, no access-control or robots.txt bypass, and no paid or planned AI-training database market whose interests would be unreasonably prejudiced.",
         "Limit display to material necessary for classification, restrict access, and preserve source, checksum, purpose, method, and decision records.",
-        "Do not publicly redistribute raw RWT/Wikipedia tables or the extracted annotation corpus under this exception."
+        "Do not publicly redistribute raw RWT/Wikipedia tables or the extracted annotation corpus under this exception.",
+        "The public jitsuris-train repository is not an internal staging location; keep raw values, full page/table manifests, and source-bearing annotation extracts out of it. Review cross-border processing and service terms before sending content to external AI services."
       ],
       "authority_urls": [
         "https://www.bunka.go.jp/seisaku/chosakuken/pdf/93903601_01.pdf",
@@ -56,7 +57,7 @@
     }
   },
   "relevance": "Large multilingual column-classification candidate that may add Russian headers and examples. DBpedia labels require a reviewed mapping to LABEL_GUIDE.md; unmappable labels must remain unmapped.",
-  "handling": "Rights hold for label staging remains in force until the Japan-internal Article 30-4 conditions and human-annotation scope are reviewed. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. The metadata-only preflight can enumerate train page/table IDs. If the conditional internal route is cleared, reconstruct original headers from RWT metadata, hide LoReTA label and label_id, use only necessary values for annotation, add provenance records, and keep all 115,448 test columns sealed.",
+  "handling": "Rights hold for label staging remains in force until the Japan-internal Article 30-4 conditions and human-annotation scope are reviewed. The public jitsuris-train repository is not a valid internal staging location: do not commit raw values, full page/table manifests, or source-bearing annotation extracts there. Do not download, redistribute, label, or import into materials/pool/batch_*.jsonl yet. If the conditional route is cleared, stage privately, limit displayed values, hide LoReTA label and label_id, preserve provenance, check external AI service/location/terms separately, and keep all 115,448 test columns sealed.",
   "source_links": [
     "https://huggingface.co/datasets/aidalab/rwt-rutabert",
     "https://github.com/YRL-AIDA/LoReTA/tree/f12d7f83a70a065c90eb314a14e35bf177bade22",
