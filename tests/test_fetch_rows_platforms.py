@@ -197,6 +197,51 @@ class CkanResourceShowForbiddenTests(unittest.TestCase):
         self.assertTrue(any("package_show?id=ds-name" in u for u in self.calls))
 
 
+class GovUkLinkTests(unittest.TestCase):
+    """data.gov.uk：http:// の古いリンクを https で読む・gov.uk の中の転送を許す（b062。2026-10-28）。"""
+    RID = "5c3531f1-5e8a-4db1-9a83-af463020ded5"
+
+    def setUp(self):
+        self.orig = (F.http_json, F.http_bytes)
+        self.url = "http://www.example-council.gov.uk/files/a.csv"
+        def fake_json(url, step="", tries=3):
+            if "resource_show" in url:
+                return {"result": {"package_id": "p1", "url": self.url, "format": "CSV", "datastore_active": False}}
+            if "package_show" in url:
+                return {"result": {"license_id": "uk-ogl"}}
+            raise AssertionError(url)
+        self.seen = []
+        def fake_bytes(url, step="", tries=3, limit=0):
+            self.seen.append(url)
+            return "year,count\n2020,5\n2021,7\n".encode(), False
+        F.http_json, F.http_bytes = fake_json, fake_bytes
+        self.item = {"n": 1, "publisher_id": "datagov_uk:x", "resource_url": f"https://data.gov.uk/dataset/ds/resource/{self.RID}",
+                     "platform": "ckan", "host": "data.gov.uk"}
+
+    def tearDown(self):
+        F.http_json, F.http_bytes = self.orig
+        F.REDIRECT_DOMAINS.clear()
+
+    def test_http_link_on_gov_uk_is_read_with_https(self):
+        meta, fields, recs, total = F.fetch_table(self.item, set())
+        self.assertEqual(self.seen, ["https://www.example-council.gov.uk/files/a.csv"])
+        self.assertEqual(meta["download_url"], "https://www.example-council.gov.uk/files/a.csv")
+
+    def test_http_link_elsewhere_is_not_upgraded(self):
+        self.url = "http://www.example.org/a.csv"
+        with self.assertRaisesRegex(ValueError, "catalog host"):
+            F.fetch_table(self.item, set())
+        self.assertEqual(self.seen, [])
+
+    def test_redirect_within_gov_uk_only(self):
+        F.fetch_table(self.item, set())
+        self.assertTrue(F._redirect_ok("https://assets.publishing.service.gov.uk/a.csv"))
+        self.assertTrue(F._redirect_ok("https://webarchive.nationalarchives.gov.uk/x/a.csv"))
+        self.assertFalse(F._redirect_ok("http://assets.publishing.service.gov.uk/a.csv"))
+        self.assertFalse(F._redirect_ok("https://gov.uk.example.com/a.csv"))
+        self.assertFalse(F._redirect_ok("https://example.org/a.csv"))
+
+
 class OpendataSwissLicenseTests(unittest.TestCase):
     """opendata.swiss の利用条件が URL で来ても、terms_open・terms_by だけを許す（2026-10-28）。"""
 

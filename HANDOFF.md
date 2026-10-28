@@ -1,3 +1,17 @@
+# 2026-10-28 23:20 JST — Claude：b063 を確定（教材庫 30,912 列）・英国の取り出しを直した
+
+## 確認済み
+- b063（スイス）：一致 443・食い違い 281 を全件裁定、抜き取り 22 の誤り 0、**675 列を確定**（`adjudication_b063.jsonl`）。教材庫は **30,912 列・4,522 表・801 公開元・36 陣**。
+- 先生は研究助成（SNSF・ARAMIS）・動物実験の統計・州の文化支援・調達契約・市民の提案を「1 件ごとの記録」として丸ごと S にしていた。取り出した列に人の名前・連絡先が無いので S をやめて種類を付けた（b057 と同じ）。人の名前が混ざる列（受注者・受益者・c/o）と、人ごとの名簿・略歴（SIKART・市議会議員）は S のまま。
+- b062 の取り出しの誤り 177 の内訳：gov.uk の CSV で datastore 403 30・転送の誤り 23・CSV の 403 30・XLS/XML/HTML/PDF など 40 ほど・gov.uk の外（nhs.uk・amazonaws など）20 ほど・見出しの行が無い 15 など。
+- 直した（`materials/fetch_rows.py`、試験 `tests/test_fetch_rows_platforms.py` GovUkLinkTests）：① 組織のドメイン（csv_domains）の `http://` のリンクは https で読む ② CSV の転送先は、その表の csv_domains の中の https なら許す（gov.uk → assets.publishing.service.gov.uk・webarchive.nationalarchives.gov.uk）。外部への接続はこの環境から確かめられないので、効いたかは b065 の取り出しで確かめる。
+- AUTO_GUIDE に b065（英国をもう一度、b064 の後）を足した。403・転送の誤りの表は「使った表」に数えないのでもう一度採れる。
+
+## 未完了
+1. b064（スイスの残り）・b065（英国）を ChatGPT が集めてラベル → Claude が照合・裁定。
+2. `router_cv.py` で T_H、`router_eval.py` で b015〜b017。
+3. C3 事前記録 → オーナー許可。
+
 # 2026-10-28 22:40 JST — Claude：b060・b062 を確定（教材庫 30,237 列）・b063 の予測を依頼
 
 ## 確認済み

@@ -36,6 +36,15 @@ sys.path.insert(0, str(ROOT / "materials"))
 from pipeline import ALLOWED_LICENSES  # noqa: E402  採用の道具と同じライセンスの一覧
 
 ALLOWED_HOSTS = {"data.bodik.jp"}   # 表ごとに、確かめたホストだけを足す（fetch_table）
+# CSV のファイルの転送先として許す組織のドメイン（csv_domains）。data.gov.uk のファイルは www.gov.uk などから
+# assets.publishing.service.gov.uk・webarchive.nationalarchives.gov.uk へ転送される（b062 で 23 表。2026-10-28）
+REDIRECT_DOMAINS = set()
+
+
+def _redirect_ok(url):
+    p = urlparse(url)
+    host = (p.hostname or "").lower()
+    return host in ALLOWED_HOSTS or (p.scheme == "https" and any(host == d or host.endswith("." + d) for d in REDIRECT_DOMAINS))
 # カタログの API が同じ運営の別ホストへ転送するもの（2026-10-28：data.gov.uk の API は ckan.publishing.service.gov.uk へ。b058 で 162 表が
 # 「redirected outside the allowed hosts」になった。転送先はカタログ自身の help の URL で確かめた）
 API_REDIRECTS = {"data.gov.uk": ("ckan.publishing.service.gov.uk",),
@@ -193,7 +202,7 @@ def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
         time.sleep(1.0 + 4.0 * attempt)
         try:
             with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=90) as resp:
-                if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
+                if not _redirect_ok(resp.geturl()):
                     raise ValueError("redirected outside the allowed hosts")
                 raw = resp.read(limit + 1)
                 return raw[:limit], len(raw) > limit
@@ -332,6 +341,11 @@ def fetch_table(item, known):
         if download in known or item["resource_url"] in known:
             raise ValueError("URL overlaps the training corpus or the main set")
         host = urlparse(item["resource_url"]).hostname or ""
+        if download.startswith("http://") and host_in(urlparse(download).hostname or "", csv_domains(host)):
+            # data.gov.uk の古いリンクは http:// が多い（b062 で gov.uk の CSV 30 表）。組織のドメインのものだけ https で読む
+            download = "https://" + download[len("http://"):]
+        REDIRECT_DOMAINS.clear()
+        REDIRECT_DOMAINS.update(csv_domains(host))
         meta = {"platform": plat, "resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
                 "download_url": download, "license": lic, "fetched_utc": now,
                 "source_prefix": "jp3" if plat == "bodik" else "world", "language": language_of(host, plat)}
