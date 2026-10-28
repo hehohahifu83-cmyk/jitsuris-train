@@ -329,11 +329,24 @@ if SILVER:
     from encoder_context import TITLE_SEP
     # Kaggle はデータセットの中の .gz を展開して置くことがある（C3b の 1 回目 run 40786377838 で「.jsonl.gz が無い」で止まった）。
     # 展開された名前（.gz なし）も探す
+    # 2 回目（run 40788679217）：.gz の無い名前は「フォルダ」として置かれていた。フォルダなら中のファイル（1 つ）を読む
     _scands = [SILVER] + ([SILVER[:-3]] if SILVER.endswith(".gz") else [])
-    _spath = next((p for p in _scands if os.path.isfile(p)), None)
+    _sfiles = []
+    for _c in _scands:
+        if os.path.isfile(_c):
+            _sfiles = [_c]; break
+        if os.path.isdir(_c):
+            _sfiles = sorted(os.path.join(_d, _n) for _d, _, _ns in os.walk(_c) for _n in _ns)
+            print(f"FT_SILVER: {_c} is a directory: {_sfiles[:5]}", flush=True)
+            if len(_sfiles) == 1:
+                break
+            raise SystemExit(f"FT_SILVER のフォルダ {_c} の中のファイルが 1 つでない：{_sfiles[:10]}")
+    _spath = _sfiles[0] if _sfiles else None
     if _spath is None:
         raise SystemExit(f"FT_SILVER のファイルが無い：{_scands}（近くのファイル {sorted(os.listdir(os.path.dirname(SILVER) or '.'))[:20] if os.path.isdir(os.path.dirname(SILVER) or '.') else '（場所が無い）'}）")
-    with (gzip.open(_spath, "rt", encoding="utf-8") if _spath.endswith(".gz") else open(_spath, encoding="utf-8")) as _f:
+    with open(_spath, "rb") as _f:
+        _is_gz = _f.read(2) == b"\x1f\x8b"   # 名前ではなく中身の先頭で gzip かを決める
+    with (gzip.open(_spath, "rt", encoding="utf-8") if _is_gz else open(_spath, encoding="utf-8")) as _f:
         _srows = [json.loads(l) for l in _f if l.strip()]
     SILVER = _spath
     _skept = [d for d in _srows if d["label"] in L]
