@@ -1,3 +1,8 @@
+# 2026-10-29 08:45 JST — Claude：C3a は「差なし」で採らない・C3b を学習中
+
+- C3a（run 40777786620、COMPLETE）を確かめの 6 陣で採点（`research/c3_eval.py`、`bench/c3_prereg_20261029.md` 末尾）：製品の形で C2 正 84.6%・不明 11.4%・重大 3 → C3a 正 84.3%・不明 11.9%・重大 2。規則 2 を満たさず **差なし → 採らない**。
+- C3b（銀 A で 1 段目 → 金で 2 段目）を Kaggle に依頼済み（commit c73a79d）。見積り 105〜135 分。COMPLETE になったら：予測の道具に c3b（run の番号・種子 1 の重みの SHA-256、`eval_reports/latest/job1_manifest.json`）を足し、`materials/pool/work/dev1029c3a/set.json` と同じ 6 陣で予測 → `split_preds.py <dir> pred_c3b_seed1.json` → `python research/c3_eval.py --model c3a --model c3b` → 第 2 回の規則で判定。ERROR なら原因を直して同じ設定で依頼し直す（銀の段は初めて動かすので、ログの「silver step」を見る）。
+
 # 2026-10-29 00:20 JST — Claude：C3a の学習を依頼（オーナー許可「許可する」2026-10-28）
 
 - 事前記録 `bench/c3_prereg_20261029.md`（結果を見る前に固定）。C3a＝C2 と同じ設定で、教材庫から確かめの 6 陣（b015・b016・b017・b060・b062・b063、確定 2,426 列）を除いた 28,486 列で学習。種子 1〜3、`kaggle/kaggle.request`。見積り 75〜90 分。
