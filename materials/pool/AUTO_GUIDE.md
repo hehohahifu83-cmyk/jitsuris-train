@@ -54,6 +54,7 @@ auto <陣> <探し方>
 | 22 | `auto b061 --national --only-national opendata.swiss` | **スイスをもう一度**（b059 は候補 0：利用条件が URL（…/terms-of-use#terms_by）で来て読めなかった → 直した。terms_open・terms_by だけ使い、terms_ask・terms_by_ask は使わない） |
 | 23 | `auto b062 --national --only-national data.gov.uk` | 英国の残り（b060 の auto_log に「残りは次の陣へ」があるか、採用が多いとき） |
 | 24 | `auto b063 --national --only-national opendata.swiss` | **スイスをもう一度**（b061 は 149 表すべて転送の誤り＝API が ckan.opendata.swiss へ転送 → 許可した。2026-10-28 Claude） |
+| 25 | `auto b064 --national --only-national opendata.swiss` | **スイスの残り**（b063 は 433 候補のうち 283 表が「1 陣 1 公開元 3 表まで」で次の陣へ回った。使った表は自動で外れる。2026-10-28 Claude） |
 
 **列が減った理由（2026-10-28 Claude）**：b003〜b014 は 1 陣 1,100〜4,500 列だったが、b015 から 15〜320 列。①大きい公開元（東京都・豪州・世界の CKAN）の表をもう使った（b012 で候補 13,748 のうち 10,221、b036 で 2,227 のうち 2,038）②`--query` の 1 語で候補が 30〜230 に絞られる ③採用しても取り出しで落ちる（b036：採用 133 表のうち取り出せたのは 47。見出しの行が見つからない 42、datastore が 302 で 16）。増やすには**新しい公開元**が要る
 
