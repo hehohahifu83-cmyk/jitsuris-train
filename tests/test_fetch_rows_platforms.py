@@ -166,5 +166,36 @@ class CkanDatastoreFallbackTests(unittest.TestCase):
             F.fetch_table(self.item, set())
 
 
+class CkanResourceShowForbiddenTests(unittest.TestCase):
+    """data.gov.uk：resource_show だけが HTTP 403 のとき、URL のデータセット名の package_show から資料を探す（2026-10-28）。"""
+    RID = "5c3531f1-5e8a-4db1-9a83-af463020ded5"
+
+    def setUp(self):
+        self.orig = (F.http_json, F.http_bytes)
+        self.csv_url = "https://www.gov.uk/files/a.csv"
+        self.calls = []
+        def fake_json(url, step="", tries=3):
+            self.calls.append(url)
+            if "resource_show" in url:
+                raise RuntimeError("resource_show: HTTP 403")
+            if "package_show" in url:
+                return {"result": {"id": "p1", "license_id": "uk-ogl",
+                                   "resources": [{"id": self.RID, "url": self.csv_url, "format": "CSV", "datastore_active": False}]}}
+            raise AssertionError(url)
+        F.http_json = fake_json
+        F.http_bytes = lambda url, step="", tries=3, limit=0: ("year,count\n2020,5\n2021,7\n".encode(), False)
+        self.item = {"n": 1, "publisher_id": "datagov_uk:x", "resource_url": f"https://data.gov.uk/dataset/ds-name/resource/{self.RID}",
+                     "platform": "ckan", "host": "data.gov.uk"}
+
+    def tearDown(self):
+        F.http_json, F.http_bytes = self.orig
+
+    def test_reads_resource_from_package_show(self):
+        meta, fields, recs, total = F.fetch_table(self.item, set())
+        self.assertEqual(fields, ["year", "count"])
+        self.assertEqual(meta["download_url"], self.csv_url)
+        self.assertTrue(any("package_show?id=ds-name" in u for u in self.calls))
+
+
 if __name__ == "__main__":
     unittest.main()

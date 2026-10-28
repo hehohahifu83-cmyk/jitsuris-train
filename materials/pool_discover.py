@@ -44,7 +44,8 @@ NATIONAL = [
     {"parent": "swiss", "host": "opendata.swiss", "site": "https://opendata.swiss"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
-UA = {"User-Agent": "jitsuris-train-pool-discover/1.0 (metadata only)"}
+# opendata.swiss は前の名乗り方（jitsuris-train-pool-discover/1.0 (metadata only)）と名乗りなしを HTTP 403 にする（2026-10-28 probe_hosts）
+UA = {"User-Agent": "jitsuris-train/1.0 (research; +https://github.com/hehohahifu83-cmyk/jitsuris-train)"}
 QUERY = None   # --query：題名・説明に語を含むデータセットだけを探す（CKAN の q、Socrata の q。2026-10-25、弱い種類の教材を集めるため）
 POOL_NAME = "train"   # --pool eval2 で封印セット #2 の候補を探す（2026-10-25。公開元の割り当ては allocation.json のまま、付け替えない）
 DEADLINE = None   # 持ち時間の終わり（time.monotonic()）。過ぎたら新しい組織を探さずに止める（main が --budget-minutes から決める）

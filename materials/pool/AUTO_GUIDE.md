@@ -36,7 +36,7 @@ auto <陣> <探し方>
 採用が 0 表のときは、語を変える（日本語：住所・施設・一覧・事業者・区分・種別・実績・統計・人数・届出、英語：facility・location・inspection・license・grant・contract・schedule・survey）。同じ語で 2 回やらない。
 
 ### 2026-10-28 追加（Claude）：次の順
-これまでの取れ高：data.gov.au が一番多い（語なし b036 276 列、address 141・count 130・population 87）。次に data.gov.ie（53）・open.canada.ca（45）・東京都（103）。**data.gov.uk は使わない**（b049：採用 396 表すべて resource_show が HTTP 403 で取り出し 0。原因を Claude が直すまで）。data.boston.gov は候補がすべて使用済み（b027〜b034）。
+これまでの取れ高：data.gov.au が一番多い（語なし b036 276 列、address 141・count 130・population 87）。次に data.gov.ie（53）・open.canada.ca（45）・東京都（103）。data.gov.uk は b049 で採用 396 表すべて resource_show が HTTP 403 だった → **2026-10-28 Claude が直した**（resource_show だけが止められていたので package_show から読む。opendata.swiss は名乗り方で止められていたので直した。調査 `materials/pool/probe/hosts_20261028.json`）。data.boston.gov は候補がすべて使用済み（b027〜b034）。
 
 | 順 | 依頼の 1 行 | ねらい |
 |---|---|---|
@@ -48,6 +48,9 @@ auto <陣> <探し方>
 | 16 | `auto b055 --national --only-national catalog.data.metro.tokyo.lg.jp --query 一覧` | 日本語の category・address |
 | 17 | `auto b056 --national --only-national data.gov.au --query grants` | org・amount・date |
 | 18 | `auto b057 --national --only-national open.canada.ca --query licence` | date・id・org |
+| 19 | `auto b058 --national --only-national data.gov.uk` | 英国（直したあと。Claude が出した） |
+| 20 | `auto b059 --national --only-national opendata.swiss` | スイス（直したあと） |
+| 21 | `auto b060 --national --only-national data.gov.uk` | 英国の残り（b058 の auto_log に「残りは次の陣へ」があるときだけ） |
 
 **列が減った理由（2026-10-28 Claude）**：b003〜b014 は 1 陣 1,100〜4,500 列だったが、b015 から 15〜320 列。①大きい公開元（東京都・豪州・世界の CKAN）の表をもう使った（b012 で候補 13,748 のうち 10,221、b036 で 2,227 のうち 2,038）②`--query` の 1 語で候補が 30〜230 に絞られる ③採用しても取り出しで落ちる（b036：採用 133 表のうち取り出せたのは 47。見出しの行が見つからない 42、datastore が 302 で 16）。増やすには**新しい公開元**が要る
 

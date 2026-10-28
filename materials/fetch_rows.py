@@ -305,8 +305,20 @@ def fetch_table(item, known):
                 raise ValueError(f"CKAN host not allowed: {host}")
             ALLOWED_HOSTS.add(host)
         base = item["resource_url"].split("/dataset/")[0] + "/api/3/action/"
-        res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
-        pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
+        try:
+            res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]
+            pkg = http_json(base + "package_show?" + urlencode({"id": res["package_id"]}), "package_show")["result"]
+        except RuntimeError as exc:
+            # data.gov.uk は resource_show だけが HTTP 403（どの名乗り方でも。package_show は読める。2026-10-28 probe_hosts）。
+            # URL のデータセット名で package_show を読み、その中の同じ id の資料を使う
+            ds = re.search(r"/dataset/([^/]+)/resource/", item["resource_url"])
+            if "HTTP 403" not in str(exc) or not ds:
+                raise
+            pkg = http_json(base + "package_show?" + urlencode({"id": ds.group(1)}), "package_show")["result"]
+            res = next((r for r in pkg.get("resources") or [] if r.get("id") == rid), None)
+            if res is None:
+                raise RuntimeError(f"{exc}; package_show: resource not in package") from None
+            res = {**res, "package_id": pkg.get("id")}
         from pipeline import license_from_pkg, csv_domains, host_in
         lic = license_from_pkg(pkg, urlparse(item["resource_url"]).hostname)
         if lic not in ALLOWED_LICENSES:
