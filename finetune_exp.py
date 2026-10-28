@@ -327,8 +327,15 @@ if SILVER:
         raise SystemExit("FT_SILVER は FT_SORT=1 と一緒に、FT_AUG なし・GPU で使う")
     import gzip
     from encoder_context import TITLE_SEP
-    with gzip.open(SILVER, "rt", encoding="utf-8") as _f:
+    # Kaggle はデータセットの中の .gz を展開して置くことがある（C3b の 1 回目 run 40786377838 で「.jsonl.gz が無い」で止まった）。
+    # 展開された名前（.gz なし）も探す
+    _scands = [SILVER] + ([SILVER[:-3]] if SILVER.endswith(".gz") else [])
+    _spath = next((p for p in _scands if os.path.isfile(p)), None)
+    if _spath is None:
+        raise SystemExit(f"FT_SILVER のファイルが無い：{_scands}（近くのファイル {sorted(os.listdir(os.path.dirname(SILVER) or '.'))[:20] if os.path.isdir(os.path.dirname(SILVER) or '.') else '（場所が無い）'}）")
+    with (gzip.open(_spath, "rt", encoding="utf-8") if _spath.endswith(".gz") else open(_spath, encoding="utf-8")) as _f:
         _srows = [json.loads(l) for l in _f if l.strip()]
+    SILVER = _spath
     _skept = [d for d in _srows if d["label"] in L]
     s_data = [(text((d["header"], d["values"], d["label"], d["context"], TITLE_SEP + d["title"] if d.get("title") else ""), PREFIX), L[d["label"]]) for d in _skept]
     S_EPOCHS = float(os.environ.get("FT_SILVER_EPOCHS", "1"))

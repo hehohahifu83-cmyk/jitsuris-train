@@ -41,6 +41,11 @@ if [ "$mode" = train ]; then
       materials/real_labels.jsonl materials/real_labels_biz.jsonl materials/real_labels_biz2.jsonl materials/real_labels_direct.jsonl materials/real_labels_jp.jsonl materials/real_labels_jp2.jsonl materials/real_labels_jp3.jsonl $(ls materials/pool/batch_*.jsonl materials/pool/titles.json materials/pool/undecidable.jsonl materials/pool/hard_list.jsonl materials/pool/hard_list_cv.jsonl materials/model_corpora/silver/train_*.jsonl.gz 2>/dev/null) \
       cpu_lab/self_learning.py cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/progress_probe.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
+  # FT_SILVER のファイルが束に入っているか（C3b の 1 回目は Kaggle 側で見つからず止まった。2026-10-29）
+  for sv in $(grep -oE 'FT_SILVER=[^ ]+' args.txt | cut -d= -f2 | sort -u); do
+    tar -tf /tmp/ds/bundle.tar | grep -qx "$sv" || { echo "FT_SILVER の $sv が束に無い"; exit 1; }
+    echo "$(date -u +%FT%TZ) 束に銀の教材：$sv" >> KAGGLE_LOG.md
+  done
   printf '{"title":"jitsuris-data","id":"%s","licenses":[{"name":"other"}]}' "$DS" > /tmp/ds/dataset-metadata.json
   if kaggle datasets status "$DS" >/dev/null 2>&1; then kaggle datasets version -p /tmp/ds -m "update $(date -u +%FT%TZ)"
   else kaggle datasets create -p /tmp/ds; fi
