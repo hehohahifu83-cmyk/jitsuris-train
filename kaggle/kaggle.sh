@@ -42,8 +42,10 @@ if [ "$mode" = train ]; then
       cpu_lab/self_learning.py cpu_lab/materials/reviewed_replay.jsonl cpu_lab/materials/progress_probe.jsonl hfmodel )
   tar -tf /tmp/ds/bundle.tar | grep -q blind_set && { echo "未見セットが混ざった"; exit 1; }
   # FT_SILVER のファイルが束に入っているか（C3b の 1 回目は Kaggle 側で見つからず止まった。2026-10-29）
+  # （一覧はファイルに書いてから探す。tar -tf | grep -q だと grep が先に終わって tar が書けず、pipefail で「無い」になった。run 40788326389）
+  tar -tf /tmp/ds/bundle.tar > /tmp/ds_list.txt
   for sv in $(grep -oE 'FT_SILVER=[^ ]+' args.txt | cut -d= -f2 | sort -u); do
-    tar -tf /tmp/ds/bundle.tar | grep -qx "$sv" || { echo "FT_SILVER の $sv が束に無い"; exit 1; }
+    grep -qxF "$sv" /tmp/ds_list.txt || { echo "FT_SILVER の $sv が束に無い"; exit 1; }
     echo "$(date -u +%FT%TZ) 束に銀の教材：$sv" >> KAGGLE_LOG.md
   done
   printf '{"title":"jitsuris-data","id":"%s","licenses":[{"name":"other"}]}' "$DS" > /tmp/ds/dataset-metadata.json
