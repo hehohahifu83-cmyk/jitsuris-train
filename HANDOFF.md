@@ -3,7 +3,7 @@
 - 事前記録 `bench/c3_prereg_20261029.md`（結果を見る前に固定）。C3a＝C2 と同じ設定で、教材庫から確かめの 6 陣（b015・b016・b017・b060・b062・b063、確定 2,426 列）を除いた 28,486 列で学習。種子 1〜3、`kaggle/kaggle.request`。見積り 75〜90 分。
 - 比べる相手 C2 の予測を b060・b062・b063 で出す依頼（`materials/pool/work/dev1029/`、`materials/label_assist/predict.request` の c2）。出たら `python materials/pool/split_preds.py materials/pool/work/dev1029 pred_c2_seed1.json`。
 - C3a が COMPLETE になったら：予測の道具（`.github/workflows/label-assist-predict.yml`）に c3a（run の番号と種子 1 の重みの SHA-256）を足し、6 陣で予測 → `router_eval.py` と同じ製品の形で C2 と比べ、事前記録の規則で判定。
-- 銀（C3b）は学習のコード（encoder_exp.py）が未対応。2 段の学習（銀で学んでから金で仕上げる）を実装してから次の回。
+- **C3b を実装した（2026-10-29）**：`silver.py train --tier A` → `materials/model_corpora/silver/train_A.jsonl.gz`（26,283 列、種類ごと 4,000 まで）。`finetune_exp.py` に FT_SILVER（銀だけで 1 段目 → 今までどおり金で 2 段目）、`kaggle/kaggle.sh` の束に銀のファイル、試験 `tests/test_silver_train.py`。事前記録 `bench/c3_prereg_20261029.md` の第 2 回に依頼の文。**C3a が終わってから依頼する**（動いている学習は置き換えない）。torch が無いので手元で学習は試していない。
 
 # 2026-10-28 23:20 JST — Claude：b063 を確定（教材庫 30,912 列）・英国の取り出しを直した
 

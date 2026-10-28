@@ -12,6 +12,7 @@
   python materials/model_corpora/silver.py status [--teacher grok]
   python materials/model_corpora/silver.py check    # 大きいまとまりの中が 1 種類かを、抜き取った列ごとに確かめるシート（c3 計画の段 1 の 3）
   python materials/model_corpora/silver.py silver   # 銀 A：ChatGPT の答え（確かめの裁定を反映）× C2 の予測の一致／銀 B：Claude の裁定（silver_b_decisions.json）
+  python materials/model_corpora/silver.py train --tier A   # 学習用の銀（C3b の 1 段目）：規則に合う列を、種類ごと・規則ごとの上限で抜き出す（2026-10-29）
 """
 import argparse
 import gzip
@@ -309,6 +310,52 @@ def cmd_silver(_a):
     print(f"銀 {ab:,} / {total:,} 列（{ab / total:.1%}。A {why['銀 A']:,}・B {why['銀 B']:,}）・規則 {len(rules):,}：{dict(why)}")
 
 
+TRAIN_SALT = "jitsuris-silver-train-v1"
+
+
+def cmd_train(a):
+    """C3b の 1 段目（銀で学ぶ）の教材（2026-10-29 Claude。オーナー許可 2026-10-28「許可する」、事前記録 bench/c3_prereg_20261029.md の次の回）。
+    silver_rules.json の規則（まとまり×値の形）に合う列を、規則ごとに per_rule 列・種類ごとに per_label 列までに抜き出す。
+    銀 A は id が 41% と偏るので、種類ごとの上限で均す。person は教材庫と同じく使わない。どの列を取るかは列の中身と salt の SHA-256 だけで決める。
+    出力：silver/train_<tier>.jsonl.gz（1 行＝1 列。header・values・label・context・table・title・rule）"""
+    import hashlib
+    doc = json.loads((OUT / "silver_rules.json").read_text(encoding="utf-8"))
+    tiers = set(a.tier.split("+"))
+    rules = {(r["key"], r["shape"]): r for r in doc["rules"] if r["tier"] in tiers and r["label"] != "person"}
+    # 1 回目：規則ごとの列の数 → 取る数（規則ごとの上限 → 種類ごとの上限で縮める）
+    n = Counter()
+    for r in read_rows():
+        k = (map_key(r), shape_key(r))
+        if k in rules:
+            n[k] += 1
+    want = {k: min(c, a.per_rule) for k, c in n.items()}
+    by_label = Counter()
+    for k, w in want.items():
+        by_label[rules[k]["label"]] += w
+    for k in want:
+        tot = by_label[rules[k]["label"]]
+        if tot > a.per_label:
+            want[k] = want[k] * a.per_label / tot
+    # 2 回目：規則の中で、ハッシュの小さい順に近い形で取る（取る割合＝want/n）
+    out, got = [], Counter()
+    for r in read_rows():
+        k = (map_key(r), shape_key(r))
+        if k not in rules:
+            continue
+        h = int(hashlib.sha256(f"{TRAIN_SALT}|{r['corpus']}|{r['table']}|{r['col']}".encode()).hexdigest()[:12], 16) / 16 ** 12
+        if h >= want[k] / n[k]:
+            continue
+        lab = rules[k]["label"]
+        got[lab] += 1
+        out.append({"header": r["header"] or NO_HEADER, "values": r["values"], "label": lab, "context": r.get("context") or [],
+                    "table": f"{r['corpus']}:{r['table']}", "title": r.get("table_title") or "", "rule": rules[k]["group"]})
+    path = OUT / f"train_{a.tier.replace('+', '')}.jsonl.gz"
+    with gzip.open(path, "wt", encoding="utf-8") as f:
+        for d in out:
+            f.write(json.dumps(d, ensure_ascii=False) + "\n")
+    print(f"{path.name}: {len(out):,} 列・規則 {len(n):,}（per_rule {a.per_rule}・per_label {a.per_label}）：{dict(got.most_common())}")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -316,10 +363,14 @@ def main(argv=None):
     sub.add_parser("reps")
     sub.add_parser("check")
     sub.add_parser("silver")
+    p = sub.add_parser("train")
+    p.add_argument("--tier", default="A", choices=["A", "B", "A+B"])
+    p.add_argument("--per-rule", type=int, default=60)
+    p.add_argument("--per-label", type=int, default=4000)
     p = sub.add_parser("status")
     p.add_argument("--teacher", choices=sorted(LS.TEACHERS), default="chatgpt")
     a = ap.parse_args(argv)
-    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check, "silver": cmd_silver}[a.cmd](a) or 0
+    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check, "silver": cmd_silver, "train": cmd_train}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":

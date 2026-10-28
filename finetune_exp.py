@@ -317,6 +317,46 @@ def finish_step(eff_loss):
             # fp16 の桁あふれ。GradScaler が更新を飛ばしていたので重みは壊れていない。fp32 に切り替えて続ける
             AMP_ON[0] = False; scaler = torch.amp.GradScaler(enabled=False); amp_fallback_step[0] = step
             print(f"fp16 で損失が有限にならない状態が続いたので、step {step} から fp32 に切り替える", flush=True)
+# FT_SILVER=<銀の教材 .jsonl.gz>（既定なし）：C3b の 2 段の学習（2026-10-29 Claude。オーナー許可 2026-10-28）。
+# 先に銀（外のデータの読み替え、materials/model_corpora/silver.py train）だけで FT_SILVER_EPOCHS 周（既定 1）学び、そのあと今までどおり金で仕上げる。
+# 1 段目は自分の最適化・学習率の予定を持ち、2 段目（下の本番）は最初から始める。銀は評価・検証には入れない。銀の種類で金に無いものは捨てる
+SILVER = os.environ.get("FT_SILVER")
+silver_info = None
+if SILVER:
+    if not SORT or AUG or CPU_TOKEN_CACHE:
+        raise SystemExit("FT_SILVER は FT_SORT=1 と一緒に、FT_AUG なし・GPU で使う")
+    import gzip
+    from encoder_context import TITLE_SEP
+    with gzip.open(SILVER, "rt", encoding="utf-8") as _f:
+        _srows = [json.loads(l) for l in _f if l.strip()]
+    _skept = [d for d in _srows if d["label"] in L]
+    s_data = [(text((d["header"], d["values"], d["label"], d["context"], TITLE_SEP + d["title"] if d.get("title") else ""), PREFIX), L[d["label"]]) for d in _skept]
+    S_EPOCHS = float(os.environ.get("FT_SILVER_EPOCHS", "1"))
+    s_dl = DataLoader(s_data, batch_size=BS * ACC, shuffle=True, collate_fn=collate_eff)
+    s_steps = int(len(s_dl) * S_EPOCHS)
+    s_opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(os.environ.get("FT_SILVER_LR", os.environ.get("FT_LR", "5e-5"))), weight_decay=0.01, **({"fused": True} if FUSED else {}))
+    s_sch = get_linear_schedule_with_warmup(s_opt, int(s_steps * 0.06), s_steps)
+    print(f"FT_SILVER={SILVER}: {len(s_data)}/{len(_srows)} silver rows, {S_EPOCHS:g} epochs, {s_steps} steps before the gold stage", flush=True)
+    s_t0 = time.time(); s_step = 0
+    while s_step < s_steps:
+        for micros, n in s_dl:
+            eff_loss = torch.zeros((), device=DEV)
+            for m in micros:
+                m = {k: v.to(DEV) for k, v in m.items()}
+                with torch.autocast(DEV, dtype=torch.float16, enabled=AMP_ON[0]):
+                    loss = training_loss(model(**m).logits, m["labels"]) * (m["labels"].shape[0] / n)
+                scaler.scale(loss).backward(); eff_loss += loss.detach()
+            scaler.unscale_(s_opt); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            scaler.step(s_opt); scaler.update(); s_sch.step(); s_opt.zero_grad(); s_step += 1
+            if s_step % 100 == 0:
+                print(f"silver step {s_step}/{s_steps} loss {eff_loss.item():.3f} {time.time() - s_t0:.0f}s", flush=True)
+            if s_step >= s_steps: break
+    del s_opt, s_sch
+    silver_info = {"path": SILVER, "rows": len(s_data), "rows_in_file": len(_srows), "epochs": S_EPOCHS, "steps": s_steps,
+                   "seconds": round(time.time() - s_t0, 1), "sha256": __import__("hashlib").sha256(open(SILVER, "rb").read()).hexdigest()}
+    manifest["silver"] = silver_info
+    print(f"silver stage done: {s_steps} steps {silver_info['seconds']:.0f}s", flush=True)
+    t0 = time.time()
 while step < steps:
     if SORT:
         for micros, n in dl:
