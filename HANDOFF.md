@@ -7,10 +7,11 @@
 - 直した（`materials/fetch_rows.py`、試験 `tests/test_fetch_rows_platforms.py` GovUkLinkTests）：① 組織のドメイン（csv_domains）の `http://` のリンクは https で読む ② CSV の転送先は、その表の csv_domains の中の https なら許す（gov.uk → assets.publishing.service.gov.uk・webarchive.nationalarchives.gov.uk）。外部への接続はこの環境から確かめられないので、効いたかは b065 の取り出しで確かめる。
 - AUTO_GUIDE に b065（英国をもう一度、b064 の後）を足した。403・転送の誤りの表は「使った表」に数えないのでもう一度採れる。
 
+- **使い分けの手順書 v0 は採らない**（`bench/crossval_body_h_20261026.md` 末尾）：教材庫の全列の交差検証では T_H=0.7 が線を満たした（正 91.3%→92.7%、重大 0.19%）が、確かめの b015〜b017（403 列）では重大 11（2.73%）で、今の製品の形（重大 3・0.74%）より悪い。製品の形も合格線の外（不明 14.6%）。交差検証の数字は新しい公開元には移らない。
+
 ## 未完了
 1. b064（スイスの残り）・b065（英国）を ChatGPT が集めてラベル → Claude が照合・裁定。
-2. `router_cv.py` で T_H、`router_eval.py` で b015〜b017。
-3. C3 事前記録 → オーナー許可。
+2. C3 事前記録 → オーナー許可。H なしで、本体そのもの（教材 30,912 列＋銀）を強くする方向。確かめは新しい公開元の陣で（交差検証の数字だけで決めない）。
 
 # 2026-10-28 22:40 JST — Claude：b060・b062 を確定（教材庫 30,237 列）・b063 の予測を依頼
 
