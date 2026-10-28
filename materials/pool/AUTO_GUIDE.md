@@ -50,7 +50,9 @@ auto <陣> <探し方>
 | 18 | `auto b057 --national --only-national open.canada.ca --query licence` | date・id・org |
 | 19 | `auto b058 --national --only-national data.gov.uk` | 英国（直したあと。Claude が出した） |
 | 20 | `auto b059 --national --only-national opendata.swiss` | スイス（直したあと） |
-| 21 | `auto b060 --national --only-national data.gov.uk` | 英国の残り（b058 の auto_log に「残りは次の陣へ」があるときだけ） |
+| 21 | `auto b060 --national --only-national data.gov.uk` | **英国をもう一度**（2026-10-28 Claude が出した。b058 は 162 表すべて「redirected outside the allowed hosts」＝API が ckan.publishing.service.gov.uk へ転送していた → 許可した。b049 の 395 表も「使った表」から外した） |
+| 22 | `auto b061 --national --only-national opendata.swiss` | **スイスをもう一度**（b059 は候補 0：利用条件が URL（…/terms-of-use#terms_by）で来て読めなかった → 直した。terms_open・terms_by だけ使い、terms_ask・terms_by_ask は使わない） |
+| 23 | `auto b062 --national --only-national data.gov.uk` | 英国の残り（b060 の auto_log に「残りは次の陣へ」があるか、採用が多いとき） |
 
 **列が減った理由（2026-10-28 Claude）**：b003〜b014 は 1 陣 1,100〜4,500 列だったが、b015 から 15〜320 列。①大きい公開元（東京都・豪州・世界の CKAN）の表をもう使った（b012 で候補 13,748 のうち 10,221、b036 で 2,227 のうち 2,038）②`--query` の 1 語で候補が 30〜230 に絞られる ③採用しても取り出しで落ちる（b036：採用 133 表のうち取り出せたのは 47。見出しの行が見つからない 42、datastore が 302 で 16）。増やすには**新しい公開元**が要る
 

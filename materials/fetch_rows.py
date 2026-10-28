@@ -36,6 +36,9 @@ sys.path.insert(0, str(ROOT / "materials"))
 from pipeline import ALLOWED_LICENSES  # noqa: E402  採用の道具と同じライセンスの一覧
 
 ALLOWED_HOSTS = {"data.bodik.jp"}   # 表ごとに、確かめたホストだけを足す（fetch_table）
+# カタログの API が同じ運営の別ホストへ転送するもの（2026-10-28：data.gov.uk の API は ckan.publishing.service.gov.uk へ。b058 で 162 表が
+# 「redirected outside the allowed hosts」になった。転送先はカタログ自身の help の URL で確かめた）
+API_REDIRECTS = {"data.gov.uk": ("ckan.publishing.service.gov.uk",)}
 MAX_COLUMNS = 10
 MAX_ROWS = 20
 FETCH_LIMIT = 1000
@@ -304,6 +307,7 @@ def fetch_table(item, known):
             if check != "ckan":
                 raise ValueError(f"CKAN host not allowed: {host}")
             ALLOWED_HOSTS.add(host)
+            ALLOWED_HOSTS.update(API_REDIRECTS.get(host, ()))
         base = item["resource_url"].split("/dataset/")[0] + "/api/3/action/"
         try:
             res = http_json(base + "resource_show?" + urlencode({"id": rid}), "resource_show")["result"]

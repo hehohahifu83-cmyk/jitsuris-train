@@ -197,5 +197,16 @@ class CkanResourceShowForbiddenTests(unittest.TestCase):
         self.assertTrue(any("package_show?id=ds-name" in u for u in self.calls))
 
 
+class OpendataSwissLicenseTests(unittest.TestCase):
+    """opendata.swiss の利用条件が URL で来ても、terms_open・terms_by だけを許す（2026-10-28）。"""
+
+    def test_url_forms(self):
+        import pipeline as P
+        self.assertEqual(P.normalize_license("https://opendata.swiss/terms-of-use#terms_by"), "cc-by")
+        self.assertEqual(P.normalize_license("https://opendata.swiss/terms-of-use#terms_open"), "public-domain")
+        self.assertNotIn(P.normalize_license("https://opendata.swiss/terms-of-use#terms_by_ask"), P.ALLOWED_LICENSES)
+        self.assertNotIn(P.normalize_license("https://opendata.swiss/terms-of-use#terms_ask"), P.ALLOWED_LICENSES)
+
+
 if __name__ == "__main__":
     unittest.main()

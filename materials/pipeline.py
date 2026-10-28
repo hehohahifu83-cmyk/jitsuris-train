@@ -84,6 +84,9 @@ def save_manifest(m):
 
 # ---------------------------------------------------------------- 1. 採用
 
+ACCESS_ERRORS = r"HTTP 403|redirected outside the allowed hosts"   # 直したので、もう一度採ってよい取り出しの誤り（2026-10-28）
+
+
 def known_resources():
     """もう使った表：学習の教材・教材庫・主セット・前の陣の採用。URL と resource ID の両方で見る。"""
     urls, rids = set(), set()
@@ -95,8 +98,17 @@ def known_resources():
         for t in json.load(open(prov, encoding="utf-8")).get("tables", []):
             urls.update({t.get("resource_url", ""), t.get("request_url", "")})
     for f in glob.glob(str(POOL / "work" / "*" / "adopted.json")) + glob.glob(str(ROOT / "materials" / "s11_*_adopted_*.json")):
+        # 取り出しで「届かなかった」表（corpus_log.json の誤りが 403・転送先の不許可）は、中身を一度も読んでいないので「使った表」に数えない。
+        # 中身の誤り（見出しの行が無い など）はもう一度採っても同じなので、使った表のまま
+        # （b049：英国の 396 表が resource_show の 403 で全部誤りになり、b058 で「もう使った表」として落ちた。2026-10-28 Claude）
+        log = Path(f).with_name("corpus_log.json")
+        failed = set()
+        if log.exists():
+            failed = {t.get("resource_url") for t in json.load(open(log, encoding="utf-8")).get("tables", [])
+                      if t.get("status") == "error" and re.search(ACCESS_ERRORS, t.get("error", ""))}
         for a in json.load(open(f, encoding="utf-8")).get("adopted", []):
-            urls.add(a.get("resource_url", ""))
+            if a.get("resource_url") not in failed:
+                urls.add(a.get("resource_url", ""))
     for u in list(urls):
         m = re.search(r"/resource/([0-9a-f-]{36})", u or "")
         if m:
@@ -126,6 +138,9 @@ def pool_header_sets():
 def normalize_license(raw):
     """カタログごとの書き方の違いをそろえる（Socrata の PUBLIC_DOMAIN・CC0_10・「name-public-domain-…」など）。"""
     v = str(raw or "").strip().lower().replace("_", "-")
+    m = re.fullmatch(r"https?://(www\.)?opendata\.swiss/(\w+/)?terms-of-use#(terms-[a-z-]+)", v)
+    if m:   # 2026-10-28：opendata.swiss は利用条件を URL（…/terms-of-use#terms_by）で返すようになった。# の後ろで下の規則に当てる
+        v = m.group(3)
     words = re.split(r"[^a-z0-9]+", v)
     if "nc" in words or "sa" in words or "nd" in words or "noncommercial" in words or "sharealike" in words or "noderivatives" in words:
         return v   # 非営利・継承・改変禁止は一覧に無いので、そのまま返して落とす
