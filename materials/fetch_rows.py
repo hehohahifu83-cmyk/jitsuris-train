@@ -38,7 +38,8 @@ from pipeline import ALLOWED_LICENSES  # noqa: E402  採用の道具と同じラ
 ALLOWED_HOSTS = {"data.bodik.jp"}   # 表ごとに、確かめたホストだけを足す（fetch_table）
 # カタログの API が同じ運営の別ホストへ転送するもの（2026-10-28：data.gov.uk の API は ckan.publishing.service.gov.uk へ。b058 で 162 表が
 # 「redirected outside the allowed hosts」になった。転送先はカタログ自身の help の URL で確かめた）
-API_REDIRECTS = {"data.gov.uk": ("ckan.publishing.service.gov.uk",)}
+API_REDIRECTS = {"data.gov.uk": ("ckan.publishing.service.gov.uk",),
+                 "opendata.swiss": ("ckan.opendata.swiss",)}   # b061 で 149 表すべて転送の誤り（2026-10-28）
 MAX_COLUMNS = 10
 MAX_ROWS = 20
 FETCH_LIMIT = 1000
