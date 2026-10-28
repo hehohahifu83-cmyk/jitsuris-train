@@ -1048,3 +1048,12 @@ GPU2枚を同時に使ったとき（L13_bs16_noc_sort_pad8_fused_凍結）: 1�
 
 ### Kaggle GPU 仕事3（仕事1との違い：FT_SEED=3）
 結果なし（終了コード 1）
+
+### Kaggle GPU 仕事1（FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160 FT_KEEP=1 FT_POOL_EXCLUDE=b015,b016,b017,b060,b062,b063 FT_SILVER_EPOCHS=1 FT_SILVER=materials/model_corpora/silver/train_A.jsonl.gz）
+結果なし（終了コード 1）
+
+### Kaggle GPU 仕事2（仕事1との違い：FT_SEED=2）
+結果なし（終了コード 1）
+
+### Kaggle GPU 仕事3（仕事1との違い：FT_SEED=3）
+結果なし（終了コード 1）
