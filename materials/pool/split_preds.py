@@ -2,7 +2,8 @@
 
 予測の依頼は 1 回 1 つの set なので、待っている陣をまとめて 1 回で予測し、id の先頭（bNNN-）で分ける。
 各陣の set.json の id がすべて予測にあることを確かめ、set_sha256 は各陣の set.json の値に直す。
-  python materials/pool/split_preds.py materials/pool/work/pend1027
+  python materials/pool/split_preds.py materials/pool/work/pend1027 [pred_c2_seed1.json]
+（2 つ目の引数で予測のファイル名を変える。既定 pred_e5base_seed1.json。2026-10-29）
 """
 import hashlib
 import json
@@ -13,13 +14,15 @@ WORK = Path(__file__).resolve().parent / "work"
 
 
 def main(argv=None):
-    combined = Path((argv or sys.argv[1:])[0])
-    pred = json.loads((combined / "pred_e5base_seed1.json").read_text(encoding="utf-8"))
+    args = argv or sys.argv[1:]
+    combined = Path(args[0])
+    name = args[1] if len(args) > 1 else "pred_e5base_seed1.json"
+    pred = json.loads((combined / name).read_text(encoding="utf-8"))
     sources = json.loads((combined / "sources.json").read_text(encoding="utf-8"))["sources"]
     by_id = {r["id"]: r for r in pred["rows"]}
     for batch in sources:
         set_path = WORK / batch / "set.json"
-        out = WORK / batch / "pred_e5base_seed1.json"
+        out = WORK / batch / name
         if out.exists():
             raise SystemExit(f"{out} がもうある")
         cols = json.loads(set_path.read_text(encoding="utf-8"))["columns"]
