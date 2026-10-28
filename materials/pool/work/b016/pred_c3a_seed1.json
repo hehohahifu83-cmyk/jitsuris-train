@@ -1,0 +1,2316 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b016",
+ "set_sha256": "59c14be9dc60c4ca9b02763c321bf5f1fbc8a5c3b1b57a02893a00e638be2760",
+ "created_utc": "2026-10-28T23:30:15Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "680d7fdbed77cd75297a68862d58d3cb33aa3a9a260f5a7b509b2abd7bf044b3",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "bd3ef95bb75468f83cf7a67db4435d9472a25833"
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "timing": {
+  "columns": 2791,
+  "seconds": 373.173,
+  "ms_per_column": 133.706
+ },
+ "rows": [
+  {
+   "id": "b016-0001",
+   "column": "@caption",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.801491
+    },
+    {
+     "label": "text",
+     "probability": 0.12261
+    },
+    {
+     "label": "account",
+     "probability": 0.035684
+    }
+   ]
+  },
+  {
+   "id": "b016-0002",
+   "column": "短期従事状況(2014年)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.981976
+    },
+    {
+     "label": "category",
+     "probability": 0.01083
+    },
+    {
+     "label": "id",
+     "probability": 0.001733
+    }
+   ]
+  },
+  {
+   "id": "b016-0003",
+   "column": "ja",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "numeric_values_not_parseable",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.788583
+    },
+    {
+     "label": "category",
+     "probability": 0.150198
+    },
+    {
+     "label": "other",
+     "probability": 0.024697
+    }
+   ]
+  },
+  {
+   "id": "b016-0004",
+   "column": "@caption",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.950828
+    },
+    {
+     "label": "text",
+     "probability": 0.039827
+    },
+    {
+     "label": "quantity",
+     "probability": 0.003194
+    }
+   ]
+  },
+  {
+   "id": "b016-0005",
+   "column": "国家公務員及び地方公務員の種類と数",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.985603
+    },
+    {
+     "label": "quantity",
+     "probability": 0.004987
+    },
+    {
+     "label": "id",
+     "probability": 0.002003
+    }
+   ]
+  },
+  {
+   "id": "b016-0006",
+   "column": "ja",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.981194
+    },
+    {
+     "label": "text",
+     "probability": 0.007454
+    },
+    {
+     "label": "account",
+     "probability": 0.005604
+    }
+   ]
+  },
+  {
+   "id": "b016-0007",
+   "column": "番号",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.983886
+    },
+    {
+     "label": "address",
+     "probability": 0.008395
+    },
+    {
+     "label": "quantity",
+     "probability": 0.00196
+    }
+   ]
+  },
+  {
+   "id": "b016-0008",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.857785
+    },
+    {
+     "label": "account",
+     "probability": 0.11411
+    },
+    {
+     "label": "address",
+     "probability": 0.01784
+    }
+   ]
+  },
+  {
+   "id": "b016-0009",
+   "column": "都道府県",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.987532
+    },
+    {
+     "label": "org",
+     "probability": 0.008426
+    },
+    {
+     "label": "id",
+     "probability": 0.000601
+    }
+   ]
+  },
+  {
+   "id": "b016-0010",
+   "column": "市区町村",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.983397
+    },
+    {
+     "label": "org",
+     "probability": 0.013065
+    },
+    {
+     "label": "id",
+     "probability": 0.000529
+    }
+   ]
+  },
+  {
+   "id": "b016-0011",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.991886
+    },
+    {
+     "label": "address",
+     "probability": 0.002355
+    },
+    {
+     "label": "category",
+     "probability": 0.001127
+    }
+   ]
+  },
+  {
+   "id": "b016-0012",
+   "column": "全体表記",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.98242
+    },
+    {
+     "label": "org",
+     "probability": 0.011218
+    },
+    {
+     "label": "text",
+     "probability": 0.002354
+    }
+   ]
+  },
+  {
+   "id": "b016-0013",
+   "column": "町又は大字以降",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.980967
+    },
+    {
+     "label": "org",
+     "probability": 0.010242
+    },
+    {
+     "label": "id",
+     "probability": 0.005334
+    }
+   ]
+  },
+  {
+   "id": "b016-0014",
+   "column": "@caption",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.988418
+    },
+    {
+     "label": "text",
+     "probability": 0.002517
+    },
+    {
+     "label": "org",
+     "probability": 0.001349
+    }
+   ]
+  },
+  {
+   "id": "b016-0015",
+   "column": "通信サービス加入契約数の推移",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "numeric_values_not_parseable",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.954502
+    },
+    {
+     "label": "other",
+     "probability": 0.029598
+    },
+    {
+     "label": "category",
+     "probability": 0.005935
+    }
+   ]
+  },
+  {
+   "id": "b016-0016",
+   "column": "@caption",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.883809
+    },
+    {
+     "label": "category",
+     "probability": 0.102653
+    },
+    {
+     "label": "product",
+     "probability": 0.002494
+    }
+   ]
+  },
+  {
+   "id": "b016-0017",
+   "column": "我が国の情報通信機器の保有状況の推移(世帯)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "numeric_values_not_parseable",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.906777
+    },
+    {
+     "label": "rate",
+     "probability": 0.03819
+    },
+    {
+     "label": "date",
+     "probability": 0.017119
+    }
+   ]
+  },
+  {
+   "id": "b016-0018",
+   "column": "区 分",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.982063
+    },
+    {
+     "label": "id",
+     "probability": 0.008499
+    },
+    {
+     "label": "text",
+     "probability": 0.003278
+    }
+   ]
+  },
+  {
+   "id": "b016-0019",
+   "column": "計",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.987667
+    },
+    {
+     "label": "amount",
+     "probability": 0.004202
+    },
+    {
+     "label": "id",
+     "probability": 0.003534
+    }
+   ]
+  },
+  {
+   "id": "b016-0020",
+   "column": "国 立",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "numeric_values_not_parseable",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_values_not_parseable"
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.975405
+    },
+    {
+     "label": "id",
+     "probability": 0.008908
+    },
+    {
+     "label": "category",
+     "probability": 0.004261
+    }
+   ]
+  },
+  {
+   "id": "b016-0021",
+   "column": "公 立",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.987846
+    },
+    {
+     "label": "id",
+     "probability": 0.003906
+    },
+    {
+     "label": "category",
+     "probability": 0.002823
+    }
+   ]
+  },
+  {
+   "id": "b016-0022",
+   "column": "私 立",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.983075
+    },
+    {
+     "label": "amount",
+     "probability": 0.005251
+    },
+    {
+     "label": "id",
+     "probability": 0.003745
+    }
+   ]
+  },
+  {
+   "id": "b016-0023",
+   "column": "私立のうち",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.98513
+    },
+    {
+     "label": "category",
+     "probability": 0.006794
+    },
+    {
+     "label": "id",
+     "probability": 0.00226
+    }
+   ]
+  },
+  {
+   "id": "b016-0024",
+   "column": "観測所番号",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.981586
+    },
+    {
+     "label": "address",
+     "probability": 0.011727
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001273
+    }
+   ]
+  },
+  {
+   "id": "b016-0025",
+   "column": "都道府県",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.988651
+    },
+    {
+     "label": "org",
+     "probability": 0.007096
+    },
+    {
+     "label": "text",
+     "probability": 0.000779
+    }
+   ]
+  },
+  {
+   "id": "b016-0026",
+   "column": "地点",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.979462
+    },
+    {
+     "label": "org",
+     "probability": 0.015721
+    },
+    {
+     "label": "text",
+     "probability": 0.001002
+    }
+   ]
+  },
+  {
+   "id": "b016-0027",
+   "column": "国際地点番号",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.985523
+    },
+    {
+     "label": "address",
+     "probability": 0.007614
+    },
+    {
+     "label": "phone",
+     "probability": 0.001374
+    }
+   ]
+  },
+  {
+   "id": "b016-0028",
+   "column": "終了日(年)",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986894
+    },
+    {
+     "label": "org",
+     "probability": 0.002235
+    },
+    {
+     "label": "person",
+     "probability": 0.001981
+    }
+   ]
+  },
+  {
+   "id": "b016-0029",
+   "column": "終了日(月)",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.988548
+    },
+    {
+     "label": "text",
+     "probability": 0.002594
+    },
+    {
+     "label": "org",
+     "probability": 0.001497
+    }
+   ]
+  },
+  {
+   "id": "b016-0030",
+   "column": "終了日(日)",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986348
+    },
+    {
+     "label": "text",
+     "probability": 0.002955
+    },
+    {
+     "label": "org",
+     "probability": 0.001595
+    }
+   ]
+  },
+  {
+   "id": "b016-0031",
+   "column": "前5日間平均気温(°c)",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.938955
+    },
+    {
+     "label": "rate",
+     "probability": 0.044687
+    },
+    {
+     "label": "quantity",
+     "probability": 0.003757
+    }
+   ]
+  },
+  {
+   "id": "b016-0032",
+   "column": "前5日間平均気温の品質情報",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.869857
+    },
+    {
+     "label": "rate",
+     "probability": 0.050703
+    },
+    {
+     "label": "category",
+     "probability": 0.050622
+    }
+   ]
+  },
+  {
+   "id": "b016-0033",
+   "column": "前5日間平均気温平年差(°c)",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.956364
+    },
+    {
+     "label": "rate",
+     "probability": 0.029726
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002218
+    }
+   ]
+  },
+  {
+   "id": "b016-0034",
+   "column": "年",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986642
+    },
+    {
+     "label": "person",
+     "probability": 0.001871
+    },
+    {
+     "label": "rate",
+     "probability": 0.001598
+    }
+   ]
+  },
+  {
+   "id": "b016-0035",
+   "column": "24時間予報",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.990316
+    },
+    {
+     "label": "other",
+     "probability": 0.002411
+    },
+    {
+     "label": "amount",
+     "probability": 0.002035
+    }
+   ]
+  },
+  {
+   "id": "b016-0036",
+   "column": "48時間予報",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.989243
+    },
+    {
+     "label": "amount",
+     "probability": 0.002978
+    },
+    {
+     "label": "other",
+     "probability": 0.002361
+    }
+   ]
+  },
+  {
+   "id": "b016-0037",
+   "column": "72時間予報",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.990856
+    },
+    {
+     "label": "amount",
+     "probability": 0.00233
+    },
+    {
+     "label": "other",
+     "probability": 0.001893
+    }
+   ]
+  },
+  {
+   "id": "b016-0038",
+   "column": "96時間予報",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.989053
+    },
+    {
+     "label": "amount",
+     "probability": 0.002969
+    },
+    {
+     "label": "other",
+     "probability": 0.002179
+    }
+   ]
+  },
+  {
+   "id": "b016-0039",
+   "column": "120時間予報",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.99043
+    },
+    {
+     "label": "amount",
+     "probability": 0.00269
+    },
+    {
+     "label": "other",
+     "probability": 0.00177
+    }
+   ]
+  },
+  {
+   "id": "b016-0040",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992324
+    },
+    {
+     "label": "address",
+     "probability": 0.002328
+    },
+    {
+     "label": "category",
+     "probability": 0.001003
+    }
+   ]
+  },
+  {
+   "id": "b016-0041",
+   "column": "都道府県名称",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.979218
+    },
+    {
+     "label": "org",
+     "probability": 0.016747
+    },
+    {
+     "label": "text",
+     "probability": 0.000669
+    }
+   ]
+  },
+  {
+   "id": "b016-0042",
+   "column": "地域名称",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.983978
+    },
+    {
+     "label": "org",
+     "probability": 0.012519
+    },
+    {
+     "label": "id",
+     "probability": 0.000568
+    }
+   ]
+  },
+  {
+   "id": "b016-0043",
+   "column": "202104",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.97143
+    },
+    {
+     "label": "id",
+     "probability": 0.015392
+    },
+    {
+     "label": "amount",
+     "probability": 0.004975
+    }
+   ]
+  },
+  {
+   "id": "b016-0044",
+   "column": "202105",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.960162
+    },
+    {
+     "label": "id",
+     "probability": 0.023968
+    },
+    {
+     "label": "amount",
+     "probability": 0.006442
+    }
+   ]
+  },
+  {
+   "id": "b016-0045",
+   "column": "202106",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.986245
+    },
+    {
+     "label": "amount",
+     "probability": 0.004673
+    },
+    {
+     "label": "id",
+     "probability": 0.003463
+    }
+   ]
+  },
+  {
+   "id": "b016-0046",
+   "column": "202107",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.983633
+    },
+    {
+     "label": "id",
+     "probability": 0.006554
+    },
+    {
+     "label": "amount",
+     "probability": 0.003349
+    }
+   ]
+  },
+  {
+   "id": "b016-0047",
+   "column": "202108",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.979444
+    },
+    {
+     "label": "amount",
+     "probability": 0.007591
+    },
+    {
+     "label": "id",
+     "probability": 0.006944
+    }
+   ]
+  },
+  {
+   "id": "b016-0048",
+   "column": "202109",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.982354
+    },
+    {
+     "label": "id",
+     "probability": 0.007674
+    },
+    {
+     "label": "amount",
+     "probability": 0.003977
+    }
+   ]
+  },
+  {
+   "id": "b016-0049",
+   "column": "202110",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.984711
+    },
+    {
+     "label": "id",
+     "probability": 0.005571
+    },
+    {
+     "label": "amount",
+     "probability": 0.004166
+    }
+   ]
+  },
+  {
+   "id": "b016-0050",
+   "column": "1",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.989819
+    },
+    {
+     "label": "category",
+     "probability": 0.003369
+    },
+    {
+     "label": "address",
+     "probability": 0.001846
+    }
+   ]
+  },
+  {
+   "id": "b016-0051",
+   "column": "2",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.962517
+    },
+    {
+     "label": "quantity",
+     "probability": 0.024368
+    },
+    {
+     "label": "id",
+     "probability": 0.004307
+    }
+   ]
+  },
+  {
+   "id": "b016-0052",
+   "column": "3",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.985767
+    },
+    {
+     "label": "id",
+     "probability": 0.004994
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002072
+    }
+   ]
+  },
+  {
+   "id": "b016-0053",
+   "column": "4",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.888948
+    },
+    {
+     "label": "id",
+     "probability": 0.085231
+    },
+    {
+     "label": "quantity",
+     "probability": 0.008409
+    }
+   ]
+  },
+  {
+   "id": "b016-0054",
+   "column": "5",
+   "raw_prediction": "category",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.457262
+    },
+    {
+     "label": "other",
+     "probability": 0.369466
+    },
+    {
+     "label": "quantity",
+     "probability": 0.126176
+    }
+   ]
+  },
+  {
+   "id": "b016-0055",
+   "column": "6",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.491376
+    },
+    {
+     "label": "category",
+     "probability": 0.382225
+    },
+    {
+     "label": "other",
+     "probability": 0.084405
+    }
+   ]
+  },
+  {
+   "id": "b016-0056",
+   "column": "7",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.706587
+    },
+    {
+     "label": "quantity",
+     "probability": 0.163527
+    },
+    {
+     "label": "category",
+     "probability": 0.066231
+    }
+   ]
+  },
+  {
+   "id": "b016-0057",
+   "column": "8",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.968297
+    },
+    {
+     "label": "category",
+     "probability": 0.007631
+    },
+    {
+     "label": "quantity",
+     "probability": 0.006295
+    }
+   ]
+  },
+  {
+   "id": "b016-0058",
+   "column": "9",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.607423
+    },
+    {
+     "label": "category",
+     "probability": 0.304773
+    },
+    {
+     "label": "quantity",
+     "probability": 0.06452
+    }
+   ]
+  },
+  {
+   "id": "b016-0059",
+   "column": "10",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.898576
+    },
+    {
+     "label": "id",
+     "probability": 0.021471
+    },
+    {
+     "label": "address",
+     "probability": 0.017794
+    }
+   ]
+  },
+  {
+   "id": "b016-0060",
+   "column": "カテゴリー",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989491
+    },
+    {
+     "label": "id",
+     "probability": 0.002484
+    },
+    {
+     "label": "account",
+     "probability": 0.002349
+    }
+   ]
+  },
+  {
+   "id": "b016-0061",
+   "column": "分類群",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.98706
+    },
+    {
+     "label": "id",
+     "probability": 0.002768
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001792
+    }
+   ]
+  },
+  {
+   "id": "b016-0062",
+   "column": "和名",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.925475
+    },
+    {
+     "label": "category",
+     "probability": 0.022123
+    },
+    {
+     "label": "address",
+     "probability": 0.009802
+    }
+   ]
+  },
+  {
+   "id": "b016-0063",
+   "column": "学名",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.969738
+    },
+    {
+     "label": "quantity",
+     "probability": 0.005493
+    },
+    {
+     "label": "text",
+     "probability": 0.005329
+    }
+   ]
+  },
+  {
+   "id": "b016-0064",
+   "column": "地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.990991
+    },
+    {
+     "label": "address",
+     "probability": 0.003397
+    },
+    {
+     "label": "category",
+     "probability": 0.001003
+    }
+   ]
+  },
+  {
+   "id": "b016-0065",
+   "column": "地方公共団体コード6桁",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.98938
+    },
+    {
+     "label": "address",
+     "probability": 0.004635
+    },
+    {
+     "label": "phone",
+     "probability": 0.001154
+    }
+   ]
+  },
+  {
+   "id": "b016-0066",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.9871
+    },
+    {
+     "label": "org",
+     "probability": 0.0089
+    },
+    {
+     "label": "id",
+     "probability": 0.000645
+    }
+   ]
+  },
+  {
+   "id": "b016-0067",
+   "column": "都道府県名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.985952
+    },
+    {
+     "label": "org",
+     "probability": 0.009787
+    },
+    {
+     "label": "text",
+     "probability": 0.000728
+    }
+   ]
+  },
+  {
+   "id": "b016-0068",
+   "column": "都道府県名または市町村名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.981603
+    },
+    {
+     "label": "org",
+     "probability": 0.01454
+    },
+    {
+     "label": "text",
+     "probability": 0.000592
+    }
+   ]
+  },
+  {
+   "id": "b016-0069",
+   "column": "状態",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.984642
+    },
+    {
+     "label": "id",
+     "probability": 0.004467
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002335
+    }
+   ]
+  },
+  {
+   "id": "b016-0070",
+   "column": "q1【回答対象:全団体】オープンデータについ",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.960734
+    },
+    {
+     "label": "text",
+     "probability": 0.032467
+    },
+    {
+     "label": "id",
+     "probability": 0.001386
+    }
+   ]
+  },
+  {
+   "id": "b016-0071",
+   "column": "q2【回答対象:全団体】オープンデータについ",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.740247
+    },
+    {
+     "label": "text",
+     "probability": 0.240288
+    },
+    {
+     "label": "rate",
+     "probability": 0.003369
+    }
+   ]
+  },
+  {
+   "id": "b016-0072",
+   "column": "q3【回答対象:全団体】貴団体はオープンデー",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.973403
+    },
+    {
+     "label": "text",
+     "probability": 0.018837
+    },
+    {
+     "label": "id",
+     "probability": 0.002042
+    }
+   ]
+  },
+  {
+   "id": "b016-0073",
+   "column": "q4【回答対象:まだオープンデータに取り組ん",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.981312
+    },
+    {
+     "label": "text",
+     "probability": 0.010394
+    },
+    {
+     "label": "id",
+     "probability": 0.00304
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "label-assist-dev1029c3a",
+  "set_sha256": "d12b73dee995fd6882f29828fbd6f8a77f945f1e54fa7da8d243ec16b5a0e29e"
+ }
+}
