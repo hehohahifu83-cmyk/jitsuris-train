@@ -1,17 +1,17 @@
 # 最新の学習・結果回収状況
 
-- GitHub Actions run: [40786377838](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/40786377838)
-- 確認更新時刻 (UTC): 2026-10-28T23:23:11+00:00
-- 依頼ファイル: `done`
-- Kaggle学習状態: 失敗（Kaggle が ERROR を返答）
-- Kaggle状態の最終観測時刻 (UTC): 2026-10-28T23:23:11Z
-- Kaggle状態の根拠ログ: `jitsurio/jitsuris-train has status "KernelWorkerStatus.ERROR"`
-- 学習依頼ID: `2026-10-28T23:20:51Z`
+- GitHub Actions run: [40788326389](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/40788326389)
+- 確認更新時刻 (UTC): 2026-10-28T23:35:18+00:00
+- 依頼ファイル: `train intfloat/multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160 FT_KEEP=1 FT_POOL_EXCLUDE=b015,b016,b017,b060,b062,b063 FT_SILVER=materials/model_corpora/silver/train_A.jsonl.gz FT_SILVER_EPOCHS=1 ++ FT_SEED=2 ++ FT_SEED=3`
+- Kaggle学習状態: 未確認（Kaggle の状態を取得できていない）
+- Kaggle状態の最終観測時刻 (UTC): 2026-10-28T23:35:18Z
+- Kaggle状態の根拠ログ: `今回の依頼はKaggleへのpush記録がないため、以前のKaggle状態を結び付けず未確認`
+- 学習依頼ID: `unsubmitted-40788326389`
 - Kaggleでの開始を観測した時刻 (UTC): 未観測
 - Kaggleでの完了を観測した時刻 (UTC): 未観測
 - 実学習の実行確認: 未確認
-- 評価結果回収: 今回の実行で FINETUNE_RESULTS.md を更新
-- 評価レポートartifact: 回収 artifact ID 12860375132（4ファイル）
+- 評価結果回収: 今回の更新なし（過去結果とは区別）
+- 評価レポートartifact: 回収 artifact ID 12860686394（1ファイル）
 - 学習済みモデル回収: artifact 未確認／未作成
 - 判定手順: [STATUS_GUIDE.md](STATUS_GUIDE.md)
 
