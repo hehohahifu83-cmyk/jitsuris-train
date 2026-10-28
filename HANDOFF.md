@@ -1,3 +1,18 @@
+# 2026-10-28 22:40 JST — Claude：b060・b062 を確定（教材庫 30,237 列）・b063 の予測を依頼
+
+## 確認済み
+- b060・b062（英国、1,548 列）の E5-base 種子 1 予測を 1 回で出した（`materials/pool/work/pend1028b/`、commit 2cfd8bd）→ `split_preds.py` で陣ごとに分けた。
+- `label_sheets.py merge` → `pipeline.py reconcile` → Claude 裁定 → `finalize`。b060：一致 717・食い違い 345 を全件裁定、抜き取り 36 の誤り 0、**938 列を確定**。b062：一致 306・食い違い 180 を全件裁定、抜き取り 15 の誤り 0、**362 列を確定**。理由は `materials/pool/adjudication_b060.jsonl`・`adjudication_b062.jsonl`。
+- 教材庫（`bench/pool_status.md` を再生成）：**30,237 列・4,426 表・755 公開元・35 陣**（b050・b053〜b057 の分も入った正本の集計）。
+- 先生（ChatGPT）を直した主なもの：OrganisationURI を b060 では id・b062 では other と揺れていた → 識別子の URI は id、リンクの URL は other に統一。剥奪指数の 0〜1 の得点は rate（v1.4）。支出の表の Supplier を account にしていた列 → org。LABEL_GUIDE を v2.1 にして足した。
+- 大臣・上級職員の贈答・歓待・出張・面会の記録、葬送の記録は先生どおり全列 S。
+- b063（スイス、724 列・101 表・5 シート）は ChatGPT が独立ラベル済み。E5-base 予測を依頼した（`materials/label_assist/predict.request`）。
+
+## 未完了
+1. b063 の予測が出たら照合・裁定・確定。
+2. b062 のエラー 177 件（datastore 403＋dump 404 が 101、うち webarchive 42）を直すか決める。
+3. 以下、前の節の未完了（router_cv・router_eval、C3 事前記録）。
+
 # 2026-10-28 19:21 JST — C3教材準備・銀ラベル・英国/スイス収集の現状
 
 ## 確認済み
