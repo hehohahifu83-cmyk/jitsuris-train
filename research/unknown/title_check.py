@@ -2,7 +2,7 @@
 今の製品の形（audit.py と同じ段：見張り → recheck v1 → 検査役 v2 → rho 0.8 → 通貨の手がかり）に通して比べる（2026-10-30 Claude）。
 **採るかどうかを決める試しではない**（題名を製品に入れるかは別の話。製品に来る CSV には題名がないことも多い）。
 「不明・重大のうち、題名が入力に無いせいの分がどれだけあるか」を数える。
-対象：dev1029 の 5 陣（b060・b062・b063・b064・b065。題名の対応表は research/unknown/titles_all.json）
+対象：題名ありの予測がある陣（dev1029＝b060・b062・b063、devt1517＝b015・b016・b017。題名の対応表は research/unknown/titles_all.json）
 出力：research/unknown/title_check.md
 使い方：python materials/pool/split_preds.py materials/pool/work/dev1029 pred_c2t_seed1.json && python research/unknown/title_check.py
 """
@@ -19,7 +19,8 @@ sys.path.insert(0, ROOT)
 import research.unknown.audit as A  # noqa: E402
 
 V, E = A.V, A.E
-BATCHES = ("b060", "b062", "b063", "b064", "b065")
+# dev1029（b060・b062・b063）と devt1517（b015・b016・b017。ChatGPT が表の題名で決めた列はすべてここ）。b064・b065 は題名ありの予測なし
+BATCHES = tuple(b for b in ("b015", "b016", "b017", "b060", "b062", "b063") if os.path.exists(os.path.join(ROOT, "materials", "pool", "work", b, "pred_c2t_seed1.json")))
 
 
 def finals(name, mv, labels):
@@ -76,6 +77,19 @@ def main():
     fixed = Counter(rc[i].split(" ")[0] for i in unk_ids if i in b and b[i]["final"] == b[i]["truth"])
     L += ["", "## 不明だった列のうち、題名ありで正しくなった列（原因の仕組みごと）", "", "| 仕組み | 列 |", "|---|---:|"]
     L += [f"| {m} | {n} |" for m, n in fixed.most_common()]
+    crit = [i for i in b if b[i]["final"] != b[i]["truth"] and b[i]["final"] in V.NUMERIC and b[i]["truth"] in V.NUMERIC]
+    L += ["", f"## 題名ありで重大の列（{len(crit)}）", "", "| id | 見出し | 正解 | 題名あり | 題名なし |", "|---|---|---|---|---|"]
+    L += [f"| {i} | {str(b[i]['header'])[:40]} | {b[i]['truth']} | {b[i]['final']} | {a[i]['final']} |" for i in crit]
+    per = Counter()
+    for i in a:
+        bt = i[:4]
+        per[(bt, "n")] += 1
+        per[(bt, "unk_a")] += a[i]["final"] == "unknown"
+        per[(bt, "unk_b")] += b[i]["final"] == "unknown"
+        per[(bt, "ok_a")] += a[i]["final"] == a[i]["truth"]
+        per[(bt, "ok_b")] += b[i]["final"] == b[i]["truth"]
+    L += ["", "## 陣ごと（題名なし → 題名あり）", "", "| 陣 | 採点列 | 正しい | 不明 |", "|---|---:|---|---|"]
+    L += [f"| {bt} | {per[(bt, 'n')]} | {per[(bt, 'ok_a')]} → {per[(bt, 'ok_b')]} | {per[(bt, 'unk_a')]} → {per[(bt, 'unk_b')]} |" for bt in BATCHES]
     worse = [i for i in a if a[i]["final"] == a[i]["truth"] and b[i]["final"] != b[i]["truth"]]
     L += ["", f"## 題名ありで正しくなくなった列（{len(worse)}）", "", "| id | 見出し | 正解 | 題名あり |", "|---|---|---|---|"]
     L += [f"| {i} | {str(a[i]['header'])[:40]} | {a[i]['truth']} | {b[i]['final']} |" for i in worse[:40]]
