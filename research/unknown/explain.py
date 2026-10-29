@@ -5,7 +5,7 @@
 - シート 002〜（e 番号）：不明 329 列のうち、手がかりの候補（candidates.py）で拾えない列。前回の ChatGPT の答えを見せ、なぜそう判断したかを説明してもらう。
   前回正しかった列も混ぜる（誤った列だけを選んだと分からないように）
 正解・今の仕組みの答え・段は伏せる。出力：explain/sheets/explain_NNN.md、explain/index.json（先生は見ない）
-使い方：python research/unknown/explain.py
+使い方：python research/unknown/explain.py（001〜006）／python research/unknown/explain.py --m11（007・008）
 """
 import json
 import os
@@ -38,10 +38,10 @@ def cut(s, n):
     return s if len(s) <= n else s[:n] + "…"
 
 
-def block(uid, header, values, title, unit, siblings, prev=None, later=None):
+def block(uid, header, values, title, unit, siblings, prev=None, later=None, later_label="欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）"):
     L = [f"## {uid} — 見出し「{cut(header, 60)}」", "- 値：" + " | ".join(cut(v, 30) for v in values[:8])]
     if later:
-        L.append("- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：" + " | ".join(cut(v, 30) for v in later[:8]))
+        L.append(f"- {later_label}：" + " | ".join(cut(v, 30) for v in later[:8]))
     if title:
         L.append(f"- 表の題名：{cut(title, 70)}")
     if unit:
@@ -111,5 +111,41 @@ def main():
     print(f"{len(groups)} 枚：誤った列 {n_x}・不明の列 {n_e}")
 
 
+def again_m11():
+    """シート 007〜（r 番号）：原因がまだ分からない「本体が誤り」の列（root_cause.jsonl の M11）を、列ごとの説明でもう一度聞く（2026-10-30）。
+    002〜006 の説明は項目ごとに 3〜12 通りの決まり文句だった（explain/compare.md「説明の点検」）ので、001 と同じく列ごとに書いてもらう。"""
+    rc = [json.loads(l) for l in open(os.path.join(HERE, "root_cause.jsonl"), encoding="utf-8")]
+    ids = [r["id"] for r in rc if r["mechanism"].startswith("M11")]
+    cols = {json.loads(l)["id"]: json.loads(l) for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}
+    cmp_rows = {json.loads(l)["id"]: json.loads(l) for l in open(os.path.join(HERE, "compare.jsonl"), encoding="utf-8")}
+    full = {}
+    for b in sorted({cols[i]["batch"] for i in ids}):
+        for c in E.load_batch(b):
+            full[c["id"]] = [str(v) for v in c["values"]]
+    random.Random(SEED + 7).shuffle(ids)
+    half = (len(ids) + 1) // 2
+    index = json.load(open(os.path.join(OUT, "index.json"), encoding="utf-8"))
+    index["items"] = [x for x in index["items"] if not x["key"].startswith("r")]
+    n = 0
+    for no, part in ((7, ids[:half]), (8, ids[half:])):
+        L = head(no, 8, True)
+        L.insert(4, "- **この枚は 001 と同じく、列ごとに考えて書いてください**。各項目に、その列の見出しの語・値・同じ表の列名を具体的に入れる。ほかの列と同じ理由なら、文を写さず「r0003 と同じ（違い：…）」と書く。決まり文句（「兄弟列の構造から…を見分ける」「数字だけでIDや量と決めない」など）は使わない")
+        L.insert(5, "- 値は先頭 8 個と、表の後ろの行から欠けでない値 8 個を並べた。分からない語（略語・ドイツ語・フランス語）は、どう読んだかを書く")
+        tpl = []
+        for i in part:
+            n += 1
+            uid = f"r{n:04d}"
+            c, r = cols[i], cmp_rows[i]
+            later = [v for v in present(full.get(i, [])) if v not in c["values"][:8]][:8]
+            L += block(uid, c["header"], c["values"], c["title"], c.get("unit") or "", c["siblings"],
+                       {"label": r["chatgpt"], "cue": r["chatgpt_cue"], "memo": r["chatgpt_memo"]}, later or None, "表の後ろの行の値（欠けを除く、先頭 8 個と重ならないもの）")
+            index["items"].append({"key": uid, "id": i, "u": r["u"], "group": "unknown_m11"})
+            tpl += [f"## {uid}"] + FORM_AGAIN + [""]
+        L += ["## 答えの雛形", "", "```markdown"] + tpl + ["```", ""]
+        open(os.path.join(OUT, "sheets", f"explain_{no:03d}.md"), "w", encoding="utf-8").write("\n".join(L))
+    json.dump(index, open(os.path.join(OUT, "index.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+    print(f"007・008：M11 の {n} 列")
+
+
 if __name__ == "__main__":
-    main()
+    again_m11() if "--m11" in sys.argv else main()

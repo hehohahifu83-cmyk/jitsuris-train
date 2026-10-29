@@ -119,12 +119,22 @@ def main():
             tab[(m["group"], "chatgpt_crit")] += crit(g, m["truth"])
             tab[(m["group"], "chatgpt_unknown")] += g in ("unknown", "S", "")
             tab[(m["group"], "n")] += 1
-            tab[(m["group"], "changed")] += (a.get("change") or "").startswith("変える")
+            tab[(m["group"], "changed")] += m["group"] == "unknown" and g != m.get("chatgpt_before")
         L += ["## ChatGPT と Claude", "", "| 組 | 列 | ChatGPT 正しい | Claude 正しい | 2 人同じ | ChatGPT 重大 | ChatGPT 決めない | 前回から変えた |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
         for grp in ("misses", "unknown"):
             if tab[(grp, "n")]:
                 L.append(f"| {grp} | {tab[(grp, 'n')]} | {tab[(grp, 'chatgpt_ok')]} | {tab[(grp, 'claude_ok')]} | {tab[(grp, 'same')]} | {tab[(grp, 'chatgpt_crit')]} | "
                          f"{tab[(grp, 'chatgpt_unknown')]} | {tab[(grp, 'changed')]} |")
+        # 説明が列ごとに書かれているか（決まり文句の繰り返しなら、理由としては使えない。2026-10-30：002〜006 は項目ごと 3〜12 通りの文だけだった）
+        L += ["", "## 説明の点検：項目ごとの異なる文の数（「…」の中は伏せて数える）", "", "| シート | 列 | ③同じ表の列名 | ④値の形 | 迷った種類 | 何があれば | 規則にするなら |", "|---|---:|---:|---:|---:|---:|---:|"]
+        for name, pre in (("001", "x"), ("002〜006", "e")):
+            ks = [k for k, _, _, _ in rows if k.startswith(pre)]
+            if ks:
+                d = [len({re.sub(r"「[^」]*」", "「…」", ans[k].get(f, "")) for k in ks}) for f in ("f3", "f4", "rivals", "missing", "rule")]
+                L.append(f"| {name} | {len(ks)} | " + " | ".join(map(str, d)) + " |")
+        ch = [(k, m, a, g) for k, m, a, g in rows if m["group"] == "unknown" and g != m.get("chatgpt_before")]
+        L += ["", f"## 前回から種類を変えた列（{len(ch)}。変えた理由は列ごとに書かれている）", "", "| 番号 | 見出し | 前回 | 今回 | 正解 | 理由 |", "|---|---|---|---|---|---|"]
+        L += [f"| {k} | {m['header'][:35].replace('|', '/')} | {m['chatgpt_before']} | {g} | {m['truth']} | {(a.get('change') or '').replace('|', '/')[:110]} |" for k, m, a, g in ch]
         # ChatGPT は正しく決めたが Claude の規則では決まらない列＝新しい規則（H）の材料
         new = [(k, m, a, g) for k, m, a, g in rows if g == m["truth"] and m["claude"] != m["truth"]]
         L += ["", f"## 新しい規則の材料：ChatGPT は正しく、Claude の規則では決まらない列（{len(new)}）", "",
