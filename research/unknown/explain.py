@@ -73,7 +73,7 @@ def main():
     misses = [json.loads(l) for l in open(os.path.join(HERE, "misses.jsonl"), encoding="utf-8")]
     cmp_rows = [json.loads(l) for l in open(os.path.join(HERE, "compare.jsonl"), encoding="utf-8")]
     cols = {json.loads(l)["id"]: json.loads(l) for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}
-    # 先頭 8 個が欠けの記号だけの列は、後ろの行の値も見せる（2026-10-30 追加：本体の入力も先頭 5 個だけで、EW_…_SA の 6 列は後ろに件数がある）
+    # 先頭 8 個が欠けの記号だけの列は、後ろの行の値も見せる（2026-10-29 追加：本体の入力も先頭 5 個だけで、EW_…_SA の 6 列は後ろに件数がある）
     full = {}
     for b in sorted({json.loads(l)["batch"] for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}):
         for c in E.load_batch(b):
