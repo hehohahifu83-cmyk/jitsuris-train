@@ -38,6 +38,11 @@ jobs:
             # 2026-10-26：C2（教材庫 b014 まで＋題名、run 40202377192 の種子 1）。b015 以降で C2 の線を決め直すため。題名は予測ファイルの経路では入れない（＝題名なしの形）
             case "$out_path" in materials/pool/work/*/pred_c2_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
             run_id=40202377192; want=44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4; label="C2（教材庫 b014 まで＋題名、種子 1）"
+          elif [ "$model" = "c2t" ]; then
+            # 2026-10-30：C2 と同じ重みで、入力に表の題名を入れる（原因の確かめ。学習は FT_TITLE=1 なのに予測は題名なしだった。research/unknown/findings.md）
+            case "$out_path" in materials/pool/work/*/pred_c2t_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+            run_id=40202377192; want=44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4; label="C2 種子 1・題名あり（原因の確かめ）"
+            extra="--titles research/unknown/titles_all.json --repeat-reason c2-with-titles-root-cause-20261030"
           elif [ "$model" = "c3a" ]; then
             # 2026-10-29：C3a（C2 の設定で、確かめの 6 陣を除いた教材庫 28,486 列、run 40777786620 の種子 1）。事前記録 bench/c3_prereg_20261029.md の判定のため
             case "$out_path" in materials/pool/work/*/pred_c3a_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
@@ -60,7 +65,7 @@ jobs:
           else
             echo "モデルの名前が違う"; exit 1
           fi
-          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; echo "model=$model"; echo "run_id=$run_id"; echo "want=$want"; echo "label=$label"; } >> "$GITHUB_OUTPUT"
+          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; echo "model=$model"; echo "run_id=$run_id"; echo "want=$want"; echo "label=$label"; echo "extra=${extra:-}"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.req.outputs.proceed == 'true'
         with: { python-version: '3.11' }
@@ -97,7 +102,7 @@ jobs:
         env: { TOKENIZERS_PARALLELISM: 'false' }
         run: |
           python evaluate_independent.py predict --set "${{ steps.req.outputs.set }}" --checkpoint /tmp/e5-model/ft_out_job1 \
-            --out "${{ steps.req.outputs.out }}" --ledger materials/label_assist/ledger.jsonl --device cpu
+            --out "${{ steps.req.outputs.out }}" --ledger materials/label_assist/ledger.jsonl --device cpu ${{ steps.req.outputs.extra }}
           echo "done ${{ steps.req.outputs.set }} ${{ steps.req.outputs.out }}" > materials/label_assist/predict.request
       - name: 予測と台帳だけを保存
         if: steps.req.outputs.proceed == 'true'

@@ -114,10 +114,20 @@ def checkpoint_info(checkpoint_dir):
     }
 
 
-def texts_of(rows, info):
-    """モデルに入れる文字列（学習・評価と同じ encoder_context.format_encoder_text）。"""
+def texts_of(rows, info, title=False):
+    """モデルに入れる文字列（学習・評価と同じ encoder_context.format_encoder_text）。title=True は rows の単位の欄に題名が入っているとき（--titles）。"""
     from encoder_context import format_encoder_text
-    return [format_encoder_text(r, info["prefix"], ctx_unit=info["ctx_unit"], val_profile=info.get("val_profile", False)) for r in rows]
+    return [format_encoder_text(r, info["prefix"], ctx_unit=info["ctx_unit"], val_profile=info.get("val_profile", False), title=title) for r in rows]
+
+
+def with_titles(rows, set_data, titles):
+    """--titles（2026-10-30、原因の確かめ用。既定は使わない）：学習の FT_TITLE=1 と同じく、単位の欄の後ろに区切り＋表の題名を足す（encoder_exp.py と同じ形）。"""
+    from encoder_context import TITLE_SEP
+    out = []
+    for r, c in zip(rows, set_data["columns"]):
+        t = titles.get(c.get("table") or "")
+        out.append(r[:4] + (r[4] + TITLE_SEP + t,) if t else r)
+    return out
 
 
 def infer_torch(checkpoint_dir, texts, info, device="cpu", batch_size=32):
@@ -195,13 +205,20 @@ def append_ledger(path, entry):
 
 # ---------------------------------------------------------------- 予測
 
-def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", repeat_reason=None, infer=None):
-    """予測を作って out_path に書く。infer は試験用の差し替え（(checkpoint, texts, info) → (確率, 秒)）。"""
+def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", repeat_reason=None, infer=None, titles_path=None):
+    """予測を作って out_path に書く。infer は試験用の差し替え（(checkpoint, texts, info) → (確率, 秒)）。
+    titles_path（表の名前 → 題名の JSON）を渡したときだけ、入力に表の題名を入れる（学習の FT_TITLE=1 と同じ形）。"""
     set_data, set_sha = load_set(set_path)
     info = checkpoint_info(checkpoint_dir)
     reason = check_ledger(ledger_path, set_sha, info["weights_sha256"], repeat_reason)
     rows = rows_of(set_data)
-    texts = texts_of(rows, info)
+    titles_meta, model_rows = None, rows
+    if titles_path:   # 題名は本体への入力にだけ入れる（見張り以降は元の rows）
+        from encoder_context import TITLE_SEP
+        raw_t = read_bytes(titles_path)
+        model_rows = with_titles(rows, set_data, json.loads(raw_t.decode("utf-8")))
+        titles_meta = {"path": titles_path, "sha256": sha256_bytes(raw_t), "columns_with_title": sum(TITLE_SEP in r[4] for r in model_rows)}
+    texts = texts_of(model_rows, info, title=bool(titles_path))
     if infer is None:
         probs, seconds = infer_torch(checkpoint_dir, texts, info, device)
     else:
@@ -216,6 +233,7 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
            "available_guard_versions": list(AVAILABLE_GUARD_VERSIONS),
            "checkpoint": {k: info[k] for k in ("weights_sha256", "model", "hf_revision", "model_type", "prefix", "max_length", "ctx_unit", "seed", "train_commit")},
            "labels": info["labels"], "device": device,
+           **({"titles": titles_meta} if titles_meta else {}),
            "timing": {"columns": len(rows), "seconds": round(float(seconds), 3), "ms_per_column": round(1000 * float(seconds) / len(rows), 3)},
            "rows": preds}
     body = json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n"
@@ -299,6 +317,7 @@ def main(argv=None):
     p.add_argument("--ledger", default="eval_reports/independent/ledger.jsonl")
     p.add_argument("--device", default="cpu")
     p.add_argument("--repeat-reason", default=None)
+    p.add_argument("--titles", default=None, help="表の名前 → 題名の JSON。渡したときだけ入力に題名を入れる（既定は入れない）")
     s = sub.add_parser("score")
     s.add_argument("--preds", required=True)
     s.add_argument("--labels", required=True)
@@ -309,7 +328,7 @@ def main(argv=None):
     s.add_argument("--guard-version", choices=AVAILABLE_GUARD_VERSIONS, default=PRIMARY_GUARD_VERSION)
     a = ap.parse_args(argv)
     if a.cmd == "predict":
-        doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason)
+        doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason, titles_path=a.titles)
         print(json.dumps({k: doc[k] for k in ("set_id", "set_sha256", "guard_version", "guard_implementation_version", "available_guard_versions", "checkpoint", "timing")}, ensure_ascii=False, indent=1))
     else:
         print(json.dumps(score(a.preds, a.labels, a.out_dir, a.run, a.dataset, a.seed, a.guard_version), ensure_ascii=False, indent=1))

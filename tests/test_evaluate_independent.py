@@ -142,6 +142,19 @@ class PredictAndScoreTests(unittest.TestCase):
         self.assertEqual(entries[0]["weights_sha256"], doc["checkpoint"]["weights_sha256"])
         self.assertTrue(fake_infer.texts[0].startswith("query: 列名: Date Of Sale"))
 
+    def test_titles_go_into_model_input_only_when_asked(self):
+        # --titles（2026-10-30）：渡したときだけ「表の題名」を入力に入れる（学習の FT_TITLE=1 と同じ位置）。既定は今までどおり入れない
+        doc = E.predict(self.set_path, self.ck, self.out, self.ledger, infer=fake_infer)
+        self.assertNotIn("表の題名", fake_infer.texts[2])
+        self.assertNotIn("titles", doc)
+        tp = os.path.join(self.d, "titles.json")
+        write(tp, {"t1": "Sales Ledger"})
+        doc = E.predict(self.set_path, self.ck, os.path.join(self.d, "p2.json"), self.ledger, repeat_reason="titles", infer=fake_infer, titles_path=tp)
+        self.assertIn("| 値: 100, 200, 300, 400, 500 | 表の題名: Sales Ledger | 同じ表の列:", fake_infer.texts[2])
+        self.assertTrue(fake_infer.texts[2].endswith("| 同じ表の単位列の値: Unit: JPY"))   # 単位の欄に題名は混ざらない
+        self.assertEqual(doc["titles"]["columns_with_title"], 3)
+        self.assertEqual([r["guarded_prediction"] for r in doc["rows"]], ["date", "unknown", "amount"])
+
     def test_saved_prediction_scores_v91_and_v10_without_inference(self):
         data = sample_set()
         data["columns"][0]["values"] = ["3/15", "4/20", "5/1", "6/30", "7/25"]

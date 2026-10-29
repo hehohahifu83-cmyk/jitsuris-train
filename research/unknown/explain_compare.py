@@ -26,7 +26,7 @@ def parse_answers():
     for p in sorted(glob.glob(os.path.join(OUT, "answers_chatgpt", "explain_*.md"))):
         key = None
         for line in open(p, encoding="utf-8"):
-            m = re.match(r"^##\s+([xe]\d{4})\b", line)
+            m = re.match(r"^##\s+([xer]\d{4})\b", line)
             if m:
                 key = m.group(1)
                 out[key] = {}
