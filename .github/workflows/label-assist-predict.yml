@@ -46,6 +46,10 @@ jobs:
             # 2026-10-29：C3b（C3a ＋ 銀 A 26,283 列で 1 段目、run 40789354990 で回収した種子 1）。事前記録 bench/c3_prereg_20261029.md 第 2 回の判定のため
             case "$out_path" in materials/pool/work/*/pred_c3b_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
             run_id=40789354990; want=e02c72d4386be879d72ae00a17347f25c559a3acf8356f650b46d9376de91d95; label="C3b（銀 A → 教材庫 28,486 列＋題名、種子 1）"
+          elif [ "$model" = "c3u" ]; then
+            # 2026-10-29：C3u（C3a ＋ 単位の列の見出しを広げた、b064・b065 も除く、run 40847406493 の種子 1）。事前記録 bench/c3u_prereg_20261029.md
+            case "$out_path" in materials/pool/work/*/pred_c3u_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
+            run_id=40847406493; want=c10f2d7dadd16bc230e0abe5eee14f1f3eb759d0fcae2ac191af0baab990e2aa; label="C3u（単位の見出しを広げた教材庫＋題名、種子 1）"
           elif [ "$model" = "e5" ]; then
             case "$out_path" in materials/label_assist/*_e5base_seed1.json|materials/pool/work/*/pred_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
             run_id=39506074807; want=38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7; label="E5-base 種子 1"
