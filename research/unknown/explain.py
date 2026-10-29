@@ -12,10 +12,14 @@ import os
 import random
 import sys
 
+sys.path.insert(0, ROOT_DIR := os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+import verifier_eval as E  # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 from candidates import CANDS, hit  # noqa: E402
+from rules_draft import present  # noqa: E402
 
 OUT = os.path.join(HERE, "explain")
 SEED = 20261030
@@ -34,8 +38,10 @@ def cut(s, n):
     return s if len(s) <= n else s[:n] + "…"
 
 
-def block(uid, header, values, title, unit, siblings, prev=None):
+def block(uid, header, values, title, unit, siblings, prev=None, later=None):
     L = [f"## {uid} — 見出し「{cut(header, 60)}」", "- 値：" + " | ".join(cut(v, 30) for v in values[:8])]
+    if later:
+        L.append("- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：" + " | ".join(cut(v, 30) for v in later[:8]))
     if title:
         L.append(f"- 表の題名：{cut(title, 70)}")
     if unit:
@@ -67,6 +73,11 @@ def main():
     misses = [json.loads(l) for l in open(os.path.join(HERE, "misses.jsonl"), encoding="utf-8")]
     cmp_rows = [json.loads(l) for l in open(os.path.join(HERE, "compare.jsonl"), encoding="utf-8")]
     cols = {json.loads(l)["id"]: json.loads(l) for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}
+    # 先頭 8 個が欠けの記号だけの列は、後ろの行の値も見せる（2026-10-30 追加：本体の入力も先頭 5 個だけで、EW_…_SA の 6 列は後ろに件数がある）
+    full = {}
+    for b in sorted({json.loads(l)["batch"] for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}):
+        for c in E.load_batch(b):
+            full[c["id"]] = [str(v) for v in c["values"]]
     rng = random.Random(SEED)
     rng.shuffle(misses)
     rest = [r for r in cmp_rows if not any(hit(c, r) for c in CANDS)]
@@ -90,7 +101,8 @@ def main():
                 uid = f"e{n_e:04d}"
                 c = cols[r["id"]]
                 prev = {"label": r["chatgpt"], "cue": r["chatgpt_cue"], "memo": r["chatgpt_memo"]}
-                L += block(uid, c["header"], c["values"], c["title"], c.get("unit") or "", c["siblings"], prev)
+                later = present(full.get(r["id"], [])) if not present(c["values"]) else None
+                L += block(uid, c["header"], c["values"], c["title"], c.get("unit") or "", c["siblings"], prev, later)
                 index.append({"key": uid, "id": r["id"], "u": r["u"], "group": "unknown"})
             tpl += [f"## {uid}"] + (FORM_AGAIN if again else FORM_NEW) + [""]
         L += ["## 答えの雛形", "", "```markdown"] + tpl + ["```", ""]

@@ -34,6 +34,7 @@
 
 ## e0005 — 見出し「EW_Total_Company_SA」
 - 値：[x] | [x] | [x] | [x] | [x] | [x] | [x] | [x]
+- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：3884 | 4449 | 4052 | 5311 | 5593 | 5272 | 3547 | 2736
 - 同じ表の列名：Period, Year, Quarter, EW_Compulsory_SA, EW_CVL_SA, EW_Admin_SA, EW_CVA_SA, EW_Receiver_SA, EW_Total_Company_NSA
 - **前回のあなたの答え**：category（決め手：値の形）メモ「[x] は季節調整系列の該当フラグ。」
 
@@ -74,6 +75,7 @@
 
 ## e0013 — 見出し「EW_CVL_SA」
 - 値：[x] | [x] | [x] | [x] | [x] | [x] | [x] | [x]
+- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：2382 | 2081 | 2445 | 1991 | 2606 | 3197 | 3188 | 2530
 - 同じ表の列名：Period, Year, Quarter, EW_Total_Company_SA, EW_Compulsory_SA, EW_Admin_SA, EW_CVA_SA, EW_Receiver_SA, EW_Total_Company_NSA
 - **前回のあなたの答え**：category（決め手：値の形）メモ「[x] は季節調整系列の該当フラグ。」
 
@@ -202,6 +204,7 @@
 
 ## e0037 — 見出し「EW_Receiver_SA」
 - 値：[z] | [x] | [x] | [x] | [x] | [x] | [x] | [x]
+- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：249 | 274 | 73 | 85 | 22 | 14 | 2 | 1
 - 同じ表の列名：Period, Year, Quarter, EW_Total_Company_SA, EW_Compulsory_SA, EW_CVL_SA, EW_Admin_SA, EW_CVA_SA, EW_Total_Company_NSA
 - **前回のあなたの答え**：category（決め手：値の形）メモ「[x]・[z] は系列の該当・状態フラグ。」
 

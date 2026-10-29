@@ -25,7 +25,7 @@ from rules_draft import RULES, decide, present  # noqa: E402
 REVIEW = {"b017-0327","b016-0014","b017-0332","b062-0264","b017-0051"}  # u0012・u0171・u0239・u0306・u0192
 
 
-def mechanism(c, rid):
+def mechanism(c, rid, full=()):
     """不明になった仕組みを 1 つ選ぶ（上から順に当てる）。どれもコードや教材で確かめた原因（findings の「原因」の節）。"""
     h, vals = c["header"], c["values"]
     nf = [unicodedata.normalize("NFKC", v) for v in vals]
@@ -41,6 +41,8 @@ def mechanism(c, rid):
         return "M4 教材にない形（識別子の URI。教材の URI はリンクだけ＝other）"
     if rid == "C" or re.search(r"energieverbrauch|energy (use|consumption)", h, re.I):
         return "M5 教材の付け方の食い違い（電力量・エネルギー：b005・b014 は quantity、b006・b007・b011 は other）"
+    if not present(vals[:5]) and len(present(full)) >= 2:
+        return "M15 本体の入力は先頭 5 個の値だけで、先頭が欠けの記号ばかり（後ろの行に数がある）"
     if not present(vals):
         return "M8 値がすべて欠けの記号（[x]・.・NA）"
     if re.fullmatch(r"(value|wert|obs_value)", h.strip(), re.I):
@@ -88,8 +90,12 @@ def main():
         rows.append({"id": c["id"], "header": c["header"], "truth": c["truth"], "stage": c["stage"], "reason": reason,
                      "model_top1": c["model_top3"][0][0], "model_top1_ok": c["model_top1_is_truth"], "rule": rid, "rule_label": lab,
                      "train_same_form": dict(th), "cause": cause})
+    full = {}
+    for b in sorted({c["batch"] for c in cols}):
+        for x in E.load_batch(b):
+            full[x["id"]] = [str(v) for v in x["values"]]
     for r, c in zip(rows, cols):
-        r["mechanism"] = mechanism(c, r["rule"])
+        r["mechanism"] = mechanism(c, r["rule"], full.get(c["id"], []))
     with open(os.path.join(HERE, "root_cause.jsonl"), "w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")

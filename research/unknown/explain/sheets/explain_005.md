@@ -77,6 +77,7 @@
 
 ## e0133 — 見出し「EW_Admin_SA」
 - 値：[z] | [x] | [x] | [x] | [x] | [x] | [x] | [x]
+- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：104 | 171 | 626 | 986 | 843 | 689 | 346 | 395
 - 同じ表の列名：Period, Year, Quarter, EW_Total_Company_SA, EW_Compulsory_SA, EW_CVL_SA, EW_CVA_SA, EW_Receiver_SA, EW_Total_Company_NSA
 - **前回のあなたの答え**：category（決め手：値の形）メモ「[x] は季節調整系列の該当フラグ。」
 

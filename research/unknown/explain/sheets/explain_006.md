@@ -67,6 +67,7 @@
 
 ## e0171 — 見出し「EW_CVA_SA」
 - 値：[z] | [x] | [x] | [x] | [x] | [x] | [x] | [x]
+- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：150 | 152 | 106 | 167 | 216 | 170 | 82 | 63
 - 同じ表の列名：Period, Year, Quarter, EW_Total_Company_SA, EW_Compulsory_SA, EW_CVL_SA, EW_Admin_SA, EW_Receiver_SA, EW_Total_Company_NSA
 - **前回のあなたの答え**：category（決め手：値の形）メモ「[x]・[z] は季節調整系列の該当・状態フラグ。」
 
@@ -104,6 +105,7 @@
 
 ## e0178 — 見出し「EW_Compulsory_SA」
 - 値：[x] | [x] | [x] | [x] | [x] | [x] | [x] | [x]
+- 欠けでない値（表の後ろの行から。先頭 8 個は欠けの記号だけ）：1379 | 1300 | 1408 | 1256 | 1467 | 1315 | 1211 | 587
 - 同じ表の列名：Period, Year, Quarter, EW_Total_Company_SA, EW_CVL_SA, EW_Admin_SA, EW_CVA_SA, EW_Receiver_SA, EW_Total_Company_NSA
 - **前回のあなたの答え**：category（決め手：値の形）メモ「[x] は該当・非該当を示すチェック列。」
 
