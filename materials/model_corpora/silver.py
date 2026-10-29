@@ -13,6 +13,8 @@
   python materials/model_corpora/silver.py check    # 大きいまとまりの中が 1 種類かを、抜き取った列ごとに確かめるシート（c3 計画の段 1 の 3）
   python materials/model_corpora/silver.py silver   # 銀 A：ChatGPT の答え（確かめの裁定を反映）× C2 の予測の一致／銀 B：Claude の裁定（silver_b_decisions.json）
   python materials/model_corpora/silver.py train --tier A   # 学習用の銀（C3b の 1 段目）：規則に合う列を、種類ごと・規則ごとの上限で抜き出す（2026-10-29）
+  python materials/model_corpora/silver.py check2           # 学習用の銀（train_A）の検査シート：種類ごとに 60 列、銀のラベルを伏せて ChatGPT が 1 列ずつ答える（2026-10-29）
+  python materials/model_corpora/silver.py check2-result    # ChatGPT の答えと銀のラベルの突き合わせ（Claude の裁定の下書き）
 """
 import argparse
 import gzip
@@ -356,6 +358,93 @@ def cmd_train(a):
     print(f"{path.name}: {len(out):,} 列・規則 {len(n):,}（per_rule {a.per_rule}・per_label {a.per_label}）：{dict(got.most_common())}")
 
 
+CHECK2_PER_LABEL = 60
+CHECK2_SEED = 20261029
+
+
+def cmd_check2(_a):
+    """学習に使う銀（train_A.jsonl.gz）を検査する（2026-10-29 Claude。オーナー「後で行う銀の学習についてはチャットGPTと協力して邪魔になる要素を検査排除してくれ」）。
+    種類ごとに 60 列（規則ごと 1 列・表ごと 1 列まで）を抜き出し、銀のラベル・規則・表の名前を伏せてシートに並べる。対応表は check2_index.json（ChatGPT は答え終わるまで見ない）。"""
+    with gzip.open(OUT / "train_A.jsonl.gz", "rt", encoding="utf-8") as f:
+        rows = [json.loads(l) for l in f if l.strip()]
+    rng = random.Random(CHECK2_SEED)
+    rng.shuffle(rows)
+    by_label = defaultdict(list)
+    used_rules, used_tables = set(), set()
+    for r in rows:
+        if len(by_label[r["label"]]) >= CHECK2_PER_LABEL or r["rule"] in used_rules or r["table"] in used_tables or not r["values"]:
+            continue
+        by_label[r["label"]].append(r)
+        used_rules.add(r["rule"]); used_tables.add(r["table"])
+    # 規則の少ない種類（date・amount など）は 60 列に届かないので、同じ規則の別の表の列で埋める（規則ごと 5 列まで）
+    per_rule = Counter(r["rule"] for rs in by_label.values() for r in rs)
+    for r in rows:
+        if len(by_label[r["label"]]) >= CHECK2_PER_LABEL or per_rule[r["rule"]] >= 5 or r["table"] in used_tables or not r["values"]:
+            continue
+        by_label[r["label"]].append(r)
+        per_rule[r["rule"]] += 1; used_tables.add(r["table"])
+    items = [r for rs in by_label.values() for r in rs]
+    rng.shuffle(items)
+    d = OUT / "check2"
+    d.mkdir(exist_ok=True)
+    (OUT / "answers_check2").mkdir(exist_ok=True)
+    (OUT / "answers_check2" / ".keep").write_text("", encoding="utf-8")
+    index, sheets = [], defaultdict(list)
+    for i, r in enumerate(items, 1):
+        cid = f"k{i:04d}"
+        index.append({"id": cid, "label": r["label"], "rule": r["rule"], "table": r["table"], "header": r["header"]})
+        sheets[(i - 1) // SHEET_SIZE + 1].append((cid, r))
+    total = len(sheets)
+    for no, rs in sheets.items():
+        lines = [f"# 学習用の銀の検査 {no:03d} / {total:03d}（1 列ずつ）", "",
+                 "- **1 列ずつ**、LABEL_GUIDE.md（v2.1）のどの種類かを答える。銀のラベル・まとまりの名前・前のシートの答えは見ないで、その列だけで決める",
+                 "- 外の学習データ（SOTAB V2 の Web の表・WikiDBs の Wikidata の表）の列。見出しの無い列は「（見出しなし）」",
+                 "- 決められない → `unknown`、人の名前・連絡先・崩れた値 → `S`。迷ったら理由を notes.md に 1 行（列の番号つき）",
+                 f"- 使えるラベル：{' '.join(LS.ALL_LABELS)}",
+                 f"- 答え：末尾の雛形を `answers_check2/check_{no:03d}.tsv` に写して埋める（1 行＝「k0001<TAB>ラベル」）", ""]
+        for cid, r in rs:
+            vals = " | ".join(LS.cut(v, 40) for v in r["values"][:8])
+            extra = []
+            if r.get("title"):
+                extra.append(f"表：{LS.cut(r['title'], 40)}")
+            if r.get("context"):
+                extra.append("同じ表の列：" + ", ".join(LS.cut(c, 20) for c in r["context"][:6]))
+            lines += [f"## {cid} — 見出し「{LS.cut(r['header'], 60)}」", f"- 値：{vals}"] + ([f"- {'／'.join(extra)}"] if extra else []) + [""]
+        lines += ["## 答えの雛形", "", "```"] + [f"{cid}\t" for cid, _ in rs] + ["```", ""]
+        (d / f"check_{no:03d}.md").write_text("\n".join(lines), encoding="utf-8")
+    (OUT / "check2_index.json").write_text(json.dumps({"note": "ChatGPT は答え終わるまで見ない", "items": index}, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
+    print(f"check2：{len(items)} 列・{total} 枚：{dict(Counter(r['label'] for r in items))}")
+
+
+def cmd_check2_result(_a):
+    """ChatGPT の 1 列ずつの答え（answers_check2/）と銀のラベルを突き合わせる。種類ごとの一致率と、食い違った列の一覧（Claude が裁定する）を出す。"""
+    index = json.loads((OUT / "check2_index.json").read_text(encoding="utf-8"))["items"]
+    got = {}
+    for f in sorted((OUT / "answers_check2").glob("check_*.tsv")):
+        for line in f.read_text(encoding="utf-8").splitlines():
+            parts = line.strip().split("\t")
+            if len(parts) >= 2 and parts[0].startswith("k"):
+                got[parts[0]] = parts[1].strip()
+    missing = [x["id"] for x in index if x["id"] not in got]
+    if missing:
+        raise SystemExit(f"答えが無い列：{missing[:10]}（{len(missing)}）")
+    bad = [x for x in index if got[x["id"]] not in LS.ALL_LABELS]
+    if bad:
+        raise SystemExit(f"決まりにないラベル：{[(x['id'], got[x['id']]) for x in bad[:10]]}")
+    per, diff = defaultdict(Counter), []
+    for x in index:
+        a = got[x["id"]]
+        per[x["label"]]["n"] += 1
+        per[x["label"]]["agree" if a == x["label"] else "diff"] += 1
+        if a != x["label"]:
+            diff.append({**x, "chatgpt": a})
+    out = {"per_label": {k: dict(v) for k, v in sorted(per.items())}, "diff": diff}
+    (OUT / "check2_result.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    for k, v in sorted(per.items()):
+        print(f"{k}: 一致 {v['agree']}/{v['n']}")
+    print(f"食い違い {len(diff)} 列 → check2_result.json（Claude が裁定）")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -363,6 +452,8 @@ def main(argv=None):
     sub.add_parser("reps")
     sub.add_parser("check")
     sub.add_parser("silver")
+    sub.add_parser("check2")
+    sub.add_parser("check2-result")
     p = sub.add_parser("train")
     p.add_argument("--tier", default="A", choices=["A", "B", "A+B"])
     p.add_argument("--per-rule", type=int, default=60)
@@ -370,7 +461,8 @@ def main(argv=None):
     p = sub.add_parser("status")
     p.add_argument("--teacher", choices=sorted(LS.TEACHERS), default="chatgpt")
     a = ap.parse_args(argv)
-    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check, "silver": cmd_silver, "train": cmd_train}[a.cmd](a) or 0
+    return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check, "silver": cmd_silver, "train": cmd_train, "check2": cmd_check2,
+            "check2-result": cmd_check2_result}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":
