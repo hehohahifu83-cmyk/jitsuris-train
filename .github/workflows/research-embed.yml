@@ -1,0 +1,79 @@
+name: 原因の確かめ：本体の中で近い教材の列（CPU）
+
+# 2026-10-30 Claude：本体 C2 種子 1 が答えを出す直前の表現で、本体が誤った列に近い学習の教材の列を探す（research/unknown/embed_nn.py）。
+# 依頼：research/unknown/embed.request の 1 行目が "run" のとき。終わると "done" に書き換え、research/unknown/embed_nn.json を保存する。製品・評価には使わない。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "research/unknown/embed.request"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: research-embed
+  cancel-in-progress: false
+
+jobs:
+  embed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: 依頼を読む
+        id: req
+        run: |
+          set -eu
+          read -r cmd <<< "$(head -1 research/unknown/embed.request)"
+          if [ "$cmd" != "run" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; else echo "proceed=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-python@v5
+        if: steps.req.outputs.proceed == 'true'
+        with: { python-version: '3.11' }
+      - name: CPU の推論の道具
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - uses: actions/download-artifact@v4
+        if: steps.req.outputs.proceed == 'true'
+        with:
+          name: jitsuris-model
+          run-id: 40202377192
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/e5-model
+      - name: 重みの SHA-256 を照合（C2 種子 1）
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          ck = Path("/tmp/e5-model/ft_out_job1")
+          m = json.loads((ck / "manifest.json").read_text(encoding="utf-8"))
+          name, meta = next(iter(m["saved_model"]["weights"].items()))
+          want = "44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4"
+          got = hashlib.sha256((ck / name).read_bytes()).hexdigest()
+          if got != want or meta["sha256"] != want:
+              raise SystemExit("weight verification failed")
+          print("verified")
+          PY
+      - name: 近い教材の列を探す
+        if: steps.req.outputs.proceed == 'true'
+        env: { TOKENIZERS_PARALLELISM: 'false' }
+        run: |
+          python research/unknown/embed_nn.py --checkpoint /tmp/e5-model/ft_out_job1 --out research/unknown/embed_nn.json
+          echo "done" > research/unknown/embed.request
+      - name: 結果だけを保存
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/unknown/embed_nn.json research/unknown/embed.request
+          git commit -m "原因の確かめ：本体の中で近い教材の列（自動）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
