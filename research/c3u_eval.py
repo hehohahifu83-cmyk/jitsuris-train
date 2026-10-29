@@ -30,6 +30,7 @@ def rows_of(path):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=None)
+    ap.add_argument("--models", nargs="+", default=["c3a", "c3u"])   # 2026-10-29：C3s も同じ道具で測る（dev1029u/pred_<model>_seed1.json）
     a = ap.parse_args(argv)
     labels = list(V.LABELS)
     train = [c for b in TRAIN for c in E.load_batch(b)]
@@ -37,18 +38,18 @@ def main(argv=None):
     mv, _, _ = E.fit(np.hstack([V.matrix([c["values"] for c in train]), E.table_matrix(train)])[ok], np.array([c["truth"] for c in train])[ok])
     unit = {c["id"]: c.get("unit", "") for c in json.load(open(os.path.join(WORK, "dev1029u", "set.json"), encoding="utf-8"))["columns"]}
     fix_a = rows_of(os.path.join(WORK, "unitfix1029", "pred_c3a_seed1.json"))
-    u_rows = rows_of(os.path.join(WORK, "dev1029u", "pred_c3u_seed1.json"))
+    other = {m: rows_of(os.path.join(WORK, "dev1029u", f"pred_{m}_seed1.json")) for m in a.models if m != "c3a"}
     L = ["### 結果（`research/c3u_eval.py`、単位を直した入力・直した決め方）", "", "| 本体 | 陣 | 結果 | 不明 | 重大 |", "|---|---|---|---|---:|"]
     tot, crit = {}, {}
-    for model in ("c3a", "c3u"):
+    for model in a.models:
         allte, alld = [], []
         for b in BATCHES:
             te, _ = with_pred(E.load_batch(b), os.path.join(WORK, b, "pred_c3a_seed1.json"))
             for c in te:
                 c["unit"] = unit.get(c["id"], c.get("unit", ""))
-                src = (fix_a if model == "c3a" else u_rows).get(c["id"])
-                if model == "c3u" and src is None:
-                    raise SystemExit(f"C3u の予測に無い列：{c['id']}")
+                src = (fix_a if model == "c3a" else other[model]).get(c["id"])
+                if model != "c3a" and src is None:
+                    raise SystemExit(f"{model} の予測に無い列：{c['id']}")
                 if src is not None:
                     c["pred"], c["top3"] = src["guarded_prediction"], src["top3"]
             P = np.zeros((len(te), len(labels)), dtype="float32")
@@ -68,15 +69,17 @@ def main(argv=None):
         tot[model] = s
         crit[model] = [f"{c['batch']} {c['header'][:28]}（正 {c['truth']} → {x}）" for c, x in zip(allte, alld) if E.score([x], [c])["critical"]]
         L.append(f"| **{model}** | **合計** | {E.fmt(s)} | {s['unknown'] / s['n']:.1%} | {s['critical'] / s['n']:.2%} |")
-    a3, u3 = tot["c3a"], tot["c3u"]
+    cand = a.models[-1]
+    a3, u3 = tot["c3a"], tot[cand]
     r1 = u3["critical"] <= a3["critical"]
     da = (u3["correct"] / u3["n"] - a3["correct"] / a3["n"]) * 100
     du = (u3["unknown"] / u3["n"] - a3["unknown"] / a3["n"]) * 100
     r2 = da >= 1.5 or du <= -1.5
     base = r1 and da >= -0.5
-    L += ["", f"- 重大の列：C3a {crit['c3a'] or 'なし'}／C3u {crit['c3u'] or 'なし'}",
+    L += ["", "- 重大の列：" + "／".join(f"{m} {crit[m] or 'なし'}" for m in a.models),
           f"- 判定：規則 1 {'○' if r1 else '×'}（{a3['critical']}→{u3['critical']}）、規則 2 {'○' if r2 else '×'}（正 {da:+.1f}・不明 {du:+.1f} ポイント）→ "
-          f"**{'C3u を採る' if r1 and r2 else '採らない'}**／銀の回の土台に使う条件（重大が C3a 以下・正解率の下がり 0.5 以内）{'○ → 土台は C3u' if base else '× → 土台は C3a'}"]
+          f"**{cand} を{'採る' if r1 and r2 else '採らない'}**（相手 C3a）"
+          + (f"／銀の回の土台に使う条件（重大が C3a 以下・正解率の下がり 0.5 以内）{'○ → 土台は C3u' if base else '× → 土台は C3a'}" if cand == "c3u" else "")]
     print("\n".join(L))
     if a.out:
         with open(a.out, "a", encoding="utf-8") as f:
