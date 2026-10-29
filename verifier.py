@@ -484,3 +484,25 @@ def table_features(table):
         assert len(f) == TABLE_DIM, len(f)
         out.append(f)
     return out
+
+
+# ---------------------------------------------------------------- 通貨の手がかりの無い金額（2026-10-29、bench/amount_cue_prereg_20261029.md で採った）
+# 製品の形の最後の判定が amount で、見出し・同じ表の単位の例・値の先頭 5 件に通貨の手がかりが無ければ不明にする（同じ表のほかの列名は見ない）。
+# 新しい陣 8 つ（2,852 列）で重大 3→1・誤り 129→127・正解率 84.1→84.0%。救ったのは単位の無い統計の件数（化石燃料のトン数など）
+AMOUNT_CUES = ("£", "$", "€", "¥", "￥", "₹", "₩", "r$", "chf", "fr.", "eur", "usd", "gbp", "aud", "cad", "nzd", "jpy", "brl",
+               "amount", "amt", "cost", "price", "pay", "paid", "payment", "spend", "expend", "expense", "income", "revenue", "budget", "salary",
+               "wage", "fee", "charge", "tax", "vat", "grant", "fund", "value of", "invoice", "net", "gross", "total cost", "euro", "dollar", "pound",
+               "sterling", "cent",
+               "betrag", "kosten", "preis", "ausgaben", "einnahmen", "lohn", "gehalt", "franken", "steuer", "montant", "coût", "cout", "prix", "dépense",
+               "recette", "salaire", "valor", "custo", "preço", "preco", "receita", "despesa", "importe", "gasto", "ingreso",
+               "金額", "円", "費", "価格", "料", "額", "予算", "支出", "収入", "税", "単価", "給与", "報酬", "売上")
+
+
+def has_amount_cue(header, unit, values):
+    text = " ".join([str(header or ""), str(unit or "")] + [str(v) for v in (values or [])[:5]]).lower()
+    return any(k in text for k in AMOUNT_CUES)
+
+
+def amount_cue_veto(label, header, unit, values):
+    """最後の判定が amount で通貨の手がかりが無ければ unknown。ほかの判定はそのまま。"""
+    return "unknown" if label == "amount" and not has_amount_cue(header, unit, values) else label
