@@ -15,6 +15,7 @@
   python materials/model_corpora/silver.py train --tier A   # 学習用の銀（C3b の 1 段目）：規則に合う列を、種類ごと・規則ごとの上限で抜き出す（2026-10-29）
   python materials/model_corpora/silver.py check2           # 学習用の銀（train_A）の検査シート：種類ごとに 60 列、銀のラベルを伏せて ChatGPT が 1 列ずつ答える（2026-10-29）
   python materials/model_corpora/silver.py check2-result    # ChatGPT の答えと銀のラベルの突き合わせ（Claude の裁定の下書き）
+  python materials/model_corpora/silver.py clean            # 裁定（check2_decisions.json）で外す規則・種類を train_A から抜き、train_Aclean.jsonl.gz を作る
 """
 import argparse
 import gzip
@@ -445,6 +446,27 @@ def cmd_check2_result(_a):
     print(f"食い違い {len(diff)} 列 → check2_result.json（Claude が裁定）")
 
 
+def cmd_clean(_a):
+    """check2 の裁定（check2_decisions.json）で、誤りの規則（まとまり）と誤りの多い種類・金額・件数を学習用の銀から外す（2026-10-29 Claude）。"""
+    dec = json.loads((OUT / "check2_decisions.json").read_text(encoding="utf-8"))
+    groups, labels = set(dec["exclude_groups"]), set(dec["drop_labels"])
+    kept, why = [], Counter()
+    with gzip.open(OUT / "train_A.jsonl.gz", "rt", encoding="utf-8") as f:
+        for line in f:
+            d = json.loads(line)
+            if d["label"] in labels:
+                why["外す種類"] += 1
+            elif d["rule"] in groups:
+                why["誤りの規則"] += 1
+            else:
+                kept.append(d)
+    path = OUT / "train_Aclean.jsonl.gz"
+    with gzip.open(path, "wt", encoding="utf-8") as f:
+        for d in kept:
+            f.write(json.dumps(d, ensure_ascii=False) + "\n")
+    print(f"{path.name}: {len(kept):,} 列（外した {dict(why)}）：{dict(Counter(d['label'] for d in kept).most_common())}")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -454,6 +476,7 @@ def main(argv=None):
     sub.add_parser("silver")
     sub.add_parser("check2")
     sub.add_parser("check2-result")
+    sub.add_parser("clean")
     p = sub.add_parser("train")
     p.add_argument("--tier", default="A", choices=["A", "B", "A+B"])
     p.add_argument("--per-rule", type=int, default=60)
@@ -462,7 +485,7 @@ def main(argv=None):
     p.add_argument("--teacher", choices=sorted(LS.TEACHERS), default="chatgpt")
     a = ap.parse_args(argv)
     return {"sheets": cmd_sheets, "reps": cmd_reps, "status": cmd_status, "check": cmd_check, "silver": cmd_silver, "train": cmd_train, "check2": cmd_check2,
-            "check2-result": cmd_check2_result}[a.cmd](a) or 0
+            "check2-result": cmd_check2_result, "clean": cmd_clean}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":
