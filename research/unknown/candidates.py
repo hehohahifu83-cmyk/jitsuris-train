@@ -52,7 +52,7 @@ def main():
     rows = [json.loads(l) for l in open(os.path.join(HERE, "compare.jsonl"), encoding="utf-8")]
     L = ["# 不明になった列の調査：手がかりの候補（`research/unknown/candidates.py`）", "",
          "- **決める陣（不明 329 列そのもの）での参考値**。ここで作った候補なので当てはまりは良く見える。採るかどうかは事前記録を書いてから別の陣で確かめる",
-         "- 重大＝正解が数字の種類なのに別の種類にしたもの。「ChatGPT と同じ」は ChatGPT の答えと一致した数",
+         "- 重大＝答えも正解も数字の種類で違うもの（score_real と同じ）。「ChatGPT と同じ」は ChatGPT の答えと一致した数",
          f"- 合格線（不明 10% 以下）まで {329 - int(SCORED * 0.10)} 列", "",
          "| 候補 | 種類 | 当たった列 | 表 | 陣 | 正しい | 重大 | ほかの誤り | ChatGPT と同じ |", "|---|---|---:|---:|---:|---:|---:|---:|---:|"]
     tab = {json.loads(l)["id"]: json.loads(l)["table"] for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}
@@ -60,7 +60,7 @@ def main():
     for c in CANDS:
         hs = [r for r in rows if hit(c, r)]
         ok = sum(r["truth"] == c[1] for r in hs)
-        crit = sum(r["truth"] != c[1] and r["truth"] in NUMERIC for r in hs)
+        crit = sum(r["truth"] != c[1] and r["truth"] in NUMERIC and c[1] in NUMERIC for r in hs)
         L.append(f"| {c[0]} | {c[1]} | {len(hs)} | {len({tab[r['id']] for r in hs})} | {len({r['batch'] for r in hs})} | {ok} | {crit} | {len(hs) - ok - crit} | {sum(r['chatgpt'] == c[1] for r in hs)} |")
         for r in hs:
             got.setdefault(r["u"], set()).add(c[1])
@@ -68,7 +68,7 @@ def main():
     union = [r for r in rows if len(got.get(r["u"], ())) == 1]
     lab = {r["u"]: next(iter(got[r["u"]])) for r in union}
     ok = sum(lab[r["u"]] == r["truth"] for r in union)
-    crit = sum(lab[r["u"]] != r["truth"] and r["truth"] in NUMERIC for r in union)
+    crit = sum(lab[r["u"]] != r["truth"] and r["truth"] in NUMERIC and lab[r["u"]] in NUMERIC for r in union)
     ntab = len({tab[r["id"]] for r in union})
     after = 329 - ok - crit - (len(union) - ok - crit)
     L += ["", f"- すべての候補を合わせると：答えになる列 **{len(union)}**（{ntab} 表から。正しい {ok}・重大 {crit}・ほかの誤り {len(union) - ok - crit}）。2 つの種類が当たって決めない列 {conflict}",

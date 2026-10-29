@@ -38,7 +38,7 @@ def tally(pairs):
         n += 1
         if a == t:
             ok += 1
-        elif t in NUMERIC:
+        elif a in NUMERIC and t in NUMERIC:
             crit += 1
         else:
             wrong += 1
@@ -75,7 +75,7 @@ def main():
     agree = [r for r in rows if answered(r["chatgpt"]) and r["chatgpt"] == r["grok"]]
     L = ["# 不明になった列の調査：先生 2 人の突き合わせ（`research/unknown/compare.py`）", "",
          f"- 列 {N}（新しい陣 8 つ・採点 {SCORED} 列の不明）。答えの欠け：ChatGPT {missing['chatgpt']}・Grok {missing['grok']}",
-         "- 重大＝正解が数字の種類（date・amount・quantity・rate・id）なのに別の種類と答えたもの（verifier_eval と同じ数え方）",
+         "- 重大＝答えも正解も数字の種類（date・amount・quantity・rate・id）で違うもの（score_real と同じ数え方）",
          f"- 合格線：不明 {TARGET:.0%} 以下＝{int(SCORED * TARGET)} 列以下。今 {N} 列なので **{N - int(SCORED * TARGET)} 列以上**を重大なしで答えにする必要がある", "",
          "## 先生ごと・組み合わせ", "", head,
          f"| ChatGPT | {cell([(r['chatgpt'], r['truth']) for r in rows], N)} |",
