@@ -50,3 +50,18 @@ class EncoderUnitContextTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UnitHeaderLanguagesTests(unittest.TestCase):
+    """2026-10-29：単位の列の見出しを広げた（bench/unit_header_prereg_20261029.md）。"""
+
+    def test_new_headers_found(self):
+        from encoder_context import _UNIT_HEADER
+        for h in ("Einheit", "einheit_kurz", "EINHEIT_LANG", "UNIT_MEAS", "parameter_unit", "data_value_unit", "unité", "unidad de medida",
+                  "measurement_unit__ha_", "unit", "単位"):
+            self.assertTrue(_UNIT_HEADER.fullmatch(h), h)
+
+    def test_org_units_not_found(self):
+        from encoder_context import _UNIT_HEADER
+        for h in ("unidade_orcamentaria", "unit count", "dwelling_units", "Business Unit", "unit type"):
+            self.assertFalse(_UNIT_HEADER.fullmatch(h), h)

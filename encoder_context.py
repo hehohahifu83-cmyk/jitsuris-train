@@ -3,7 +3,11 @@ import random
 import re
 from collections import defaultdict
 
-_UNIT_HEADER = re.compile(r"^(?:unit|units|uom|unit of measure|measurement unit|単位|単位名|(?:amt|amount)[-_ ]units?(?:[_ -].*)?)$", re.I)
+# 2026-10-29：ドイツ語・フランス語・スペイン語・ポルトガル語と統計局の書き方を足した（einheit・unité・UNIT_MEAS・parameter_unit・data_value_unit など）。
+# スイスの陣で単位の列があるのに本体に届いていなかった（bench/unit_header_prereg_20261029.md）。組織の単位（unidade_orcamentaria）は入れない
+_UNIT_HEADER = re.compile(r"^(?:unit|units|uom|unit of measure|unit[_ ]of[_ ]measure|measurement[_ ]unit(?:[_ ].*)?|unit[_ ]meas(?:ure)?|data[_ ]value[_ ]unit|"
+                          r"parameter[_ ]unit|obs[_ ]?unit(?:[_ ]uniteobs)?|einheit(?:[_ ](?:kurz|lang))?|masseinheit|maßeinheit|unité|unite|unité de mesure|"
+                          r"unidad(?: de medida)?|unidade de medida|単位|単位名|(?:amt|amount)[-_ ]units?(?:[_ -].*)?)$", re.I)
 _JUNK = {"", "nan", "none", "null", "n/a", "na", "-"}
 
 
