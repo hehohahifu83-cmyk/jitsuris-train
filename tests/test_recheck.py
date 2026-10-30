@@ -21,9 +21,17 @@ class RecheckTests(unittest.TestCase):
         self.assertIsNone(R.single_cue("VALUE", "UNIT: Number"))     # 番号の手がかりは単位の文字列から取らない
         self.assertNotIn("quantity", R.cue_types("号数"))
 
-    def test_zero_values_have_no_evidence(self):
-        self.assertEqual(R.check_assert("quantity", t3(("quantity", 0.99)), ["0", "0", "0"], "LA HOUSE")[0], "unknown")
+    def test_values_without_evidence(self):
+        # 2026-10-30（F8）：0 ばかりの列は根拠なしにしない。空・欠けばかりの列だけ根拠なし
+        self.assertEqual(R.check_assert("quantity", t3(("quantity", 0.99)), ["0", "0", "0"], "LA HOUSE")[0], "quantity")
+        self.assertEqual(R.check_assert("quantity", t3(("quantity", 0.99)), ["", "-", "nan"], "LA HOUSE")[1], "no_value_evidence")
         self.assertEqual(R.check_assert("id", t3(("id", 0.99)), ["270008"] * 5, "全国地方公共団体コード")[0], "id")   # 同じコードの繰り返しは根拠あり
+
+    def test_unit_is_not_applied_to_dimension_columns(self):
+        # 2026-10-30（F4）：単位の列（UNIT: %）は軸の列には当てない。値の列には今までどおり当てる
+        self.assertEqual(R.cue_types("STATISTIC", "UNIT: %"), set())
+        self.assertEqual(R.cue_types("TLIST(A1)", "UNIT: %"), set())
+        self.assertEqual(R.cue_types("VALUE", "UNIT: %"), {"rate"})
 
     def test_period_header_and_month_counts(self):
         self.assertEqual(R.check_assert("amount", t3(("amount", 0.99)), ["895", "1", "5"], "2020")[1], "period_header_no_unit")

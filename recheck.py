@@ -36,6 +36,9 @@ CUES = {
 # 弱めて扱う語：「料金」「金額」でも「件数」がある列は件数（例：「手数料の件数」）。2 つ以上の種類が出たら手がかりなし
 _PERIOD_HEADER = re.compile(r"^\s*(\d{1,2}\s*月|(19|20)\d{2}(年度?|年)?|(19|20)\d{2}\s*[-/~～]\s*\d{2,4}|FY\s*\d{2,4}|[RHS]\s*\d{1,2}|令和\s*\d+年?度?|平成\s*\d+年?度?|昭和\s*\d+年?度?)\s*$", re.I)
 _COMPILED = {k: [re.compile(p, re.I) for p in v] for k, v in CUES.items()}
+# 軸の列の列名（F4）。確かめる陣 15 陣で正しい +2・重大 ±0（research/fixes/confirm.md）
+_DIM_HEADER = re.compile(r"^(statistic|statistic label|tlist\(.*\)|c\d+v\d+|year|jahr|annee|année|quarter|quartal|month|monat|mois|week|woche|semaine|"
+                         r"period|periode|période|time_period|temporal|date|datum|geo\w*|region|kanton|canton|gemeinde|unit|einheit)$", re.I)
 
 
 def _norm(s) -> str:
@@ -51,7 +54,8 @@ def cue_types(header, unit="") -> set:
     h = _norm(header)
     if _BAND.search(h):
         return set()
-    u = _norm(unit)
+    # 2026-10-30（F4、オーナー「1はいい」）：縦持ちの表の単位の列（UNIT: %）は値の列のためのもの。軸の列（STATISTIC・TLIST・年・四半期・地域など）には当てない
+    u = "" if _DIM_HEADER.match(h) else _norm(unit)
     hits = set()
     for k, pats in _COMPILED.items():
         targets = (h,) if k in ("id", "date") else (h, u)
@@ -76,9 +80,10 @@ _EMPTY = ("", "-", "－", "―", "…", "nan", "None", "NULL")
 
 
 def _values_without_evidence(values) -> bool:
-    """値が空か 0 ばかり（数の種類を決める根拠にならない）。同じコードの繰り返し（団体コードなど）は根拠ありとする。"""
-    vals = [_norm(v) for v in values if _norm(v) not in _EMPTY]
-    return all(re.fullmatch(r"[-+]?0+([.,]0+)?", v) for v in vals)
+    """値が空か欠けばかり（数の種類を決める根拠にならない）。
+    2026-10-30（bench/root_cause_fixes_prereg_20261030.md の F8、オーナー「1はいい」）：0 ばかりの列は根拠なしにしない。
+    b013・b014 で決めたときは損 4・得 1 だったが、新しい陣（0 ばかりの件数の列が多い）では損だけで、確かめる陣 15 陣で正しい +4・重大 ±0。"""
+    return not [v for v in values if _norm(v) not in _EMPTY]
 
 
 def _numeric_share(values) -> float:
