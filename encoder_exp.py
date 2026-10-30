@@ -7,7 +7,7 @@ from scipy.sparse import csr_matrix, hstack
 from sklearn.linear_model import LogisticRegression
 import gen
 from exp7 import load_real, split, perturb
-from encoder_context import attach_unit_context, format_encoder_text, real_train_rows_with_units, unit_context_map
+from encoder_context import attach_unit_context, format_encoder_text, indicator_context_map, load_rows_valsel, real_train_rows_with_units, unit_context_map
 from real_fraction import parse_real_fraction, select_real_fraction
 from llm_baseline import score_real
 from train3 import build_train, mat, split_curriculum, decide
@@ -51,7 +51,8 @@ if POOL or POOL_VALONLY:
     _pool_files = sorted(_glob.glob("materials/pool/batch_*.jsonl"))
     if not _pool_files:
         raise SystemExit("FT_POOL=1 なのに materials/pool/batch_*.jsonl が無い（Kaggle の束に入っているか確かめる）")
-    pool_all = load_real(tuple(_pool_files))
+    # FT_VALSEL=1（2026-10-30、原因 M15）：教材庫の 5 個の値の欠けを、表の行の欠けでない値に入れ替える（予測の evaluate_independent.py も同じ）
+    pool_all = load_rows_valsel(tuple(_pool_files)) if os.environ.get("FT_VALSEL") == "1" else load_real(tuple(_pool_files))
     if not pool_all:
         raise SystemExit("FT_POOL=1 なのに教材庫の行が 0")
 pooltr, poolval = pool_all, []
@@ -104,7 +105,7 @@ selected_tables = {str(row[4]) for row in selected_source_rows}
 POOL_UNDEC = int(os.environ.get("FT_POOL_UNDECIDABLE", "0") or 0)
 undec_tr = []
 if POOL and POOL_UNDEC > 0:
-    _undec = load_real(("materials/pool/undecidable.jsonl",))
+    _undec = load_rows_valsel(("materials/pool/undecidable.jsonl",)) if os.environ.get("FT_VALSEL") == "1" else load_real(("materials/pool/undecidable.jsonl",))
     if not _undec:
         raise SystemExit("FT_POOL_UNDECIDABLE なのに materials/pool/undecidable.jsonl が無いか空（python materials/build_pool_extras.py）")
     _val_tables = {r[4] for r in poolval}
@@ -116,6 +117,8 @@ if POOL and POOL_UNDEC > 0:
 # FT_TITLE=1（既定オフ）：表の題名（materials/pool/titles.json。教材庫の表だけ。ほかの表は題名なし）を入力の文に入れる。学習・評価とも同じ対応表を通す
 TITLE = os.environ.get("FT_TITLE") == "1"
 unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all + pool_all)
+# FT_UNITX=1（2026-10-30、原因 M7）：汎用の値の列（value・Wert）に、同じ表の指標の列（Statistic Label・Kennzahl など）の例も単位の欄に足す（予測も同じ）
+IND = indicator_context_map(g_all + b_all + b2_all + j_all + j3_all + pool_all) if os.environ.get("FT_UNITX") == "1" else None
 if TITLE:
     from encoder_context import TITLE_SEP
     if not os.path.exists("materials/pool/titles.json"):
@@ -124,24 +127,24 @@ if TITLE:
         unit_by_table[_t] = unit_by_table.get(_t, "") + TITLE_SEP + _ttl
     print(f"FT_TITLE=1: table titles for {sum(TITLE_SEP in v for v in unit_by_table.values())} tables", flush=True)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
-real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60)
+real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb, indicator_by_table=IND) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
 if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。種は別
-    real_rows += real_train_rows_with_units(j3tr, 6, 9, True, unit_by_table, perturb, per_table=60)
+    real_rows += real_train_rows_with_units(j3tr, 6, 9, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
     print(f"FT_JP3=1: +{len(j3tr)} jp3 source rows ({len({r[4] for r in j3tr})} tables)", flush=True)
 if POOL:
-    real_rows += real_train_rows_with_units(pooltr, POOL_COPIES, 10, True, unit_by_table, perturb, per_table=60)
+    real_rows += real_train_rows_with_units(pooltr, POOL_COPIES, 10, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
     print(f"FT_POOL=1: +{len(pooltr)} pool source rows ({len({r[4] for r in pooltr})} tables) x{POOL_COPIES}; validation {len(poolval)}", flush=True)
 # FT_POOL_HARD_COPIES=k（既定 0＝足さない）：教材庫のうち、先生とモデルが食い違って Claude が裁定した列（batch_*.jsonl の teacher が claude-…）を k 回ぶん余分に足す（2026-10-24）。
 # 今のモデルが迷う列そのものなので、同じ数の列でも学ぶことが多いはず。検証側の表には足さない（pooltr の中だけ）
 POOL_HARD_COPIES = int(os.environ.get("FT_POOL_HARD_COPIES", "0") or 0)
 if undec_tr:
-    real_rows += real_train_rows_with_units(undec_tr, POOL_UNDEC, 12, True, unit_by_table, perturb, per_table=60)
+    real_rows += real_train_rows_with_units(undec_tr, POOL_UNDEC, 12, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
     print(f"FT_POOL_UNDECIDABLE={POOL_UNDEC}: +{len(undec_tr)} undecidable pool rows as other x{POOL_UNDEC}", flush=True)
 if POOL and POOL_HARD_COPIES > 0:
     from pool_families import adjudicated_keys
     _hard_keys = adjudicated_keys(_pool_files)
     _hard = [r for r in pooltr if (str(r[4]), r[0]) in _hard_keys]
-    real_rows += real_train_rows_with_units(_hard, POOL_HARD_COPIES, 11, True, unit_by_table, perturb, per_table=60)
+    real_rows += real_train_rows_with_units(_hard, POOL_HARD_COPIES, 11, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
     print(f"FT_POOL_HARD_COPIES={POOL_HARD_COPIES}: +{len(_hard)} adjudicated pool rows x{POOL_HARD_COPIES}", flush=True)
 # FT_POOL_HARD_LIST=<一覧>（既定なし）：苦手克服モデル（2026-10-26、オーナー指示）。一覧（research/experts/hard_list.py が作る materials/pool/hard_list.jsonl。
 # 本体が間違えた・不明になった列と、それに似た教材）の列を FT_POOL_HARD_LIST_COPIES 回（既定 3）ぶん余分に足す。検証側の表には足さない（pooltr の中だけ）
@@ -153,21 +156,21 @@ if POOL_HARD_LIST:
         raise SystemExit("FT_POOL_HARD_LIST は FT_POOL=1 と一緒に使う")
     _keys = {(d["table"], d["header"]) for d in (json.loads(l) for l in open(POOL_HARD_LIST, encoding="utf-8") if l.strip())}
     pool_hard_list_rows = [r for r in pooltr if (str(r[4]), r[0]) in _keys]
-    real_rows += real_train_rows_with_units(pool_hard_list_rows, POOL_HARD_LIST_COPIES, 13, True, unit_by_table, perturb, per_table=60)
+    real_rows += real_train_rows_with_units(pool_hard_list_rows, POOL_HARD_LIST_COPIES, 13, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
     print(f"FT_POOL_HARD_LIST={POOL_HARD_LIST}: +{len(pool_hard_list_rows)} listed pool rows x{POOL_HARD_LIST_COPIES} (list {len(_keys)})", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
 y = np.array([r[2] for r in rows])
-tests = {"開発用220": rows_of(), "本物（一般）": attach_unit_context(gte, unit_by_table), "本物（業務）": attach_unit_context(bte, unit_by_table)}
+tests = {"開発用220": rows_of(), "本物（一般）": attach_unit_context(gte, unit_by_table, IND), "本物（業務）": attach_unit_context(bte, unit_by_table, IND)}
 if b2te:
-    tests["本物（業務2）"] = attach_unit_context(b2te, unit_by_table)
+    tests["本物（業務2）"] = attach_unit_context(b2te, unit_by_table, IND)
 if jte:
-    tests["本物（日本の調達）"] = attach_unit_context(jte, unit_by_table)
+    tests["本物（日本の調達）"] = attach_unit_context(jte, unit_by_table, IND)
 if VAL_MODE:   # 検証モードでは固定の試験を評価しない（検証だけ）。名前は試験側と同じ並び
     tests = {}
     for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval), ("検証（jp3）", j3val), ("検証（教材庫）", poolval)):
         if _vr:
-            tests[_name] = attach_unit_context(_vr, unit_by_table)
+            tests[_name] = attach_unit_context(_vr, unit_by_table, IND)
     print("FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 " + ", ".join(f"{k} {len(v)}" for k, v in tests.items()), flush=True)
 
 

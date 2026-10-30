@@ -9,6 +9,63 @@ _UNIT_HEADER = re.compile(r"^(?:unit|units|uom|unit of measure|unit[_ ]of[_ ]mea
                           r"parameter[_ ]unit|obs[_ ]?unit(?:[_ ]uniteobs)?|einheit(?:[_ ](?:kurz|lang))?|masseinheit|maßeinheit|unité|unite|unité de mesure|"
                           r"unidad(?: de medida)?|unidade de medida|単位|単位名|(?:amt|amount)[-_ ]units?(?:[_ -].*)?)$", re.I)
 _JUNK = {"", "nan", "none", "null", "n/a", "na", "-"}
+TITLE_SEP = "\x1e"   # 単位の例の欄に表の題名を一緒に入れるときの区切り（FT_TITLE。encoder_exp.py が単位の例の対応表に足す）
+
+
+# FT_VALSEL=1（2026-10-30、原因 M15）：本体に渡す 5 個の値のうち欠けの記号を、表の行（row_values）の欠けでない値に入れ替える。
+# 欠けでない値はそのまま残すので、欠けのない列の入力は今までと同じ。学習（encoder_exp.py）と予測（evaluate_independent.py）で同じ関数を通す
+MISSING = {"", "[x]", "[z]", "[c]", "[u]", ".", "..", ":", "na", "n/a", "nil", "-", "x", "z", "nan", "none", "null", "–", "—", "*", "#n/a"}
+
+
+def is_missing(value) -> bool:
+    return str(value if value is not None else "").strip().lower() in MISSING
+
+
+def pick_values(values, row_values=None, k=5):
+    """values（列ごとの 5 個）の欠けの位置を、row_values の欠けでない値で順に埋める。足りなければ欠けのまま残す。"""
+    vals = [str(v) for v in (values or [])][:k]
+    spare = iter([str(v) for v in (row_values or []) if not is_missing(v)])
+    out = []
+    for v in vals:   # 欠けの位置にだけ入れる（並びは変えない。入れる値が尽きたら欠けのまま）
+        out.append(next(spare, v) if is_missing(v) else v)
+    return out
+
+
+# FT_UNITX=1（2026-10-30、原因 M7）：「value・Wert」のような汎用の値の列には、同じ表の指標の列（Statistic Label・Kennzahl・metrik など）の値も
+# 単位の欄に足す（何の数かが入力に出る）。ほかの列には足さない（単位の列を軸の列に当てて手がかりがぶつかった M12 と同じことを起こさない）
+_GENERIC_VALUE = re.compile(r"^(?:value|values|wert|werte|valeur|valore|valor|obs_value|observation|amount_value|数値|値|データ)$", re.I)
+_INDICATOR_HEADER = re.compile(r"^(?:statistic(?:[_ ]label)?|indicator(?:[_ ](?:name|label))?|indikator|kennzahl|metrik|measure(?:[_ ]name)?|variable|merkmal|"
+                               r"value[_ ]?category|dim|dimension|mesure|indicateur|series(?:[_ ]name)?|指標|項目名)$", re.I)
+
+
+def indicator_context_map(rows):
+    """(header, values, label, context, table) 行から、表ごとに指標の列の値の短い例を作る（FT_UNITX）。"""
+    out = {}
+    for row in rows:
+        if len(row) < 5:
+            continue
+        header, values, _label, _context, table = row[:5]
+        if not _INDICATOR_HEADER.fullmatch(str(header or "").strip()):
+            continue
+        vals = []
+        for value in values or []:
+            value = str(value or "").strip()
+            if value and value.lower() not in _JUNK and value not in vals:
+                vals.append(value[:40])
+            if len(vals) == 3:
+                break
+        if vals:
+            out.setdefault(table, [])
+            if len(out[table]) < 2:
+                out[table].append(f"{str(header).strip()}: {', '.join(vals)}")
+    return {t: "; ".join(v) for t, v in out.items()}
+
+
+def unit_for(header, unit_text, indicator_text):
+    """FT_UNITX の単位の欄：汎用の値の列にだけ、単位の例のあとに指標の列の例を足す。"""
+    if indicator_text and _GENERIC_VALUE.fullmatch(str(header or "").strip()):
+        return f"{unit_text}; {indicator_text}" if unit_text else indicator_text
+    return unit_text
 
 
 def unit_context_map(rows):
@@ -32,12 +89,38 @@ def unit_context_map(rows):
     return out
 
 
-def attach_unit_context(rows, by_table):
+def _with_indicator(header, unit_full, indicator_by_table, table):
+    """単位の欄（単位の例＋区切り＋題名）の単位の例の部分に、FT_UNITX の指標の列の例を足す。indicator_by_table が None なら元のまま。"""
+    if not indicator_by_table:
+        return unit_full
+    unit, sep, ttl = str(unit_full or "").partition(TITLE_SEP)
+    return unit_for(header, unit, indicator_by_table.get(table, "")) + sep + ttl
+
+
+def attach_unit_context(rows, by_table, indicator_by_table=None):
     """評価用の5列tupleへ、同一表の単位欄の短い値だけを追加する。"""
-    return [tuple(row[:4]) + (by_table.get(row[4], ""),) if len(row) >= 5 else tuple(row) for row in rows]
+    return [tuple(row[:4]) + (_with_indicator(row[0], by_table.get(row[4], ""), indicator_by_table, row[4]),) if len(row) >= 5 else tuple(row) for row in rows]
 
 
-def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, perturb_header, per_table=30):
+LOAD_REAL_JUNK = {"nan", "None", "", "NaN", "null", "NULL"}   # exp7.JUNK と同じ（load_real が外す値）
+
+
+def load_rows_valsel(files, junk=LOAD_REAL_JUNK):
+    """exp7.load_real と同じ行の形で、値を pick_values（FT_VALSEL）で選ぶ。row_values のない教材は load_real と同じ値になる。"""
+    import json
+    import os
+    out = []
+    for fn in files:
+        if not os.path.exists(fn):
+            continue
+        for line in open(fn, encoding="utf-8"):
+            d = json.loads(line)
+            vals = pick_values(d["values"], d.get("row_values"))
+            out.append((d["header"].lstrip("\ufeff"), [v for v in vals if v.strip() not in junk], d["label"], d["context"], d["table"]))
+    return out
+
+
+def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, perturb_header, per_table=30, indicator_by_table=None):
     """exp7.real_train_rows と同じ抽出・水増しを行い、単位例を第5要素として保持する。"""
     rng = random.Random(seed)
     by = defaultdict(list)
@@ -51,15 +134,12 @@ def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, pe
     for header, values, label, context, table in capped:
         if label == "other" and not keep_other:
             continue
-        unit = unit_by_table.get(table, "")
+        unit = _with_indicator(header, unit_by_table.get(table, ""), indicator_by_table, table)
         for _ in range(copies):
             vals = rng.sample(values, max(1, int(len(values) * rng.uniform(0.6, 1.0)))) if values else []
             ctx = rng.sample(context, max(1, int(len(context) * rng.uniform(0.4, 1.0)))) if context and rng.random() < 0.8 else None
             out.append((perturb_header(rng, header), vals, label, ctx, unit))
     return out
-
-
-TITLE_SEP = "\x1e"   # 単位の例の欄に表の題名を一緒に入れるときの区切り（FT_TITLE。encoder_exp.py が単位の例の対応表に足す）
 
 
 def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False, title=False):

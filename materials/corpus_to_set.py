@@ -18,7 +18,9 @@ def convert(corpus_path, prefix):
     for i, r in enumerate(rows, 1):
         cols.append({"id": f"{prefix}-{i:04d}", "table": r["table"], "source": r.get("source", ""), "language": r.get("language", "ja"),
                      "header": r["header"], "values": r["values"][:5] or [""], "siblings": r.get("context") or [],
-                     "unit": units.get(r["table"], "")})
+                     "unit": units.get(r["table"], ""),
+                     # 2026-10-30：表の行の値（FT_VALSEL の重みが値の欠けを埋めるのに使う。ほかの重みは読まない）
+                     **({"row_values": [str(v) for v in r["row_values"][:20]]} if r.get("row_values") else {})})
     return {"schema_version": 1, "set_id": f"label-assist-{prefix}", "columns": cols}
 
 

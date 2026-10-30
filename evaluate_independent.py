@@ -86,6 +86,22 @@ def rows_of(set_data):
             for c in set_data["columns"]]
 
 
+def model_rows_of(set_data, info):
+    """本体に入れる行。学習の設定に合わせて直す（見張り以降には rows_of の元の行を渡す）。
+    - FT_VALSEL：値の欠けを、主セットの列の row_values（表の行の値）の欠けでない値で埋める（無い列はそのまま）
+    - FT_UNITX：単位の欄を、主セットの同じ表の列から今の決まり（unit_context_map・indicator_context_map）で作り直す（主セットに入っている単位の欄は作った時点の決まりで古いことがある）"""
+    from encoder_context import indicator_context_map, pick_values, unit_context_map, unit_for
+    rows = rows_of(set_data)
+    cols = set_data["columns"]
+    if info.get("val_select"):
+        rows = [(h, pick_values(v, c.get("row_values")), l, sib, u) for (h, v, l, sib, u), c in zip(rows, cols)]
+    if info.get("unit_ext"):
+        src = [(str(c["header"]), [str(v) for v in c["values"]], "", [], c.get("table") or "") for c in cols]
+        units, inds = unit_context_map(src), indicator_context_map(src)
+        rows = [(h, v, l, sib, unit_for(h, units.get(c.get("table") or "", ""), inds.get(c.get("table") or "", ""))) for (h, v, l, sib, _u), c in zip(rows, cols)]
+    return rows
+
+
 # ---------------------------------------------------------------- 重みの検査と設定
 
 def checkpoint_info(checkpoint_dir):
@@ -108,6 +124,10 @@ def checkpoint_info(checkpoint_dir):
         "max_length": int(extra.get("max_length") or EVAL_MAX_LENGTH),
         "ctx_unit": str(env.get("FT_CTX_UNIT", "")) == "1",
         "val_profile": str(env.get("FT_VALPROF", "")) == "1",
+        # 2026-10-30：学習の入力の設定を予測でもそろえる（原因 M15・M7・M16）。古い重み（設定なし）は今までどおり
+        "val_select": str(env.get("FT_VALSEL", "")) == "1",
+        "unit_ext": str(env.get("FT_UNITX", "")) == "1",
+        "title": str(env.get("FT_TITLE", "")) == "1",
         "seed": (manifest.get("run") or {}).get("seed"),
         "labels": labels,
         "train_commit": manifest.get("commit"),
@@ -205,18 +225,24 @@ def append_ledger(path, entry):
 
 # ---------------------------------------------------------------- 予測
 
-def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", repeat_reason=None, infer=None, titles_path=None):
+DEFAULT_TITLES = "materials/pool/titles.json"
+
+
+def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", repeat_reason=None, infer=None, titles_path=None, no_titles=False):
     """予測を作って out_path に書く。infer は試験用の差し替え（(checkpoint, texts, info) → (確率, 秒)）。
     titles_path（表の名前 → 題名の JSON）を渡したときだけ、入力に表の題名を入れる（学習の FT_TITLE=1 と同じ形）。"""
     set_data, set_sha = load_set(set_path)
     info = checkpoint_info(checkpoint_dir)
     reason = check_ledger(ledger_path, set_sha, info["weights_sha256"], repeat_reason)
     rows = rows_of(set_data)
-    titles_meta, model_rows = None, rows
+    titles_meta, model_rows = None, model_rows_of(set_data, info)
+    if info.get("title") and not titles_path and not no_titles:
+        # FT_TITLE=1 で学習した重みは、予測にも題名を入れる（原因 M16：今までは題名なしで予測していた）。--no-titles で前のやり方
+        titles_path = DEFAULT_TITLES
     if titles_path:   # 題名は本体への入力にだけ入れる（見張り以降は元の rows）
         from encoder_context import TITLE_SEP
         raw_t = read_bytes(titles_path)
-        model_rows = with_titles(rows, set_data, json.loads(raw_t.decode("utf-8")))
+        model_rows = with_titles(model_rows, set_data, json.loads(raw_t.decode("utf-8")))
         titles_meta = {"path": titles_path, "sha256": sha256_bytes(raw_t), "columns_with_title": sum(TITLE_SEP in r[4] for r in model_rows)}
     texts = texts_of(model_rows, info, title=bool(titles_path))
     if infer is None:
@@ -232,6 +258,7 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
            "guard_implementation_version": guard_module.GUARD_VERSION,
            "available_guard_versions": list(AVAILABLE_GUARD_VERSIONS),
            "checkpoint": {k: info[k] for k in ("weights_sha256", "model", "hf_revision", "model_type", "prefix", "max_length", "ctx_unit", "seed", "train_commit")},
+           "input": {k: info.get(k, False) for k in ("val_select", "unit_ext", "title")},
            "labels": info["labels"], "device": device,
            **({"titles": titles_meta} if titles_meta else {}),
            "timing": {"columns": len(rows), "seconds": round(float(seconds), 3), "ms_per_column": round(1000 * float(seconds) / len(rows), 3)},
@@ -317,7 +344,8 @@ def main(argv=None):
     p.add_argument("--ledger", default="eval_reports/independent/ledger.jsonl")
     p.add_argument("--device", default="cpu")
     p.add_argument("--repeat-reason", default=None)
-    p.add_argument("--titles", default=None, help="表の名前 → 題名の JSON。渡したときだけ入力に題名を入れる（既定は入れない）")
+    p.add_argument("--titles", default=None, help="表の名前 → 題名の JSON。FT_TITLE=1 の重みは渡さなくても materials/pool/titles.json を使う")
+    p.add_argument("--no-titles", action="store_true", help="FT_TITLE=1 の重みでも題名を入れない（2026-10-30 より前のやり方。比べるとき用）")
     s = sub.add_parser("score")
     s.add_argument("--preds", required=True)
     s.add_argument("--labels", required=True)
@@ -328,7 +356,7 @@ def main(argv=None):
     s.add_argument("--guard-version", choices=AVAILABLE_GUARD_VERSIONS, default=PRIMARY_GUARD_VERSION)
     a = ap.parse_args(argv)
     if a.cmd == "predict":
-        doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason, titles_path=a.titles)
+        doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason, titles_path=a.titles, no_titles=a.no_titles)
         print(json.dumps({k: doc[k] for k in ("set_id", "set_sha256", "guard_version", "guard_implementation_version", "available_guard_versions", "checkpoint", "timing")}, ensure_ascii=False, indent=1))
     else:
         print(json.dumps(score(a.preds, a.labels, a.out_dir, a.run, a.dataset, a.seed, a.guard_version), ensure_ascii=False, indent=1))
