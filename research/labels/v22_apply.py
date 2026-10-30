@@ -18,6 +18,22 @@ HERE = Path(__file__).resolve().parent
 REVIEW = ROOT / "materials" / "pool" / "label_review" / "claude_decisions.jsonl"
 
 
+def locate(rows, d):
+    """記録の列の行の番号。行の番号・列名（・表・値）が合えばその行、合わなければ表・列名・値で探す（前に外した行で番号がずれた陣）。"""
+    k = d["line"]
+    ok = lambda r: r.get("header") == d["header"] and ("table" not in d or r.get("table") == d["table"]) and ("values" not in d or r.get("values") == d["values"])
+    if k < len(rows) and ok(rows[k]):
+        return k
+    if "table" not in d:
+        if k < len(rows) and rows[k].get("header") != d["header"]:
+            raise SystemExit(f"{d['file']}:{k}：列名が記録と違う")
+        return k if k < len(rows) else None
+    hits = [i for i, r in enumerate(rows) if ok(r)]
+    if len(hits) > 1:
+        raise SystemExit(f"{d['file']}:{k}：記録の列に当たる行が {len(hits)} 行")
+    return hits[0] if hits else None
+
+
 def main():
     src = sys.argv[1] if len(sys.argv) > 1 else "v22_decisions.jsonl"
     decs = [d for d in read_jsonl(HERE / src) if d["decision"] == "change"]
@@ -30,12 +46,19 @@ def main():
     for name, ds in sorted(by_file.items()):
         path = (POOL if name.startswith("batch_") else ROOT / "materials") / name
         rows = read_jsonl(path)
-        changed = 0
+        changed, drop = 0, set()
         for d in ds:
-            r = rows[d["line"]]
-            if r.get("header") != d["header"]:
-                raise SystemExit(f"{name}:{d['line']}：列名が記録と違う")
-            if r["label"] != d["label"]:
+            k = locate(rows, d)
+            if k is None:
+                if d["label"] == "unknown":   # 前に動かしたときに外した列
+                    continue
+                raise SystemExit(f"{name}:{d['line']}：記録の列が見つからない")
+            r = rows[k]
+            if d["label"] == "unknown":
+                # 決められない列は確定した陣に入れない（label_review/apply.py と同じ）。採点の付け直しには unknown として残す
+                drop.add(k)
+                changed += 1
+            elif r["label"] != d["label"]:
                 if r["label"] != d["from"]:
                     raise SystemExit(f"{name}:{d['line']}：直す前のラベルが記録と違う（{r['label']}）")
                 r["label"], r["teacher"] = d["label"], d["decided_by"]
@@ -49,9 +72,10 @@ def main():
                 if len(hits) != 1:
                     raise SystemExit(f"{name}:{d['line']}：作業の corpus の行が {len(hits)} 行当たる")
                 sid = ids[hits[0]]
-                if have.get(sid) != d["label"]:
+                if have.get(sid) != d["label"]:   # unknown も採点の付け直しに入れる（pool_bench は unknown を採点しない）
                     review_add.append({"id": sid, "decision": "change", "label": d["label"], "reason": d["reason"], "decided_by": d["decided_by"]})
                     have[sid] = d["label"]
+        rows = [r for k, r in enumerate(rows) if k not in drop]
         write_jsonl(path, rows)
         if name.startswith("batch_"):
             # manifest は中身から作り直す（途中で止まって直しだけが入った陣も、次に動かしたとき合わせる）
@@ -62,9 +86,9 @@ def main():
                 continue
             if e["sha256"] != sha256(path):
                 n = sum(x.get("teacher") == ds[0]["decided_by"] for x in rows)
-                e["labels"], e["sha256"] = dict(Counter(x["label"] for x in rows)), sha256(path)
+                e["columns"], e["labels"], e["sha256"] = len(rows), dict(Counter(x["label"] for x in rows)), sha256(path)
                 e["note"] = (e.get("note", "") + f"／2026-10-30 LABEL_GUIDE の付け直し（{src}）：{n} 列").lstrip("／")
-        print(name, "直した", changed)
+        print(name, "直した", changed, "（外した", len(drop), "）")
     save_manifest(m)
     with open(REVIEW, "a", encoding="utf-8") as f:
         for x in review_add:
