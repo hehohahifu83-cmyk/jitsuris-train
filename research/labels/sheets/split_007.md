@@ -45,20 +45,7 @@
 |---:|---|---|---|---|
 | 2 | address | Carlow Kilkenny South Tipperary / Cavan Monaghan / Cork / Donegal / Dublin North / Dublin City North / Dublin South Central / Dublin South East Wicklow | RegionID・AreaID・Year・Jan・Feb・Mar・Apr・May | ther-placement-type-with-an-allocated-social-worker-2018.csv |
 
-## G185　b017「STATISTIC」（6 列：id 4・category 2）
-
-多いほうの id の例：
-
-- EDA36 / EDA36 / EDA36 / EDA36 / EDA36 / EDA36 / EDA36 / EDA36（同じ表：Statistic・TLIST(A1)・Year・C02199V02655・Sex・UNIT・VALUE）
-- EDA96 / EDA96 / EDA96 / EDA96 / EDA96 / EDA96 / EDA96 / EDA96（同じ表：Statistic・TLIST(A1)・Year・C02199V02655・Sex・C02505V03033・Details of Results・UNIT）
-- HSQ08C1 / HSQ08C1 / HSQ08C1 / HSQ08C1 / HSQ08C1 / HSQ08C1 / HSQ08C2 / HSQ08C2（同じ表：Statistic・TLIST(Q1)・Quarter・C02350V02827・House Type New or Second hand・UNIT・VALUE）
-
-| 列 | 今の種類 | 値（先頭 8 個） | 同じ表の列 | 表 |
-|---:|---|---|---|---|
-| 3 | category | STOCKNURSE / STOCKNURSE / STOCKNURSE / STOCKNURSE / STOCKNURSE / STOCKNURSE / STOCKNURSE / STOCKNURSE | Statistic Label・YEAR・Year・TRNGTYPE・Type of training・QUALCOU・UNIT・VALUE | s/7edf5f10/JQ06_-_Stock_of_Nurses_by_country_of_training.csv |
-| 4 | category | NURSES / NURSES / NURSES / NURSES / NURSES / NURSES / NURSES / NURSES | Statistic Label・YEAR・Year・MEASURE・Measure・UNIT・VALUE・FLAG | ://assets.gov.ie/static/documents/29420abf/JQ05_-_Nurses.csv |
-
-## G186　b017「VALUE」（5 列：quantity 4・rate 1）
+## G185　b017「VALUE」（5 列：quantity 4・rate 1）
 
 多いほうの quantity の例：
 
@@ -70,7 +57,7 @@
 |---:|---|---|---|---|
 | 1 | rate | 67.5 / 71.8 / 67.3 / 76.3 / 67.5 / 73.8 / 78.9 / 72 | STATISTIC・Statistic・TLIST(A1)・Year・C02199V02655・Sex・UNIT | pi.restful/PxStat.Data.Cube_API.ReadDataset/EDA36/CSV/1.0/en |
 
-## G187　b017「Produit」（3 列：product 2・category 1）
+## G186　b017「Produit」（3 列：product 2・category 1）
 
 多いほうの product の例：
 
@@ -81,7 +68,7 @@
 |---:|---|---|---|---|
 | 2 | category | Préparation pour nourrissons - Soja / Préparation pour nourrissons - Laitier / Divers-Produits Laitiers / Préparation pour nourrissons - Laitier / Céréales - autre / Céréales - autre / Céréales - autre / Céréales - autre | Sample No. - No. d'echantillon・Function・Fonction・Origin・Origine・Product・Date Sampled - Date d'echantillonage・Type of Test | ownload/chem_ts_2011-12_deoxynivalenol_in_selected_foods.csv |
 
-## G188　b036「Region」（2 列：category 1・address 1）
+## G187　b036「Region」（2 列：category 1・address 1）
 
 多いほうの category の例：
 
@@ -91,7 +78,7 @@
 |---:|---|---|---|---|
 | 2 | address | Eastern Metropolitan Region / North and West Metropolitan Region / Eastern Metropolitan Region / Loddon-Mallee / North and West Metropolitan Region / Southern Metropolitan Region / North and West Metropolitan Region / North and West Metropolitan Region | Suburb・State・Business Category・LGA | gov.au/storage/f/2013-05-12T214343/tmp66N8dymartial-arts.csv |
 
-## G189　b055「名称」（24 列：org 17・address 7）
+## G188　b055「名称」（24 列：org 17・address 7）
 
 多いほうの org の例：
 
@@ -109,7 +96,7 @@
 | 20 | address | 東大和市向原市民センター / 東大和市向原市民センター / 桜が丘市民広場 / 市民プール / 市民体育館 / 市民体育館 / 市民体育館 / 東大和市桜が丘市民センター | 全国地方公共団体コード・ID・地方公共団体名・建物名等(方書)・設置位置・男性トイレ総数・女性トイレ総数・男女共用トイレ総数 | metro.tokyo.lg.jp/higashiyamato/ods/132209_public_toilet.csv |
 | 21 | address | 白山公園 / 滝山公園 / 小山台遺跡公園 / 神山堂阪公園 / 下里本邑遺跡公園 / 西口中央公園 / 小山れんげ公園 / 竹林公園 | 全国地方公共団体コード・ID・地方公共団体名・名称_カナ・名称_英語・設置位置・高度の種別・高度の値 | ata.metro.tokyo.lg.jp/higashikurume/132225_public_toilet.csv |
 
-## G190　b055「施設名」（3 列：org 2・address 1）
+## G189　b055「施設名」（3 列：org 2・address 1）
 
 多いほうの org の例：
 
@@ -120,7 +107,7 @@
 |---:|---|---|---|---|
 | 3 | address | 青山公園 / 赤塚公園 / 秋留台公園 / 井の頭恩賜公園 / 上野恩賜公園 / 宇喜田公園 / 浮間公園 / 大泉中央公園 | 区分 | //www.opendata.metro.tokyo.lg.jp/kensetsu/R3/teienitiran.csv |
 
-## G191　b055「備考」（7 列：text 5・category 2）
+## G190　b055「備考」（7 列：text 5・category 2）
 
 多いほうの text の例：
 
@@ -133,7 +120,7 @@
 | 4 | category | 区営住宅 / 区営住宅 / 高齢者福祉住宅 / 高齢者福祉住宅 / 区営住宅 / 区営住宅 / 区営住宅 / 従前居住者用住宅 | 地方公共団体名・名称・建設年度・管理戸数 | ata.metro.tokyo.lg.jp/meguro/131105_meguroku_koueijutaku.csv |
 | 7 | category | 授乳可 / 授乳可 / 授乳可 / 授乳可 / 授乳可 / 授乳可 / 授乳可 / 授乳可 | 全国地方公共団体コード・ID・地方公共団体名・名称・連結表記・おむつ替えコーナー | ://www.opendata.metro.tokyo.lg.jp/koganei/29_babystation.csv |
 
-## G192　b055「名称_カナ」（10 列：org 8・address 2）
+## G191　b055「名称_カナ」（10 列：org 8・address 2）
 
 多いほうの org の例：
 
@@ -146,7 +133,7 @@
 | 5 | address | チュウオウコウエン / ジョウスイコウエン / ツツジコウエン / アジサイコウエン / ナカジマチョウコウエン / オガワリョクチ / タケノココウエン / スズキカイドウコウエン | 全国地方公共団体コード・ID・地方公共団体名・名称・建物名等(方書)・設置位置・男性トイレ総数・男性トイレ数（小便器） | .opendata.metro.tokyo.lg.jp/kodaira/132110_public_toilet.csv |
 | 8 | address | ハクサンコウエン / タキヤマコウエン / コヤマダイイセキコウエン / コウヤマドウザカコウエン / シモサトホンムライセキコウエン / ニシグチチュウオウコウエン / コヤマレンゲコウエン / チクリンコウエン | 全国地方公共団体コード・ID・地方公共団体名・名称・名称_英語・設置位置・高度の種別・高度の値 | ata.metro.tokyo.lg.jp/higashikurume/132225_public_toilet.csv |
 
-## G193　b055「設置者」（2 列：address 1・org 1）
+## G192　b055「設置者」（2 列：address 1・org 1）
 
 多いほうの address の例：
 
@@ -156,7 +143,7 @@
 |---:|---|---|---|---|
 | 2 | org | 東久留米市立図書館 / 東久留米市立図書館 / 東久留米市立図書館 / 東久留米市立図書館 / 東久留米市立生涯学習センター / 東京ドームスポーツセンター東久留米 | 全国地方公共団体コード・ID・地方公共団体名・名称・名称_カナ・名称_英語・町字ID・建物名等(方書) | tro.tokyo.lg.jp/higashikurume/132225_public_wireless_lan.csv |
 
-## G194　b055「公営駐輪場_説明」（2 列：category 1・text 1）
+## G193　b055「公営駐輪場_説明」（2 列：category 1・text 1）
 
 多いほうの category の例：
 
@@ -166,7 +153,7 @@
 |---:|---|---|---|---|
 | 2 | text | 構造 平面;月極・一時利用;自転車月極 90;自転車一時 213;原付月極 0;原付一時 0 / 構造 立体;月極・一時利用;自転車月極 1192;自転車一時 323;原付月極 0;原付一時 0 / 構造 立体;一時利用;自転車月極 0;自転車一時 460;原付月極 0;原付一時 0 / 構造 立体;月極・一時利用;自転車月極 287;自転車一時 411;原付月極 0;原付一時 0 / 構造 平面;一時利用;自転車月極 0;自転車一時 118;原付月極 0;原付一時 0 / 構造 立体;月極・一時利用;自転車月極 1112;自転車一時 188;原付月極 49;原付一時 15 / 構造 立体;月極・一時利用;自転車月極 661;自転車一時 243;原付月極 0;原付一時 0 / 構造 平面;一時利用;自転車月極 0;自転車一時 1775;原付月極 0;原付一時 0 | 公営駐輪場_全国地方公共団体コード・施設_ID・公営駐輪場_ID・公営駐輪場_名称・公営駐輪場_最大駐輪台数 | ndata.metro.tokyo.lg.jp/musashino/132039_bicycle_parking.csv |
 
-## G195　b055「投票区名」（2 列：id 1・address 1）
+## G194　b055「投票区名」（2 列：id 1・address 1）
 
 多いほうの id の例：
 
@@ -176,7 +163,7 @@
 |---:|---|---|---|---|
 | 2 | address | 第1投票区 / 第2投票区 / 第3投票区 / 第4投票区 / 第5投票区 / 第6投票区 / 第7投票区 / 第8投票区 | 全国地方公共団体コード・地方公共団体名・名称・連結表記・投票所区分 | w.opendata.metro.tokyo.lg.jp/hamura/132276_polling_place.csv |
 
-## G196　b055「名称_英語」（3 列：org 2・address 1）
+## G195　b055「名称_英語」（3 列：org 2・address 1）
 
 多いほうの org の例：
 
@@ -187,7 +174,7 @@
 |---:|---|---|---|---|
 | 2 | address | Hakusan Park / Takiyama Park / Koyamadai Ruins Park / Kohyama Dohzaka Park / Shimosato Honmura Ruins Park / Nishiguchi Central Park / Koyama Renge Park / Chikurin Park | 全国地方公共団体コード・ID・地方公共団体名・名称・名称_カナ・設置位置・高度の種別・高度の値 | ata.metro.tokyo.lg.jp/higashikurume/132225_public_toilet.csv |
 
-## G197　b060「Type」（2 列：category 1・account 1）
+## G196　b060「Type」（2 列：category 1・account 1）
 
 多いほうの category の例：
 
@@ -197,7 +184,7 @@
 |---:|---|---|---|---|
 | 2 | account | Equipment / Equipment / Print and publishing / Tax and statutory requirements / Equipment / Postage and couriers / Conferences and events / Training and development | Date・Amount | chment_data/file/451689/Sept-13-to-Aug-14-extra-gpc-data.csv |
 
-## G198　b060「Department」（8 列：org 6・account 2）
+## G197　b060「Department」（8 列：org 6・account 2）
 
 多いほうの org の例：
 
@@ -210,7 +197,7 @@
 | 1 | account | Environmental Health / Benefits / Section 5 / Envirocrime / Communications / Council Tax / Corporate Fraud / Licencing | OrganisationCode・EffectiveDate・FinancialYear・Payee・Language・Amount | ww.blaby.gov.uk/media/1409/translation-costs-august-2018.csv |
 | 4 | account | Communities / finance / finance / finance / DCLS / Communities / Communities / Communities | MCC・date・Net Amount | en.gov.uk/media/2330/edendc01_transactionreport-april-15.csv |
 
-## G199　b060「Body」（2 列：org 1・id 1）
+## G198　b060「Body」（2 列：org 1・id 1）
 
 多いほうの org の例：
 
@@ -220,7 +207,7 @@
 |---:|---|---|---|---|
 | 2 | id | http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF / http://statistics.data.gov.uk/id/local-authority/16UF | Date・Transaction Number・Amount・Supplier ID・Expense Area・Expense Type・Expense Code・Service Code | https://www.eden.gov.uk/media/2370/period_10_2012.csv |
 
-## G200　b060「Expense Type」（18 列：account 17・id 1）
+## G199　b060「Expense Type」（18 列：account 17・id 1）
 
 多いほうの account の例：
 
@@ -232,7 +219,7 @@
 |---:|---|---|---|---|
 | 1 | id | R4011-CCM001 / R4400-PLP105 / R4436-CCT001 / R4003-REG002 / R4401-CPK001 / R4401-TRW001 / R2700-CPK101 / R2700-FIE040 | OrganisationURI・OrganisationLabel・Organisation Unit・TransactionNumber・Invoice Ref.・Purpose・Payment Date・Amount | eltenham.gov.uk/media/a1ibfa2h/january2020_bank_payments.csv |
 
-## G201　b060「Job/Team Function」（2 列：category 1・text 1）
+## G200　b060「Job/Team Function」（2 列：category 1・text 1）
 
 多いほうの category の例：
 
@@ -242,7 +229,7 @@
 |---:|---|---|---|---|
 | 2 | text | The head of the Business Group which is responsible for the / The head of the Credit Risk Group which is responsible for r / The head of the Finance Group which includes finance, busine / The General Counsel痴 Office is responsible for providing leg / The executive head of the Department, reporting to the Chai / This division is responsible for underwriting Buyer Credit f / The division is responsible for the underwriting, issue and / This division is responsible for the Environmental and Socia | Post unique reference・Grade・Job Title・Parent Department・Organisation・Unit・Reports To・Salary Costs of Reports | t_data/file/190925/senior-staff-posts-dataset-march-2012.csv |
 
-## G202　b060「Other_Related_Themes」（2 列：text 1・category 1）
+## G201　b060「Other_Related_Themes」（2 列：text 1・category 1）
 
 多いほうの text の例：
 
@@ -252,7 +239,7 @@
 |---:|---|---|---|---|
 | 2 | category |  / Coal mining infrastructure / Operational metadata / Operational metadata / Operational metadata / Coal mining infrastructure / Operational metadata / Operational metadata | Organisation・Dataset_Title・Abstract・INSPIRE_Theme・INSPIRE_Feature_Type・Constraints・Metadata_published_on_datagovuk・Where_To_Find_More_Information | ment_data/file/797467/GC_Data_Catalogue_-_Coal_Authority.csv |
 
-## G203　b060「Where_To_Find_More_Information」（2 列：other 1・text 1）
+## G202　b060「Where_To_Find_More_Information」（2 列：other 1・text 1）
 
 多いほうの other の例：
 
@@ -262,7 +249,7 @@
 |---:|---|---|---|---|
 | 2 | text | This dataset is available under Open Government Licence: htt / This dataset is available to view under Open Government Lice / This dataset is available to view under Open Government Lice / This dataset is available to view under Open Government Lice / This dataset is available to view under Open Government Lice / This dataset is available to view under Environmental Inform / This dataset is available to view under Environmental Inform / This dataset is available to view under Environmental Inform | Organisation・Dataset_Title・Abstract・INSPIRE_Theme・INSPIRE_Feature_Type・Other_Related_Themes・Constraints・Metadata_published_on_datagovuk | ment_data/file/797467/GC_Data_Catalogue_-_Coal_Authority.csv |
 
-## G204　b060「notes」（3 列：text 2・category 1）
+## G203　b060「notes」（3 列：text 2・category 1）
 
 多いほうの text の例：
 
@@ -273,7 +260,7 @@
 |---:|---|---|---|---|
 | 2 | category | II / II / II / II* / II / II / II / II | reference・listed_building・geometry・uprns・entry_date・start_date | .gov.uk/downloads/file/19315/listed-building-outline-dataset |
 
-## G205　b062「Number of staff in delegated grades receiving an in-year NCP」（3 列：quantity 2・rate 1）
+## G204　b062「Number of staff in delegated grades receiving an in-year NCP」（3 列：quantity 2・rate 1）
 
 多いほうの quantity の例：
 
@@ -284,7 +271,7 @@
 |---:|---|---|---|---|
 | 3 | rate | 25.90% / 2.00% / 15.00% / 19.60% / 30.70% / 23.80% / 3.10% / 0.00% | Main department・Organisation・Annual Paybill (delegated grades for fin・Headcount (delegated grades as at 31 Mar・Cost of in-year NCPRP for delegated grad・Number of staff in delegated grades rece・Median NCPRP for those receiving an in-y・Cost of end of year NCPRP for delegated | ds/system/uploads/attachment_data/file/285086/ncprp-2013.csv |
 
-## G206　b063「Wert」（2 列：quantity 1・amount 1）
+## G205　b063「Wert」（2 列：quantity 1・amount 1）
 
 多いほうの quantity の例：
 
@@ -294,7 +281,7 @@
 |---:|---|---|---|---|
 | 2 | amount | 44445966754.09931 / 45213068201.47224 / 48691273509.50475 / 53154938765.891846 / 52104361215.42215 / 53136735491.91763 / 51749555387.060326 / 54899558375.98117 | Stichtag・Kennzahl | https://catalog.opendata.li/store/13/resource/72 |
 
-## G207　b063「Titel」（7 列：text 6・org 1）
+## G206　b063「Titel」（7 列：text 6・org 1）
 
 多いほうの text の例：
 
@@ -306,7 +293,7 @@
 |---:|---|---|---|---|
 | 2 | org | Parkhaus City / Parkhaus Europe / Parkhaus Rebgasse / Parkhaus Aeschen / Parkhaus Claramatte / Parkhaus Centralbahn / Parkhaus Bahnhof Süd / Parkhaus Elisabethen | Publikationszeit・Anzahl frei・Total・Anteil frei・Auslastung・Auslastung in Prozent・Link・geo_point_2d | h/api/v2/catalog/datasets/100088/exports/csv?use_labels=true |
 
-## G208　b063「value」（2 列：other 1・amount 1）
+## G207　b063「value」（2 列：other 1・amount 1）
 
 多いほうの other の例：
 
@@ -316,7 +303,7 @@
 |---:|---|---|---|---|
 | 2 | amount | 12958860367.92 / 3311818203.61 / 3674632983.64 / 16149934595.31 / 6410324420.9 / 5630602017.71 / 3901317329.87 / 7231329921.51 | arten・jahr・dim・hh・unit・model | h/static/assets/datasets/fs_dashboard/standardauswertung.csv |
 
-## G209　b063「richtung」（2 列：text 1・category 1）
+## G208　b063「richtung」（2 列：text 1・category 1）
 
 多いほうの text の例：
 
@@ -326,7 +313,7 @@
 |---:|---|---|---|---|
 | 2 | category | N / N / S / O / S / O / N / W | gemeinde_bfs_nr・gemeinde・anlage_nr・anlage_typ・zeit_von・zeit_bis・spur_nr・lat | tistik.zh.ch/ogd/daten/ressourcen/KTZH_00003043_00006325.csv |
 
-## G210　b064「Titel」（5 列：text 4・org 1）
+## G209　b064「Titel」（5 列：text 4・org 1）
 
 多いほうの text の例：
 
@@ -337,4 +324,14 @@
 | 列 | 今の種類 | 値（先頭 8 個） | 同じ表の列 | 表 |
 |---:|---|---|---|---|
 | 2 | org | Parkhaus Storchen / Parkhaus Storchen / Parkhaus Elisabethen / Parkhaus Messe / Parkhaus Kunstmuseum / Parkhaus Steinen / Parkhaus Europe / Parkhaus Rebgasse | Publikationszeit・Anzahl frei・Total Plätze・Anteil belegter Parkplätze・id・id2・link・geo_point_2d | h/api/v2/catalog/datasets/100014/exports/csv?use_labels=true |
+
+## G210　b064「richtung」（2 列：address 1・category 1）
+
+多いほうの address の例：
+
+- Wilen/Busswil / Gloten / Gloten / Gloten / Amriswil / Kreuzlingen / nach Romanshorn / nach Romanshorn（同じ表：code・gemeinde・spur_code・reg_bus・datum・zeit_von・zeit_bis・jahr）
+
+| 列 | 今の種類 | 値（先頭 8 個） | 同じ表の列 | 表 |
+|---:|---|---|---|---|
+| 2 | category | S / S / N / N / S / S / N / SW | gemeinde_bfs_nr・gemeinde・anlage_nr・anlage_typ・zeit_von・zeit_bis・spur_nr・lat | tistik.zh.ch/ogd/daten/ressourcen/KTZH_00003042_00006323.csv |
 

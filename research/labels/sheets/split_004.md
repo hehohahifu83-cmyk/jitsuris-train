@@ -4,7 +4,17 @@
 `answers/split_NNN.tsv` に少ないほうの列 1 列ずつ 1 行：`gid`・`col`（番号）・`label`（付けるべき種類。今のままなら今の種類、決められなければ unknown）・`reason`。
 今のラベルは参考。v2.2 の決まりと、その列の表・値・同じ表の列から決める。表が違って意味が違えば、割れたままでよい。
 
-## G091　b007「ゴミの分別方法_分別区分」（2 列：category 1・product 1）
+## G091　b007「ゴミの分別方法_品目」（2 列：product 1・category 1）
+
+多いほうの product の例：
+
+- いす<金属製> / 一輪車（遊具）<金属製> / カラーボックス、三段ボックス / グローブ（野球用） / サッシ（ガラス付） / スニーカー / すのこ / 棚<金属製>（同じ表：ゴミの分別方法_全国地方公共団体コード・ゴミの分別方法_ID・ゴミの分別方法_分別区分・ゴミの分別方法_料金種別・ゴミの分別方法_料金備考）
+
+| 列 | 今の種類 | 値（先頭 8 個） | 同じ表の列 | 表 |
+|---:|---|---|---|---|
+| 2 | category | 資源 / 不燃ごみ / 資源 / 粗大ごみ / 資源 / 可燃ごみ / 可燃ごみ / 可燃ごみ | ゴミの分別方法_全国地方公共団体コード・ゴミの分別方法_ID・ゴミの分別方法_分別区分・ゴミの分別方法_料金種別 | .tokyo.lg.jp/setagaya/131121_setagayaku_garbage_separate.csv |
+
+## G092　b007「ゴミの分別方法_分別区分」（2 列：category 1・product 1）
 
 多いほうの category の例：
 
@@ -14,7 +24,7 @@
 |---:|---|---|---|---|
 | 2 | product | 空き箱（紙製) / 油の付着したびん / 折込チラシ / カーペット / カタログ類 / 紙くず / ガムテープ / 救急ばんそうこう | ゴミの分別方法_全国地方公共団体コード・ゴミの分別方法_ID・ゴミの分別方法_品目・ゴミの分別方法_料金種別 | .tokyo.lg.jp/setagaya/131121_setagayaku_garbage_separate.csv |
 
-## G092　b007「値」（2 列：quantity 1・category 1）
+## G093　b007「値」（2 列：quantity 1・category 1）
 
 多いほうの quantity の例：
 
@@ -24,7 +34,7 @@
 |---:|---|---|---|---|
 | 2 | category | NO / 非常に満足 / 非常に満足 / 知りたい情報を見つけたが、情報が雑多で整理されておらずわかりにくかった / 知りたい情報を見つけたが、難しい表現や専門用語で書かれていてわかりにくかった / その他 / どちらかといえば満足 / どちらかといえば満足 | 項目名・データ形態・カテゴリー数・質問文・属性 | pendata.metro.tokyo.lg.jp/digitalservice/shintosei2025_1.csv |
 
-## G093　b007「公式アカウント名」（3 列：org 2・account 1）
+## G094　b007「公式アカウント名」（3 列：org 2・account 1）
 
 多いほうの org の例：
 
@@ -35,7 +45,7 @@
 |---:|---|---|---|---|
 | 1 | account | 東京都 / Tokyo Gov / 東京ベイeSGプロジェクト / 東京都公文書館 / 東京都公文書館 / 東京都八丈支庁 / hachijoshicho / 東京都三宅支庁 | 全国地方公共団体コード・地方公共団体名・媒体・運用所属名・説明 | ndata.metro.tokyo.lg.jp/seisakukikaku/130001_tokyoto_sns.csv |
 
-## G094　b007「車椅子」（4 列：quantity 3・category 1）
+## G095　b007「車椅子」（4 列：quantity 3・category 1）
 
 多いほうの quantity の例：
 
@@ -47,7 +57,7 @@
 |---:|---|---|---|---|
 | 4 | category | なし / なし / 一部 / なし / なし / なし / なし / なし | 全国地方公共団体コード・地方公共団体名・名称・面積・建設年度・管理戸数・主な線・主な駅 | data.metro.tokyo.lg.jp/fussa/132187_fussashi_koueijutaku.csv |
 
-## G095　b008「区分２」（2 列：account 1・category 1）
+## G096　b008「区分２」（2 列：account 1・category 1）
 
 多いほうの account の例：
 
@@ -57,7 +67,7 @@
 |---:|---|---|---|---|
 | 2 | category |  /  / 三次 / 二次 / 二次 / 二次 / 特殊 / 特殊 | 区分１・区分３・広尾病院・大塚病院・駒込病院・墨東病院・多摩総合医療センター・神経病院 | w.opendata.metro.tokyo.lg.jp/byouin/kaikaku-suishin-plan.csv |
 
-## G096　b008「区分３」（2 列：account 1・category 1）
+## G097　b008「区分３」（2 列：account 1・category 1）
 
 多いほうの account の例：
 
@@ -67,7 +77,7 @@
 |---:|---|---|---|---|
 | 2 | category | 東京都災害拠点病院（★基幹災害拠点病院、☆地域災害拠点中核病院、○地域災害拠点病院、◇災害医療支援病院） / 東京ＤＭＡＴ指定病院 / 東京都救命救急センター / 東京都救急告示医療機関 / 東京都指定二次救急医療機関（休日・全夜間診療事業実施医療機関） / 東京都地域救急医療センター（東京ルール） / 東京都熱傷救急連絡協議会加盟施設 / 精神科緊急医療機関（緊急措置入院等） | 区分１・区分２・広尾病院・大塚病院・駒込病院・墨東病院・多摩総合医療センター・神経病院 | w.opendata.metro.tokyo.lg.jp/byouin/kaikaku-suishin-plan.csv |
 
-## G097　b008「区分」（5 列：category 4・account 1）
+## G098　b008「区分」（5 列：category 4・account 1）
 
 多いほうの category の例：
 
@@ -79,7 +89,7 @@
 |---:|---|---|---|---|
 | 1 | account | 都税総額 / 法人二税 / 固定・都市計 / 個人都民税 / 繰入地方消費税 / その他 | ２８年度決算額Ａ（億円）・２８年度補正後予算額Ｂ（億円）・２７年度決算額Ｃ（億円）・比較増減対２８年度補正後Ａ－Ｂ（億円）・比較増減対２８年度増減率（％）・比較増減対２７年度決算額Ａ－Ｃ（億円）・比較増減対２７年度増減率（％） | tps://www.tax.metro.tokyo.lg.jp/documents/d/tax/kessan_h28_1 |
 
-## G098　b008「施設名」（4 列：org 3・address 1）
+## G099　b008「施設名」（4 列：org 3・address 1）
 
 多いほうの org の例：
 
@@ -91,7 +101,7 @@
 |---:|---|---|---|---|
 | 3 | address | 淀橋給水所 / 区立両国公園 / 都立八潮高等学校 / 東海給水所 / 区立西六郷三丁目公園 / 砧浄水場 / 区立みずのとう公園 / 区立日暮里南公園 | 番号・種別・確保水量（立方メートル）・詳細画像・情報更新日・備考 | www.opendata.metro.tokyo.lg.jp/suidou/R7/kyoten_20251211.csv |
 
-## G099　b008「名称」（46 列：address 30・org 15・text 1）
+## G100　b008「名称」（46 列：address 30・org 15・text 1）
 
 多いほうの address の例：
 
@@ -118,7 +128,7 @@
 | 44 | org | 如是保育所 / 北昭和台保育所 / 春日保育所 / 芝生保育所 / 愛光認定こども園 / 和光認定こども園 / まかみこども園(分園含む) / 日輪保育園 | 市町村コード・都道府県名・市区町村名・ID・名称カナ・種別・定員・保育開始年齢～保育終了年齢 | -bf5b-4583-8578-a5ebc82b3786/download/ninkahoikushisetsu.csv |
 | 45 | org | こどもセンター / 三角子育て支援センター / 宇城市子育て支援センター「かもめ」 / 宇城市子育てひろば / 宇城市松橋子育て支援センター豊川 / 豊福保育園子育て総合支援センター / 豊野保育園子育て支援センター / 小川町子育て支援センター | 全国地方公共団体コード・地方公共団体名・名称_カナ・名称_英字・種別・建物名等(方書)・高度の種別・高度の値 | 12-fd3b-40fb-beb6-4ad90713a47c/download/432130_preschool.csv |
 
-## G100　b008「備考」（4 列：text 2・category 1・address 1）
+## G101　b008「備考」（4 列：text 2・category 1・address 1）
 
 多いほうの text の例：
 
@@ -130,7 +140,7 @@
 | 1 | category | 排水場、警報装置 / 排水場、警報装置 / 排水場、警報装置 / 排水場、警報装置 / 排水場、警報装置 / 排水場、警報装置 /  /  | 名称・路線名・設置個所・延長（m） | //www.opendata.metro.tokyo.lg.jp/kensetsu/R3/dourosisetu.csv |
 | 2 | address | ［住所］西新宿2-10-1 / ［住所］両国4-25-3 / ［住所］東品川3-27-22 / ［住所］東海1-3-12 / ［住所］西六郷3-16-16 / ［住所］喜多見2-9-1 / ［住所］江古田1-3 / ［住所］東日暮里5-19-1 | 番号・施設名・種別・確保水量（立方メートル）・詳細画像・情報更新日 | www.opendata.metro.tokyo.lg.jp/suidou/R7/kyoten_20251211.csv |
 
-## G101　b008「施設名称」（3 列：org 2・address 1）
+## G102　b008「施設名称」（3 列：org 2・address 1）
 
 多いほうの org の例：
 
@@ -141,7 +151,7 @@
 |---:|---|---|---|---|
 | 1 | address | 陸上競技場 / 陸上競技場 / 体育館 / 第一球技場 / 第二球技場 / 補助競技場 / 軟式野球場 / 硬式野球場 | 設置者・名称・アクセス方法・施設分類・面数・面積（m2）・観覧席数・夜間照明有無 | pendata.metro.tokyo.lg.jp/sports/130001sports_facilities.csv |
 
-## G102　b008「団体名」（18 列：address 11・org 7）
+## G103　b008「団体名」（18 列：address 11・org 7）
 
 多いほうの address の例：
 
@@ -159,7 +169,7 @@
 | 8 | org | 公益財団法人三鷹市スポーツと文化財団 / 公益財団法人三鷹市スポーツと文化財団 / 三鷹市 / 三鷹市 / 公益財団法人三鷹市スポーツと文化財団 / 公益財団法人三鷹市スポーツと文化財団 / 三鷹市 / 公益財団法人三鷹市スポーツと文化財団 | 全国地方公共団体コード・ID・地方公共団体名・名称・名称_カナ・名称_英字・名称_通称・POIコード | tro.tokyo.lg.jp/mitaka/132047_mitakashi_sportsfacilities.csv |
 | 14 | org | 公益財団法人いなぎグリーンウェルネス財団 / 公益財団法人いなぎグリーンウェルネス財団 / 東京ヴェルディグループ / 株式会社オーエンス / 公益財団法人いなぎグリーンウェルネス財団 / 公益財団法人いなぎグリーンウェルネス財団 / 公益財団法人いなぎグリーンウェルネス財団 / 公益財団法人いなぎグリーンウェルネス財団 | 全国地方公共団体コード・ID・地方公共団体名・名称・名称_カナ・名称_英字・名称_通称・POIコード | metro.tokyo.lg.jp/inagi/132250_inagishi_sportsfacilities.csv |
 
-## G103　b008「名称_カナ」（37 列：address 23・org 14）
+## G104　b008「名称_カナ」（37 列：address 23・org 14）
 
 多いほうの address の例：
 
@@ -184,7 +194,7 @@
 | 34 | org | ツバキショウガッコウタイイクカン / ツバキショウガッコウグランド / サクラショウガッコウタイイクカン / サクラショウガッコウグランド / ツツジショウガッコウタイイクカン / ツツジショウガッコウグランド / ダイイチチュウガッコウタイイクカン / ダイイチチュウガッコウグランド | 地方公共団体名・名称・建物名等(方書)・連絡先FormURL・団体名・利用可能曜日・開始時間・終了時間 | o.tokyo.lg.jp/oshima/133612_oshimamachi_sportsfacilities.csv |
 | 36 | org | コドモセンター / ミスミコソダテシエンセンター / ウキシコソダテシエンセンター「カモメ」 / ウキシコソダテヒロバ / ウキシマツバセコソダテシエンセンタートヨカワ / トヨフクホイクエンコソダテソウゴウシエンセンター / トヨノホイクエンコソダテシエンセンター / オガワマチコソダテシエンセンター | 全国地方公共団体コード・地方公共団体名・名称・名称_英字・種別・建物名等(方書)・高度の種別・高度の値 | 12-fd3b-40fb-beb6-4ad90713a47c/download/432130_preschool.csv |
 
-## G104　b008「名称_英字」（21 列：address 12・org 9）
+## G105　b008「名称_英字」（21 列：address 12・org 9）
 
 多いほうの address の例：
 
@@ -204,7 +214,7 @@
 | 20 | org |  /  /  /  /  /  /  /  | 全国地方公共団体コード・ID・地方公共団体名・名称・名称_カナ・内線番号・利用可能曜日・開始時間 | o.tokyo.lg.jp/mizuho/133035_mizuhomachi_sportsfacilities.csv |
 | 21 | org |  / misumi child rearinng support center / uki city child rearing support center kamome / uki city child rearing support center hiroba / uki city matubase child rearing support center toyokawa / toyofuku nursery school child rearing comprehensive support / toyono nursery school child rearing support center / ogawa town child rearing support center | 全国地方公共団体コード・地方公共団体名・名称・名称_カナ・種別・建物名等(方書)・高度の種別・高度の値 | 12-fd3b-40fb-beb6-4ad90713a47c/download/432130_preschool.csv |
 
-## G105　b008「名称_通称」（12 列：address 10・org 2）
+## G106　b008「名称_通称」（12 列：address 10・org 2）
 
 多いほうの address の例：
 
@@ -217,7 +227,7 @@
 | 3 | org | 大宮前体育館 / 馬橋公園運動広場 / TAC杉並区上井草スポーツセンター / TAC杉並区上井草スポーツセンター / TAC杉並区上井草スポーツセンター / TAC杉並区妙正寺体育館 / 荻窪体育館 / 高円寺みんなの体育館 | 全国地方公共団体コード・地方公共団体名・名称・名称_カナ・名称_英字・POIコード・内線番号・団体名 | .tokyo.lg.jp/suginami/131156_suginamiku_sportsfacilities.csv |
 | 5 | org |  /  /  /  /  /  /  /  | 全国地方公共団体コード・地方公共団体名・名称・名称_カナ・名称_英字・POIコード・建物名等(方書)・高度の種別 | okyo.lg.jp/hachioji/132012_hachioujishi_sportsfacilities.csv |
 
-## G106　b008「建物名等(方書)」（9 列：address 8・org 1）
+## G107　b008「建物名等(方書)」（9 列：address 8・org 1）
 
 多いほうの address の例：
 
@@ -229,7 +239,7 @@
 |---:|---|---|---|---|
 | 2 | org |  /  /  /  / しのざき文化プラザ /  /  /  | 全国地方公共団体コード・地方公共団体名・名称・名称_カナ・名称_英字・高度の種別・高度の値・団体名 | ndata.metro.tokyo.lg.jp/edogawa/131237_edogawaku_library.csv |
 
-## G107　b008「Time」（2 列：quantity 1・date 1）
+## G108　b008「Time」（2 列：quantity 1・date 1）
 
 多いほうの quantity の例：
 
@@ -239,7 +249,7 @@
 |---:|---|---|---|---|
 | 2 | date | Jan 1, 2021 12:00 PM / Jan 2, 2021 8:00 AM / Jan 2, 2021 1:00 PM / Jan 5, 2021 6:00 AM / Jan 9, 2021 11:00 AM / Jan 9, 2021 8:00 PM / Jan 10, 2021 7:00 AM / Jan 11, 2021 6:00 PM | Dun Laoghaire @ Peoples Park Pedestrian・Dun Laoghaire @ Peoples Park Peds IN・Dun Laoghaire @ Peoples Park Peds OUT・Dun Laoghaire @ Seapoint Beach Pedestria・Dun Laoghaire @ Seapoint Beach Peds IN・Dun Laoghaire @ Seapoint Beach Peds OUT・Dun Laoghaire @ York Road Pedestrian・Dun Laoghaire @ York Road Peds IN | e-4b97-afd8-86180ef24a9b/download/dlr_footfall_count2021.csv |
 
-## G108　b008「Title」（5 列：text 3・org 1・address 1）
+## G109　b008「Title」（5 列：text 3・org 1・address 1）
 
 多いほうの text の例：
 
@@ -252,7 +262,7 @@
 | 2 | org | Bethania Transport and Main Roads Customer Service Centre / Bollon Police Station / Bundaberg Transport and Main Roads Customer Service Centre / Caboolture Transport and Main Roads Customer Service Centre / Cairns Queensland Government Service Centre / Charters Towers Transport and Main Roads Customer Service Ce / Darra Motor Vehicle Inspection Centre / Emerald Transport and Main Roads Customer Service Centre | Suburb・Mon am・Mon pm・Tues am・Tues pm・Wed am・Wed pm・Thurs am | e/81d78d4f-0cad-4145-9fe6-43526036cabf/download/30092026.csv |
 | 3 | address | Bridgewater / Campbell Town / Currie / Deloraine / George Town / Glenorchy / Huonville / Launceston | Hours・Googlemap | e/b8e618b5-2ec4-46b7-a1ce-e1fafedce05f/download/stoshops.csv |
 
-## G109　b008「State」（7 列：address 5・category 2）
+## G110　b008「State」（7 列：address 5・category 2）
 
 多いほうの address の例：
 
@@ -265,7 +275,7 @@
 | 6 | category | State / State / State / State / State / State | STATISTIC・Statistic・TLIST(A1)・Year・C02196V02652・UNIT・VALUE | pi.restful/PxStat.Data.Cube_API.ReadDataset/G0118/CSV/1.0/en |
 | 7 | category | State / State / State / State / State / State / State / State | STATISTIC・Statistic・TLIST(A1)・Year・C02196V02652・UNIT・VALUE | pi.restful/PxStat.Data.Cube_API.ReadDataset/G0207/CSV/1.0/en |
 
-## G110　b008「Contract」（2 列：text 1・category 1）
+## G111　b008「Contract」（2 列：text 1・category 1）
 
 多いほうの text の例：
 
@@ -275,7 +285,7 @@
 |---:|---|---|---|---|
 | 2 | category | Completed / Completed / Completed / Completed / Completed / Completed / Completed / Completed | id・Service_Area・Network_Infrastructure・Estimated_Completion_Date | b673-f023-4a97-86c5-f962e934d10c/download/wkt_12.01.2021.csv |
 
-## G111　b009「Reference」（3 列：id 2・text 1）
+## G112　b009「Reference」（3 列：id 2・text 1）
 
 多いほうの id の例：
 
@@ -286,7 +296,7 @@
 |---:|---|---|---|---|
 | 2 | text | Felton, 2013, p.119; NSW Office of Environment & Heritage 20 / Felton, 2013, p.124; Kabaila, PR 2011, Survival legacies: st / Felton, 2013, p.365 / Felton, 2013, pp. 146-147, 365; NSW Office of Environment & / Felton, 2013, p.365; NSW Office of Environment and Heritage / Felton, 2013, p.138; Kabaila, PR 2011, Survival legacies: st / Felton, 2013, p.156 / Felton, 2013, p.163 | AR_number・Lat・Lon・Year_gazetted_est_closure・Years_of_operation_as_mission・Parish_Maps・Type | 096cbe-e2a7-48ec-9761-c5564ece85bd/download/nsw-missions.csv |
 
-## G112　b009「Region」（4 列：address 3・category 1）
+## G113　b009「Region」（4 列：address 3・category 1）
 
 多いほうの address の例：
 
@@ -298,7 +308,7 @@
 |---:|---|---|---|---|
 | 1 | category | Metropolitan / Metropolitan / Metropolitan / Metropolitan / Metropolitan / Metropolitan / Metropolitan / Country | Data as of・Licence No・Start Date・Trading Status・Type・Filter Category・SA2 Band・Subject to Cap | 4-862a-30e555896d1b/download/find-my-lia-band-1-sep-2021.csv |
 
-## G113　b009「Years」（3 列：date 2・category 1）
+## G114　b009「Years」（3 列：date 2・category 1）
 
 多いほうの date の例：
 
@@ -309,7 +319,7 @@
 |---:|---|---|---|---|
 | 3 | category | 7 years - maximum allowable period / 7 years - maximum allowable period / 7 years - maximum allowable period / 7 years - maximum allowable period and extended for a furthe / 7 years - maximum allowable period and extended for a furthe / 7 years - maximum allowable period / 7 years - maximum allowable period / 7 years - maximum allowable period and extended for a furthe | ProviderID・ABN・Category・Website・RegistrationStatus・RegistrationDescription・RegistrationRenewalDate・SelfAccreditation | 780b-4a70-8c87-b6796d5ab237/download/providers_16102026a.csv |
 
-## G114　b009「Location」（6 列：address 4・other 1・category 1）
+## G115　b009「Location」（6 列：address 4・other 1・category 1）
 
 多いほうの address の例：
 
@@ -321,16 +331,6 @@
 |---:|---|---|---|---|
 | 3 | other | -32.963547,151.695653 / -32.963547,151.695653 / -32.964057,151.695091 / -32.964564,151.690618 / -32.963547,151.695653 / -32.973856,151.715786 / -32.963547,151.695653 / -32.964209,151.68868 | Time・Device ID・Temperature (°C)・Humidity (%) | bf9ed/download/council-netvox-historical-to-31-july-2020.csv |
 | 4 | category | Not within a Fire Restriction Zone / Within a Fire Restriction Zone / Within a Fire Restriction Zone / Within a Fire Restriction Zone / Within a Fire Restriction Zone / Within a Fire Restriction Zone / Within a Fire Restriction Zone / Within a Fire Restriction Zone | UID・Township・Requiremen・Criterion_・Criterio00・Criterio01・Document_L | 6-995b-db0fc2ae4f35/download/shrcctownfirezonesoffseason.csv |
-
-## G115　b009「Mon pm」（2 列：text 1・date 1）
-
-多いほうの text の例：
-
-- 12:00-15:30 / 12:00-15:45 / 12:00-13:00 / 12:00-16:30 / 12:00-16:00 / 13:30-15:00 / 12:00-16:00 / 12:00-16:45（同じ表：Title・Location・Services・Office type・Counter type・Suburb・Fax・Mon am）
-
-| 列 | 今の種類 | 値（先頭 8 個） | 同じ表の列 | 表 |
-|---:|---|---|---|---|
-| 2 | date | 13:30-16:00 / 16:30 / 16:30 / 14:00-16:00 / 14:00-16:30 / 15:30 / 13:00 - 15:30 / 13:45-16:00 | Column・Title・Wheelchair access・Suburb・State・Fax・Notes・Mon am | 8e0f-f538-44df-bb3f-a6cccba0381f/download/website-update.csv |
 
 ## G116　b009「State」（10 列：address 8・id 1・category 1）
 

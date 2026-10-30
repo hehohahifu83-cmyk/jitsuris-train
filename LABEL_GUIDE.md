@@ -1,4 +1,4 @@
-# 種類の定義書（先生役が判断をそろえるため・v2.2 2026-10-30）
+# 種類の定義書（先生役が判断をそろえるため・v2.3 2026-10-30）
 
 **決め方の順番：** 列名と値の両方を見る。同じ表のほかの列も見る。それでも決められないものは「unknown」にする。
 **全体の決まり：**
@@ -11,7 +11,8 @@
 3. 番号か区分か・組織か部署か・文か区分か・量か測った値か・件数か印か、の境目は「境目の書き分け（v2.2）」の B1〜B5 で決める。
 4. 区域・地点の名前は address、区域を指す番号・コードは id。
 5. 並べ替え用の番号は id、順位（1 が最も…）は category。
-6. 識別子の URI（`http://…/id/…`）は id、地図・文書へのリンクの URL は other。
+6. 識別子の URI（`http://…/id/…`・`…/doc/…`・`http://id.…`）は id、地図・文書・ライセンスへのリンクの URL は other。
+7. 会計の科目か区分か・時刻の列・統計の指標のコードは「境目の書き分け（v2.3）」の B7〜B9 で決める。
 
 | 種類 | 含むもの | 含まないもの（→行き先） | 迷う例と決め方 |
 |---|---|---|---|
@@ -138,4 +139,16 @@
 - **裁定の手順（D）**：
   - 裁定で付け方を変えたら、同じ陣で意味と文脈が同じ列（同じ列名で、題名・単位・隣の列も同じ意味）にも同じ判断を当てる。列名が同じでも意味が違う列は、例外の理由を裁定の記録に書く。
   - 陣を確定したら、題名の対応表を作り直す（`materials/build_pool_extras.py`）。
+
+## 境目の書き分け（v2.3 2026-10-30。本体が誤った 248 列ごとに、本体の中で近い教材の列を見て見つけた付け方の食い違い。`research/labels/neighbor_review.md`）
+- **B6 の補い**：識別子の URI は、`…/doc/…`（statistics.data.gov.uk/doc/local-authority-district/…）や `http://id.…/…`（id.esd.org.uk）の形も id。ライセンスの文書へのリンク（nationalarchives.gov.uk/doc/open-government-licence）は other。
+- **B7 会計の科目か区分か**：予算・決算・支出・収入の表で、お金を分ける科目は account。費目（交際費・公有財産購入費）、歳入の種類（市税・寄附金・Licenses & Permits・Off-Street Pay and Display）、性質別の経費（義務的経費・建設事業費）、予算の経済分類（Despesas Correntes）、経費の種類（Administered Expenses・Kostenart）、調達の分類（Proclass）がこれに当たる。
+  - 会計の科目でない分類は category のまま。業種（ANZSIC）・カードの加盟店の業種（Merchant Category）・ごみの分別・診療科目・相談の種類・設定の印（印字する）。
+  - 歳入と歳出が混ざった列（歳入・歳出・うち都税）は category。
+- **B8 時刻の列**：値が時刻か時刻の範囲だけの列は date。例：10:00AM・8:30 - 12:30・10:00〜18:00、営業時間・Mon am の列。
+  - 文が混ざる列は text。例：平日 8:30～17:30・始発から終電まで・24 Hours・注記つき。
+  - 走る速さ（9:10）や作業の時間数は期間の長さで quantity。
+- **B9 統計の指標のコード**：STATISTIC・MEASURE・Series の値がコード（SCA27・LICENSENURSE・STOCKNURSE）なら、指標の一覧を指す鍵で id。指標の名前（Children with a Disability・Coronary heart disease among adults）なら category。
+- **キーワード**：語を「;」「・」で並べた列（大気;汚染）は text（v1.0 のキーワードの羅列）。1 行に 1 語の区分（access to education）やアンケートの選択肢は category。
+- **小数の桁数**（Decimals・parameter_decimals）は数で quantity。
 

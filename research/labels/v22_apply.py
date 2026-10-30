@@ -3,7 +3,7 @@
 - 同じ列を work/<陣>/set.json の id で materials/pool/label_review/claude_decisions.jsonl に足す（開発用の採点 pool_bench が読む）
 - 英国・業務の表の教材（materials/real_labels*.jsonl）：ラベルと teacher を直す
 直す前のラベルが記録と違えば止める（2 回動かしても同じ結果になる：直し済みの行は飛ばす）。
-  python research/labels/v22_apply.py
+  python research/labels/v22_apply.py [決めたことのファイル（既定 v22_decisions.jsonl）]
 """
 import json
 import sys
@@ -19,7 +19,8 @@ REVIEW = ROOT / "materials" / "pool" / "label_review" / "claude_decisions.jsonl"
 
 
 def main():
-    decs = [d for d in read_jsonl(HERE / "v22_decisions.jsonl") if d["decision"] == "change"]
+    src = sys.argv[1] if len(sys.argv) > 1 else "v22_decisions.jsonl"
+    decs = [d for d in read_jsonl(HERE / src) if d["decision"] == "change"]
     by_file = defaultdict(list)
     for d in decs:
         by_file[d["file"]].append(d)
@@ -39,7 +40,7 @@ def main():
                     raise SystemExit(f"{name}:{d['line']}：直す前のラベルが記録と違う（{r['label']}）")
                 r["label"], r["teacher"] = d["label"], d["decided_by"]
                 changed += 1
-            if name.startswith("batch_"):
+            if name.startswith("batch_") and (work(name[len("batch_"):-len(".jsonl")]) / "corpus.jsonl").exists():   # 作業の陣のない教材（jp3）は採点に出ない
                 b = name[len("batch_"):-len(".jsonl")]
                 w = work(b)
                 corpus = read_jsonl(w / "corpus.jsonl")
@@ -52,11 +53,17 @@ def main():
                     review_add.append({"id": sid, "decision": "change", "label": d["label"], "reason": d["reason"], "decided_by": d["decided_by"]})
                     have[sid] = d["label"]
         write_jsonl(path, rows)
-        if name.startswith("batch_") and changed:
+        if name.startswith("batch_"):
+            # manifest は中身から作り直す（途中で止まって直しだけが入った陣も、次に動かしたとき合わせる）
             b = name[len("batch_"):-len(".jsonl")]
-            e = next(x for x in m["batches"] if x["batch"] == b)
-            e["labels"], e["sha256"] = dict(Counter(x["label"] for x in rows)), sha256(path)
-            e["note"] = (e.get("note", "") + f"／2026-10-30 LABEL_GUIDE v2.2 の付け直し：{changed} 列").lstrip("／")
+            e = next((x for x in m["batches"] if x["batch"] == b), None)
+            if e is None:
+                print(name, "は manifest にない")
+                continue
+            if e["sha256"] != sha256(path):
+                n = sum(x.get("teacher") == ds[0]["decided_by"] for x in rows)
+                e["labels"], e["sha256"] = dict(Counter(x["label"] for x in rows)), sha256(path)
+                e["note"] = (e.get("note", "") + f"／2026-10-30 LABEL_GUIDE の付け直し（{src}）：{n} 列").lstrip("／")
         print(name, "直した", changed)
     save_manifest(m)
     with open(REVIEW, "a", encoding="utf-8") as f:
