@@ -1,0 +1,363 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b057",
+ "set_sha256": "e778fa2e437c13a9932f6554f28a308c0143865b40a22922d4def4558f5aaba8",
+ "created_utc": "2026-10-30T01:29:19Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "e49f398b19dcc86f97dbc9d78a35a063cc06e31a"
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "timing": {
+  "columns": 1646,
+  "seconds": 230.297,
+  "ms_per_column": 139.913
+ },
+ "rows": [
+  {
+   "id": "b057-0001",
+   "column": "commodity // produit",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.963567
+    },
+    {
+     "label": "text",
+     "probability": 0.017708
+    },
+    {
+     "label": "product",
+     "probability": 0.009285
+    }
+   ]
+  },
+  {
+   "id": "b057-0002",
+   "column": "sample plan number // numero du plan d'echantillonnage",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.989524
+    },
+    {
+     "label": "date",
+     "probability": 0.002573
+    },
+    {
+     "label": "category",
+     "probability": 0.00257
+    }
+   ]
+  },
+  {
+   "id": "b057-0003",
+   "column": "sample plan program // programme du plan d'echantillonnage",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.925521
+    },
+    {
+     "label": "category",
+     "probability": 0.062033
+    },
+    {
+     "label": "date",
+     "probability": 0.002302
+    }
+   ]
+  },
+  {
+   "id": "b057-0004",
+   "column": "domestic and/or import // canadien et/ou importe",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.955161
+    },
+    {
+     "label": "text",
+     "probability": 0.021249
+    },
+    {
+     "label": "address",
+     "probability": 0.007844
+    }
+   ]
+  },
+  {
+   "id": "b057-0005",
+   "column": "product vs. environmental // produit ou environnemental",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990436
+    },
+    {
+     "label": "text",
+     "probability": 0.003055
+    },
+    {
+     "label": "account",
+     "probability": 0.0026
+    }
+   ]
+  },
+  {
+   "id": "b057-0006",
+   "column": "job laboratory number // tache - numero de laboratoire",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.98722
+    },
+    {
+     "label": "category",
+     "probability": 0.006188
+    },
+    {
+     "label": "address",
+     "probability": 0.001827
+    }
+   ]
+  },
+  {
+   "id": "b057-0007",
+   "column": "date sampled yyyy/mm/dd // date d'echantillonnage aaaa/mm/jj",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984579
+    },
+    {
+     "label": "org",
+     "probability": 0.003759
+    },
+    {
+     "label": "text",
+     "probability": 0.002257
+    }
+   ]
+  },
+  {
+   "id": "b057-0008",
+   "column": "country of origin // pays d'origine",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.98501
+    },
+    {
+     "label": "org",
+     "probability": 0.007262
+    },
+    {
+     "label": "text",
+     "probability": 0.002581
+    }
+   ]
+  },
+  {
+   "id": "b057-0009",
+   "column": "production practice // methode de production",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989111
+    },
+    {
+     "label": "text",
+     "probability": 0.004571
+    },
+    {
+     "label": "id",
+     "probability": 0.001195
+    }
+   ]
+  },
+  {
+   "id": "b057-0010",
+   "column": "product type // type de produit",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.987938
+    },
+    {
+     "label": "product",
+     "probability": 0.003785
+    },
+    {
+     "label": "text",
+     "probability": 0.002347
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "label-assist-conf1030",
+  "set_sha256": "7201a0f78b99d8ae45e0ff54c1e2fee87cbb2e3c579b4ffb5200439ec4cb7f03"
+ }
+}

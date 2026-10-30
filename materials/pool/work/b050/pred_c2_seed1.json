@@ -1,0 +1,1448 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b050",
+ "set_sha256": "ce393f26c9fe21a4f14e9815171d36632a36994b8dfcaee3a55b77bee29fd73b",
+ "created_utc": "2026-10-30T01:29:19Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "e49f398b19dcc86f97dbc9d78a35a063cc06e31a"
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "timing": {
+  "columns": 1646,
+  "seconds": 230.297,
+  "ms_per_column": 139.913
+ },
+ "rows": [
+  {
+   "id": "b050-0001",
+   "column": "suburb",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.988938
+    },
+    {
+     "label": "org",
+     "probability": 0.007687
+    },
+    {
+     "label": "text",
+     "probability": 0.000758
+    }
+   ]
+  },
+  {
+   "id": "b050-0002",
+   "column": "device status",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990017
+    },
+    {
+     "label": "id",
+     "probability": 0.004052
+    },
+    {
+     "label": "text",
+     "probability": 0.001251
+    }
+   ]
+  },
+  {
+   "id": "b050-0003",
+   "column": "installation date",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.985491
+    },
+    {
+     "label": "org",
+     "probability": 0.002846
+    },
+    {
+     "label": "text",
+     "probability": 0.002709
+    }
+   ]
+  },
+  {
+   "id": "b050-0004",
+   "column": "decommission date",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984444
+    },
+    {
+     "label": "org",
+     "probability": 0.00353
+    },
+    {
+     "label": "text",
+     "probability": 0.00248
+    }
+   ]
+  },
+  {
+   "id": "b050-0005",
+   "column": "protection type",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988704
+    },
+    {
+     "label": "id",
+     "probability": 0.004635
+    },
+    {
+     "label": "account",
+     "probability": 0.001209
+    }
+   ]
+  },
+  {
+   "id": "b050-0006",
+   "column": "manufacturer code",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.97859
+    },
+    {
+     "label": "category",
+     "probability": 0.005223
+    },
+    {
+     "label": "org",
+     "probability": 0.003321
+    }
+   ]
+  },
+  {
+   "id": "b050-0007",
+   "column": "model",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.979314
+    },
+    {
+     "label": "address",
+     "probability": 0.005144
+    },
+    {
+     "label": "product",
+     "probability": 0.003844
+    }
+   ]
+  },
+  {
+   "id": "b050-0008",
+   "column": "device size",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.937225
+    },
+    {
+     "label": "quantity",
+     "probability": 0.034947
+    },
+    {
+     "label": "other",
+     "probability": 0.01447
+    }
+   ]
+  },
+  {
+   "id": "b050-0009",
+   "column": "make_desc",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.850232
+    },
+    {
+     "label": "id",
+     "probability": 0.069559
+    },
+    {
+     "label": "org",
+     "probability": 0.020683
+    }
+   ]
+  },
+  {
+   "id": "b050-0010",
+   "column": "body_type_desc",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.986829
+    },
+    {
+     "label": "id",
+     "probability": 0.002806
+    },
+    {
+     "label": "account",
+     "probability": 0.002747
+    }
+   ]
+  },
+  {
+   "id": "b050-0011",
+   "column": "year_of_manufacture",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.982444
+    },
+    {
+     "label": "org",
+     "probability": 0.00468
+    },
+    {
+     "label": "text",
+     "probability": 0.001951
+    }
+   ]
+  },
+  {
+   "id": "b050-0012",
+   "column": "colour_desc",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990786
+    },
+    {
+     "label": "id",
+     "probability": 0.002292
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001342
+    }
+   ]
+  },
+  {
+   "id": "b050-0013",
+   "column": "total",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.990503
+    },
+    {
+     "label": "amount",
+     "probability": 0.00209
+    },
+    {
+     "label": "category",
+     "probability": 0.001999
+    }
+   ]
+  },
+  {
+   "id": "b050-0014",
+   "column": "publisher title",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.788076
+    },
+    {
+     "label": "text",
+     "probability": 0.150208
+    },
+    {
+     "label": "product",
+     "probability": 0.018676
+    }
+   ]
+  },
+  {
+   "id": "b050-0015",
+   "column": "views",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.983034
+    },
+    {
+     "label": "other",
+     "probability": 0.009034
+    },
+    {
+     "label": "id",
+     "probability": 0.002093
+    }
+   ]
+  },
+  {
+   "id": "b050-0016",
+   "column": "visits",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.991996
+    },
+    {
+     "label": "other",
+     "probability": 0.002353
+    },
+    {
+     "label": "amount",
+     "probability": 0.001324
+    }
+   ]
+  },
+  {
+   "id": "b050-0017",
+   "column": "property_index",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.956879
+    },
+    {
+     "label": "id",
+     "probability": 0.014468
+    },
+    {
+     "label": "account",
+     "probability": 0.012706
+    }
+   ]
+  },
+  {
+   "id": "b050-0018",
+   "column": "father",
+   "raw_prediction": "person",
+   "guarded_prediction": "person",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "person",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "person",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "person",
+     "probability": 0.931682
+    },
+    {
+     "label": "org",
+     "probability": 0.031668
+    },
+    {
+     "label": "email",
+     "probability": 0.004637
+    }
+   ]
+  },
+  {
+   "id": "b050-0019",
+   "column": "age",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.969867
+    },
+    {
+     "label": "other",
+     "probability": 0.006706
+    },
+    {
+     "label": "category",
+     "probability": 0.005458
+    }
+   ]
+  },
+  {
+   "id": "b050-0020",
+   "column": "admiss_date",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.981854
+    },
+    {
+     "label": "quantity",
+     "probability": 0.003703
+    },
+    {
+     "label": "text",
+     "probability": 0.002248
+    }
+   ]
+  },
+  {
+   "id": "b050-0021",
+   "column": "year",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.982517
+    },
+    {
+     "label": "person",
+     "probability": 0.002294
+    },
+    {
+     "label": "org",
+     "probability": 0.002247
+    }
+   ]
+  },
+  {
+   "id": "b050-0022",
+   "column": "property",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.589863
+    },
+    {
+     "label": "text",
+     "probability": 0.258154
+    },
+    {
+     "label": "address",
+     "probability": 0.073264
+    }
+   ]
+  },
+  {
+   "id": "b050-0023",
+   "column": "mother",
+   "raw_prediction": "person",
+   "guarded_prediction": "person",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "person",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "person",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "person",
+     "probability": 0.87337
+    },
+    {
+     "label": "org",
+     "probability": 0.085633
+    },
+    {
+     "label": "address",
+     "probability": 0.006567
+    }
+   ]
+  },
+  {
+   "id": "b050-0024",
+   "column": "school id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992766
+    },
+    {
+     "label": "address",
+     "probability": 0.001753
+    },
+    {
+     "label": "category",
+     "probability": 0.001328
+    }
+   ]
+  },
+  {
+   "id": "b050-0025",
+   "column": "gazetted significance",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.986006
+    },
+    {
+     "label": "id",
+     "probability": 0.0056
+    },
+    {
+     "label": "address",
+     "probability": 0.002145
+    }
+   ]
+  },
+  {
+   "id": "b050-0026",
+   "column": "s170 shi id #",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993265
+    },
+    {
+     "label": "address",
+     "probability": 0.001629
+    },
+    {
+     "label": "category",
+     "probability": 0.001131
+    }
+   ]
+  },
+  {
+   "id": "b050-0027",
+   "column": "suburb",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.98847
+    },
+    {
+     "label": "org",
+     "probability": 0.008263
+    },
+    {
+     "label": "text",
+     "probability": 0.000632
+    }
+   ]
+  },
+  {
+   "id": "b050-0028",
+   "column": "post code",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.987158
+    },
+    {
+     "label": "id",
+     "probability": 0.004604
+    },
+    {
+     "label": "org",
+     "probability": 0.003341
+    }
+   ]
+  },
+  {
+   "id": "b050-0029",
+   "column": "lga",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.937369
+    },
+    {
+     "label": "id",
+     "probability": 0.025978
+    },
+    {
+     "label": "category",
+     "probability": 0.011008
+    }
+   ]
+  },
+  {
+   "id": "b050-0030",
+   "column": "agency (dept or stat body)",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.966395
+    },
+    {
+     "label": "account",
+     "probability": 0.018956
+    },
+    {
+     "label": "address",
+     "probability": 0.00541
+    }
+   ]
+  },
+  {
+   "id": "b050-0031",
+   "column": "award contract date",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.982932
+    },
+    {
+     "label": "org",
+     "probability": 0.004297
+    },
+    {
+     "label": "text",
+     "probability": 0.003046
+    }
+   ]
+  },
+  {
+   "id": "b050-0032",
+   "column": "contract value",
+   "raw_prediction": "amount",
+   "guarded_prediction": "amount",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "amount",
+     "probability": 0.989144
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002594
+    },
+    {
+     "label": "email",
+     "probability": 0.000997
+    }
+   ]
+  },
+  {
+   "id": "b050-0033",
+   "column": "variation to contract (yes/no)",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.987935
+    },
+    {
+     "label": "id",
+     "probability": 0.002428
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002254
+    }
+   ]
+  },
+  {
+   "id": "b050-0034",
+   "column": "specific confidentiality provision used",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.991128
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002984
+    },
+    {
+     "label": "id",
+     "probability": 0.001635
+    }
+   ]
+  },
+  {
+   "id": "b050-0035",
+   "column": "procurement method",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989159
+    },
+    {
+     "label": "id",
+     "probability": 0.00313
+    },
+    {
+     "label": "account",
+     "probability": 0.001245
+    }
+   ]
+  },
+  {
+   "id": "b050-0036",
+   "column": "reason for use of limited tendering",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.585771
+    },
+    {
+     "label": "category",
+     "probability": 0.39631
+    },
+    {
+     "label": "date",
+     "probability": 0.002558
+    }
+   ]
+  },
+  {
+   "id": "b050-0037",
+   "column": "form of contract",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.982328
+    },
+    {
+     "label": "account",
+     "probability": 0.009821
+    },
+    {
+     "label": "text",
+     "probability": 0.002154
+    }
+   ]
+  },
+  {
+   "id": "b050-0038",
+   "column": "number of offers sought",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.992564
+    },
+    {
+     "label": "category",
+     "probability": 0.001897
+    },
+    {
+     "label": "amount",
+     "probability": 0.001329
+    }
+   ]
+  },
+  {
+   "id": "b050-0039",
+   "column": "evaluation criteria and weightings",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.756482
+    },
+    {
+     "label": "text",
+     "probability": 0.213681
+    },
+    {
+     "label": "account",
+     "probability": 0.007398
+    }
+   ]
+  },
+  {
+   "id": "b050-0040",
+   "column": "title",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.986644
+    },
+    {
+     "label": "address",
+     "probability": 0.002277
+    },
+    {
+     "label": "product",
+     "probability": 0.001771
+    }
+   ]
+  },
+  {
+   "id": "b050-0041",
+   "column": "suburb",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989602
+    },
+    {
+     "label": "org",
+     "probability": 0.007087
+    },
+    {
+     "label": "text",
+     "probability": 0.000665
+    }
+   ]
+  },
+  {
+   "id": "b050-0042",
+   "column": "website",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.90944
+    },
+    {
+     "label": "org",
+     "probability": 0.026189
+    },
+    {
+     "label": "email",
+     "probability": 0.018521
+    }
+   ]
+  },
+  {
+   "id": "b050-0043",
+   "column": "suburb",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.990253
+    },
+    {
+     "label": "org",
+     "probability": 0.005897
+    },
+    {
+     "label": "id",
+     "probability": 0.000867
+    }
+   ]
+  },
+  {
+   "id": "b050-0044",
+   "column": "transaction type",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989618
+    },
+    {
+     "label": "account",
+     "probability": 0.002698
+    },
+    {
+     "label": "id",
+     "probability": 0.002242
+    }
+   ]
+  },
+  {
+   "id": "b050-0045",
+   "column": "valid handled transactions",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.946757
+    },
+    {
+     "label": "category",
+     "probability": 0.044098
+    },
+    {
+     "label": "id",
+     "probability": 0.002037
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "label-assist-conf1030",
+  "set_sha256": "7201a0f78b99d8ae45e0ff54c1e2fee87cbb2e3c579b4ffb5200439ec4cb7f03"
+ }
+}

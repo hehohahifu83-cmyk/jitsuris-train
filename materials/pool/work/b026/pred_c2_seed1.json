@@ -1,0 +1,1448 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b026",
+ "set_sha256": "015e23244ff769af5d1ed88bc5b6a65bf0c5063ddcb65ea7a62c29dce3e07856",
+ "created_utc": "2026-10-30T01:29:19Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "44404b339a9c3023d23f5bac67bdb81ad3aa64a16a95b3d7007f5e6f5b78fcf4",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "e49f398b19dcc86f97dbc9d78a35a063cc06e31a"
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "timing": {
+  "columns": 1646,
+  "seconds": 230.297,
+  "ms_per_column": 139.913
+ },
+ "rows": [
+  {
+   "id": "b026-0001",
+   "column": "fiscal year",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.966654
+    },
+    {
+     "label": "org",
+     "probability": 0.013217
+    },
+    {
+     "label": "account",
+     "probability": 0.003182
+    }
+   ]
+  },
+  {
+   "id": "b026-0002",
+   "column": "organization",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.977863
+    },
+    {
+     "label": "account",
+     "probability": 0.010253
+    },
+    {
+     "label": "address",
+     "probability": 0.004795
+    }
+   ]
+  },
+  {
+   "id": "b026-0003",
+   "column": "core responsibility",
+   "raw_prediction": "account",
+   "guarded_prediction": "account",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "account",
+     "probability": 0.9513
+    },
+    {
+     "label": "text",
+     "probability": 0.028293
+    },
+    {
+     "label": "category",
+     "probability": 0.003781
+    }
+   ]
+  },
+  {
+   "id": "b026-0004",
+   "column": "program",
+   "raw_prediction": "account",
+   "guarded_prediction": "account",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "account",
+     "probability": 0.920322
+    },
+    {
+     "label": "category",
+     "probability": 0.063578
+    },
+    {
+     "label": "text",
+     "probability": 0.007632
+    }
+   ]
+  },
+  {
+   "id": "b026-0005",
+   "column": "program outcome",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.967484
+    },
+    {
+     "label": "category",
+     "probability": 0.014678
+    },
+    {
+     "label": "account",
+     "probability": 0.002895
+    }
+   ]
+  },
+  {
+   "id": "b026-0006",
+   "column": "indicator",
+   "raw_prediction": "category",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.477126
+    },
+    {
+     "label": "text",
+     "probability": 0.462366
+    },
+    {
+     "label": "id",
+     "probability": 0.015678
+    }
+   ]
+  },
+  {
+   "id": "b026-0007",
+   "column": "fiscal year",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.96572
+    },
+    {
+     "label": "org",
+     "probability": 0.013861
+    },
+    {
+     "label": "account",
+     "probability": 0.003492
+    }
+   ]
+  },
+  {
+   "id": "b026-0008",
+   "column": "organization",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.979347
+    },
+    {
+     "label": "account",
+     "probability": 0.008966
+    },
+    {
+     "label": "address",
+     "probability": 0.004949
+    }
+   ]
+  },
+  {
+   "id": "b026-0009",
+   "column": "core responsibility",
+   "raw_prediction": "account",
+   "guarded_prediction": "account",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "account",
+     "probability": 0.974268
+    },
+    {
+     "label": "text",
+     "probability": 0.009072
+    },
+    {
+     "label": "category",
+     "probability": 0.007958
+    }
+   ]
+  },
+  {
+   "id": "b026-0010",
+   "column": "departmental results",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.978376
+    },
+    {
+     "label": "account",
+     "probability": 0.003736
+    },
+    {
+     "label": "category",
+     "probability": 0.003666
+    }
+   ]
+  },
+  {
+   "id": "b026-0011",
+   "column": "indicator",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.646969
+    },
+    {
+     "label": "category",
+     "probability": 0.157157
+    },
+    {
+     "label": "date",
+     "probability": 0.066281
+    }
+   ]
+  },
+  {
+   "id": "b026-0012",
+   "column": "published on the open government portal",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988239
+    },
+    {
+     "label": "quantity",
+     "probability": 0.004818
+    },
+    {
+     "label": "id",
+     "probability": 0.002059
+    }
+   ]
+  },
+  {
+   "id": "b026-0013",
+   "column": "colonyid",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.991335
+    },
+    {
+     "label": "category",
+     "probability": 0.003468
+    },
+    {
+     "label": "address",
+     "probability": 0.001081
+    }
+   ]
+  },
+  {
+   "id": "b026-0014",
+   "column": "year",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.985279
+    },
+    {
+     "label": "org",
+     "probability": 0.003301
+    },
+    {
+     "label": "person",
+     "probability": 0.001925
+    }
+   ]
+  },
+  {
+   "id": "b026-0015",
+   "column": "month",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.983732
+    },
+    {
+     "label": "org",
+     "probability": 0.003605
+    },
+    {
+     "label": "text",
+     "probability": 0.001771
+    }
+   ]
+  },
+  {
+   "id": "b026-0016",
+   "column": "day",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984557
+    },
+    {
+     "label": "text",
+     "probability": 0.003521
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001817
+    }
+   ]
+  },
+  {
+   "id": "b026-0017",
+   "column": "easting",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.985362
+    },
+    {
+     "label": "rate",
+     "probability": 0.003507
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002541
+    }
+   ]
+  },
+  {
+   "id": "b026-0018",
+   "column": "northing",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.986804
+    },
+    {
+     "label": "rate",
+     "probability": 0.003695
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001438
+    }
+   ]
+  },
+  {
+   "id": "b026-0019",
+   "column": "ecoregion",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.925021
+    },
+    {
+     "label": "category",
+     "probability": 0.033194
+    },
+    {
+     "label": "org",
+     "probability": 0.012274
+    }
+   ]
+  },
+  {
+   "id": "b026-0020",
+   "column": "dam presence (y/n)",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.98648
+    },
+    {
+     "label": "quantity",
+     "probability": 0.00519
+    },
+    {
+     "label": "id",
+     "probability": 0.003014
+    }
+   ]
+  },
+  {
+   "id": "b026-0021",
+   "column": "lodge presence (y/n)",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.981689
+    },
+    {
+     "label": "quantity",
+     "probability": 0.009191
+    },
+    {
+     "label": "id",
+     "probability": 0.003551
+    }
+   ]
+  },
+  {
+   "id": "b026-0022",
+   "column": "browse cache presence (y/n)",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.984215
+    },
+    {
+     "label": "quantity",
+     "probability": 0.006534
+    },
+    {
+     "label": "id",
+     "probability": 0.004227
+    }
+   ]
+  },
+  {
+   "id": "b026-0023",
+   "column": "fy_ef",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.97033
+    },
+    {
+     "label": "org",
+     "probability": 0.007478
+    },
+    {
+     "label": "text",
+     "probability": 0.00372
+    }
+   ]
+  },
+  {
+   "id": "b026-0024",
+   "column": "organization",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.981279
+    },
+    {
+     "label": "address",
+     "probability": 0.006874
+    },
+    {
+     "label": "account",
+     "probability": 0.005668
+    }
+   ]
+  },
+  {
+   "id": "b026-0025",
+   "column": "estimates_document",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.91523
+    },
+    {
+     "label": "text",
+     "probability": 0.066007
+    },
+    {
+     "label": "account",
+     "probability": 0.009823
+    }
+   ]
+  },
+  {
+   "id": "b026-0026",
+   "column": "vote_number",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.984062
+    },
+    {
+     "label": "address",
+     "probability": 0.005349
+    },
+    {
+     "label": "quantity",
+     "probability": 0.004642
+    }
+   ]
+  },
+  {
+   "id": "b026-0027",
+   "column": "vote_type",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.986946
+    },
+    {
+     "label": "account",
+     "probability": 0.004209
+    },
+    {
+     "label": "id",
+     "probability": 0.002951
+    }
+   ]
+  },
+  {
+   "id": "b026-0028",
+   "column": "authorities",
+   "raw_prediction": "amount",
+   "guarded_prediction": "amount",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "amount",
+     "probability": 0.92038
+    },
+    {
+     "label": "id",
+     "probability": 0.025966
+    },
+    {
+     "label": "address",
+     "probability": 0.015427
+    }
+   ]
+  },
+  {
+   "id": "b026-0029",
+   "column": "ai_register_id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992448
+    },
+    {
+     "label": "category",
+     "probability": 0.00236
+    },
+    {
+     "label": "address",
+     "probability": 0.000702
+    }
+   ]
+  },
+  {
+   "id": "b026-0030",
+   "column": "government_organization",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.984125
+    },
+    {
+     "label": "account",
+     "probability": 0.005
+    },
+    {
+     "label": "address",
+     "probability": 0.004332
+    }
+   ]
+  },
+  {
+   "id": "b026-0031",
+   "column": "ai_system_primary_users_en",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.965264
+    },
+    {
+     "label": "text",
+     "probability": 0.008921
+    },
+    {
+     "label": "quantity",
+     "probability": 0.006591
+    }
+   ]
+  },
+  {
+   "id": "b026-0032",
+   "column": "ai_system_primary_users_fr",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.95053
+    },
+    {
+     "label": "quantity",
+     "probability": 0.011229
+    },
+    {
+     "label": "text",
+     "probability": 0.009727
+    }
+   ]
+  },
+  {
+   "id": "b026-0033",
+   "column": "developed_by_en",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.958987
+    },
+    {
+     "label": "category",
+     "probability": 0.019431
+    },
+    {
+     "label": "address",
+     "probability": 0.008206
+    }
+   ]
+  },
+  {
+   "id": "b026-0034",
+   "column": "developed_by_fr",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.981459
+    },
+    {
+     "label": "address",
+     "probability": 0.008613
+    },
+    {
+     "label": "person",
+     "probability": 0.002281
+    }
+   ]
+  },
+  {
+   "id": "b026-0035",
+   "column": "vendor_information",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.96243
+    },
+    {
+     "label": "text",
+     "probability": 0.010358
+    },
+    {
+     "label": "person",
+     "probability": 0.006919
+    }
+   ]
+  },
+  {
+   "id": "b026-0036",
+   "column": "ai_system_status_en",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988174
+    },
+    {
+     "label": "id",
+     "probability": 0.003385
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002793
+    }
+   ]
+  },
+  {
+   "id": "b026-0037",
+   "column": "ai_system_status_fr",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.98862
+    },
+    {
+     "label": "id",
+     "probability": 0.003778
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001831
+    }
+   ]
+  },
+  {
+   "id": "b026-0038",
+   "column": "status_date",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.983457
+    },
+    {
+     "label": "org",
+     "probability": 0.004491
+    },
+    {
+     "label": "text",
+     "probability": 0.002754
+    }
+   ]
+  },
+  {
+   "id": "b026-0039",
+   "column": "federal organization",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.983242
+    },
+    {
+     "label": "address",
+     "probability": 0.007919
+    },
+    {
+     "label": "account",
+     "probability": 0.003392
+    }
+   ]
+  },
+  {
+   "id": "b026-0040",
+   "column": "fiscal year",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.968947
+    },
+    {
+     "label": "org",
+     "probability": 0.011183
+    },
+    {
+     "label": "text",
+     "probability": 0.003288
+    }
+   ]
+  },
+  {
+   "id": "b026-0041",
+   "column": "ghg source",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.987985
+    },
+    {
+     "label": "text",
+     "probability": 0.002843
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001913
+    }
+   ]
+  },
+  {
+   "id": "b026-0042",
+   "column": "ghg scope",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.972186
+    },
+    {
+     "label": "id",
+     "probability": 0.017283
+    },
+    {
+     "label": "quantity",
+     "probability": 0.004246
+    }
+   ]
+  },
+  {
+   "id": "b026-0043",
+   "column": "energy category",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.986059
+    },
+    {
+     "label": "account",
+     "probability": 0.007405
+    },
+    {
+     "label": "id",
+     "probability": 0.001524
+    }
+   ]
+  },
+  {
+   "id": "b026-0044",
+   "column": "energy use (gj)",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.929292
+    },
+    {
+     "label": "quantity",
+     "probability": 0.042557
+    },
+    {
+     "label": "amount",
+     "probability": 0.010954
+    }
+   ]
+  },
+  {
+   "id": "b026-0045",
+   "column": "emissions (kt)",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.856792
+    },
+    {
+     "label": "quantity",
+     "probability": 0.090769
+    },
+    {
+     "label": "rate",
+     "probability": 0.035158
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "label-assist-conf1030",
+  "set_sha256": "7201a0f78b99d8ae45e0ff54c1e2fee87cbb2e3c579b4ffb5200439ec4cb7f03"
+ }
+}
