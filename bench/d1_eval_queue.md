@@ -17,9 +17,9 @@
 
 **2026-10-31 02:40 の数（b066〜b073、ラベル前の列）**：全体 1,896・英語 約 1,050・日本語 約 620・独仏 約 230。英語と日本語は最低を超えた。
 
-| b075 | `auto b075 --national --only-national open.canada.ca` | 英・仏（日本語は b073 で最低に届いたので、BODIK の行をやめて独仏を増やす。2026-10-31 02:40） | |
+| b075 | `auto b075 --national --only-national open.canada.ca` | 英・仏（日本語は b073 で最低に届いたので、BODIK の行をやめて独仏を増やす。2026-10-31 02:40） | 19 列（カナダはほぼ使い切った → b077 のカナダはやめてスイスに） |
 | b076 | `auto b076 --national --only-national opendata.swiss` | 独・仏 | |
-| b077 | `auto b077 --national --only-national open.canada.ca --query statistique` | 仏 | |
+| b077 | `auto b077 --national --only-national opendata.swiss` | 独・仏（カナダの代わり） | |
 | b078 | `auto b078 --national --only-national opendata.swiss` | 独・仏 | |
 | b079 | `auto b079 --national --only-national data.gov.au --query survey` | 英語（全体の数のため） | |
 
