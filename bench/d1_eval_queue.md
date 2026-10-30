@@ -10,7 +10,7 @@
 | b068 | `auto b068 --national --only-national open.canada.ca --query report` | 英・仏 | 70 列（ラベル済み） |
 | b069 | `auto b069 --national --only-national data.gov.ie --query statistics` | 英語 | 52 列（ラベル済み） |
 | b070 | `auto b070 --national --only-national catalog.data.metro.tokyo.lg.jp --query 統計` | 日本語 | 64 列（東京都は「教材庫で 1 公開元 15 表まで」で 27 表落ちる → 日本語は BODIK に切り替え） |
-| b071 | `auto b071 --bodik --query 統計` | 日本語（全国の自治体。公開元が多く、上限に当たりにくい） | |
+| b071 | `auto b071 --bodik --query 統計` | 日本語（全国の自治体。公開元が多く、上限に当たりにくい） | 259 列（日本語） |
 | b072 | `auto b072 --national --only-national opendata.swiss` | 独・仏（b067 で「1 公開元 3 表まで」で 140 表が残った） | |
 | b073 | `auto b073 --bodik --query 一覧` | 日本語 | |
 | b074 | `auto b074 --national --only-national opendata.swiss` | 独・仏 | |
