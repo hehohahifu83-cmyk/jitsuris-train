@@ -16,19 +16,19 @@
 | 仕組み | 列 | うち本体は正しい | 正解の種類 |
 |---|---:|---:|---|
 | M1 英語の手がかりが下線・大文字つなぎの列名で当たらない（recheck の語の境目） | 28 | 24 | rate 11, id 9, date 5, amount 3 |
-| M10 本体は正しいが、決め方の段が止めた（ほかの理由） | 53 | 53 | amount 16, quantity 15, rate 9, category 6 |
-| M11 本体が誤り（ほかの理由） | 76 | 0 | quantity 34, category 19, id 9, rate 5 |
+| M10 本体は正しいが、決め方の段の規則・しきい値・辞書で止まった（m10.md の N1〜N11） | 53 | 53 | amount 16, quantity 15, rate 9, category 6 |
+| M11 本体が列名から誤った種類を覚えていた（probe・embed_nn：近い教材の列に同じ誤った種類） | 76 | 0 | quantity 34, category 19, id 9, rate 5 |
 | M12 表全体の単位の列（UNIT: %）を、値でない列（コード・年）にも当てて手がかりがぶつかる | 6 | 6 | id 4, date 2 |
 | M13 金額の語（cost）が部署の番号の列名（Cost Centre）に当たって手がかりがぶつかる | 5 | 5 | id 5 |
 | M14 検査役が列名の強い手がかりを見ずに下げる | 11 | 6 | quantity 5, amount 4, id 1, rate 1 |
 | M15 本体と決め方の段に渡る値は 5 個だけで、その 5 個が 0 や欠けばかり（表にはほかの値がある） | 10 | 8 | quantity 6, rate 2, amount 1, category 1 |
 | M2 文字化けの £（｣）を recheck・通貨の手がかりが読めない | 27 | 23 | amount 27 |
 | M3 見張りの日付の値の形・列名の語が足りない（1900 年より前の年・週・2024-M04・Excel の日付の数など） | 19 | 19 | date 19 |
-| M4 教材にない形（識別子の URI。教材の URI はリンクだけ＝other） | 45 | 0 | id 45 |
+| M4 古い教材（biz・biz2）の識別子の URI 16 列が other のまま（v2.1 で id と決めたが付け直していない。embed_nn で確かめた） | 45 | 0 | id 45 |
 | M5 教材の付け方の食い違い（電力量・エネルギー：b005・b014 は quantity、b006・b007・b011 は other） | 13 | 5 | quantity 13 |
 | M6 手がかりの辞書にドイツ語がない | 24 | 17 | quantity 9, rate 9, amount 3, id 2 |
 | M7 汎用の値の列で、単位・指標の列の値が決め方に渡っていない | 9 | 3 | quantity 6, amount 3 |
-| M9 正解の見直しが要る | 3 | 1 | category 1, account 1, org 1 |
+| M9 LABEL_GUIDE で決まっていない境目（会計の期の番号・部門名の account と org・統計の系列コード） | 3 | 1 | category 1, account 1, org 1 |
 
 ## 本体は正しいのに止めた列：段と理由
 

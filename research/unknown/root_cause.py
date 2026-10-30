@@ -43,7 +43,7 @@ def mechanism(c, rid, full=(), sent=()):
     if reason == "date_value_evidence_low" and c["model_top1_is_truth"]:
         return "M3 見張りの日付の値の形・列名の語が足りない（1900 年より前の年・週・2024-M04・Excel の日付の数など）"
     if rid == "B":
-        return "M4 教材にない形（識別子の URI。教材の URI はリンクだけ＝other）"
+        return "M4 古い教材（biz・biz2）の識別子の URI 16 列が other のまま（v2.1 で id と決めたが付け直していない。embed_nn で確かめた）"
     if rid == "C" or re.search(r"energieverbrauch|energy (use|consumption)", h, re.I):
         return "M5 教材の付け方の食い違い（電力量・エネルギー：b005・b014 は quantity、b006・b007・b011 は other）"
     # 2026-10-30 訂正：本体と決め方の段に渡るのは set.json の 5 個（values5）。columns.jsonl の values（表の先頭から 8 個）ではない
@@ -62,10 +62,10 @@ def mechanism(c, rid, full=(), sent=()):
     if reason.startswith("verifier:") and (R.cue_types(h, c.get("unit", "")) - {reason.split(":")[1]}):
         return "M14 検査役が列名の強い手がかりを見ずに下げる"
     if c["id"] in REVIEW:
-        return "M9 正解の見直しが要る"
+        return "M9 LABEL_GUIDE で決まっていない境目（会計の期の番号・部門名の account と org・統計の系列コード）"
     if c["model_top1_is_truth"]:
-        return "M10 本体は正しいが、決め方の段が止めた（ほかの理由）"
-    return "M11 本体が誤り（ほかの理由）"
+        return "M10 本体は正しいが、決め方の段の規則・しきい値・辞書で止まった（m10.md の N1〜N11）"
+    return "M11 本体が列名から誤った種類を覚えていた（probe・embed_nn：近い教材の列に同じ誤った種類）"
 
 TRAIN = tuple(f"b{n:03d}" for n in range(1, 15))   # C2 の学習（FT_POOL=1、2026-10-25 run 40202377192）
 
