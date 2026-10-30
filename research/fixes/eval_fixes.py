@@ -50,8 +50,9 @@ def probs(b, te, mv, labels, f2):
     return _PCACHE[key]
 
 
-def run(data, mv, labels, fixes):
-    """直し fixes を入れた製品の形の最終の答え。採点の範囲（正解が unknown・S・other・person の列は数えない）で (n, 正しい, 不明, 重大, ほかの誤り)。"""
+def run(data, mv, labels, fixes, per=None):
+    """直し fixes を入れた製品の形の最終の答え。採点の範囲（正解が unknown・S・other・person の列は数えない）で (n, 正しい, 不明, 重大, ほかの誤り)。
+    per に dict を渡すと、列ごとの (最終の答え, 正解, 列名, 理由) を入れる。"""
     n = ok = unk = crit = wrong = 0
     with FX.use(fixes):
         for b, te0 in data.items():
@@ -69,6 +70,8 @@ def run(data, mv, labels, fixes):
                 cand = V.candidate(f[0], f[1], c["pred"], c["top3"], c["header"], P[k], labels, A.RHO)
                 lab = cand if cand else f[0]
                 final = V.amount_cue_veto(lab, c["header"], c.get("unit"), c["values"])
+                if per is not None:
+                    per[c["id"]] = (final, c["truth"], c["header"], f[1] or base[k][1], c["pred"], [str(v) for v in c["values5"][:5]], c.get("unit", ""))
                 n += 1
                 if final == "unknown":
                     unk += 1

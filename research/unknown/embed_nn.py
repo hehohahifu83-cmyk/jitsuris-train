@@ -39,6 +39,7 @@ def main():
     ap.add_argument("--checkpoint", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--limit", type=int, default=0, help="試し用：教材の行をこの数に絞る")
+    ap.add_argument("--targets", default=None, help="調べる列の id の JSON（配列）。既定は root_cause の M11")
     a = ap.parse_args()
     import numpy as np
     import torch
@@ -54,8 +55,11 @@ def main():
         t = r[4] if len(r) > 4 else ""
         return TITLE_SEP + titles[t] if t in titles else ""
     tr_text = [format_encoder_text((r[0], r[1], r[2], r[3], unit_of(r)), info["prefix"], ctx_unit=info["ctx_unit"], title=True) for _, r in tr]
-    rc = [json.loads(l) for l in open(os.path.join(HERE, "root_cause.jsonl"), encoding="utf-8")]
-    ids = [r["id"] for r in rc if r["mechanism"].startswith("M11")]
+    if a.targets:
+        ids = json.load(open(a.targets, encoding="utf-8"))
+    else:
+        rc = [json.loads(l) for l in open(os.path.join(HERE, "root_cause.jsonl"), encoding="utf-8")]
+        ids = [r["id"] for r in rc if r["mechanism"].startswith("M11")]
     sets = {}
     for b in sorted({i[:4] for i in ids}):
         sd = json.load(open(os.path.join(ROOT, "materials/pool/work", b, "set.json"), encoding="utf-8"))
