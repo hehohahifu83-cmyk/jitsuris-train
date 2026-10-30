@@ -18,9 +18,13 @@
 **2026-10-31 02:40 の数（b066〜b073、ラベル前の列）**：全体 1,896・英語 約 1,050・日本語 約 620・独仏 約 230。英語と日本語は最低を超えた。
 
 | b075 | `auto b075 --national --only-national open.canada.ca` | 英・仏（日本語は b073 で最低に届いたので、BODIK の行をやめて独仏を増やす。2026-10-31 02:40） | 19 列（カナダはほぼ使い切った → b077 のカナダはやめてスイスに） |
-| b076 | `auto b076 --national --only-national opendata.swiss` | 独・仏 | |
-| b077 | `auto b077 --national --only-national opendata.swiss` | 独・仏（カナダの代わり） | |
-| b078 | `auto b078 --national --only-national opendata.swiss` | 独・仏 | |
-| b079 | `auto b079 --national --only-national data.gov.au --query survey` | 英語（全体の数のため） | |
+| b076 | `auto b076 --national --only-national opendata.swiss` | 独・仏 | 105 列（独 10） |
+| b077 | `auto b077 --national --only-national opendata.swiss` | 独・仏（カナダの代わり） | 36 列（独 8）。スイスは語なしでは毎回同じ 433 表の候補で、使い切りに近い |
+| b078 | `auto b078 --national --only-national opendata.swiss --query statistik` | 独（語で別の候補を探す。2026-10-31 05:00） | |
+| b079 | `auto b079 --national --only-national opendata.swiss --query commune` | 仏 | |
+| b080 | `auto b080 --national --only-national opendata.swiss --query bevoelkerung` | 独 | |
+| b081 | `auto b081 --national --only-national opendata.swiss --query population` | 英・独・仏 | |
+
+**2026-10-31 05:00 の数（b066〜b077）**：全体 2,376・英語 約 1,415・日本語 約 618・独仏 約 343。独仏を出せる許可済みの公開元はスイスとカナダだけ（`materials/pool/allowed_hosts.json`）。語つきでも足りなければ、独仏の最低を下げるか、新しい公開元（ライセンスの確認から）をオーナーに相談する。
 
 言語は `set.json` の language が当てにならない（スイスも en）ので、列名と値の文字で見分けて数える。
