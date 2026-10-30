@@ -33,6 +33,7 @@ def finals(name, mv, labels):
         for j, lab in enumerate(mv.classes_):
             P[:, labels.index(lab)] = p[:, j]
         base = E.base_decisions(te)
+        E._VETO.clear()   # 検査役のためておく分は id() が鍵なので、前の陣・前の予測の結果を取り違えないよう毎回消す（2026-10-30）
         fin = E.combine(base, P, np.zeros(len(te)), labels, A.TAU, None, list(range(len(te))))
         for k, c in enumerate(te):
             if not c["truth"] or c["truth"] in ("unknown", "S", "other", "person"):
