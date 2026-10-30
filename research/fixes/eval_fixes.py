@@ -35,17 +35,30 @@ def load(batches):
     return out
 
 
+_PCACHE = {}
+
+
+def probs(b, te, mv, labels, f2):
+    """検査役の確率。値が変わるのは F2 だけなので、(陣, F2) ごとに 1 回だけ計算する。"""
+    key = (b, f2)
+    if key not in _PCACHE:
+        P = np.zeros((len(te), len(labels)), dtype="float32")
+        p = mv.predict_proba(np.hstack([V.matrix([c["values"] for c in te]), E.table_matrix(te)]))
+        for j, lab in enumerate(mv.classes_):
+            P[:, labels.index(lab)] = p[:, j]
+        _PCACHE[key] = P
+    return _PCACHE[key]
+
+
 def run(data, mv, labels, fixes):
     """直し fixes を入れた製品の形の最終の答え。採点の範囲（正解が unknown・S・other・person の列は数えない）で (n, 正しい, 不明, 重大, ほかの誤り)。"""
     n = ok = unk = crit = wrong = 0
     with FX.use(fixes):
         for b, te0 in data.items():
             te = FX.fix_guard(FX.prepare(te0, fixes), fixes)
-            P = np.zeros((len(te), len(labels)), dtype="float32")
-            p = mv.predict_proba(np.hstack([V.matrix([c["values"] for c in te]), E.table_matrix(te)]))
-            for j, lab in enumerate(mv.classes_):
-                P[:, labels.index(lab)] = p[:, j]
+            P = probs(b, te, mv, labels, "F2" in fixes)
             base = E.base_decisions(te)
+            E._VETO.clear()   # 検査役のためておく分は id() が鍵なので、使い回された番号で前の陣の結果を取り違えないよう毎回消す
             fin = E.combine(base, P, np.zeros(len(te)), labels, A.TAU, None, list(range(len(te))))
             for k, c in enumerate(te):
                 if not c["truth"] or c["truth"] in ("unknown", "S", "other", "person"):
