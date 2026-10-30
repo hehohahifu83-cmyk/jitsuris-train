@@ -13,11 +13,14 @@
 | b071 | `auto b071 --bodik --query 統計` | 日本語（全国の自治体。公開元が多く、上限に当たりにくい） | 259 列（日本語） |
 | b072 | `auto b072 --national --only-national opendata.swiss` | 独・仏（b067 で「1 公開元 3 表まで」で 140 表が残った） | 361 列（ChatGPT ラベル済み） |
 | b073 | `auto b073 --bodik --query 一覧` | 日本語 | 済（列数は下の数え直し） |
-| b074 | `auto b074 --national --only-national opendata.swiss` | 独・仏 | |
-| b075 | `auto b075 --bodik --query 実績` | 日本語 | |
-| b076 | `auto b076 --national --only-national open.canada.ca` | 英・仏 | |
-| b077 | `auto b077 --national --only-national data.gov.au --query survey` | 英語 | |
-| b078 | `auto b078 --socrata --query budget` | 英語 | |
-| b079 | `auto b079 --national --only-national data.gov.uk` | 英語（b066 の残り） | |
+| b074 | `auto b074 --national --only-national opendata.swiss` | 独・仏 | 集め中 |
+
+**2026-10-31 02:40 の数（b066〜b073、ラベル前の列）**：全体 1,896・英語 約 1,050・日本語 約 620・独仏 約 230。英語と日本語は最低を超えた。
+
+| b075 | `auto b075 --national --only-national open.canada.ca` | 英・仏（日本語は b073 で最低に届いたので、BODIK の行をやめて独仏を増やす。2026-10-31 02:40） | |
+| b076 | `auto b076 --national --only-national opendata.swiss` | 独・仏 | |
+| b077 | `auto b077 --national --only-national open.canada.ca --query statistique` | 仏 | |
+| b078 | `auto b078 --national --only-national opendata.swiss` | 独・仏 | |
+| b079 | `auto b079 --national --only-national data.gov.au --query survey` | 英語（全体の数のため） | |
 
 言語は `set.json` の language が当てにならない（スイスも en）ので、列名と値の文字で見分けて数える。
