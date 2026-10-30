@@ -4,8 +4,8 @@
 
 | 懸念点 | 原因 | 確かめ方 |
 |---|---|---|
-| 1. F7（列名に手がかりがあれば検査役は下げない）で重大が 1→7 | 6 列のうち 5 列は所得の幅ごとの申告件数（「$5,000 to $9,999」、正解 quantity）。列名の $ が金額の手がかりに当たる。recheck の「金額の幅の列名」の規則（money_band_header）は幅をハイフン（5,000-9,999）でしか読まず、「to」の幅を見逃す。1 列は「Number」（正解 quantity）で、number は番号の手がかりにも当たる（LABEL_GUIDE は「number だけでは決めない」）。検査役はこれらを正しく下げていた | `diff_decide_F7.md` |
-| 2. F1（列名を語に分ける）で確かめる陣の誤りが +1 | b036 の同じ表で「zone_code」が 2 列は id（UFZ）、1 列は category（FO）と付いている＝**教材の付け方が陣の中で割れている**。F1 で _code が番号の手がかりになり、category の列を id にした。もう 1 列「Year_1」（率）は語に分けると「Year 1」になり日付の手がかりとぶつかって不明に下がった | `diff_confirm_F1.md` |
+| 1. F7（列名に手がかりがあれば検査役は下げない）で重大が 1→7 | 6 列のうち 5 列は所得の幅ごとの申告件数（「$5,000 to $9,999」、正解 quantity）。列名の $ が金額の手がかりに当たる。recheck の「金額の幅の列名」の規則（money_band_header）は幅をハイフン（5,000-9,999）でしか読まず、「$5,000 to $9,999」「Under $5,000」は幅と読まない（`recheck._BAND` に通して確かめた）。1 列は「Number」（正解 quantity）で、number は番号の手がかりにも当たる（LABEL_GUIDE は「number だけでは決めない」）。検査役はこれらを正しく下げていた | `diff_decide_F7.md` |
+| 2. F1（列名を語に分ける）で確かめる陣の誤りが +1 | b036 で「zone_code」が 2 列は id（UFZ）、1 列は category（FO）と付いている＝**教材の付け方が陣の中で割れている**。UFZ の 2 列は先生（ChatGPT）が category、Claude が裁定で「区域のコードは id」に変えた。FO の列は別の表で**裁定に回らず**、先生の category のまま。裁定は先生と本体が食い違った列だけに回るので、同じ形の列でも裁定が届かない列は先生のラベルが残る（電力量の割れ：b011 で 1 列だけ裁定を通らず quantity のままだったのと同じ仕組み）。F1 で _code が番号の手がかりになり、category の列を id にした。もう 1 列「Year_1」（率）は語に分けると「Year 1」になり日付の手がかりとぶつかって不明に下がった | `diff_confirm_F1.md` |
 | 3. 確かめる陣の重大 1 列（b036-0267「GTFS from DIVA」、正解 id） | 本体 quantity 0.55 → recheck が確信が低いで不明 → **rho が検査役（値の形だけの分類）の quantity を信じて候補に戻した**。値は 5801 などの整数で、値の形だけでは番号か件数か分からない。rho は「値の形が確かなら戻す」前提で、整数の id と quantity ではその前提が成り立たない | `wrong.jsonl` |
 | 4. 言い切って誤った列（重大でない誤り） | 決める陣 127 列中 119 列・確かめる陣 57 列中 56 列は**本体の答えがそのまま通った**（`wrong.md`）。取り違えは category・text・account・org・address・id の間が多い。本体の中で近い教材の列（embed_nn）を調べ中 | `wrong.md`・`embed_wrong.json`（実行中） |
 | 5. 題名ありで増えた重大（b063-0275 Nachgefragt、正解 amount） | 本体は題名なしで quantity 0.88（決め方で不明）、題名ありでも quantity。本体の中で近い教材は quantity の列（「Family income between …」など、`embed_read.md`）。題名ではなく列名から覚えた種類（原因 4 の組）で、題名ありでは確信が上がって決め方を通った | `title_check.md`・`embed_read.md` |

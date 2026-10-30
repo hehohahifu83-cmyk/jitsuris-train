@@ -3,18 +3,24 @@
   本体の答えと同じ → その教材の列から覚えた（どの出どころ・どの列かを並べる）
   正解と同じ → 近い教材は正しく付いているのに、本体はその列を誤った（近さでは説明できない）
 出力：research/unknown/embed_read.md
-使い方：python research/unknown/embed_read.py
+使い方：python research/unknown/embed_read.py（不明 73 列）
+　　　　python research/unknown/embed_read.py research/fixes/embed_wrong.json research/fixes/wrong.jsonl research/fixes/embed_wrong_read.md（言い切って誤った列）
 """
 import json
 import os
+import sys
 from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    d = json.load(open(os.path.join(HERE, "embed_nn.json"), encoding="utf-8"))
-    truth = {json.loads(l)["id"]: json.loads(l) for l in open(os.path.join(HERE, "columns.jsonl"), encoding="utf-8")}
+    args = sys.argv[1:]
+    src = args[0] if args else os.path.join(HERE, "embed_nn.json")
+    tsrc = args[1] if len(args) > 1 else os.path.join(HERE, "columns.jsonl")
+    out = args[2] if len(args) > 2 else os.path.join(HERE, "embed_read.md")
+    d = json.load(open(src, encoding="utf-8"))
+    truth = {json.loads(l)["id"]: json.loads(l) for l in open(tsrc, encoding="utf-8")}
     kinds, src_for_wrong, rows = Counter(), Counter(), []
     for t in d["targets"]:
         c = truth[t["id"]]
@@ -45,7 +51,7 @@ def main():
     for k, t, c, tv in sorted(rows, key=lambda x: x[0]):
         nb = "; ".join(f"{n['src']} {n['header'][:22]}={n['teacher']} {n['sim']}" for n in t["neighbors"][:3]).replace("|", "/")
         L.append(f"| {k[0]} | {t['id']} | {c['header'][:28].replace('|', '/')} | {c['truth']} | {t['model']} | {', '.join(f'{a} {b}' for a, b in tv.most_common(3))} | {nb} |")
-    open(os.path.join(HERE, "embed_read.md"), "w", encoding="utf-8").write("\n".join(L) + "\n")
+    open(out, "w", encoding="utf-8").write("\n".join(L) + "\n")
     print("\n".join(L[:20]))
 
 
