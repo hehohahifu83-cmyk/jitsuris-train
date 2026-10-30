@@ -21,9 +21,11 @@
 | b076 | `auto b076 --national --only-national opendata.swiss` | 独・仏 | 105 列（独 10） |
 | b077 | `auto b077 --national --only-national opendata.swiss` | 独・仏（カナダの代わり） | 36 列（独 8）。スイスは語なしでは毎回同じ 433 表の候補で、使い切りに近い |
 | b078 | `auto b078 --national --only-national opendata.swiss --query statistik` | 独（語で別の候補を探す。2026-10-31 05:00） | 182 列 |
-| b079 | `auto b079 --national --only-national data.gov.au --query survey` | 英語（表ごとに数え直すと英語が足りない。2026-10-31 05:50） | |
+| b079 | `auto b079 --national --only-national data.gov.au --query survey` | 英語（表ごとに数え直すと英語が足りない。2026-10-31 05:50） | 30 列 |
 | b080 | `auto b080 --socrata --query budget` | 英語 | |
 | b081 | `auto b081 --national --only-national data.gov.uk` | 英語（b066 の残り） | |
+| b082 | `auto b082 --ckan --only-host data.boston.gov --query report` | 英語 | |
+| b083 | `auto b083 --national --only-national data.gov.ie` | 英語 | |
 
 **2026-10-31 05:00 の数（b066〜b077）**：全体 2,376・英語 約 1,415・日本語 約 618・独仏 約 343。独仏を出せる許可済みの公開元はスイスとカナダだけ（`materials/pool/allowed_hosts.json`）。語つきでも足りなければ、独仏の最低を下げるか、新しい公開元（ライセンスの確認から）をオーナーに相談する。
 
