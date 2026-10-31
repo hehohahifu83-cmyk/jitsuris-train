@@ -244,6 +244,12 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT, encodings=CP932_FIRST):
     import csv
     import io
     text = None
+    # 2026-11-01：CSV でないファイルを止める（在庫の収集で、ZIP をそのまま読んだ表と、HTML のページを読んだ表が見つかった。research/labels/reserve_20261101）
+    if raw[:4] == b"PK\x03\x04":
+        raise ValueError("csv: file is a ZIP archive")
+    head8 = raw[:2048].lstrip(b"\xef\xbb\xbf \t\r\n").lower()
+    if head8.startswith((b"<!doctype html", b"<html", b"<head", b"<?xml")) or (b"<script" in head8 and b"<" == head8[:1]):
+        raise ValueError("csv: file is HTML or XML, not CSV")
     if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):   # 2026-11-01：UTF-16（BOM つき）。在庫の収集で「文字コード不明」が 20 表
         try:
             text = raw[: len(raw) - (len(raw) % 2) - (2 if truncated else 0)].decode("utf-16")

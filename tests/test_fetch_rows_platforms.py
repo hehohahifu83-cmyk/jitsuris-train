@@ -364,3 +364,18 @@ class Utf16Tests(unittest.TestCase):
         fields, records, total = FR.parse_csv(raw, encodings=FR.CP1252_FIRST)
         self.assertEqual(fields[:2], ["Name", "Amount"])
         self.assertEqual(records[0]["Amount"], "£1")
+
+
+class NotCsvTests(unittest.TestCase):
+    def test_zip_and_html_are_refused(self):
+        import fetch_rows as FR
+        for raw in (b"PK\x03\x04\x14\x00rest,of,file\n1,2,3\n",
+                    b"<!DOCTYPE html>\n<html><head></head><body>a,b\n1,2</body></html>",
+                    b"\n<script>(function(w,d){})</script>\n<div>a,b</div>\n"):
+            with self.assertRaises(ValueError):
+                FR.parse_csv(raw, encodings=FR.CP1252_FIRST)
+
+    def test_csv_with_angle_bracket_values_still_reads(self):
+        import fetch_rows as FR
+        fields, records, _ = FR.parse_csv(b"Band,Count\n<5,3\n5-9,4\n10+,5\n", encodings=FR.CP1252_FIRST)
+        self.assertEqual(fields[:2], ["Band", "Count"])
