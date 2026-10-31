@@ -72,6 +72,15 @@ jobs:
             # 2026-10-31：D2 の 4 本（run 41192849082、ft_out_job1〜4＝A 種子3、L 種子1・2・3）。事前記録 bench/d2_prereg_20261031.md。
             case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
             run_id=41192849082; want=manifest; label="D2 の 4 本"; njobs=4; tag=d2
+          elif [ "$model" = "lv" ]; then
+            # 2026-11-01：L′（L ＋ 教材の £ の直し FT_VALUEFIX、種子 1・2・3。学習の回収 run 41226755937）。事前記録 bench/valuefix_prereg_20261101.md。
+            # 新しい在庫の陣（E1〜）だけに使う。
+            case "$out_path" in materials/pool/work/e[1-3]*) ;; *) echo "出力の場所が違う"; exit 1;; esac
+            run_id=41226755937; want=manifest; label="L′ の 3 本（£ の直し）"; njobs=3; tag=lv
+          elif [ "$model" = "d2e" ]; then
+            # 2026-11-01：D2 の L 3 本（run 41192849082 の ft_out_job2〜4）を新しい在庫の陣で。事前記録 bench/valuefix_prereg_20261101.md。
+            case "$out_path" in materials/pool/work/e[1-3]*) ;; *) echo "出力の場所が違う"; exit 1;; esac
+            run_id=41192849082; want=manifest; label="L の 3 本（新しい陣）"; njobs=4; tag=d2e; first=2
           elif [ "$model" = "d3tta" ]; then
             # 2026-10-31：D3 の値の引き直し（--tta 4）。D2 の L 3 本（run 41192849082 の ft_out_job2〜4）。事前記録 bench/d3_prereg_20261031.md。
             case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
@@ -117,12 +126,22 @@ jobs:
               env = (m.get("run") or {}).get("env") or {}
               out[f"job{j}"] = {"sha256": got, "seed": (m.get("run") or {}).get("seed"),
                                 "FT_VALSEL": env.get("FT_VALSEL"), "FT_UNITX": env.get("FT_UNITX"), "FT_TITLE": env.get("FT_TITLE"),
-                                "FT_LABELFIX": env.get("FT_LABELFIX")}
+                                "FT_LABELFIX": env.get("FT_LABELFIX"), "FT_VALUEFIX": env.get("FT_VALUEFIX")}
               print(f"job{j} verified {got}")
           if tag == "d3t":
               for j in range(2, 5):
                   if not out[f"job{j}"]["FT_LABELFIX"] or str(out[f"job{j}"]["seed"]) != str(j - 1):
                       raise SystemExit(f"job{j}: settings do not match bench/d3_prereg_20261031.md")
+          if tag == "lv":
+              for j in range(1, 4):
+                  o = out[f"job{j}"]
+                  if o["FT_LABELFIX"] != "materials/pool/labelfix_v24.jsonl" or o["FT_VALUEFIX"] != "materials/pool/valuefix_cp1252.jsonl" or str(o["seed"]) != str(j):
+                      raise SystemExit(f"job{j}: settings do not match bench/valuefix_prereg_20261101.md")
+          if tag == "d2e":
+              for j in range(2, 5):
+                  o = out[f"job{j}"]
+                  if not o["FT_LABELFIX"] or o["FT_VALUEFIX"] or str(o["seed"]) != str(j - 1):
+                      raise SystemExit(f"job{j}: settings do not match bench/valuefix_prereg_20261101.md")
           if tag == "d1a":
               for j in (1, 2):
                   if out[f"job{j}"]["FT_VALSEL"] or out[f"job{j}"]["FT_UNITX"] or out[f"job{j}"]["FT_LABELFIX"] or str(out[f"job{j}"]["seed"]) != str(j):
