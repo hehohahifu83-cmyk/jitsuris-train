@@ -29,7 +29,8 @@
 | b084 | `auto b084 --national --only-national data.gov.uk` | 英語（残りの公開元を検索、採点候補を約200列補う） | 12 列（表 3、大臣の記録なので全列 S に訂正。Claude ラベル）。採用 134 表の大半は許可外ホスト・403 で取り出せず |
 | b085 | `auto b085 --national --only-national data.gov.uk --query spend` | 英語（語で別の候補。支出の公開 CSV は gov.uk 上に置かれることが多い） | 125 列（表 18。ChatGPT も独立に付けた → 一致 88/118 グループ。上級職員の出張の表は S で、採点できる 62） |
 | b086 | `auto b086 --national --only-national data.gov.uk --query expenses` | 英語（英語がちょうど 1,000 で余裕がない。裁定で減る分を見て、あと約 120 列） | 25 列（表 6、全部上級職員の記録 → 全列 S。TITLE_DENY に足した） |
-| b087 | `auto b087 --national --only-national data.gov.uk --query contracts` | 英語（あと 20 列＋余裕） | |
+| b087 | `auto b087 --national --only-national data.gov.uk --query contracts` | 英語（あと 20 列＋余裕） | 15 列（表 4、採点できる 7。Claude ラベル） |
+| b088 | `auto b088 --socrata --query inventory` | 英語（data.gov.uk は語を変えても取れる表が少ない。米国の Socrata で別の公開元を探す） | |
 
 **2026-10-31 05:00 の数（b066〜b077）**：全体 2,376・英語 約 1,415・日本語 約 618・独仏 約 343。独仏を出せる許可済みの公開元はスイスとカナダだけ（`materials/pool/allowed_hosts.json`）。語つきでも足りなければ、独仏の最低を下げるか、新しい公開元（ライセンスの確認から）をオーナーに相談する。
 
@@ -46,3 +47,5 @@
 **2026-10-31 15:00 の暫定数（b066〜b085、b084 から Claude ラベル、S・unknown を除く、裁定前）**：2,483（英語 1,000・日本語 593・独仏 890）。残りは全体 17・英語 0。ただし英語は余裕がないので、b086 で語 expenses を探す。
 
 **2026-10-31 15:40 の数え直し（b066〜b086）**：2,463（英語 980・日本語 593・独仏 890）。足りないのは全体 37・英語 20。b084・b086 は LABEL_GUIDE 120 行（上級職員の出張・接待・面会の記録は全列 S）を Claude が見落としていたので全列 S に訂正、b085 は ChatGPT の独立ラベルで数える。Claude 一人のラベルの抜き取りを、b085 で ChatGPT と比べた形になった（一致 88/118）。
+
+**2026-10-31 16:20 の数（b066〜b087）**：2,470（英語 987）。足りないのは全体 30・英語 13。b088 は Socrata の語 inventory。
