@@ -1,4 +1,4 @@
-# 2026-10-31 22:55 JST — Claude：辞書（K）と値の引き直し（T）を合わせて試す D3 を準備
+# 2026-10-31 22:46 JST — Claude：辞書（K）と値の引き直し（T）を合わせて試す D3 を準備
 
 - オーナー指示：表に特化した知識の辞書を Claude と ChatGPT で作り、迷ったら参照。ChatGPT の作業のあと、さっきの作業と合わせてテスト。中身は過去の教材・試験で知識で分かったはずの分＋新しい知識。
 - 辞書の仕組み：`table_dictionary.py`（ファイルを読むだけ、AI なし）、eval_fixes の K。Claude の 51 項目 `materials/dictionary/terms.jsonl`。ChatGPT に、その見直しと自分の分（固定 5 集合の誤り＋ほかの地域の標準）を依頼（ai-bridge `messages/20261031-2241_…`）。
