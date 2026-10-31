@@ -58,8 +58,10 @@ def batch_rows(batch):
     d = w / "sheets"
     meta = label_sheets.json.loads((d / "groups.json").read_text(encoding="utf-8"))
     # b084 から先はオーナー指示（2026-10-31「あと200列はお前がやってくれ」）で Claude が付ける（answers_claude/）
-    teacher = "chatgpt" if any((d / "answers").glob("sheet_*.tsv")) else "claude"
-    got, problems = label_sheets.read_answers(d, meta["groups"], teacher)
+    # ChatGPT の答えが全グループそろっていればそれで数える。抜き取りの確かめ（一部だけ）なら Claude の答えで数える
+    got, problems = label_sheets.read_answers(d, meta["groups"], "chatgpt")
+    if not got or len(got) < len(meta["groups"]):
+        got, problems = label_sheets.read_answers(d, meta["groups"], "claude")
     if problems:
         raise SystemExit(f"{batch}: 答えに問題がある：{problems[:3]}")
     labels = label_sheets.merge(corpus, meta["groups"], got)
