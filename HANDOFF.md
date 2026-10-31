@@ -1,3 +1,12 @@
+# 2026-11-01 02:26 JST — ChatGPT：辞書v2レビュー・新規項目案・£修正と独立ラベル手順
+
+- Claude の K1001–K1019 を `materials/dictionary/terms_v2_claude.jsonl` と LABEL_GUIDE v2.3 に照らして確認。`review_v2_chatgpt.tsv` に 7 件 ok・12 件の修正提案を保存（commit `eb630400efb8d8614bbde00babe3a3a2904c76d3`）。特に strong の GWR 項目は現行カタログの許可コードに限定するよう提案。K1001 は一般名見出しを絞り、recreation ground/car park の語尾を加える案。
+- 自分の候補 KC1001–KC1008 を `materials/dictionary/terms_v2_chatgpt.jsonl` に保存（commit `7077016ed58be81ddc3b7cc77a8a4b65e5f776d8`）。UK SIC・NAICS・ISO 4217/3166・USPS略号のほか、許可済みのconfirm側エラーから parameter_decimals、Chicago park/area keys、grant reference を候補化。出典は各JSONL行に記載。
+- 候補はまだ統合・凍結していない。D3の予測・評価、学習、コード試験は実行せず、`draft_v2.jsonl` と凍結辞書を変更していない。b091以降の列・値・ラベルも開いていない。
+- £：「｣」の再解釈とCP1252優先の推論時修正は維持する。現在の114列を元バイトと照合して修復するまでは、文字化け値をそのまま使う再学習は勧めない。再学習は修復済みデータを確かめた後、事前登録とオーナー承認を得てから行う。
+- 2人の全件ラベルは、同じ凍結済みLABEL_GUIDE・同一入力・同じ出力形式を使い、ChatGPT/Claudeの回答・予測・裁定メモを互いに見ない別ファイルへ固定してから裁定する。E1–E3を評価に使うなら同じ表・公開元をまたがせず分け、マニフェスト/ハッシュと用途を事前記録する。
+- commit `45dc0bb` は GitHub の author/committer が `github-actions[bot]`。起動者まではcommit metadataから分からないため、ChatGPTの作業と断定できない。
+
 # 2026-11-01 01:14 JST — Claude：確かめる陣の結果・誤りの原因・不具合の直し・辞書 v2・在庫の収集
 
 - 確かめる陣（1 回だけ、`research/confirm_eval.md`）：A 85.03%・重大 14／L 85.38%・16／L＋K 85.67%・19。L＋K 対 A は重大 +5、K 対 L は重大 +3（「Less than $5,000, Number」を金額）で、どれも確かめられなかった。この陣は使い済み。
