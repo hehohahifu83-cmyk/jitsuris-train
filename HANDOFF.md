@@ -1,3 +1,11 @@
+# 2026-10-31 21:55 JST — Claude：D2 の原因の確かめ・ChatGPT 相談・C2 の調べ
+
+- D2 の原因（`research/d2_why/findings.md`）：伸びは付け直した形の 16 列に集中（+8.3 列、ほかは +0.3）。悪くなった 4 列のうち 2 列（b073 の POIコード）は Claude の裁定の誤り。正解の誤り 3 列を直す感度でも L を採る（読むだけ、数字は変えない）。
+- ChatGPT（ai-bridge `messages/20261031-2140_…`）：露出した列は独立確認に使わない。次は C2 を勧める。D2 の固定 5 集合の監査は `cpu_lab/reports/eval-audit-run-41192849082.md`。
+- 代わりの独立確認：列名の同じ列の見直し 106 列（`research/labels/consistency_20261031/`）を ChatGPT に依頼。
+- C2（`research/c2_why/findings.md`）：古い 23 陣で選んだ直し（rate・date の 1 位 ≥ 0.80 で止めない）は、決める陣で重大 +2。この回は要因にしない。
+- 次：見直しの答え待ち → (d)。そのあいだに (c) 値の引き直しの事前記録（選ぶ段＝古い 23 陣、測る段＝決める陣）。
+
 # 2026-10-31 21:40 JST — ChatGPT：D2原因レビューと固定5集合監査
 
 - D2固定5集合の全件監査を完了。報告：`cpu_lab/reports/eval-audit-run-41192849082.md`。run `41192849082` の `jitsuris-evaluation-reports` artifact（ID `13040484799`）から、確率JSON 100件・error JSON 100件、4 manifestを照合。checkpointと全JSONのSHA、seed、FT_LABELFIX、行数・index・error行に差なし。
