@@ -68,13 +68,17 @@ jobs:
             # 2026-10-31：D2 の 4 本（run 41192849082、ft_out_job1〜4＝A 種子3、L 種子1・2・3）。事前記録 bench/d2_prereg_20261031.md。
             case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
             run_id=41192849082; want=manifest; label="D2 の 4 本"; njobs=4; tag=d2
+          elif [ "$model" = "d3tta" ]; then
+            # 2026-10-31：D3 の値の引き直し（--tta 4）。D2 の L 3 本（run 41192849082 の ft_out_job2〜4）。事前記録 bench/d3_prereg_20261031.md。
+            case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
+            run_id=41192849082; want=manifest; label="D3 の値の引き直し（L 3 本、k=4）"; njobs=4; tag=d3t; first=2; tta=4
           elif [ "$model" = "e5" ]; then
             case "$out_path" in materials/label_assist/*_e5base_seed1.json|materials/pool/work/*/pred_e5base_seed1.json) ;; *) echo "出力の名前が違う"; exit 1;; esac
             run_id=39506074807; want=38c5b3442a5825d3b46e484897e5cce2d5cabbf4dfc051722cfcfafa81187fb7; label="E5-base 種子 1"
           else
             echo "モデルの名前が違う"; exit 1
           fi
-          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; echo "model=$model"; echo "run_id=$run_id"; echo "want=$want"; echo "label=$label"; echo "extra=${extra:-}"; echo "njobs=${njobs:-1}"; echo "tag=${tag:-}"; } >> "$GITHUB_OUTPUT"
+          { echo "proceed=true"; echo "set=$set_path"; echo "out=$out_path"; echo "model=$model"; echo "run_id=$run_id"; echo "want=$want"; echo "label=$label"; echo "extra=${extra:-}"; echo "njobs=${njobs:-1}"; echo "tag=${tag:-}"; echo "first=${first:-1}"; echo "tta=${tta:-0}"; } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.req.outputs.proceed == 'true'
         with: { python-version: '3.11' }
@@ -98,8 +102,8 @@ jobs:
           import hashlib, json
           from pathlib import Path
           out = {}
-          n = int("${{ steps.req.outputs.njobs }}"); tag = "${{ steps.req.outputs.tag }}"
-          for j in range(1, n + 1):
+          n = int("${{ steps.req.outputs.njobs }}"); tag = "${{ steps.req.outputs.tag }}"; first = int("${{ steps.req.outputs.first }}")
+          for j in range(first, n + 1):
               ck = Path(f"/tmp/e5-model/ft_out_job{j}")
               m = json.loads((ck / "manifest.json").read_text(encoding="utf-8"))
               name, meta = next(iter(m["saved_model"]["weights"].items()))
@@ -111,6 +115,10 @@ jobs:
                                 "FT_VALSEL": env.get("FT_VALSEL"), "FT_UNITX": env.get("FT_UNITX"), "FT_TITLE": env.get("FT_TITLE"),
                                 "FT_LABELFIX": env.get("FT_LABELFIX")}
               print(f"job{j} verified {got}")
+          if tag == "d3t":
+              for j in range(2, 5):
+                  if not out[f"job{j}"]["FT_LABELFIX"] or str(out[f"job{j}"]["seed"]) != str(j - 1):
+                      raise SystemExit(f"job{j}: settings do not match bench/d3_prereg_20261031.md")
           if tag == "d2":
               want_fix = {1: False, 2: True, 3: True, 4: True}
               want_seed = {1: 3, 2: 1, 3: 2, 4: 3}
@@ -145,9 +153,11 @@ jobs:
           set -eu
           o="${{ steps.req.outputs.out }}"
           t="${{ steps.req.outputs.tag }}"
-          for j in $(seq 1 ${{ steps.req.outputs.njobs }}); do
+          k="${{ steps.req.outputs.tta }}"
+          extra=""; if [ "$k" != "0" ]; then extra="--tta $k --repeat-reason D3-tta-k$k"; fi
+          for j in $(seq ${{ steps.req.outputs.first }} ${{ steps.req.outputs.njobs }}); do
             python evaluate_independent.py predict --set "${{ steps.req.outputs.set }}" --checkpoint /tmp/e5-model/ft_out_job$j \
-              --out "$o/pred_${t}_job$j.json" --ledger materials/label_assist/ledger.jsonl --device cpu --titles "$o/titles.json"
+              --out "$o/pred_${t}_job$j.json" --ledger materials/label_assist/ledger.jsonl --device cpu --titles "$o/titles.json" $extra
           done
           echo "done ${{ steps.req.outputs.set }} $o $t" > materials/label_assist/predict.request
       - name: 予測（ラベルは読まない）

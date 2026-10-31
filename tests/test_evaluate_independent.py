@@ -155,6 +155,33 @@ class PredictAndScoreTests(unittest.TestCase):
         self.assertEqual(doc["titles"]["columns_with_title"], 3)
         self.assertEqual([r["guarded_prediction"] for r in doc["rows"]], ["date", "unknown", "amount"])
 
+    def test_tta_values_are_deterministic_and_keep_short_columns(self):
+        rv = [str(i) for i in range(20)] + ["", "NA"]
+        a = E.tta_values("c1", ["0", "1", "2", "3", "4"], rv, 1)
+        self.assertEqual(a, E.tta_values("c1", ["0", "1", "2", "3", "4"], rv, 1))
+        self.assertNotEqual(a, E.tta_values("c1", ["0", "1", "2", "3", "4"], rv, 2))
+        self.assertEqual(len(a), 5)
+        self.assertTrue(all(v not in ("", "NA") for v in a))
+        self.assertEqual([int(v) for v in a], sorted(int(v) for v in a))            # 元の並び順を保つ
+        self.assertEqual(E.tta_values("c1", ["x"], ["a", "b", "", "c"], 1), ["x"])   # 欠けでない値が 5 個以下なら元のまま
+
+    def test_tta_averages_variants_and_guard_sees_original_values(self):
+        data = sample_set()
+        data["columns"][2]["row_values"] = [str(100 * i) for i in range(1, 30)]
+        write(self.set_path, data)
+        seen = []
+
+        def infer(ck, texts, info):
+            seen.append(list(texts))
+            return fake_infer(ck, texts, info)
+        doc = E.predict(self.set_path, self.ck, self.out, self.ledger, infer=infer, tta=2)
+        self.assertEqual(len(seen), 3)                                              # 元＋2 つの変え方
+        self.assertIn("| 値: 100, 200, 300, 400, 500 |", seen[0][2])
+        self.assertNotEqual(seen[0][2], seen[1][2])
+        self.assertEqual(seen[0][0], seen[1][0])                                    # row_values の無い列は同じ
+        self.assertEqual(doc["tta"], {"k": 2, "salt": "tta-v1", "values": 5})
+        self.assertEqual([r["guarded_prediction"] for r in doc["rows"]], ["date", "unknown", "amount"])
+
     def test_saved_prediction_scores_v91_and_v10_without_inference(self):
         data = sample_set()
         data["columns"][0]["values"] = ["3/15", "4/20", "5/1", "6/30", "7/25"]

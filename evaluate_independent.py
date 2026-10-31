@@ -104,6 +104,33 @@ def model_rows_of(set_data, info):
 
 # ---------------------------------------------------------------- 重みの検査と設定
 
+TTA_SALT = "tta-v1"
+_TTA_EMPTY = {"", "nan", "none", "null", "na", "n/a", "-", "－", "―", "*", "＊", "…", "."}
+
+
+def tta_values(col_id, values, row_values, r, n=5):
+    """値の引き直し（2026-10-31 Claude、許可済みの手 3。事前記録 bench/d3_prereg）。r 番目の変え方の値 n 個。
+    表の行の値（row_values）の欠けでない値から、列 id と r で決まる乱数で n 個を選ぶ（元の並び順を保つ）。
+    欠けでない値が n 個以下なら元の値のまま。"""
+    import hashlib
+    import random
+    pool = [str(v) for v in (row_values or []) if str(v).strip().lower() not in _TTA_EMPTY]
+    if len(pool) <= n:
+        return list(values)
+    rng = random.Random(hashlib.sha256(f"{TTA_SALT}|{col_id}|{r}".encode("utf-8")).hexdigest())
+    idx = sorted(rng.sample(range(len(pool)), n))
+    return [pool[i] for i in idx]
+
+
+def tta_variants(model_rows, set_data, k):
+    """本体に入れる行の変え方 k 個（元の行は含まない）。値の欄だけを変える。"""
+    out = []
+    for r in range(1, k + 1):
+        out.append([(h, tta_values(c["id"], v, c.get("row_values"), r), l, sib, u)
+                    for (h, v, l, sib, u), c in zip(model_rows, set_data["columns"])])
+    return out
+
+
 def checkpoint_info(checkpoint_dir):
     """重みを check_trained_model.py と同じ検査にかけ、manifest から前置き・max_length などを読む。問題があれば ValueError。"""
     import check_trained_model as C
@@ -228,7 +255,7 @@ def append_ledger(path, entry):
 DEFAULT_TITLES = "materials/pool/titles.json"
 
 
-def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", repeat_reason=None, infer=None, titles_path=None, no_titles=False):
+def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", repeat_reason=None, infer=None, titles_path=None, no_titles=False, tta=0):
     """予測を作って out_path に書く。infer は試験用の差し替え（(checkpoint, texts, info) → (確率, 秒)）。
     titles_path（表の名前 → 題名の JSON）を渡したときだけ、入力に表の題名を入れる（学習の FT_TITLE=1 と同じ形）。"""
     set_data, set_sha = load_set(set_path)
@@ -244,11 +271,14 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
         raw_t = read_bytes(titles_path)
         model_rows = with_titles(model_rows, set_data, json.loads(raw_t.decode("utf-8")))
         titles_meta = {"path": titles_path, "sha256": sha256_bytes(raw_t), "columns_with_title": sum(TITLE_SEP in r[4] for r in model_rows)}
-    texts = texts_of(model_rows, info, title=bool(titles_path))
-    if infer is None:
-        probs, seconds = infer_torch(checkpoint_dir, texts, info, device)
-    else:
-        probs, seconds = infer(checkpoint_dir, texts, info)
+    variants = [model_rows] + (tta_variants(model_rows, set_data, tta) if tta else [])
+    probs, seconds = None, 0.0
+    for vr in variants:   # tta：元の行と k 個の変え方の確率の平均（見張り以降は元の rows のまま）
+        texts = texts_of(vr, info, title=bool(titles_path))
+        p, sec = infer_torch(checkpoint_dir, texts, info, device) if infer is None else infer(checkpoint_dir, texts, info)
+        probs = p if probs is None else probs + p
+        seconds += sec
+    probs = probs / len(variants)
     if len(probs) != len(rows):
         raise ValueError("確率の行数が主セットの列数と違う")
     preds = make_predictions(set_data, rows, probs, info["labels"])
@@ -261,6 +291,7 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
            "input": {k: info.get(k, False) for k in ("val_select", "unit_ext", "title")},
            "labels": info["labels"], "device": device,
            **({"titles": titles_meta} if titles_meta else {}),
+           **({"tta": {"k": tta, "salt": TTA_SALT, "values": 5}} if tta else {}),
            "timing": {"columns": len(rows), "seconds": round(float(seconds), 3), "ms_per_column": round(1000 * float(seconds) / len(rows), 3)},
            "rows": preds}
     body = json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n"
@@ -346,6 +377,7 @@ def main(argv=None):
     p.add_argument("--repeat-reason", default=None)
     p.add_argument("--titles", default=None, help="表の名前 → 題名の JSON。FT_TITLE=1 の重みは渡さなくても materials/pool/titles.json を使う")
     p.add_argument("--no-titles", action="store_true", help="FT_TITLE=1 の重みでも題名を入れない（2026-10-30 より前のやり方。比べるとき用）")
+    p.add_argument("--tta", type=int, default=0, help="値の引き直しの数 k（元の行＋k 個の変え方の確率の平均。0 は使わない）")
     s = sub.add_parser("score")
     s.add_argument("--preds", required=True)
     s.add_argument("--labels", required=True)
@@ -356,7 +388,7 @@ def main(argv=None):
     s.add_argument("--guard-version", choices=AVAILABLE_GUARD_VERSIONS, default=PRIMARY_GUARD_VERSION)
     a = ap.parse_args(argv)
     if a.cmd == "predict":
-        doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason, titles_path=a.titles, no_titles=a.no_titles)
+        doc = predict(a.set, a.checkpoint, a.out, a.ledger, a.device, a.repeat_reason, titles_path=a.titles, no_titles=a.no_titles, tta=a.tta)
         print(json.dumps({k: doc[k] for k in ("set_id", "set_sha256", "guard_version", "guard_implementation_version", "available_guard_versions", "checkpoint", "timing")}, ensure_ascii=False, indent=1))
     else:
         print(json.dumps(score(a.preds, a.labels, a.out_dir, a.run, a.dataset, a.seed, a.guard_version), ensure_ascii=False, indent=1))
