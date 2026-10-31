@@ -61,6 +61,12 @@ if POOL or POOL_VALONLY:
         from encoder_context import apply_label_fix
         pool_all, _nfix = apply_label_fix(pool_all, os.environ["FT_LABELFIX"].split(","))
         print(f"FT_LABELFIX={os.environ['FT_LABELFIX']}: relabeled {_nfix} pool rows", flush=True)
+    # FT_VALUEFIX=materials/pool/valuefix_cp1252.jsonl（2026-11-01、オーナー了承）：英国の CP1252 の表が CP932 で読まれ £ が「｣」に化けていた 43 表を、
+    # 元のバイトに戻して CP1252 で読み直す（教材庫のファイルは書き換えない）。research/valuefix/、bench/valuefix_prereg_20261101.md
+    if os.environ.get("FT_VALUEFIX"):
+        from encoder_context import apply_value_fix
+        pool_all, _nvf = apply_value_fix(pool_all, os.environ["FT_VALUEFIX"].split(","))
+        print(f"FT_VALUEFIX={os.environ['FT_VALUEFIX']}: fixed {_nvf} pool rows", flush=True)
 pooltr, poolval = pool_all, []
 # 教材庫の検証は様式（同じ見出しの組の表）ごとに分ける（2026-10-24。表ごとだと同じ様式の表が学習側にも残り、検証が高く出る）。
 # 学習側は 1 様式 FT_POOL_FAMILY_CAP 表まで（既定 4、0 で上限なし）。どちらも pool_families.py。教材庫はこれより前に学習していない

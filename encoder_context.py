@@ -203,3 +203,38 @@ def apply_label_fix(rows, files):
     if fix and n == 0:
         raise SystemExit(f"FT_LABELFIX：{files} のどの行も教材と合わない")
     return out, n
+
+
+def cp932_to_cp1252(s):
+    """CP1252 のバイトを CP932 で読んで化けた文字列を戻す（2026-11-01、FT_VALUEFIX）。0xA3（£）は「｣」、0x92 0x73（’s）は「痴」に化けていた。
+    CP932 に戻せない・CP1252 で読めない文字列は止める（化けていない表を誤って一覧に入れたとき）。"""
+    s = str(s)
+    if all(ord(c) < 128 for c in s):
+        return s
+    try:
+        return s.encode("cp932").decode("cp1252")
+    except UnicodeError as e:
+        raise ValueError(f"CP932→CP1252 に戻せない：{s[:40]!r}") from e
+
+
+def apply_value_fix(rows, files):
+    """FT_VALUEFIX（2026-11-01）：一覧（materials/pool/valuefix_cp1252.jsonl）の表の行の列名・値・兄弟の列を cp932_to_cp1252 で戻す。
+    行の形は load_real と同じ (列名, 値, ラベル, 同じ表の列, 表)。教材庫のファイルは書き換えない。直した行の数を返す。
+    一覧の表の列の数が教材と合わなければ止める（ファイルの取り違え）。"""
+    import json
+    want = {}
+    for fn in files:
+        for line in open(fn, encoding="utf-8"):
+            if line.strip():
+                d = json.loads(line)
+                want[d["table"]] = d["columns"]
+    seen, out = {}, []
+    for r in rows:
+        if r[4] in want:
+            seen[r[4]] = seen.get(r[4], 0) + 1
+            r = (cp932_to_cp1252(r[0]), [cp932_to_cp1252(v) for v in r[1]], r[2], [cp932_to_cp1252(c) for c in (r[3] or [])]) + tuple(r[4:])
+        out.append(r)
+    if seen != want:
+        bad = [t for t in want if seen.get(t, 0) != want[t]][:3]
+        raise SystemExit(f"FT_VALUEFIX：一覧の列の数が教材と合わない {bad}")
+    return out, sum(seen.values())
