@@ -1,6 +1,6 @@
 """D1 の新しい陣（b066〜）の採点できる列を、言語・公開元ごとに数える（2026-10-31 Claude）。
 
-ChatGPT の答え（sheets/answers/）を label_sheets と同じ読み方で列に戻し、S・unknown を除いた列を数える。
+ChatGPT の答え（sheets/answers/。無い陣は Claude の answers_claude/）を label_sheets と同じ読み方で列に戻し、S・unknown を除いた列を数える。
 Claude の裁定の前なので、最後の数ではない（裁定で S・unknown になる列が減らす）。
 
 言語は表ごと（`bench/d1_eval_queue.md` の count_table の決まり）：
@@ -57,7 +57,9 @@ def batch_rows(batch):
     corpus = read_jsonl(w / "corpus.jsonl")
     d = w / "sheets"
     meta = label_sheets.json.loads((d / "groups.json").read_text(encoding="utf-8"))
-    got, problems = label_sheets.read_answers(d, meta["groups"], "chatgpt")
+    # b084 から先はオーナー指示（2026-10-31「あと200列はお前がやってくれ」）で Claude が付ける（answers_claude/）
+    teacher = "chatgpt" if any((d / "answers").glob("sheet_*.tsv")) else "claude"
+    got, problems = label_sheets.read_answers(d, meta["groups"], teacher)
     if problems:
         raise SystemExit(f"{batch}: 答えに問題がある：{problems[:3]}")
     labels = label_sheets.merge(corpus, meta["groups"], got)
@@ -74,6 +76,8 @@ def main(argv=None):
     per_batch, lang, pub, excl = [], Counter(), Counter(), Counter()
     for n in range(a.lo, a.hi + 1):
         b = f"b{n:03d}"
+        if not (work(b) / "corpus.jsonl").exists():
+            continue   # 採用 0 の陣（b082）
         corpus, labels = batch_rows(b)
         tables = defaultdict(list)
         for r, l in zip(corpus, labels):
