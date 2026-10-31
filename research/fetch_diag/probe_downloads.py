@@ -60,13 +60,17 @@ def main():
     for k, items in picked.items():
         for it in items:
             base = BASES[it["host"]]
-            try:
-                with urllib.request.urlopen(urllib.request.Request(base + "resource_show?" + urlencode({"id": it["resource_id"]}),
+            try:   # fetch_rows と同じ：data.gov.uk は resource_show が 403 なので、URL のデータセット名で package_show を読む
+                ds = re.search(r"/dataset/([^/]+)/resource/", it["resource_url"]).group(1)
+                with urllib.request.urlopen(urllib.request.Request(base + "package_show?" + urlencode({"id": ds}),
                                                                    headers=UAS["now"]), timeout=40) as r:
-                    res = json.loads(r.read())["result"]
+                    pkg = json.loads(r.read())["result"]
+                res = next(x for x in pkg["resources"] if x["id"] == it["resource_id"])
                 url = res.get("url") or ""
+                if url.startswith("http://"):
+                    url = "https://" + url[7:]
             except Exception as e:  # noqa: BLE001
-                out.append({"kind": k, "host": it["host"], "error": f"resource_show {type(e).__name__}"})
+                out.append({"kind": k, "host": it["host"], "error": f"package_show {type(e).__name__}: {str(e)[:60]}"})
                 continue
             row = {"kind": k, "catalog": it["host"], "file_host": urlparse(url).hostname, "scheme": urlparse(url).scheme,
                    "format": res.get("format")}
@@ -82,7 +86,9 @@ def main():
         L.append(f"| {r['kind']} | {r.get('catalog', r.get('host'))} | {r.get('scheme', '')}://{r.get('file_host', '')} | {r.get('format', r.get('error', ''))} | "
                  + " | ".join(f"{r[n][0]}→{r[n][1]}" if n in r else "" for n in UAS) + " |")
     agg = collections.Counter((r["kind"], n, str(r[n][0])) for r in out for n in UAS if n in r)
+    hosts = collections.Counter((r["kind"], r.get("file_host")) for r in out if "file_host" in r)
     L += ["", "## まとめ（種類・名乗り・状態 → 数）", ""] + [f"- {k} / {n} / {s}：{c}" for (k, n, s), c in sorted(agg.items())]
+    L += ["", "## ファイルのホスト（種類・ホスト → 数）", ""] + [f"- {k} / {h}：{c}" for (k, h), c in hosts.most_common()]
     open(os.path.join(HERE, "probe.md"), "w").write("\n".join(L) + "\n")
 
 
