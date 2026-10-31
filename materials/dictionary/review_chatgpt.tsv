@@ -1,0 +1,52 @@
+id	判定	理由
+K0001	ok	列名が郵便番号を明示し、住所の意味と値形式も整合。
+K0002	ok	FSAの3文字形式を値で絞っており、Canada Postの郵便区域としてaddressに合う。
+K0003	ok	house/building numberは住所の一部。
+K0004	変える	floor idは識別子の可能性がある。idを外し、階・位置を示す見出しだけに限定。
+K0005	ok	BFSの自治体・区コードは区域を指すid。
+K0006	ok	GEO_CANT等の州コードは区域を指すidで、LABEL_GUIDE B3とも一致。
+K0007	ok	GOR codeは英国の区域識別子。
+K0008	変える	URI/URLの語尾が任意なので通常のOrganisation/Body/Type列までidになる。URI/URL必須＋識別子ホスト/パスを値で限定。
+K0009	変える	URI/URL一般はLABEL_GUIDEでother。公的識別子の既知ドメインかつ/id・/doc等の識別子パスに限定。
+K0010	変える	Cost Centreは数字ならid、名称ならaccount。数値/識別子の値条件を追加。
+K0011	変える	listed_building単独だと建物名も拾う。number/noを必須にし、登録番号の値形式を追加。
+K0012	変える	signaturの部分一致でsignature等を拾う恐れ。請求記号の語を完全な語として限定。
+K0013	ok	method/laboratory/job numberは個別の方法・受付・仕事の参照番号。
+K0014	変える	GTFSで始まる全列は広すぎる。stop/route/trip等の *_id/code/number列に限定。
+K0015	ok	UPRNは個別不動産の一意識別子。
+K0016	変える	先頭/末尾アンカーがなく、別語中のlsoa等まで拾う可能性。GSSコード名として全体一致にする。
+K0017	ok	EGID/EGRID/EWID/EDIDはいずれも連邦の対象物識別子。
+K0018	ok	Companies Houseの登記番号として値形式も限定されている。
+K0019	ok	Charity Commissionの登録番号として特定され、桁数も絞られている。
+K0020	ok	法人番号は法人識別子。13桁条件も適切。
+K0021	変える	団体コードだけでは自治体コードと一般組織コードを区別できない。削るか、5/6桁と自治体文脈を必須に。
+K0022	消す	POIコードはD1のb090決める陣で見た列名から選ばれており、origin=newは不正確。漏洩した例に直結するためD3辞書から除外。
+K0023	ok	DEL/AMEは予算区分で、会計科目そのものではない。categoryに合う。
+K0024	変える	zone_codeは区域の識別子(id)にも種類(category)にもなる。UFZ/FO等の既知の種類コードに値を限定。
+K0025	変える	meaningはA01〜H02だがvaluesはA〜Gのみ。H02を含む値形式に修正。
+K0026	変える	CRS/EPSG列であることを明示する見出しと、座標参照系コード/名称の値条件を付ける。
+K0027	変える	typologieだけでは一般的な型・種類列も拾う。K111等の既知の分類コード形式をvaluesで必須に。
+K0028	ok	年齢階級という限定見出しに加えて、範囲/以上の値形式を確認している。
+K0029	変える	imd_\w*はIMD score等も拾う。decile/quintileだけに限定し、値を1〜10/1〜5に。
+K0030	ok	利用可能曜日は曜日の区分(category)。
+K0031	変える	reporting periodは符号・区分にも使われ得る。P01/Q1/年度等の期間値をvaluesで確認。
+K0032	変える	KWは別分野の略語にもなる。ISO週/週番号の値条件を追加し、根拠のないKWは拾わない。
+K0033	変える	monthは1〜12に限定（現状は0〜99）。月名も扱うなら別途明示。
+K0034	変える	legislaturとmodell_laufは会期・実行期間など意味が広い。日付/年の値形式で絞り、modell_laufは要再確認。
+K0035	変える	営業時間でも説明文混じりはtext（B8）。時刻/時刻範囲だけの値を必須に。
+K0036	ok	開始日・終了日・設置/開設日という明示的な日付見出し。
+K0037	消す	('000)は金額・数量のどちらにも付く。currency語の不在だけではquantityを決められない。
+K0038	ok	kWh/MWh/GJ/重量/データ量はLABEL_GUIDE B1上quantity。
+K0039	変える	正規表現に二つ目の^があり、件数・人数や末尾_anzahlが意図どおり一致しない。アンカーと選択肢を組み直す。
+K0040	変える	quote/quote_は英語では引用・見積にもなる。一般のquote一致を外し、割合語/確立した率名に限定。
+K0041	変える	per capitaは金額/人も含みrateと限らない。per 1,000/100,000などの率表現だけに限定。
+K0042	ok	SMRは標準化死亡比でrate。
+K0043	変える	USD等は通貨コード(category)の場合もあり、通貨表記だけではamountにならない。金額語と併用する条件を追加。
+K0044	変える	beitrag単独は寄稿・会費・保険料など意味が広い。金融文脈の複合語に限定し、無修飾beitragを外す。
+K0045	ok	定員は人数の量(quantity)。
+K0046	変える	verwaltungseinheit/organisationseinheitは内部部署(account)も指し得る。実際に省庁・組織主体と分かる場合だけorgに。
+K0047	変える	Supplier/受注者は個人の場合もある。値または表の文脈で事業体と分かる場合にorgへ限定。
+K0048	ok	市場・警察署・消防署・税務署名は機関名としてorg（LABEL_GUIDEの裁定例）。
+K0049	変える	区分レベル.*は会計科目以外の分類も拾う。B7の根拠がある会計語だけ残す。
+K0050	ok	物理的な住所見出しでaddress。
+K0051	ok	電話/FAX見出しが明示的でphoneに合う。
