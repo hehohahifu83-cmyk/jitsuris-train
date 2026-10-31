@@ -22,9 +22,9 @@
 | b077 | `auto b077 --national --only-national opendata.swiss` | 独・仏（カナダの代わり） | 36 列（独 8）。スイスは語なしでは毎回同じ 433 表の候補で、使い切りに近い |
 | b078 | `auto b078 --national --only-national opendata.swiss --query statistik` | 独（語で別の候補を探す。2026-10-31 05:00） | 182 列 |
 | b079 | `auto b079 --national --only-national data.gov.au --query survey` | 英語（表ごとに数え直すと英語が足りない。2026-10-31 05:50） | 30 列 |
-| b080 | `auto b080 --socrata --query budget` | 英語 | |
-| b081 | `auto b081 --national --only-national data.gov.uk` | 英語（b066 の残り） | |
-| b082 | `auto b082 --ckan --only-host data.boston.gov --query report` | 英語 | |
+| b080 | `auto b080 --socrata --query budget` | 英語 | 27 列 |
+| b081 | `auto b081 --national --only-national data.gov.uk` | 英語（b066 の残り） | 162 列（採点できる 99） |
+| b082 | `auto b082 --ckan --only-host data.boston.gov --query report` | 英語 | 0 表（14 表すべて使用済み） |
 | b083 | `auto b083 --national --only-national data.gov.ie` | 英語 | |
 
 **2026-10-31 05:00 の数（b066〜b077）**：全体 2,376・英語 約 1,415・日本語 約 618・独仏 約 343。独仏を出せる許可済みの公開元はスイスとカナダだけ（`materials/pool/allowed_hosts.json`）。語つきでも足りなければ、独仏の最低を下げるか、新しい公開元（ライセンスの確認から）をオーナーに相談する。
@@ -32,3 +32,5 @@
 言語は `set.json` の language が当てにならない（スイスも en）ので、列名と値の文字で見分けて数える。
 
 **2026-10-31 05:50 の数え直し（表ごとの言語、b066〜b078）**：全体 2,558・英語 937・独仏 891・日本語 730。列ごとの数え方では、スイスの表の英字の列名・数だけの列が英語に入っていた。表ごとの数え方を正とする（`count_table` の決まり：表の中に日本語の文字があれば日本語、ドイツ語・フランス語の語が 3 つ以上なら独仏）。独仏と日本語は最低を超えた。英語は S・不明が抜ける分を見て、あと約 200 列集める。
+
+**2026-10-31 09:50 の数（b066〜b081、ChatGPT の初回ラベルで S・unknown を除く、Claude の裁定前）**：採点できる 2,396（英語 913・日本語 593・独仏 890）。足りないのは全体 104・英語 87。1 公開元の最大は 5.4%（swiss:oevch）。数え方は `bench/d1_counts.py`（表ごとの言語）、結果 `bench/d1_counts_20261031.md`。裁定で減る分を見て、英語をあと約 200 列（採点できる列で）集める。b083 を依頼。
