@@ -33,8 +33,15 @@ JOBS = {1: ("A", 1), 2: ("A", 2), 3: ("V", 1), 4: ("V", 2), 5: ("U", 1), 6: ("U"
 BATCHES = [f"b{n:03d}" for n in range(66, 91) if n != 82]
 
 
-def load_side(side):
+def label_fixes(path):
+    """正解の裁定（research/labels/*/decisions.jsonl）→ {列 id: 新しい正解}。D3 から使う（D1・D2 の数字は直さない）。"""
+    return {d["id"]: d["decision"] for d in map(json.loads, open(path, encoding="utf-8")) if d["decision"] != d["current"]}
+
+
+def load_side(side, fixes=None):
+    """fixes：{列 id: 正解} を渡すと、その列の正解を差し替える（label_fixes の結果）。"""
     split = json.load(open(os.path.join(ROOT, "bench", "d1_split_20261031.json"), encoding="utf-8"))["publishers"]
+    fixes = fixes or {}
     out = {}
     for b in BATCHES:
         w = B.WORK / b
@@ -47,8 +54,8 @@ def load_side(side):
             vals = [str(v) for v in (c.get("row_values") or c["values"]) if str(v).strip() not in B.JUNK] or [str(v) for v in s["values"]]
             cols.append({"batch": b, "i": i, "id": s["id"], "table": c["table"], "header": str(c["header"]),
                          "values5": [str(v) for v in s["values"]], "values": vals, "context": [str(x) for x in s.get("siblings") or []],
-                         "unit": str(s.get("unit") or ""), "language": c.get("language", ""), "truth": l["label"], "adjudicated": True,
-                         "teacher": l["label"],
+                         "unit": str(s.get("unit") or ""), "language": c.get("language", ""), "truth": fixes.get(s["id"], l["label"]), "adjudicated": True,
+                         "teacher": fixes.get(s["id"], l["label"]),
                          "tab": {"rows": c.get("row_values") or c["values"], "row_index": c.get("row_index"), "total": c.get("datastore_total")}})
         if cols:
             out[b] = cols

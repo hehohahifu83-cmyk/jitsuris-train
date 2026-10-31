@@ -1,0 +1,34 @@
+{"id": "b078-0018", "q": "q003", "current": "address", "chatgpt": "id", "decision": "address", "reason": "GPT を採らない。州の略号（SO・AG）は州の名前と同じ扱い（種類の表：都道府県・国コード→address）。B3 の id は BFS の州の番号（GEO_CANT）", "by": "Claude"}
+{"id": "b067-0132", "q": "q010", "current": "address", "chatgpt": "id", "decision": "address", "reason": "同上（CH・BE・UR は国・州の略号）", "by": "Claude"}
+{"id": "b072-0200", "q": "q004", "current": "id", "chatgpt": "category", "decision": "category", "reason": "GPT を採る。建物の種別のコード（兄弟に gebaeudekategorie）。B3：種類を表すコード", "by": "Claude"}
+{"id": "b073-0270", "q": "q008", "current": "id", "chatgpt": "category", "decision": "category", "reason": "GPT を採る。POIコードは施設の種類のコード（自治体標準オープンデータセット）。B3", "by": "Claude"}
+{"id": "b073-0116", "q": "", "current": "id", "chatgpt": null, "decision": "category", "reason": "手順 D：q008 と同じ列名・同じ意味（POIコード）。GPT の独立の答え（q008）と同じ判断を当てる", "by": "Claude"}
+{"id": "b073-0195", "q": "", "current": "id", "chatgpt": null, "decision": "category", "reason": "手順 D：同上", "by": "Claude"}
+{"id": "b076-0091", "q": "q009", "current": "id", "chatgpt": "category", "decision": "category", "reason": "GPT を採る。1〜7 の曜日の番号（兄弟に Wochentag）。種類の表：曜日→category", "by": "Claude"}
+{"id": "b076-0100", "q": "q030", "current": "id", "chatgpt": "category", "decision": "category", "reason": "GPT を採る。同上", "by": "Claude"}
+{"id": "b072-0153", "q": "q022", "current": "date", "chatgpt": "category", "decision": "category", "reason": "GPT を採る。値は指標の名前（Wertschöpfung nominal）。今の date は誤り。B9：指標の名前は category", "by": "Claude"}
+{"id": "b077-0004", "q": "q026", "current": "quantity", "chatgpt": "unknown", "decision": "quantity", "reason": "GPT を採らない。同じ表に PCT_GDE（割合）と RANG_GDE（順位）があり、VALUE は数（BFS の自治体の表）", "by": "Claude"}
+{"id": "b067-0135", "q": "q036", "current": "rate", "chatgpt": "unknown", "decision": "unknown", "reason": "GPT を採る。UNIT_MES が UM_2 と UM_8 の 2 つで、単位の違う値が混ざる（84517.97・-3.17）。v1.3：UNIT で決められない", "by": "Claude"}
+{"id": "b074-0067", "q": "q041", "current": "quantity", "chatgpt": "unknown", "decision": "quantity", "reason": "GPT を採らない。BFS の通勤の表（GEO_CANT_RESID・GEO_CANT_WORK・PERSPECTIVE）で、VALUE は通勤する人の数", "by": "Claude"}
+{"id": "b074-0084", "q": "q102", "current": "quantity", "chatgpt": "unknown", "decision": "quantity", "reason": "同上", "by": "Claude"}
+{"id": "b076-0040", "q": "q059", "current": "quantity", "chatgpt": "unknown", "decision": "unknown", "reason": "GPT を採る。INDICATOR に件数（NB_SAIS）と金額（C_AMOUNT）が混ざり、UNIT_MEA も 1 と 1000", "by": "Claude"}
+{"id": "b067-0127", "q": "q081", "current": "rate", "chatgpt": "unknown", "decision": "rate", "reason": "GPT を採らない。UNIT_MEA がすべて Percent（v1.3）", "by": "Claude"}
+{"id": "b072-0093", "q": "q100", "current": "quantity", "chatgpt": "unknown", "decision": "unknown", "reason": "GPT を採る。UNIT_MES が UM_6 のコードだけで、単位の意味が表から分からない（v2.0：手がかりのない汎用の列名は unknown）", "by": "Claude"}
+{"id": "b081-0131", "q": "q040", "current": "category", "chatgpt": "account", "decision": "account", "reason": "GPT を採る。支出の表の Expenditure Type（Programme・Grant・Admin）は経費の種類。B7", "by": "Claude"}
+{"id": "b081-0118", "q": "q042", "current": "account", "chatgpt": "org", "decision": "org", "reason": "GPT を採る。値が省庁（Ministry of Defence - …）。B2・v1.3", "by": "Claude"}
+{"id": "b076-0075", "q": "q044", "current": "category", "chatgpt": "id", "decision": "id", "reason": "GPT を採る。opentransportdata の sector の designation（A〜E）は停留所の中の区域を見分ける名前（出典 cookbook）。B3", "by": "Claude"}
+{"id": "b076-0067", "q": "q094", "current": "category", "chatgpt": "id", "decision": "id", "reason": "GPT を採る。同上", "by": "Claude"}
+{"id": "b067-0286", "q": "q068", "current": "category", "chatgpt": "address", "decision": "address", "reason": "GPT を採る。駐車場の名前・場所（Parkplatz auf Niveau Talstation・Sandäckerstrasse）。場所は address", "by": "Claude"}
+{"id": "b067-0267", "q": "q070", "current": "category", "chatgpt": "address", "decision": "unknown", "reason": "GPT（address）も今（category）も採らない。窓口の種類（Billettschalter・Guichets）と個々の地点の名前（Fermata Ponte Tresa）が混ざる", "by": "Claude"}
+{"id": "b078-0025", "q": "q074", "current": "org", "chatgpt": "category", "decision": "org", "reason": "GPT を採らない。SVGW はスイスのガス・水道の業界団体で、統計の出典の組織そのもの（B2）", "by": "Claude"}
+{"id": "b076-0043", "q": "q075", "current": "id", "chatgpt": "category", "decision": "id", "reason": "GPT を採らない。言語地域の番号は区域を指すコード（B3：区域のコードは id）", "by": "Claude"}
+{"id": "b088-0017", "q": "q093", "current": "id", "chatgpt": "category", "decision": "id", "reason": "GPT を採らない。N・C・S は公園の地区（区域）を指すコード（B3）", "by": "Claude"}
+{"id": "b067-0383", "q": "q018", "current": "category", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b067-0393", "q": "q088", "current": "category", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b067-0403", "q": "q098", "current": "category", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b072-0314", "q": "q085", "current": "id", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b072-0324", "q": "q049", "current": "id", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b072-0334", "q": "q034", "current": "id", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b074-0279", "q": "q045", "current": "id", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b074-0289", "q": "q014", "current": "id", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
+{"id": "b074-0299", "q": "q080", "current": "id", "chatgpt": "category", "decision": "unknown", "reason": "shortcode（E1・K1・E3）は国・州の案件と投票用紙の順番の組。同じ値が別の案件の表にも出るので個々の案件を指す番号とも言えず、種類だけでもない。B3：どちらか分からなければ unknown（GPT は category、今は id 6・category 3。手順 D で全部そろえる）", "by": "Claude"}
