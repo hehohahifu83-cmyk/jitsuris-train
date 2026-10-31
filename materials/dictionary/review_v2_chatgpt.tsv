@@ -1,0 +1,20 @@
+id	判定	理由
+K1001	変える	Name・Nom・Designationなど一般的な名前欄まで拾い、辞書には表題・周辺文脈が渡らない。施設・地点の名称に絞り、address側に「recreation ground」「car park」を追加する（libraryはorg側でよい）。
+K1002	変える	10xx全体ではなく、現行GWRのGKAT許可値だけに絞る。strong項目なので範囲外値でも上位3にcategoryがあれば確信済み予測を変え得る。
+K1003	変える	80xx全体はGBAUPのコード一覧より広い。現行カタログにある許可値だけに絞る。
+K1004	変える	7[4-6]xxはGWAERZH以外の75xx・76xxまで通す。GWAERZHの許可コードに限定する。
+K1005	変える	GENHの説明は7500–7599だが正規表現は7600–7699も通す。75xxの許可コードに限定する。
+K1006	変える	1000・1009・3000・3009も一致する。GSTAT/WSTATの実在する状態コードだけに絞る。
+K1007	変える	900–999全体でなくGKSCE 901–909に限定する。
+K1008	変える	9900–9909全体でなく、GWRの言語コード9901–9904に限定する。
+K1009	変える	種類語の広い部分一致＋任意の_code/_idは、system_idやowner_id等の実体識別子もcategoryにし得る。強い語と固定のコード体系に絞り、曖昧な語は除外する。
+K1010	ok	NACE/NOGAという明示的な業種分類のコードで、B7の業種categoryと一致する。見出しも限定されている。
+K1011	変える	genericなsector/subsectorとS1で始まる値だけではESA以外も一致する。ESA 2010の制度部門見出しと許可コードに限定する。
+K1012	ok	BFS Bezirksnummerは区域番号で、2–4桁の値条件も意味と合う。
+K1013	変える	shortNumber・numberShort・checkDigitは他分野でも使われる一般語で、値条件もない。transport固有の識別子名を残し、一般語はtransport文脈を示す形に限定する。
+K1014	ok	UIC country codeは国コードであり、LABEL_GUIDE上のaddressと一致する。見出しと2桁の値も限定されている。
+K1015	ok	Anzahl/EINWOHNER等の人数・件数語と数値条件がそろい、quantityに合う。
+K1016	ok	StatCan型の「…, Number」「(count)」と数値条件に限定され、件数quantityとして妥当。
+K1017	ok	診療科名を完全一致し、値も有無の印に限定しているためcategoryに合う。strongの範囲としても妥当。
+K1018	ok	日付を示す見出しとExcel日付番号の範囲を両方確認する。strongではないので高確信予測を上書きしない。
+K1019	変える	末尾の「代」は年代・世代にも一致し得る。amountの料金語を明示するか、年代/世代を除外する条件を加える。
