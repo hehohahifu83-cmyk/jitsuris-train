@@ -10,4 +10,4 @@
   - Home Building Finance Ireland Payments Q1 2020 (g0007–g0009): same type of supplier-payment record and malformed unsafe_ headers; all extracted columns set to S.
 - Structural exclusions:
   - The two HBFI payment tables have no usable column headers in the extracted representation; values mix actual field labels, payment values, supplier names, and notes. This independently supports S for all extracted columns.
-- Candidate excluded before adoption by the title-based personal-record filter (per auto_log): Register of gaming licences, Revenue Commissioners (resource f9923f40-1243-405c-a158-5b0d331ade3d); no columns extracted or labeled.
+- Candidate excluded before adoption by the title-based personal-record filter (per auto_log): Register of gaming licences, Revenue Commissioners (resource f9923f40-1243-405c-a158-bc746ce0c0d0); no columns extracted or labeled.
