@@ -36,6 +36,16 @@ def load(batches):
 
 
 _PCACHE = {}
+_DICT = {}
+
+
+def _dictionary():
+    """辞書（環境変数 JITSURIS_DICT があればそのファイル、無ければ materials/dictionary/terms.jsonl）。"""
+    import table_dictionary as TD
+    path = os.environ.get("JITSURIS_DICT") or str(TD.DEFAULT)
+    if path not in _DICT:
+        _DICT[path] = TD.Dictionary.load(path)
+    return _DICT[path]
 
 
 def probs(b, te, mv, labels, f2):
@@ -69,6 +79,8 @@ def run(data, mv, labels, fixes, per=None):
                     f = base[k]
                 cand = V.candidate(f[0], f[1], c["pred"], c["top3"], c["header"], P[k], labels, A.RHO)
                 lab = cand if cand else f[0]
+                if "K" in fixes:   # 2026-10-31：表の知識の辞書（table_dictionary.py）。迷ったときだけ見る
+                    lab, _ = _dictionary().apply(lab, c["top3"], c["header"], c["values"])
                 final = V.amount_cue_veto(lab, c["header"], c.get("unit"), c["values"])
                 if per is not None:
                     per[c["id"]] = (final, c["truth"], c["header"], f[1] or base[k][1], c["pred"], [str(v) for v in c["values5"][:5]], c.get("unit", ""))
