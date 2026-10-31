@@ -498,9 +498,14 @@ AMOUNT_CUES = ("£", "$", "€", "¥", "￥", "₹", "₩", "r$", "chf", "fr.", 
                "金額", "円", "費", "価格", "料", "額", "予算", "支出", "収入", "税", "単価", "給与", "報酬", "売上")
 
 
+# 2026-10-31：英国の CSV を CP932 で読んだ £（0xA3）は半角の「｣」（NFKC で「」」）になっている（教材庫 114 列・D1 の陣 100 列。
+# research/confirm_why/findings.md）。数字がすぐ後に続くときだけ £ とみなす（日本語のかぎかっこと分けるため）
+MOJIBAKE_POUND = re.compile(r"[｣」]\s?[\d.,]")
+
+
 def has_amount_cue(header, unit, values):
     text = " ".join([str(header or ""), str(unit or "")] + [str(v) for v in (values or [])[:5]]).lower()
-    return any(k in text for k in AMOUNT_CUES)
+    return any(k in text for k in AMOUNT_CUES) or bool(MOJIBAKE_POUND.search(text))
 
 
 def amount_cue_veto(label, header, unit, values):

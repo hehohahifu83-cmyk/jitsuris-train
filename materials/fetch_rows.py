@@ -232,7 +232,11 @@ def _find_header(rows):
     return None
 
 
-def parse_csv(raw, truncated=False, limit=FETCH_LIMIT):
+CP1252_FIRST = ("utf-8-sig", "cp1252", "cp932")
+CP932_FIRST = ("utf-8-sig", "cp932", "cp1252")
+
+
+def parse_csv(raw, truncated=False, limit=FETCH_LIMIT, encodings=CP932_FIRST):
     """CSV のバイト列 → (列名, 行の dict のリスト, 読めた行の数)。読めなければ ValueError。
     文字コードは UTF-8（BOM あり・なし）→ CP932 → CP1252 の順に試す。先頭 30 行の中で、2 つ以上の文字の列名が並び（重複は 1 つ、または 2 割まで。重複には番号を付ける）、
     その次の行からも同じ数の列が続く最初の行を見出しとする（表題・注の前置きの行を飛ばすため）。区切りは自動判定 → カンマ → タブ → セミコロンの順に試す
@@ -240,7 +244,8 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT):
     import csv
     import io
     text = None
-    for enc in ("utf-8-sig", "cp932", "cp1252"):
+    # 2026-10-31：日本語以外の窓口は CP1252 を CP932 より先に試す（英国の £＝0xA3 が CP932 の半角「｣」になっていた。research/confirm_why/findings.md）
+    for enc in encodings:
         try:
             text = raw.decode(enc)
             break
@@ -437,6 +442,7 @@ def fetch_table(item, known):
             download = "https://" + download[len("http://"):]
         REDIRECT_DOMAINS.clear()
         REDIRECT_DOMAINS.update(csv_domains(host))
+        enc_order = CP932_FIRST if language_of(host, plat) == "ja" else CP1252_FIRST
         meta = {"platform": plat, "resource_id": rid, "publisher_id": item["publisher_id"], "resource_url": item["resource_url"],
                 "download_url": download, "license": lic, "fetched_utc": now,
                 "source_prefix": "jp3" if plat == "bodik" else "world", "language": language_of(host, plat)}
@@ -457,7 +463,7 @@ def fetch_table(item, known):
                     dump = base.replace("/api/3/action/", f"/datastore/dump/{rid}")
                     try:
                         raw, truncated = http_bytes(dump, "datastore_dump")
-                        fields, records, total = parse_csv(raw, truncated)
+                        fields, records, total = parse_csv(raw, truncated, encodings=enc_order)
                     except (RuntimeError, ValueError) as exc2:
                         if not (sheet_kind(res.get("format"), download) and urlparse(download).scheme == "https"
                                 and host_in(urlparse(download).hostname or "", csv_domains(host))):
@@ -482,7 +488,7 @@ def fetch_table(item, known):
         if str(res.get("format") or "").lower() not in ("csv", "text/csv") and not download.lower().split("?")[0].endswith(".csv"):
             raise ValueError(f"csv: not a CSV resource ({res.get('format')})")
         raw, truncated = http_bytes(download, "csv")
-        fields, records, total = parse_csv(raw, truncated)
+        fields, records, total = parse_csv(raw, truncated, encodings=enc_order)
         meta["access"] = "csv"
         return meta, fields, records, total
     if plat == "socrata":

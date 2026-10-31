@@ -339,3 +339,19 @@ class OpendataSwissLicenseTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EncodingOrderTests(unittest.TestCase):
+    """2026-10-31：英国の CP1252 の £ が CP932 の「｣」にならないこと。"""
+
+    def test_cp1252_first_keeps_pound(self):
+        raw = "Item,Cost\nA,£100\nB,£250\nC,£30\nD,£5\n".encode("cp1252")
+        f, r, n = F.parse_csv(raw, encodings=F.CP1252_FIRST)
+        self.assertEqual(r[0]["Cost"], "£100")
+        f, r, n = F.parse_csv(raw)                      # 前の順（CP932 が先）では化ける
+        self.assertEqual(r[0]["Cost"], "｣100")
+
+    def test_japanese_still_cp932_first(self):
+        raw = "地区,人口\n東,10\n西,20\n南,30\n北,40\n".encode("cp932")
+        f, r, n = F.parse_csv(raw, encodings=F.CP932_FIRST)
+        self.assertEqual(f, ["地区", "人口"])

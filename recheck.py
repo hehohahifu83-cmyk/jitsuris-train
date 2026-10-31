@@ -125,7 +125,7 @@ def check_assert(pred, top3, values, header, unit="", t_low=0.0, siblings=None):
     if pred == "amount" and _BAND.search(_norm(header)) and re.search(r"円|\$|€|£|income|万", _norm(header), re.I):
         return "unknown", "money_band_header"
     if pred == "amount" and siblings is not None and "amount" not in cues and \
-            not any("amount" in cue_types(sb) for sb in siblings) and not re.search(r"円|\$|€|£|R\$", " ".join(vals)):
+            not any("amount" in cue_types(sb) for sb in siblings) and not re.search(r"円|\$|€|£|R\$|[｣」]\s?[\d.,]", " ".join(vals)):
         return "unknown", "amount_without_cue"
     if pred == "rate" and "rate" not in cues and not any(("%" in v or "％" in v) for v in vals) and \
             any(_as_float(v) is not None and abs(_as_float(v)) > 1 for v in vals):
