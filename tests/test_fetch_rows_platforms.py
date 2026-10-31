@@ -169,6 +169,87 @@ class CkanDatastoreFallbackTests(unittest.TestCase):
             F.fetch_table(self.item, set())
 
 
+def make_xlsx(rows):
+    """試験用の最小の xlsx（共有文字列と数）。"""
+    import io
+    import zipfile
+    shared, cells_xml = [], []
+    for i, row in enumerate(rows, 1):
+        cs = []
+        for j, v in enumerate(row):
+            ref = chr(65 + j) + str(i)
+            if isinstance(v, (int, float)):
+                cs.append(f'<c r="{ref}"><v>{v}</v></c>')
+            else:
+                shared.append(v)
+                cs.append(f'<c r="{ref}" t="s"><v>{len(shared) - 1}</v></c>')
+        cells_xml.append(f'<row r="{i}">{"".join(cs)}</row>')
+    m = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    r = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("xl/workbook.xml", f'<workbook xmlns="{m}" xmlns:r="{r}"><sheets><sheet name="S" sheetId="1" r:id="rId1"/></sheets></workbook>')
+        z.writestr("xl/_rels/workbook.xml.rels", '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                   '<Relationship Id="rId1" Target="worksheets/sheet1.xml"/></Relationships>')
+        z.writestr("xl/sharedStrings.xml", f'<sst xmlns="{m}">' + "".join(f"<si><t>{x}</t></si>" for x in shared) + "</sst>")
+        z.writestr("xl/worksheets/sheet1.xml", f'<worksheet xmlns="{m}"><sheetData>{"".join(cells_xml)}</sheetData></worksheet>')
+    return buf.getvalue()
+
+
+class SpreadsheetTests(unittest.TestCase):
+    """2026-10-31：data.gov.uk の XLS・XLSX（D1 で約 120 表落ちた）を最初のシートで読む。"""
+    RID = "5c3531f1-5e8a-4db1-9a83-af463020ded5"
+
+    def test_sheet_kind(self):
+        self.assertEqual(F.sheet_kind("XLSX", "https://x.gov.uk/a"), "xlsx")
+        self.assertEqual(F.sheet_kind("", "https://x.gov.uk/a.xls?dl=1"), "xls")
+        self.assertIsNone(F.sheet_kind("CSV", "https://x.gov.uk/a.csv"))
+        self.assertIsNone(F.sheet_kind("", "https://x.gov.uk/data"))
+
+    def test_parse_xlsx_skips_title_rows(self):
+        raw = make_xlsx([["Spend over 25k"], [], ["Date", "Supplier", "Amount"], ["2011-03-01", "Acme Ltd", 120.0], ["2011-03-02", "Beta plc", 99.5],
+                         ["2011-03-03", "Gamma", 7.0]])
+        fields, recs, n = F.parse_sheet(raw, "xlsx")
+        self.assertEqual(fields, ["Date", "Supplier", "Amount"])
+        self.assertEqual(recs[0], {"Date": "2011-03-01", "Supplier": "Acme Ltd", "Amount": "120"})
+        self.assertEqual(n, 3)
+
+    def test_bad_xlsx_is_value_error(self):
+        with self.assertRaisesRegex(ValueError, "xlsx: not a zip"):
+            F.parse_sheet(b"not a zip", "xlsx")
+
+    def test_datastore_403_then_xlsx_on_gov_uk(self):
+        orig = (F.http_json, F.http_bytes)
+        hosts, redir = set(F.ALLOWED_HOSTS), set(F.REDIRECT_DOMAINS)
+        raw = make_xlsx([["Year", "Count"], [2020, 5], [2021, 7]])
+        def fake_json(url, step="", tries=3):
+            if "resource_show" in url:
+                return {"result": {"package_id": "p1", "url": "https://assets.publishing.service.gov.uk/a.xlsx", "format": "XLSX", "datastore_active": True}}
+            if "package_show" in url:
+                return {"result": {"license_id": "uk-ogl"}}
+            raise RuntimeError("datastore_search: HTTP 403")
+        def fake_bytes(url, step="", tries=3, limit=0):
+            if "datastore/dump" in url:
+                raise RuntimeError("datastore_dump: HTTP 404")
+            return raw, False
+        F.http_json, F.http_bytes = fake_json, fake_bytes
+        try:
+            item = {"n": 1, "publisher_id": "datagov_uk:x", "resource_url": f"https://data.gov.uk/dataset/x/resource/{self.RID}", "platform": "ckan", "host": "data.gov.uk"}
+            meta, fields, recs, total = F.fetch_table(item, set())
+        finally:
+            F.http_json, F.http_bytes = orig
+            F.ALLOWED_HOSTS.clear(); F.ALLOWED_HOSTS.update(hosts)
+            F.REDIRECT_DOMAINS.clear(); F.REDIRECT_DOMAINS.update(redir)
+        self.assertEqual(fields, ["Year", "Count"])
+        self.assertEqual(meta["access"], "xlsx")
+        self.assertEqual(recs[1], {"Year": "2021", "Count": "7"})
+
+    def test_canada_files_on_government_domains(self):
+        self.assertTrue(P.host_in("www150.statcan.gc.ca", P.csv_domains("open.canada.ca")))
+        self.assertTrue(P.host_in("www.canada.ca", P.csv_domains("open.canada.ca")))
+        self.assertFalse(P.host_in("gc.ca.example.com", P.csv_domains("open.canada.ca")))
+
+
 class CkanResourceShowForbiddenTests(unittest.TestCase):
     """data.gov.uk：resource_show だけが HTTP 403 のとき、URL のデータセット名の package_show から資料を探す（2026-10-28）。"""
     RID = "5c3531f1-5e8a-4db1-9a83-af463020ded5"

@@ -178,7 +178,7 @@ def http_json(url, step="", tries=3):
         try:
             with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60) as resp:
                 if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
-                    raise ValueError("redirected outside the allowed hosts")
+                    raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
         except HTTPError as exc:
             if exc.code in (403, 429) or exc.code >= 500:
@@ -203,7 +203,7 @@ def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
         try:
             with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=90) as resp:
                 if not _redirect_ok(resp.geturl()):
-                    raise ValueError("redirected outside the allowed hosts")
+                    raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 raw = resp.read(limit + 1)
                 return raw[:limit], len(raw) > limit
         except HTTPError as exc:
@@ -289,6 +289,97 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT):
     return fields, records, len(records)
 
 
+SHEET_MAX_BYTES = 15_000_000   # 表計算のファイルは途中で切ると読めないので、全体を読む（15MB まで）
+
+
+def sheet_kind(fmt, url):
+    """表計算のファイルの種類（xlsx・xls）か None。カタログの形式と URL の拡張子で見る。"""
+    f = str(fmt or "").lower().strip(". ")
+    ext = url.lower().split("?")[0].rsplit(".", 1)[-1] if "." in url.lower().split("?")[0].rsplit("/", 1)[-1] else ""
+    if f in ("xlsx", "ms-excel xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") or ext == "xlsx":
+        return "xlsx"
+    if f in ("xls", "ms-excel", "application/vnd.ms-excel") or ext == "xls":
+        return "xls"
+    return None
+
+
+def _xlsx_rows(raw, max_rows=FETCH_LIMIT + 40):
+    """xlsx の最初のシート → 行（文字列のリスト）のリスト。標準の道具（zipfile・xml）だけで読む。"""
+    import io
+    import zipfile
+    import xml.etree.ElementTree as ET
+    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+          "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships"}
+    try:
+        z = zipfile.ZipFile(io.BytesIO(raw))
+    except zipfile.BadZipFile:
+        raise ValueError("xlsx: not a zip file") from None
+    shared = []
+    if "xl/sharedStrings.xml" in z.namelist():
+        for si in ET.fromstring(z.read("xl/sharedStrings.xml")).findall("m:si", ns):
+            shared.append("".join(t.text or "" for t in si.iter(f"{{{ns['m']}}}t")))
+    wb = ET.fromstring(z.read("xl/workbook.xml"))
+    first = wb.find("m:sheets/m:sheet", ns)
+    if first is None:
+        raise ValueError("xlsx: no sheet")
+    rid = first.get(f"{{{ns['r']}}}id")
+    rels = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
+    target = next((r.get("Target") for r in rels if r.get("Id") == rid), "worksheets/sheet1.xml")
+    path = target.lstrip("/") if target.startswith("/") else "xl/" + target
+    rows = []
+    for row in ET.fromstring(z.read(path)).iter(f"{{{ns['m']}}}row"):
+        cells = {}
+        for c in row.findall("m:c", ns):
+            ref = re.match(r"([A-Z]+)", c.get("r", "A"))
+            col = 0
+            for ch in ref.group(1) if ref else "A":
+                col = col * 26 + ord(ch) - 64
+            t, v = c.get("t"), c.find("m:v", ns)
+            if t == "s" and v is not None:
+                val = shared[int(v.text)]
+            elif t == "inlineStr":
+                val = "".join(x.text or "" for x in c.iter(f"{{{ns['m']}}}t"))
+            else:
+                val = v.text if v is not None and v.text is not None else ""
+                if re.fullmatch(r"-?\d+\.0", val):
+                    val = val[:-2]
+            cells[col - 1] = val
+        rows.append([cells.get(i, "") for i in range(max(cells) + 1)] if cells else [])
+        if len(rows) >= max_rows:
+            break
+    return rows
+
+
+def _xls_rows(raw, max_rows=FETCH_LIMIT + 40):
+    """xls（古い形式）の最初のシート → 行のリスト（xlrd を使う。無ければ ValueError）。"""
+    try:
+        import xlrd
+    except ImportError:
+        raise ValueError("xls: xlrd is not installed") from None
+    try:
+        sh = xlrd.open_workbook(file_contents=raw).sheet_by_index(0)
+    except Exception as exc:
+        raise ValueError(f"xls: {str(exc)[:60]}") from None
+    out = []
+    for i in range(min(sh.nrows, max_rows)):
+        row = []
+        for v in sh.row_values(i):
+            v = "" if v is None else str(v)
+            row.append(v[:-2] if re.fullmatch(r"-?\d+\.0", v) else v)
+        out.append(row)
+    return out
+
+
+def parse_sheet(raw, kind, limit=FETCH_LIMIT):
+    """表計算のファイル → parse_csv と同じ (列名, 行, 行の数)。最初のシートを CSV に直して同じ見出しの探し方を使う。"""
+    import csv
+    import io
+    rows = _xlsx_rows(raw) if kind == "xlsx" else _xls_rows(raw)
+    buf = io.StringIO()
+    csv.writer(buf).writerows(rows)
+    return parse_csv(buf.getvalue().encode("utf-8"), False, limit)
+
+
 def language_of(host, plat):
     host = host or ""
     if plat == "bodik" or host.endswith(".jp"):
@@ -368,14 +459,26 @@ def fetch_table(item, known):
                         raw, truncated = http_bytes(dump, "datastore_dump")
                         fields, records, total = parse_csv(raw, truncated)
                     except (RuntimeError, ValueError) as exc2:
-                        raise RuntimeError(f"{exc}; dump: {exc2}; file: {res.get('format')} on {urlparse(download).hostname}") from None
-                    meta["access"] = "datastore_dump"
-                    return meta, fields, records, total
+                        if not (sheet_kind(res.get("format"), download) and urlparse(download).scheme == "https"
+                                and host_in(urlparse(download).hostname or "", csv_domains(host))):
+                            raise RuntimeError(f"{exc}; dump: {exc2}; file: {res.get('format')} on {urlparse(download).hostname}") from None
+                        meta["dump_failed"] = str(exc2)[:80]
+                    else:
+                        meta["access"] = "datastore_dump"
+                        return meta, fields, records, total
         # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
         dl_host = urlparse(download).hostname or ""
         if urlparse(download).scheme != "https" or not host_in(dl_host, csv_domains(host)):
             raise ValueError("csv: download is not on the catalog host or its organization's domain")
         ALLOWED_HOSTS.add(dl_host)
+        kind = sheet_kind(res.get("format"), download)
+        if kind:   # 2026-10-31：表計算のファイル（D1 で data.gov.uk の XLS が約 120 表落ちた。research/next_sets_plan.md）
+            raw, truncated = http_bytes(download, kind, limit=SHEET_MAX_BYTES)
+            if truncated:
+                raise ValueError(f"{kind}: file larger than {SHEET_MAX_BYTES} bytes")
+            fields, records, total = parse_sheet(raw, kind)
+            meta["access"] = kind
+            return meta, fields, records, total
         if str(res.get("format") or "").lower() not in ("csv", "text/csv") and not download.lower().split("?")[0].endswith(".csv"):
             raise ValueError(f"csv: not a CSV resource ({res.get('format')})")
         raw, truncated = http_bytes(download, "csv")

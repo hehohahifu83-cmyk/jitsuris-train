@@ -26,6 +26,8 @@ jobs:
         with: { ref: main }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+      - name: 表計算のファイルの道具（xls、2026-10-31）
+        run: python -m pip install 'xlrd==2.0.1'
       - name: 試験
         run: |
           python -m unittest tests.test_pool_discover tests.test_pipeline
