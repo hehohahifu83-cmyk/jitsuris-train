@@ -23,3 +23,11 @@
 - Table-level structural exclusions (all relevant groups S): **BEIS Government Major Projects Portfolio data** (g0012–g0020), **DFID Annual Report and Accounts 2012-13** (g0033–g0037), **Government major projects portfolio data for DfT** (g0043–g0052), and **Government major projects data for the Foreign and Commonwealth Office** (g0070–g0075). Their sheet headers are project identifiers/names or numeric headings while example values mix dates, money, statuses, organizations, and narrative, so they do not provide stable field columns.
 - In **Northern Ireland Office (NIO): Workforce Management Information: October 2021**, g0100–g0101 are S because examples mix measure labels/grade labels with counts. g0103 and the repeated paybill groups g0088–g0090 are unknown where the examples mix monetary values, explanatory text, or counts under the same grouping; g0104 is text.
 - First-pass totals: 56 raw columns S, 7 unknown, and 62 scorable columns (before Claude adjudication). These are table-language counts pending adjudication.
+
+## Claude の裁定（2026-10-31、ChatGPT と Claude の独立ラベルの食い違い 30 グループ）
+- 一致 88/118 グループ。
+- 上級職員の出張の表（g0026–g0032・g0061–g0069・g0092–g0095）：**ChatGPT が正しい**（LABEL_GUIDE 120 行で全列 S）。Claude はこの決まりを見落としていた。
+- 年度の列（g0038–g0042）：表は DFID の GPEX（開発への公的支出、千ポンド）→ **amount**（ChatGPT）。Claude は表の題名を見ずに unknown にしていた。
+- g0088（Delegated grades only）：説明の行が 1 つ混ざるが残りは £ の金額 → **amount**（Claude）。
+- g0089・g0090・g0103・g0104：値がほぼ見出しの説明だけ → **S**（どちらにしても採点しない）。
+- 数は `d1_counts.py` の決まりどおり ChatGPT の答えで数える（g0088 の 2 列の差は裁定の段で直す）。
