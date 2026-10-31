@@ -1,6 +1,8 @@
 """在庫（b091〜）を公開元の単位で E1・E2・E3 に分ける（2026-11-01 Claude。ラベル・予測の前に決めて固定する）。
 ChatGPT（2026-11-01）：「14陣を開く前に、表・公開元を単位としてE1–E3の割当を固定し、同じ表・公開元を別セットへ分けないで」。
-規則：sha256("jitsuris-reserve-v1|" + 公開元) を 3 で割った余り 0→E1、1→E2、2→E3。ラベルも列の値も読まない（公開元・言語・列の数だけ）。
+規則：sha256("jitsuris-reserve-v1|" + 公開元) を 2 で割った余り 0→E1、1→E2。
+2026-11-01 変更（割り当てを書く前・ラベルと予測の前）：2 回の収集で 3,191 列しか集まらず、計画の 3 陣 × 2,500 列に届かない。
+計画の決まり 5（足りなければ足りないと書き、小さい陣を足して追いかけない）に従い、3 陣ではなく 2 陣（各 約 1,600 列。D1 の陣と同じくらい）にした。ラベルも列の値も読まない（公開元・言語・列の数だけ）。
   python bench/reserve_split.py split        → bench/reserve_split_20261101.json（一度書いたら上書きしない）
   python bench/reserve_split.py make E1 materials/pool/work/e1   → set.json・titles.json・sources.json
 """
@@ -19,7 +21,8 @@ SALT = "jitsuris-reserve-v1|"
 
 
 def batches():
-    req = [l.split()[0] for l in open(ROOT / "materials" / "pool" / "auto_multi.request", encoding="utf-8")][1:]
+    lines = [l.split()[0] for l in open(ROOT / "materials" / "pool" / "auto_multi.request", encoding="utf-8") if l.strip()]
+    req = lines[1:] if lines and lines[0] != "done" else []   # 走っている収集の陣だけ外す（done なら全部済み）
     return [f"b{n:03d}" for n in range(91, 200) if (WORK / f"b{n:03d}" / "corpus.jsonl").exists() and f"b{n:03d}" not in req]
 
 
@@ -28,7 +31,7 @@ def read_jsonl(p):
 
 
 def side_of(pub):
-    return "E" + str(int(hashlib.sha256((SALT + pub).encode("utf-8")).hexdigest(), 16) % 3 + 1)
+    return "E" + str(int(hashlib.sha256((SALT + pub).encode("utf-8")).hexdigest(), 16) % 2 + 1)
 
 
 def split():
@@ -41,10 +44,10 @@ def split():
             p = r.get("publisher") or r.get("source", "?")
             pubs[p] = side_of(p)
             count[(pubs[p], r.get("language", "?"))] += 1
-    doc = {"rule": "sha256('jitsuris-reserve-v1|' + publisher) % 3: 0 E1, 1 E2, 2 E3", "batches": bs, "publishers": dict(sorted(pubs.items())),
+    doc = {"rule": "sha256('jitsuris-reserve-v1|' + publisher) % 2: 0 E1, 1 E2", "batches": bs, "publishers": dict(sorted(pubs.items())),
            "columns": {f"{s}/{lang}": n for (s, lang), n in sorted(count.items())}}
     SPLIT.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    for s in ("E1", "E2", "E3"):
+    for s in ("E1", "E2"):
         print(s, sum(n for (x, _), n in count.items() if x == s), {lang: n for (x, lang), n in count.items() if x == s})
 
 
