@@ -69,3 +69,20 @@ def test_vote_only_address_side():
     d = TD.Dictionary([e])
     assert d.lookup("名称", ["舞浜公園", "東野公園", "日の出広場"]) == [("address", "V1")]
     assert d.lookup("名称", ["真岡小学校", "亀山小学校", "市立図書館"]) == []
+
+
+def test_frozen_v2_review_fixes():
+    """ChatGPT の見直し（2026-11-01）を入れた凍結版：許可値だけ・一般語は外す。"""
+    import os
+    d = TD.Dictionary.load(os.path.join(os.path.dirname(TD.__file__), "materials", "dictionary", "frozen_v2.jsonl"))
+    assert d.lookup("gkat", ["1020", "1060"]) == [("category", "K1002")]
+    assert d.lookup("gkat", ["1050", "1099"]) == []                       # GKAT に無いコード
+    assert d.lookup("gstat", ["1004", "1007"]) == [("category", "K1006")]
+    assert d.lookup("gstat", ["1000", "1009"]) == []
+    assert d.lookup("start_id", ["1", "2"]) == []                          # 「art」の部分一致は当てない
+    assert d.lookup("世代", ["1", "2"]) == [] and d.lookup("土産品代", ["100"]) == [("amount", "K1019")]
+    assert d.lookup("numbershort", ["12", "13"]) == []                     # 一般語は外した
+    assert d.lookup("country_code", ["353", "081"]) == []                  # 電話の国番号と取り違えない
+    assert d.lookup("country_code", ["jp", "us"]) == [("address", "KC1004")]
+    assert d.lookup("name", ["中央公園", "西公園"]) == []                    # 一般の名前の列は見ない
+    assert d.lookup("Less than $5,000, Number", ["120", "45"]) == [("quantity", "K1016")]
