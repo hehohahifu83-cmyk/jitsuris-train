@@ -355,3 +355,12 @@ class EncodingOrderTests(unittest.TestCase):
         raw = "地区,人口\n東,10\n西,20\n南,30\n北,40\n".encode("cp932")
         f, r, n = F.parse_csv(raw, encodings=F.CP932_FIRST)
         self.assertEqual(f, ["地区", "人口"])
+
+
+class Utf16Tests(unittest.TestCase):
+    def test_utf16_bom_csv(self):
+        import fetch_rows as FR
+        raw = "Name,Amount\nA,£1\nB,£2\nC,£3\n".encode("utf-16")
+        fields, records, total = FR.parse_csv(raw, encodings=FR.CP1252_FIRST)
+        self.assertEqual(fields[:2], ["Name", "Amount"])
+        self.assertEqual(records[0]["Amount"], "£1")

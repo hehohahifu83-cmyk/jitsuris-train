@@ -244,6 +244,12 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT, encodings=CP932_FIRST):
     import csv
     import io
     text = None
+    if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):   # 2026-11-01：UTF-16（BOM つき）。在庫の収集で「文字コード不明」が 20 表
+        try:
+            text = raw[: len(raw) - (len(raw) % 2) - (2 if truncated else 0)].decode("utf-16")
+        except UnicodeDecodeError:
+            text = None
+        encodings = () if text is not None else encodings
     # 2026-10-31：日本語以外の窓口は CP1252 を CP932 より先に試す（英国の £＝0xA3 が CP932 の半角「｣」になっていた。research/confirm_why/findings.md）
     for enc in encodings:
         try:
