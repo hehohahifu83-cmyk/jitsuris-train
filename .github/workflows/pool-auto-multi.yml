@@ -1,0 +1,181 @@
+name: 教材を自動で集める（複数の陣をまとめて：候補は並行 → 採用・取り出しは順に）
+
+# 2026-10-31 Claude（オーナー「次の陣を集めるための策を考えろ、このままでは何日もかかる」、research/next_sets_plan.md の策 2）。
+# materials/pool/auto_multi.request の形：
+#   1 行目 multi
+#   2 行目から 1 行 1 陣：<陣> <pool_discover.py の探し方>   例：b091 --national --only-national opendata.swiss
+# 候補集め（メタデータだけ、遅い所）は陣ごとに並行。採用は書いた順に 1 陣ずつ（前の陣の adopted.json を「もう使った表」に数えるので、
+# 表の重なりと 1 陣 3 表の上限は 1 陣ずつの時と同じ）。採用の規則は pipeline.py adopt のまま。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "materials/pool/auto_multi.request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pool-auto
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.p.outputs.matrix }}
+      go: ${{ steps.p.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - id: p
+        run: |
+          set -eu
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, re
+          lines = [l.strip() for l in open("materials/pool/auto_multi.request", encoding="utf-8") if l.strip()]
+          if not lines or lines[0] != "multi":
+              print("go=false"); print("matrix=[]"); raise SystemExit(0)
+          items, seen = [], set()
+          for l in lines[1:]:
+              b, _, opts = l.partition(" ")
+              if not re.fullmatch(r"b\d{3}", b):
+                  raise SystemExit(f"陣の名前が違う：{b}")
+              if b in seen or os.path.exists(f"materials/pool/batch_{b}.jsonl") or os.path.exists(f"materials/pool/work/{b}/adopted.json"):
+                  raise SystemExit(f"{b} は重なっているか、もう使った番号")
+              seen.add(b)
+              items.append({"batch": b, "opts": opts.strip()})
+          if not 1 <= len(items) <= 20:
+              raise SystemExit("1 回の依頼は 1〜20 陣")
+          print("go=true"); print("matrix=" + json.dumps(items, ensure_ascii=False))
+          PY
+
+  discover:
+    needs: plan
+    if: needs.plan.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        item: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 候補を集める（メタデータだけ）
+        timeout-minutes: 100
+        run: |
+          set -eu
+          b="${{ matrix.item.batch }}"
+          python -I materials/pool_discover.py --out "candidates_${b}_auto.json" --budget-minutes 90 ${{ matrix.item.opts }} | tail -3 > "discover_${b}.log"
+          cat "discover_${b}.log"
+          cp independent_eval/allocation.json "alloc_${b}.json"   # 国のポータルの組織の登録（決まりで決まる）を、まとめる側に渡す
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cand-${{ matrix.item.batch }}
+          path: |
+            candidates_${{ matrix.item.batch }}_auto.json
+            discover_${{ matrix.item.batch }}.log
+            alloc_${{ matrix.item.batch }}.json
+          retention-days: 7
+
+  build:
+    needs: [plan, discover]
+    if: always() && needs.plan.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 試験
+        run: |
+          python -m unittest tests.test_pool_discover tests.test_pipeline
+          python -I materials/fetch_rows.py --self-test
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cand-*
+          merge-multiple: true
+          path: /tmp/cands
+      - name: 公開元の割り当てをまとめる（候補集めで足された組織）
+        run: |
+          set -eu
+          python3 - <<'PY'
+          import glob, json
+          p = "independent_eval/allocation.json"
+          base = json.load(open(p, encoding="utf-8"))
+          have = {x["publisher_id"]: x for x in base["publishers"]}
+          added = 0
+          for f in sorted(glob.glob("/tmp/cands/alloc_*.json")):
+              doc = json.load(open(f, encoding="utf-8"))
+              for k, v in (doc.get("aliases") or {}).items():
+                  if base.setdefault("aliases", {}).get(k, v) != v:
+                      raise SystemExit(f"別名が食い違う：{k}")
+                  base["aliases"][k] = v
+              for x in doc["publishers"]:
+                  old = have.get(x["publisher_id"])
+                  if old is None:
+                      base["publishers"].append(x); have[x["publisher_id"]] = x; added += 1
+                  elif old.get("pool") != x.get("pool"):
+                      raise SystemExit(f"割り当てが食い違う：{x['publisher_id']}")
+          open(p, "w", encoding="utf-8").write(json.dumps(base, ensure_ascii=False, indent=2) + "\n")
+          print("足した公開元", added)
+          PY
+      - name: 採用・取り出し・シート（書いた順に 1 陣ずつ）
+        env:
+          MATRIX: ${{ needs.plan.outputs.matrix }}
+        run: |
+          set -eu
+          python3 - <<'PY'
+          import json, os, shutil, subprocess, glob
+          items = json.loads(os.environ["MATRIX"])
+          summary = []
+          for it in items:
+              b, opts = it["batch"], it["opts"]
+              d = f"materials/pool/work/{b}"
+              os.makedirs(d, exist_ok=True)
+              log = open(f"{d}/auto_log.md", "w", encoding="utf-8")
+              log.write(f"- 依頼：`auto {b} {opts}`（まとめての依頼 auto_multi.request）\n")
+              src = f"/tmp/cands/candidates_{b}_auto.json"
+              if not os.path.exists(src):
+                  log.write("- 候補集めが失敗した（この陣は飛ばした）\n"); log.close(); summary.append((b, "候補なし", 0)); continue
+              if os.path.exists(f"/tmp/cands/discover_{b}.log"):
+                  log.write(open(f"/tmp/cands/discover_{b}.log", encoding="utf-8").read())
+              shutil.copy(src, f"materials/pool/candidates_{b}_auto.json")
+              out = subprocess.run(["python", "-I", "materials/pipeline.py", "adopt", "--batch", b, "--candidates", f"materials/pool/candidates_{b}_auto.json"],
+                                   capture_output=True, text=True)
+              log.write("".join(out.stdout.splitlines(True)[-5:]))
+              if out.returncode != 0:
+                  log.write(f"- 採用が失敗：{out.stderr[-500:]}\n"); log.close(); summary.append((b, "採用の失敗", 0)); continue
+              n = len(json.load(open(f"{d}/adopted.json")).get("adopted", []))
+              log.write(f"- 採用した表：{n}\n")
+              if n == 0:
+                  log.close(); summary.append((b, "採用 0", 0)); continue
+              for cmd in (["python", "-I", "materials/fetch_rows.py", "--adopted", f"{d}/adopted.json", "--out", f"{d}/corpus.jsonl", "--log", f"{d}/corpus_log.json"],
+                          ["python", "-I", "materials/corpus_to_set.py", f"{d}/corpus.jsonl", f"{d}/set.json", b],
+                          ["python", "-I", "materials/label_sheets.py", "make", "--batch", b]):
+                  subprocess.run(cmd, check=True)
+              rows = [json.loads(l) for l in open(f"{d}/corpus.jsonl", encoding="utf-8")]
+              log.write(f"- 取り出した列：{len(rows)}（表 {len({r['table'] for r in rows})}）\n")
+              log.write(f"- ラベル用シート：{len(glob.glob(f'{d}/sheets/sheet_*.md'))} 枚（{d}/sheets/）\n")
+              log.close(); summary.append((b, "済", len(rows)))
+          with open("materials/pool/auto_multi_log.md", "w", encoding="utf-8") as f:
+              f.write("| 陣 | 結果 | 列 |\n|---|---|---:|\n" + "".join(f"| {b} | {r} | {n} |\n" for b, r, n in summary))
+          print(open("materials/pool/auto_multi_log.md", encoding="utf-8").read())
+          PY
+      - name: 保存
+        if: always()
+        run: |
+          { echo "done"; tail -n +2 materials/pool/auto_multi.request; } > /tmp/req && mv /tmp/req materials/pool/auto_multi.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A materials/pool/candidates_*_auto.json materials/pool/auto_multi.request materials/pool/auto_multi_log.md materials/pool/work independent_eval/allocation.json
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "教材をまとめて自動で集めた（$(tail -n +2 materials/pool/auto_multi.request | cut -d' ' -f1 | tr '\n' ' ')）"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
