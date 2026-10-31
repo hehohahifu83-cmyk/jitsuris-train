@@ -27,7 +27,8 @@
 | b082 | `auto b082 --ckan --only-host data.boston.gov --query report` | 英語 | 0 表（14 表すべて使用済み） |
 | b083 | `auto b083 --national --only-national data.gov.ie` | 英語 | 11 列、採点候補 5（ChatGPT ラベル済み）; 1 採用表は取り出し404、HBFI 2表は全列 S |
 | b084 | `auto b084 --national --only-national data.gov.uk` | 英語（残りの公開元を検索、採点候補を約200列補う） | 12 列（表 3、全部採点できる。Claude ラベル）。採用 134 表の大半は許可外ホスト・403 で取り出せず |
-| b085 | `auto b085 --national --only-national data.gov.uk --query spend` | 英語（語で別の候補。支出の公開 CSV は gov.uk 上に置かれることが多い） | |
+| b085 | `auto b085 --national --only-national data.gov.uk --query spend` | 英語（語で別の候補。支出の公開 CSV は gov.uk 上に置かれることが多い） | 125 列（表 18、採点できる 82。Claude ラベル。S 38・unknown 5） |
+| b086 | `auto b086 --national --only-national data.gov.uk --query expenses` | 英語（英語がちょうど 1,000 で余裕がない。裁定で減る分を見て、あと約 120 列） | |
 
 **2026-10-31 05:00 の数（b066〜b077）**：全体 2,376・英語 約 1,415・日本語 約 618・独仏 約 343。独仏を出せる許可済みの公開元はスイスとカナダだけ（`materials/pool/allowed_hosts.json`）。語つきでも足りなければ、独仏の最低を下げるか、新しい公開元（ライセンスの確認から）をオーナーに相談する。
 
@@ -40,3 +41,5 @@
 **2026-10-31 10:35 の暫定数（b066〜b083、ChatGPT 初回ラベルで S・unknown を除く、Claude 裁定前）**：2,401（英語 918・日本語 593・独仏 890）。b083 は英語 5 列。残りは全体 99・英語 82（裁定後の最低に対する余裕を考え、英語を約200列集める）。最大公開元は既報の swiss:oevch 130 列（全体の約5.4%）。
 
 **2026-10-31 13:10 の暫定数（b066〜b084、b083 まで ChatGPT 初回ラベル・b084 から Claude ラベル、S・unknown を除く、裁定前）**：2,413（英語 930・日本語 593・独仏 890）。残りは全体 87・英語 70。b084 は data.gov.uk の語なしで 12 列だけ（候補の多くが使用済みか許可外ホスト）。b085 は語 spend で別の候補を探す。
+
+**2026-10-31 15:00 の暫定数（b066〜b085、b084 から Claude ラベル、S・unknown を除く、裁定前）**：2,483（英語 1,000・日本語 593・独仏 890）。残りは全体 17・英語 0。ただし英語は余裕がないので、b086 で語 expenses を探す。
