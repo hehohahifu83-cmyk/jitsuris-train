@@ -1,3 +1,23 @@
+# 2026-11-01 09:30 JST — Claude：在庫を 2 陣に固定・Claude のラベル済み・£ の学び直し済み
+
+- £ の学び直し（オーナー了承「そうしろ」、`bench/valuefix_prereg_20261101.md`）：
+  - 元のファイルとの照合 228/228 一致（`research/valuefix/verify.md`）。
+  - L′ 3 本を学習済み（Kaggle、回収 run 41226755937）。
+  - 予測の手順 `lv`・`d2e` で manifest の FT_VALUEFIX・種子を照合する（まだ予測していない）。
+- 在庫の収集 2 回：
+  - 1 回目 b091〜b104 2,186 列、2 回目 b105〜b111 1,005 列。
+  - 英国の 403・405 は直せない（`research/fetch_diag/findings.md`）。直せたのは公的なドメイン、カナダの置き場所、UTF-16、ZIP・HTML を止めること。
+- 3 陣分に足りないので 2 陣に分けて固定した（`bench/reserve_split_20261101.json`、E1 1,559 列・E2 1,632 列、ラベル・予測の前）。決まりの最低（全体・独仏）は満たさない。
+- Claude のラベル：34 枚・2,713 グループを付けた。
+  - SHA だけを `research/labels/reserve_20261101/claude_answers_sha256.json` に固定した。
+  - 中身はこの環境の scratchpad の lab/*.tsv にあり、ChatGPT の答えのあとで置く。環境が消えたら付け直しになる。
+- ChatGPT に同じシートのラベルを依頼済み（ai-bridge `messages/20261101-0830_…reserve-labels.md`）。
+- 次：
+  1. ChatGPT の答え → 食い違いの裁定
+  2. E1 の set を作る（`python bench/reserve_split.py make E1 materials/pool/work/e1`）
+  3. 事前記録に E1 を追記
+  4. 予測（d2e・lv）と測り
+
 # 2026-11-01 03:00 JST — Claude：辞書 v2 を凍結
 
 - ChatGPT の見直し 12 件をすべて直し、KC1001〜KC1008 を採った（KC1004 は値の 3 桁の数字を外した）。凍結版 `materials/dictionary/frozen_v2.jsonl`（98 項目、SHA-256 0e1c07f5…bedcc34）、裁定 `materials/dictionary/review_v2_adjudication.md`、commit 62a23f1。
