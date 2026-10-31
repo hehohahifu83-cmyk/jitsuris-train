@@ -1,3 +1,28 @@
+# 2026-10-31 19:36 JST — ChatGPT：D1固定5集合全件監査・D2実行中
+
+## 確認済み
+- D1 run `41044484754` はCOMPLETE。評価artifact `12977736831`（307ファイル）とモデルartifact `12977252205`（約5.28 GB）を別々に確認した。A・V・U各2 seed、各142,117行、学習ループ1640.9〜1706.9秒、最大GPUメモリ5.46〜5.48 GiB。
+- 許可された固定5集合（dev220・general・business・business2・japan_procurement）の6仕事×5集合×5条件＝150予測ファイルを全件再集計し、対応する150 error JSONと件数一致を確認した。問題出力3,187件、241固有ケース、重大231出力。225ケースは2仕事以上、195ケースは6仕事すべてで再発した。
+- 固定5集合のA比正解率差は全条件で1.5ポイント未満。ftはA 96.44%、V 96.25%（-0.19pt）、U 96.34%（-0.09pt）。blend50は-0.02/-0.09、blend60は-0.16/-0.28、blend70は-0.25/-0.28、sparseは+0.09/+0.00ptで、すべて差なし。固定5集合はD1採否に使っていない。
+- 問題出力の機構内訳は、raw誤りを言い切り1,357、other誤受理379、raw誤りをguardがunknownへ退避650、raw正解をguardがunknownへ変更801。decision_reasonはnone 1,736、probability_below_threshold 659、date_value_evidence_low 274、other_class 233、numeric_top2_too_close 195、numeric_values_not_parseable 90。
+- 新しい決める陣ではA正87.11%・unknown 7.48%・重大5、V正87.73%・unknown 6.86%・重大6、U正87.19%・unknown 7.19%・重大8。V/Uは事前規則を満たさず不採用、土台はA。
+- 確認された原因は、V/Uが実際に入力を変えた採点列が各16列でseed間36列の揺れに埋もれたこと、A最終問題の多くでraw top1正解を後処理がwrong/unknownへ変えたこと、種類コード160教材列がB3定義と食い違い全てidだったこと。D2はこのラベル原因だけを変える一要因実験。
+- D2 run `41192849082` は2026-10-31 19:27 JST開始で現在in_progress。依頼はe5-base、A seed3とFT_LABELFIX seed1/2/3の4仕事で、`kaggle/kaggle.request`は実行中コマンドのまま（doneではない）。依頼の書換え・再投入はしていない。
+- 全件監査は `cpu_lab/reports/eval-audit-run-41044484754.md` に保存した。比較目標は表の列種類判定でChatGPT・Claudeと同一課題の同等以上を実証し実用化すること。Geminiは除外。
+- blind_set*、セット3・5・7は閲覧・利用していない。
+
+## 未確認・原因仮説
+- D2の成功、4仕事の完了、成果物、性能は未確認。B3修正がid→category誤りを減らす期待はあるが、実測前には断定しない。
+- 個別ケースの多くは繰返し再現したが、近傍教材ID、実際のtoken切詰め、兄弟列・UNIT・題名の寄与がartifactにないため、各ケースの直接因果は未確定。
+- `kaggle/STATUS.md`はD1 COMPLETE/request doneを示す一方、実際のActionsとrequestはD2実行中で、状態表示に更新遅延がある。
+
+## 未完了
+1. D2を中断せず完了を待ち、評価artifactとモデルartifactを別々に回収する。
+2. 事前登録済みの決める陣でA seed3とL seed1〜3を比較し、3-seed平均・同一列差の90%区間・重大非増加で採否を決める。確かめる陣は使わない。
+3. D2の固定5集合も全ファイルとerror JSONを照合し、誤り・重大・unknownを全件監査する。
+4. raw、guard、題名、UNIT、兄弟列、token長・切詰め、近傍教材IDを行別に保存する診断拡張は未完了。
+5. ラベル疑義は先生2人の独立確認と根拠裁定まで変更しない。一度に一要因の規則を維持する。
+
 # 2026-10-31 23:50 JST — Claude：D1 が伸びなかった原因を特定 → D2 を依頼
 
 - 原因（`research/d1_why/findings.md`）：C1 V・U が当たる列が 16 列ずつで、学習のゆれ（種子の間で 36 列）に埋もれた。C2 本体が正しいのに見張りで不明（約 3.8 ポイント）。C3 教材のラベルが B3（種類のコードは category）と食い違い、教材庫の種類のコードの列 160 列が全部 id（id→category の誤り 23 列）。
