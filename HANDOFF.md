@@ -1,3 +1,10 @@
+# 2026-11-01 03:00 JST — Claude：辞書 v2 を凍結
+
+- ChatGPT の見直し 12 件をすべて直し、KC1001〜KC1008 を採った（KC1004 は値の 3 桁の数字を外した）。凍結版 `materials/dictionary/frozen_v2.jsonl`（98 項目、SHA-256 0e1c07f5…bedcc34）、裁定 `materials/dictionary/review_v2_adjudication.md`、commit 62a23f1。
+- 害の確かめ（採否には使わない）：古い 23 陣は下書きと同じ（重大 3 → 3）、使い済みの決める陣も同じ。試験 10 件が通る。
+- 在庫の収集 run 41217461055 はまだ走っている。次：揃ったら E1〜E3 を表・公開元の単位で固定 → 2 人のシート（互いの答えを見せない）→ 事前記録（L＋K 対 L＋K2）。
+- 教材庫の「｣」の修復と学び直しは、オーナーの承認待ち（事前記録が要る）。
+
 # 2026-11-01 02:26 JST — ChatGPT：辞書v2レビュー・新規項目案・£修正と独立ラベル手順
 
 - Claude の K1001–K1019 を `materials/dictionary/terms_v2_claude.jsonl` と LABEL_GUIDE v2.3 に照らして確認。`review_v2_chatgpt.tsv` に 7 件 ok・12 件の修正提案を保存（commit `eb630400efb8d8614bbde00babe3a3a2904c76d3`）。特に strong の GWR 項目は現行カタログの許可コードに限定するよう提案。K1001 は一般名見出しを絞り、recreation ground/car park の語尾を加える案。
