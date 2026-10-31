@@ -1,3 +1,11 @@
+# 2026-10-31 22:55 JST — Claude：辞書（K）と値の引き直し（T）を合わせて試す D3 を準備
+
+- オーナー指示：表に特化した知識の辞書を Claude と ChatGPT で作り、迷ったら参照。ChatGPT の作業のあと、さっきの作業と合わせてテスト。中身は過去の教材・試験で知識で分かったはずの分＋新しい知識。
+- 辞書の仕組み：`table_dictionary.py`（ファイルを読むだけ、AI なし）、eval_fixes の K。Claude の 51 項目 `materials/dictionary/terms.jsonl`。ChatGPT に、その見直しと自分の分（固定 5 集合の誤り＋ほかの地域の標準）を依頼（ai-bridge `messages/20261031-2241_…`）。
+- 列名の同じ列の裁定（`research/labels/consistency_20261031/decisions.jsonl`）：ChatGPT 106 列の独立回答と食い違う 29 列＋手順 D。変更 25 列。D3 から正解に入れる（`d1_eval.load_side(side, fixes)`）。
+- 値の引き直し T：`evaluate_independent.py predict --tta 4`。予測の依頼済み（d3tta、L 3 本）。
+- 事前記録 `bench/d3_prereg_20261031.md`、判定の道具 `research/d3_eval.py`（評価の前に push）。決める陣は探索の扱い。辞書の凍結（SHA を事前記録に書く）の前に K を評価しない。確かめる陣をいつ測るかはオーナーに確かめる。
+
 # 2026-10-31 22:19 JST — ChatGPT：106列の独立回答・C2／値引き直しのレビュー
 
 - LABEL_GUIDE v2.3 と consistency sheet の列名・値・兄弟列・表URLだけを使い、独立回答106列を `research/labels/consistency_20261031/answers_chatgpt.tsv` に保存（jitsuris-train main commit `211cac351c019071ff357d2683581ad9c177c0a6`）。Claudeの差異照合・裁定待ち。
