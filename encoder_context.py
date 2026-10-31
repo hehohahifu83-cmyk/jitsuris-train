@@ -181,3 +181,25 @@ def mask_headers(rows, fraction, salt="jitsuris-hmask-v1"):
             row = (HEADER_MASK_TOKEN,) + tuple(row[1:])
         out.append(row)
     return out
+
+
+def apply_label_fix(rows, files):
+    """FT_LABELFIX（2026-10-31、D2）：(表, 列名) が決めたことの change の行と合う教材の行のラベルを付け直す。行の形は load_real と同じ
+    (列名, 値, ラベル, 同じ表の列, 表)。付け直した行の数を返す。1 行も合わなければ止める（ファイルの取り違え）。"""
+    import json
+    fix = {}
+    for fn in files:
+        for line in open(fn, encoding="utf-8"):
+            d = json.loads(line)
+            if d.get("decision") == "change":
+                fix[(d["table"], str(d["header"]).strip())] = (d["from"], d["label"])
+    out, n = [], 0
+    for r in rows:
+        f = fix.get((r[4], str(r[0]).strip()))
+        if f and r[2] == f[0]:
+            r = (r[0], r[1], f[1]) + tuple(r[3:])
+            n += 1
+        out.append(r)
+    if fix and n == 0:
+        raise SystemExit(f"FT_LABELFIX：{files} のどの行も教材と合わない")
+    return out, n

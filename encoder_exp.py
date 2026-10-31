@@ -55,6 +55,12 @@ if POOL or POOL_VALONLY:
     pool_all = load_rows_valsel(tuple(_pool_files)) if os.environ.get("FT_VALSEL") == "1" else load_real(tuple(_pool_files))
     if not pool_all:
         raise SystemExit("FT_POOL=1 なのに教材庫の行が 0")
+    # FT_LABELFIX=materials/pool/labelfix_v24.jsonl（2026-10-31、D2）：教材庫のラベルを、決めたこと（decision が change の行）の表・列名で付け直す。
+    # 教材庫のファイルは書き換えない（付け直しの有無を 1 つの要因として比べるため）。research/d1_why/findings.md 原因 C3
+    if os.environ.get("FT_LABELFIX"):
+        from encoder_context import apply_label_fix
+        pool_all, _nfix = apply_label_fix(pool_all, os.environ["FT_LABELFIX"].split(","))
+        print(f"FT_LABELFIX={os.environ['FT_LABELFIX']}: relabeled {_nfix} pool rows", flush=True)
 pooltr, poolval = pool_all, []
 # 教材庫の検証は様式（同じ見出しの組の表）ごとに分ける（2026-10-24。表ごとだと同じ様式の表が学習側にも残り、検証が高く出る）。
 # 学習側は 1 様式 FT_POOL_FAMILY_CAP 表まで（既定 4、0 で上限なし）。どちらも pool_families.py。教材庫はこれより前に学習していない
