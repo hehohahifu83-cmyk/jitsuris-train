@@ -9,3 +9,8 @@
   - Department・Division（HHS・POL・MC311）→ account（部署）。Model#（X1 YOGA）→ product（型）。
   - CITY_BLDG_（395327.0・0.0）：金額か面積か番号か表から分からない → unknown。
   - Item（234758）→ id（物品の番号）。Unit Of Measure（BTL）→ category。
+
+## Claude の裁定（2026-10-31、ChatGPT の答えと比べて）
+- 一致 23/29 グループ。ChatGPT は Claude の notes の抜粋を先に見たと申告している（ai-bridge 20261031-1655）ので、厳密な独立ではない。
+- g0013 CITY_BLDG_：**unknown**（Claude。番号か量か表から決められない）。g0017 REGION（S・N）：**id**（Claude。区域を指す記号）。g0018 Department：**account**（Claude。部署）。
+- g0023 CPU（3200、クロック）：**other**（Claude。測定値）。g0024 Memory・g0025 HDD/SSD（MB の容量）：**quantity**（ChatGPT。kg と同じ「量」）。
