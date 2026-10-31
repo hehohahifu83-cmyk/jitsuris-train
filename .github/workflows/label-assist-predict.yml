@@ -64,6 +64,10 @@ jobs:
             # out は出力のフォルダ。各重みの SHA-256 は manifest と照合して weights_sha256.json に残す。題名はそのフォルダの titles.json
             case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
             run_id=41044484754; want=manifest; label="D1 の 6 本"; njobs=6; tag=d1
+          elif [ "$model" = "d1a" ]; then
+            # 2026-10-31：確かめる陣の A 種子 1・2（D1 run 41044484754 の ft_out_job1・2）。事前記録 bench/confirm_prereg_20261031.md。
+            case "$out_path" in materials/pool/work/d1conf) ;; *) echo "出力の場所が違う"; exit 1;; esac
+            run_id=41044484754; want=manifest; label="確かめる陣の A 種子 1・2"; njobs=2; tag=d1a
           elif [ "$model" = "d2" ]; then
             # 2026-10-31：D2 の 4 本（run 41192849082、ft_out_job1〜4＝A 種子3、L 種子1・2・3）。事前記録 bench/d2_prereg_20261031.md。
             case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
@@ -119,6 +123,10 @@ jobs:
               for j in range(2, 5):
                   if not out[f"job{j}"]["FT_LABELFIX"] or str(out[f"job{j}"]["seed"]) != str(j - 1):
                       raise SystemExit(f"job{j}: settings do not match bench/d3_prereg_20261031.md")
+          if tag == "d1a":
+              for j in (1, 2):
+                  if out[f"job{j}"]["FT_VALSEL"] or out[f"job{j}"]["FT_UNITX"] or out[f"job{j}"]["FT_LABELFIX"] or str(out[f"job{j}"]["seed"]) != str(j):
+                      raise SystemExit(f"job{j}: settings do not match bench/confirm_prereg_20261031.md")
           if tag == "d2":
               want_fix = {1: False, 2: True, 3: True, 4: True}
               want_seed = {1: 3, 2: 1, 3: 2, 4: 3}
