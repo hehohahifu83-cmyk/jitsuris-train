@@ -112,7 +112,9 @@ def cmd_make(a):
 # 先生ごとの答えの置き場と、まとめたラベルのファイル（2026-10-28 Claude。Grok を 2 人目の先生に足した）。
 # 2 人は相手の答えの置き場を見ない（独立に付ける）
 TEACHERS = {"chatgpt": ("answers", "labels_chatgpt.jsonl", "ChatGPT"), "grok": ("answers_grok", "labels_grok.jsonl", "Grok"),
-            "claude": ("answers_claude", "labels_claude.jsonl", "Claude")}
+            "claude": ("answers_claude", "labels_claude.jsonl", "Claude"),
+            # 裁定のあとの正解（2026-10-31。D1 の確かめで Claude が全グループを見直した陣）
+            "final": ("answers_final", "labels_final.jsonl", "Claude-adjudicated")}
 
 
 def read_answers(d, groups, teacher="chatgpt"):
