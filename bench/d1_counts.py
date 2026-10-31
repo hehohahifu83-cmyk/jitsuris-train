@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT / "materials"))
 import label_sheets  # noqa: E402
 from pipeline import NOT_USED, read_jsonl, work  # noqa: E402
 
-MIN = {"all": 2500, "en": 1000, "ja": 500, "defr": 500}
+MIN = {"all": 2500, "en": 800, "ja": 500, "defr": 500}   # en は 2026-10-31 オーナー判断で 1,000 → 800（事前記録の追記）
 SHARE = 0.30
 JA_RE = re.compile(r"[぀-ヿ一-鿿]")
 WORD_RE = re.compile(r"[a-zäöüßàâçéèêëîïôûùœ]+")
