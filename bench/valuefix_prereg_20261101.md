@@ -47,3 +47,19 @@
 ## 関門の結果（2026-11-01、学習の前。`research/valuefix/verify.md`）
 - 43 表すべて取れた。照合した文字列 228 のうち 228 が、CP1252 のバイトのまま元のファイルにあった。UTF-8 として読めるファイルは 0。
 - 決まりを満たしたので、上の依頼のとおり学習を依頼した。
+
+## E1 の作り方と正解（2026-11-01、予測の前に追記）
+- 在庫は 2 回の収集で 3,191 列しか集まらず、3 陣にできなかった。2 陣（E1・E2）に分けた。割り当ては公開元の単位で、ラベル・予測の前に固定した（`bench/reserve_split_20261101.json`、d179233）。
+- E1：
+  - 1,559 列（18 陣）。セットは `python bench/reserve_split.py make E1 materials/pool/work/e1`。
+  - 採点できる列 1,215（英語 608・日本語 402・独仏 205）。
+  - 決まりの最低（全体 2,500・独仏 500）は満たさない。
+- 正解：
+  - Claude と ChatGPT が独立に全部の列を付けた。Claude の答えは SHA を先に固定した（f3afc2b）。
+  - 一致は 86.3%（2,341 / 2,713 グループ）。食い違い 372 を Claude が LABEL_GUIDE v2.3 で裁定した。
+    - Claude の答え 314、ChatGPT の答え 41、別の種類 17。
+    - 記録は `research/labels/reserve_20261101/adjudicate.py`・`decisions.jsonl`。
+  - 各陣の `answers_final` を正解とする。
+- 道具：`research/reserve_eval.py E1`（予測の前に push）。
+- 予測：label-assist-predict の `d2e`（L 3 本）と `lv`（L′ 3 本）。出力は materials/pool/work/e1。
+- E2 は予測しない（次の 1 回のためにとっておく）。
