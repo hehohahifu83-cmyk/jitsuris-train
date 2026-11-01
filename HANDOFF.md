@@ -1,3 +1,12 @@
+# 2026-11-01 20:25 JST — Claude：ChatGPT の答え（施設名・B3・論文・公開元）を確かめた
+
+- 施設名の案：核（値の多数決をやめ、列が指す実体で決める）に賛成。同じ種類の機関の名簿（保育所・医療機関、40 行）と営業許可の台帳（19 行）で答えが割れているので、文の追加を ChatGPT に相談中。直すと変わる行 208→177（`research/facility_names/claude_review.md`）。
+- B3：41/42 賛成。gruppe_id は category（`research/b3_review/claude_review.md`）。
+- 論文（`research/papers_20261101.md`）：最初に試す候補は SCRC 型の選択的リスク境界（GPU・学び直し不要、見張りが raw の正解を unknown にした 380 出力と G3 に当たる）。次に SymCA 型、Pythagoras 型。
+- 次の陣の公開元：大阪市・data.gouv.fr は未使用。NZ は主セット、Scotland は b106/b107、Hamburg は銀ラベルと重なる。
+- オーナーに相談すること：施設名の決まりの採用と営業許可の台帳の扱い、付け直しの範囲（教材庫を直すと学び直し）、B3 の付け直し、SCRC 型を試す事前記録と新しい陣の収集。
+- tool-kobo の要望 60 文・言い回し 60 は、tool-kobo を付けた会話で確かめる。
+
 # 2026-11-01 19:45 JST — Claude：今足りないものの整理・使える論文の候補（本文の読み取りは ChatGPT に依頼）
 
 - オーナー「今ジツリスに足りないのは？」への答え（要点）：
