@@ -1,0 +1,29 @@
+name: ジツリスの道具の試験（Python と JS の一致）
+on:
+  push:
+    paths:
+      - 'jtools/**'
+      - 'tests/test_jtools.py'
+      - '.github/workflows/jtools-tests.yml'
+permissions:
+  contents: read
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Python の試験
+        run: python -m unittest discover -s tests -p 'test_jtools.py' -v
+      - name: 正解のデータが今のコードと同じか
+        run: |
+          python jtools/make_fixtures.py
+          git diff --exit-code jtools/fixtures.json
+      - name: JS 版が Python と同じ結果か
+        run: node --test jtools/parity.test.mjs
