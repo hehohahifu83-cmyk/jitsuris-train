@@ -1,3 +1,13 @@
+# 2026-11-01 20:30 JST — Claude：H は見送り、ほかの誤りへ（オーナー「2番」）。ChatGPT に雑事を引き継ぎ
+
+- ChatGPT への引き継ぎ（Claude の利用制限の間）：ai-bridge `messages/20261101-1915_claude-to-chatgpt_handoff-while-limited.md`。
+  - 施設の名称の新しい決まりの案（`research/facility_names/rule_proposal.md`）と、その決まりでの答え（`research/facility_names/sheet.tsv` 386 行）
+  - 古い陣の種類のコードの見直し案（`research/b3_review/sheet.tsv` 42 行）
+  - ジツリスへの客の要望の見本文 60（tool-kobo ブランチの `jitsuris/requests_chatgpt.json`）、返事の言い回しの見直し（`jitsuris/talk_review.tsv`）
+  - 次の評価の陣の公開元の候補（任意）
+- 直し I1（金額の小数の規則が千の区切りを小数点と読み違える不具合、`research/h_why/findings_i.md`）：使い済みの陣で害なし、各 +3。次の新しい陣でまとめて測る。
+- Claude が戻ったら：ChatGPT の答えを読む → 施設の名称の決まりの変更で変わる列を数える → オーナーに相談。
+
 # 2026-11-01 20:00 JST — Claude：直し H の E3 での 1 回だけの測り＝確かめられなかった（採らない）
 
 - E3（949 列、92% が E1・E2 と同じ公開元の別の表）。P 87.53% → P＋H 87.81%（+0.28）、重大 0 → 0、90% 区間 +0.00〜+0.68。決まり 1・4 を満たさない。

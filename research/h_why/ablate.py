@@ -9,7 +9,7 @@ for p in (os.path.join(ROOT, "research"), os.path.join(ROOT, "research", "fixes"
     sys.path.insert(0, p)
 import reserve_eval as R, d1_eval as D, eval_fixes as EF  # noqa: E402
 J3 = ["pred_d2_job2.json", "pred_d2_job3.json", "pred_d2_job4.json"]
-CONFIGS = [("P", ()), ("P＋H1", ("H1",)), ("P＋H2", ("H2",)), ("P＋H", ("H1", "H2"))]
+CONFIGS = [("P", ()), ("P＋I1", ("I1",))] if os.environ.get("ABLATE") == "I" else [("P", ()), ("P＋H1", ("H1",)), ("P＋H2", ("H2",)), ("P＋H", ("H1", "H2"))]
 
 
 def main():
@@ -43,13 +43,13 @@ def main():
             print(sname, name, tot, flush=True)
             if ref is None:
                 ref = per
-            elif name == "P＋H":
+            elif name in ("P＋H", "P＋I1"):
                 changed = [(i, k, ref[i][k][0], p[k][0], p[k][1], p[k][2]) for i, p in enumerate(per) for k in p if p[k][0] != ref[i][k][0]]
         good = [x for x in changed if x[3] == x[4]]; bad = [x for x in changed if x[3] != x[4]]
         L += ["", f"P＋H が変えた出力：{len(changed)}（当たりに {len(good)}、それ以外に {len(bad)}）", ""]
         L += [f"- 悪く・外れのまま：本{i+1} {k} [{str(h)[:40]}] 正解 {t}：{a} → {b}" for i, k, a, b, t, h in bad]
         L += [f"- 当たり：本{i+1} {k} [{str(h)[:40]}] {a} → {b}" for i, k, a, b, t, h in good[:60]] + [""]
-    open(os.path.join(HERE, "ablate.md"), "w", encoding="utf-8").write("\n".join(L) + "\n")
+    open(os.path.join(HERE, "ablate_i.md" if os.environ.get("ABLATE") == "I" else "ablate.md"), "w", encoding="utf-8").write("\n".join(L) + "\n")
 
 
 if __name__ == "__main__":
