@@ -1358,3 +1358,13 @@
 2026-10-31T20:59:32Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
 2026-11-01T00:00:28Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
 2026-11-01T05:55:06Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
+2026-11-01T12:41:58Z 状態確認（定期）：Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/bin/kaggle", line 3, in <module>
+    from kaggle.cli import main
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/kaggle/__init__.py", line 3, in <module>
+    from kaggle.api.kaggle_api_extended import KaggleApi
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/kaggle/api/kaggle_api_extended.py", line 266, in <module>
+    from ..models.upload_file import UploadFile
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/kaggle/models/upload_file.py", line 22, in <module>
+    import six
+ModuleNotFoundError: No module named 'six'
