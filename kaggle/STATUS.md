@@ -1,10 +1,10 @@
 # 最新の学習・結果回収状況
 
-- GitHub Actions run: [41307700746](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/41307700746)
-- 確認更新時刻 (UTC): 2026-11-01T12:41:58+00:00
+- GitHub Actions run: [41335051290](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/41335051290)
+- 確認更新時刻 (UTC): 2026-11-01T18:08:54+00:00
 - 依頼ファイル: `done`
 - Kaggle学習状態: 最新の Kaggle 状態記録なし（done だけでは完了と判定しない）
-- Kaggle状態の最終観測時刻 (UTC): 2026-11-01T12:41:58Z
+- Kaggle状態の最終観測時刻 (UTC): 2026-11-01T18:08:54Z
 - Kaggle状態の根拠ログ: `Traceback (most recent call last): File "/opt/hostedtoolcache/Python/3.12.15/x64/bin/kaggle", line 3, in <module> from kaggle.cli import main File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/kaggle/__init__.py", line 3, in <module> from kaggle.api.kaggle_api_extended import KaggleApi File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/kaggle/api/kaggle_api_extended.py", line 266, in <module> from ..models.upload_file import UploadFile File "/opt/h`
 - 学習依頼ID: `2026-10-31T17:56:36Z`
 - Kaggleでの開始を観測した時刻 (UTC): 未観測
