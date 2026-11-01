@@ -18,6 +18,7 @@ import recheck as R  # noqa: E402
 import research.unknown.audit as A  # noqa: E402
 import fixes as FX
 import fixes_h as FH  # noqa: E402
+import fixes_i as FI  # noqa: E402
 
 V, E = A.V, A.E
 DECIDE = ("b015", "b016", "b017", "b060", "b062", "b063", "b064", "b065")
@@ -65,7 +66,7 @@ def run(data, mv, labels, fixes, per=None):
     """直し fixes を入れた製品の形の最終の答え。採点の範囲（正解が unknown・S・other・person の列は数えない）で (n, 正しい, 不明, 重大, ほかの誤り)。
     per に dict を渡すと、列ごとの (最終の答え, 正解, 列名, 理由) を入れる。"""
     n = ok = unk = crit = wrong = 0
-    with FX.use(fixes):
+    with FX.use(fixes), FI.use(fixes):   # 2026-11-01：直し I（research/fixes/fixes_i.py）
         for b, te0 in data.items():
             te = FX.fix_guard(FX.prepare(te0, fixes), fixes)
             P = probs(b, te, mv, labels, "F2" in fixes)
