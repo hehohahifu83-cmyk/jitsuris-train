@@ -1,3 +1,12 @@
+# 2026-11-01 16:50 JST — Claude：直し H の事前記録（オーナー「いいぞ」）
+
+- 事前記録 `bench/hfix_prereg_20261101.md`（fixes_h.py SHA ba932293…）。E3＝b112〜b123 から前の陣に出た表を外したもの（`bench/e3_split.py`）。
+- 測りの道具 `research/hfix_eval.py`（予測の前に push 済み）。
+- 次（収集 run 41282225631 が終わったら）：
+  1. `python bench/e3_split.py split` → 割り当てを固定して push
+  2. 2 人のラベル（Claude・ChatGPT 独立）→ 裁定 → answers_final
+  3. `python bench/e3_split.py make materials/pool/work/e3` → 予測 d2e → `python research/hfix_eval.py`
+
 # 2026-11-01 16:30 JST — Claude：直し G のあとに残る誤りの調べ・直し H の候補
 
 - 新しい評価の陣の収集（b112〜b123、run 41282225631）は実行中。揃うまでのあいだに調べた。
