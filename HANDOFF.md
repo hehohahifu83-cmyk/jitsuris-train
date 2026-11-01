@@ -1,3 +1,11 @@
+# 2026-11-01 20:45 JST — Claude：LABEL_GUIDE v2.4（施設の名称）を決めた（オーナー「より効果的な方を選べ」）
+
+- 決めたこと・理由：`research/facility_names/decision.md`。施設の名称は列が指す実体で決める（B10）。同じ種類の機関の名簿・営業許可の台帳の店名は org。B3 は ChatGPT の答え（gruppe_id だけ category）。
+- 最終の答え：`research/facility_names/final.tsv`（今と違う 182 行）、`research/b3_review/final.tsv`（32 行）。
+- 付け直しの範囲：教材庫を付け直す（効くのは学ぶ側）。使い済みの評価の陣は v2.4 版を別に持ち、古い版は消さない。
+- 次：①教材庫の施設の名称の列と B3 の列を拾って v2.4 で付け直し（先生 2 人 → 裁定）②評価の陣の v2.4 版 ③学び直しは事前記録・見積りのあと新しい陣で 1 回 ④並べて SCRC 型の不明の決め方の事前記録。
+- 試験：unittest 439 件で failures 4・errors 17 は、この変更の前の commit でも同じ（この環境に無い依存のため）。
+
 # 2026-11-01 20:25 JST — Claude：ChatGPT の答え（施設名・B3・論文・公開元）を確かめた
 
 - 施設名の案：核（値の多数決をやめ、列が指す実体で決める）に賛成。同じ種類の機関の名簿（保育所・医療機関、40 行）と営業許可の台帳（19 行）で答えが割れているので、文の追加を ChatGPT に相談中。直すと変わる行 208→177（`research/facility_names/claude_review.md`）。
