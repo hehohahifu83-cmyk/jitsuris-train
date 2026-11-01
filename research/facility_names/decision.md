@@ -21,3 +21,14 @@
 2. 評価の陣（D1・E1/E2・E3）の v2.4 版の正解を別のファイルで作る（古い版は消さない）。
 3. 学び直し（教材の付け直しを 1 要因として）は、事前記録・本数×時間の見積りのあと、新しい陣で 1 回だけ測る。
 4. それと並べて、SCRC 型の不明の決め方の事前記録（学び直し不要）。
+
+## 実行（2026-11-01 Claude、オーナー「やれ」）
+- `build_fixes.py` で付け直しのファイルを作った（教材庫・評価の陣のファイルは書き換えない）：
+  - `materials/pool/labelfix_g24_b3.jsonl`：B3 の 13 行（42 行のうち 19 行は D2 の labelfix_v24 で直し済み、b062#170 は id→account）。
+  - `materials/pool/labelfix_g24_sheet.jsonl`：施設の名称 386 行のうち教材庫の 123 行。
+  - `research/labels/facility_v24/eval_decisions.jsonl`：評価の陣の v2.4 版の正解 95 列（同じ表の読み・英字・通称の列も合わせた）。`d1_eval.label_fixes()` で読む。古い正解は消していない。
+  - 手元で apply_label_fix が当たることを確かめた（labelfix_v24 153 行 → 3 つで 289 行）。
+- 教材庫の残り：施設の名称の列と読み・英字・通称の列 2,223 行（`pool_sheet.tsv`、`pool_v24.py sheet`）。
+  - Claude の答え：B10 を規則にした下書き＋規則で決めきれない行を手で見た（MANUAL）。保留 129 行は今のラベルのまま。org→address 1,150・org のまま 606・address のまま 466・address→org 1。SHA を `research/labels/facility_v24/claude_answers_sha256.json` に固定。
+  - ChatGPT に同じシートの独立の答えを依頼（ai-bridge）。そろったら食い違いを Claude が裁定 → `labelfix_g24_pool.jsonl`。
+- 学び直しは、付け直しを 1 要因として事前記録と見積りのあと（GPU を使うのでオーナーに相談）。
