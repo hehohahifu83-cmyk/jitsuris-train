@@ -26,6 +26,29 @@ TARGETS = [
     ("swiss", "https://ckan.opendata.swiss/api/3/action/organization_list"),
     ("swiss", "https://ckan.opendata.swiss/api/3/action/package_search?rows=1"),
 ]
+# 2026-11-01 Claude：新しい評価の陣 E4 の公開元の候補（E1〜E3・主セット・教材庫と重ならない公開元を探す）。
+# 出力の名前に e4 が入っているときだけこちらを使う。状態コードと本文の先頭 160 文字だけを残す。
+TARGETS_E4 = [
+    ("osaka", "https://data.city.osaka.lg.jp/api/3/action/package_search?rows=1"),
+    ("osaka", "https://data.bodik.jp/api/3/action/organization_show?id=271004"),
+    ("osaka", "https://www.city.osaka.lg.jp/contents/wdu020/opendata/"),
+    ("shizuoka", "https://opendata.pref.shizuoka.jp/api/3/action/package_search?rows=1"),
+    ("fukuoka_city", "https://ckan.odp.jig.jp/api/3/action/package_search?rows=1"),
+    ("austria", "https://www.data.gv.at/katalog/api/3/action/package_search?rows=1"),
+    ("berlin", "https://datenregister.berlin.de/api/3/action/package_search?rows=1"),
+    ("berlin", "https://daten.berlin.de/api/3/action/package_search?rows=1"),
+    ("govdata_de", "https://ckan.govdata.de/api/3/action/package_search?rows=1"),
+    ("france", "https://www.data.gouv.fr/api/1/datasets/?page_size=1"),
+    ("france", "https://tabular-api.data.gouv.fr/api/resources/"),
+    ("luxembourg", "https://data.public.lu/api/1/datasets/?page_size=1"),
+    ("paris", "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets?limit=1"),
+    ("us_datagov", "https://catalog.data.gov/api/3/action/package_search?rows=1"),
+    ("ontario", "https://data.ontario.ca/api/3/action/package_search?rows=1"),
+    ("alberta", "https://open.alberta.ca/api/3/action/package_search?rows=1"),
+    ("queensland", "https://www.data.qld.gov.au/api/3/action/package_search?rows=1"),
+    ("nsw", "https://data.nsw.gov.au/data/api/3/action/package_search?rows=1"),
+    ("singapore", "https://api-production.data.gov.sg/v2/public/api/datasets?page=1"),
+]
 AGENTS = {
     "pool_discover": "jitsuris-train-pool-discover/1.0 (metadata only)",
     "fetch_rows": "jitsuris-train-s11/1.0 (source and license recorded)",
@@ -64,8 +87,11 @@ def probe(url, agent):
 def main(argv=None):
     path = (argv or sys.argv[1:])[0]
     rows = []
-    for site, url in TARGETS:
+    e4 = "e4" in path
+    for site, url in (TARGETS_E4 if e4 else TARGETS):
         for name, agent in AGENTS.items():
+            if e4 and name not in ("pool_discover", "with_contact"):
+                continue
             r = {"site": site, "url": url, "agent": name, **probe(url, agent)}
             rows.append(r)
             print(site, r["status"], name, url)
