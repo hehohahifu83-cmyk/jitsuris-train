@@ -1,3 +1,11 @@
+# 2026-11-01 21:30 JST — Claude：v2.4 の付け直しを始めた（オーナー「やれ」）
+
+- 付け直しのファイル（教材庫・評価の陣のファイルは書き換えない）：`materials/pool/labelfix_g24_b3.jsonl`（13 行）・`labelfix_g24_sheet.jsonl`（123 行）、評価の陣の v2.4 版 `research/labels/facility_v24/eval_decisions.jsonl`（95 列）。作り方 `research/facility_names/build_fixes.py`、記録 `research/facility_names/decision.md` の「実行」。
+- 教材庫の残り 2,223 行（施設の名称の列と読み・英字・通称の列）：シート `research/facility_names/pool_sheet.tsv`。Claude の答えは `pool_v24.py claude OUT` で作り直せる（SHA を `research/labels/facility_v24/claude_answers_sha256.json` に固定、答えのファイルはまだ置かない）。ChatGPT に独立の答えを依頼（ai-bridge `messages/…pool-labels-v24.md`）。
+- 次の Claude：ChatGPT の答えが来たら、Claude の答えを作り直して SHA 照合 → 食い違いを裁定 → `labelfix_g24_pool.jsonl` → 付け直しを 1 要因にした学び直しの事前記録と見積り（オーナーに相談）。
+- SCRC 型の事前記録の下書き：`bench/scrc_prereg_draft_20261101.md`（数の種類どうしの差のしきい値 0.25 を較正で決める。測るのは新しい陣 E4）。固定は E4 の割り当ての前、オーナーの了承のあと。
+- 試験：tests/test_label_fix.py 2 件通過（pytest を入れて実行）。
+
 # 2026-11-01 20:45 JST — Claude：LABEL_GUIDE v2.4（施設の名称）を決めた（オーナー「より効果的な方を選べ」）
 
 - 決めたこと・理由：`research/facility_names/decision.md`。施設の名称は列が指す実体で決める（B10）。同じ種類の機関の名簿・営業許可の台帳の店名は org。B3 は ChatGPT の答え（gruppe_id だけ category）。
