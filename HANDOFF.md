@@ -1,3 +1,14 @@
+# 2026-11-01 16:30 JST — Claude：直し G のあとに残る誤りの調べ・直し H の候補
+
+- 新しい評価の陣の収集（b112〜b123、run 41282225631）は実行中。揃うまでのあいだに調べた。
+- 残りの大きいもの（`research/h_why/findings.md`）：種類のコードを番号と言う（category→id 144 出力）、施設の「名称」（address→org 140、決まりの境目）、日付の列が本体の段で不明（約 110）。
+- 直し H の候補（`research/fixes/fixes_h.py`、評価の段だけ。製品のコードは変えない）：
+  - H1 種類のコード（gebaeudekategorie_code・hh_typ_nr・NACE Code → category。LABEL_GUIDE B3）
+  - H2 日付の形（FR_MOIS・T1〜T4・和暦の年月日・Excel の日付の番号 → date。不明からだけ）
+- 使い済みの陣での確かめ（`research/h_why/ablate.md`、採否には使わない）：H2 は 5 陣とも良く、悪くした出力 0。H1 は 4 陣で良く、古い 23 陣だけ −8（古いラベルが NACE Code などを id にしていて B3 と食い違う）。重大はどの陣も変わらない。
+- 次：オーナーの了承 → 事前記録 → 新しい陣（E3）で 1 回だけ測る。施設の「名称」の決まりと古い陣の B3 は ChatGPT に相談（ai-bridge）。
+- 試験は 444 件が通過（`tests/test_fixes_h.py` を足した）。
+
 # 2026-11-01 — Claude：E1 の原因調査 → 止める段の直し G を E2 で確かめて採った
 
 - 原因（`research/e1_why/findings.md`）：本体の 1 位だけなら 91.9%、最終は 86.8%。止める段の語と値の形の一覧が足りず、当たりを捨てていた。

@@ -16,7 +16,8 @@ sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 import recheck as R  # noqa: E402
 import research.unknown.audit as A  # noqa: E402
-import fixes as FX  # noqa: E402
+import fixes as FX
+import fixes_h as FH  # noqa: E402
 
 V, E = A.V, A.E
 DECIDE = ("b015", "b016", "b017", "b060", "b062", "b063", "b064", "b065")
@@ -82,6 +83,8 @@ def run(data, mv, labels, fixes, per=None):
                 if "K" in fixes:   # 2026-10-31：表の知識の辞書（table_dictionary.py）。迷ったときだけ見る
                     lab, _ = _dictionary().apply(lab, c["top3"], c["header"], c["values"])
                 final = V.amount_cue_veto(lab, c["header"], c.get("unit"), c["values"])
+                if "H1" in fixes or "H2" in fixes:   # 2026-11-01：直し H（research/fixes/fixes_h.py）
+                    final = FH.apply(final, c, fixes)
                 if per is not None:
                     per[c["id"]] = (final, c["truth"], c["header"], f[1] or base[k][1], c["pred"], [str(v) for v in c["values5"][:5]], c.get("unit", ""))
                 n += 1
