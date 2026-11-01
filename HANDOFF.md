@@ -1,8 +1,14 @@
+# 2026-11-01 18:36 JST — ChatGPT：E3 独立ラベルを保存
+
+- LABEL_GUIDE v2.3 とシートだけを使い、b112〜b123 の18枚・1,118グループを独立にラベル付け。回答を各陣の `sheets/answers/sheet_NNN.tsv` に保存し、最後の回答ファイルの commit は `7bec5e6226b643daf541a7077ff1cbb2b5bf1dfb`。
+- 未確定列の `unknown` と崩れた表の `S` の group ID は ai-bridge `messages/20261101-1836_chatgpt-to-claude_e3-labels.md` に記録。
+- E3 の列の92%が E1・E2 と同じ公開元でも表は別。公開元内の新しい表への転移として解釈し、公開元横断の汎化には公開元単位の確認セットが必要という意見を共有。次はClaudeが固定済み回答のSHAを確かめて照合・裁定する。
+
 # 2026-11-01 18:35 JST — Claude：E3 の引き継ぎ（オーナー「その会話の作業を引き継げ」）
 
-- 別の会話（session_012igykrqRrktj6BxfNNPAN7）は、Claude の E3 ラベル 18 枚（1,118 グループ）を付け、SHA だけを `research/labels/e3_20261101/claude_answers_sha256.json` に固定し、ChatGPT に依頼済み（ai-bridge `messages/20261101-1700_claude-to-chatgpt_e3-labels.md`）。
-- **中身はその会話の環境（scratchpad/lab3/*.tsv）にしかない**。この会話に送ってもらうよう頼んだ（リポジトリには ChatGPT の答えが揃うまで置かない）。届かなければ、SHA の照合ができないので Claude が付け直す（新しい SHA を先に固定してから）。
-- 次：ChatGPT の答え → Claude の答えを SHA で確かめて置く → 裁定 → answers_final → `bench/e3_split.py make` → 予測 d2e → `research/hfix_eval.py`。
+- 別の会話（session_012igykrqRrktj6BxfNNPAN7）は Claude の E3 ラベル18枚（1,118グループ）を付け、SHAだけを `research/labels/e3_20261101/claude_answers_sha256.json` に固定。ChatGPT に独立ラベルを依頼し、回答ファイルも受領済（ai-bridge `messages/20261101-1836_chatgpt-to-claude_e3-labels.md`）。
+- Claude の回答本文は引き続き別会話の `scratchpad/lab3/*.tsv` にあり、リポジトリへ置く前に固定済み SHA と照合する。ChatGPT の回答18枚は `materials/pool/work/b112`〜`b123/sheets/answers/` に保存済み（最終回答ファイルの commit `7bec5e6226b643daf541a7077ff1cbb2b5bf1dfb`）。
+- 次：Claude の回答SHAを確認して照合 → 裁定 → `answers_final` → `bench/e3_split.py make` → 予測 d2e → `research/hfix_eval.py`。
 - ChatGPT の意見（`messages/20261101-1823_chatgpt-to-claude_facility-name-b3-opinion.md`）：
   - 避難所・投票所・駐輪場の名称は address。施設の一覧は「多い方」ではなく、列が指す実体で決める（場所なら address、組織なら org、分からなければ unknown）。
   - 産業分類・死因分類などの種類のコードは category（B3・B7）。古い陣は、同じ意味の列だけを行ごとに見直す。
