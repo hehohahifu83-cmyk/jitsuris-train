@@ -48,7 +48,56 @@ def _norm(s) -> str:
 _BAND = re.compile(r"(以上|未満|超|以下|～|〜|~)|\d[\d,.]*\s*[-–]\s*[$€£¥]?\s*\d")
 
 
+# 2026-11-01（止める段の直し G、bench/stopfix_prereg_20261101.md、E2 で確かめた。オーナー「いいぞ」）
+_SPLIT_CAMEL = re.compile(r"([a-z])([A-Z])")
+_SPLIT_CAPS = re.compile(r"([A-Z]+)([A-Z][a-z])")
+# F6：独仏の手がかりの語
+_EXTRA = {k: [re.compile(p, re.I) for p in v] for k, v in {
+    "amount": [r"\bchf\b", r"betrag", r"beitrag", r"kosten", r"ausgaben", r"einnahmen", r"\bpreis", r"tarif", r"lohn", r"gehalt", r"franken", r"steuer",
+               r"umsatz", r"montant", r"\bprix\b", r"\bco[uû]t", r"d[ée]pense", r"recette", r"salaire"],
+    "quantity": [r"anzahl", r"^anz", r"bestand$", r"^summe\b", r"\bmenge\b", r"einwohner", r"personen", r"f[äa]lle\b", r"\bnombre\b", r"effectif"],
+    "rate": [r"prozent", r"\bquote\b", r"quote$", r"anteil", r"grad$", r"beteiligung", r"\btaux\b", r"pourcentage"],
+    "date": [r"^jahr$", r"^monat$", r"datum", r"^quartal$", r"^woche$", r"stichtag", r"^semaine$", r"^ann[ée]e$", r"^mois$"],
+    "id": [r"nummer$", r"_nr$", r"\bnr\.?$", r"kennung$", r"^num[ée]ro$"],
+}.items()}
+_G3_RATE = re.compile(r"(^|[\s_])prop(_|\b)|(^|[\s_])rate[a-z]|steuerfu[sß]", re.I)   # G3：率の語
+_G1_HEAD = re.compile(r"(_id$|\bid$|_nr$|jahr$|\byear$|_year$|datum$|\bdate$)", re.I)    # G1：単位の列を当てない列名
+
+
+def split_words(h) -> str:
+    """F1b：下線・大文字つなぎの列名を語に分ける（__floating_rate__ → floating rate、SumOfAmount → Sum Of Amount）。"""
+    h = _SPLIT_CAPS.sub(r"\1 \2", _SPLIT_CAMEL.sub(r"\1 \2", str(h or "")))
+    return re.sub(r"_+", " ", h).strip()
+
+
+def pct_values(values) -> bool:
+    """G2：空でない値の 8 割以上が % で終わる。"""
+    vals = [_norm(v) for v in values or [] if _norm(v) not in _EMPTY]
+    return bool(vals) and sum(bool(re.search(r"[%％]\s*\*?$", v)) for v in vals) >= 0.8 * len(vals)
+
+
 def cue_types(header, unit="") -> set:
+    """強い手がかりの種類（_cue_types_base）に、2026-11-01 の直し G（F1b・F6・G1・G3）を足したもの。"""
+    h = _norm(header)
+    u = "" if (_G1_HEAD.search(h) or _cue_types_base(header, "") & {"id", "date"}) else unit
+    hits = set(_cue_types_base(header, u))
+    new = _cue_types_base(split_words(header), u) - hits
+    if new != {"id"}:
+        hits |= new
+    hs = _norm(split_words(header))
+    for k, pats in _EXTRA.items():
+        if any(p.search(hs) for p in pats):
+            if k == "amount" and re.search(r"steuerfu", hs, re.I):
+                continue
+            hits.add(k)
+    if _G3_RATE.search(h):
+        hits.add("rate")
+        if re.search(r"steuerfu", h, re.I):
+            hits.discard("amount")
+    return hits
+
+
+def _cue_types_base(header, unit="") -> set:
     """列名と単位の文字列に現れた強い手がかりの種類の集合。番号・日付の手がかりは列名だけで見る（単位の列の値「Number」などで誤らないため）。
     区切りの列名（「100万円以上200万円未満」「0-4」）は区分ごとの数なので手がかりにしない。"""
     h = _norm(header)
@@ -109,8 +158,11 @@ def check_assert(pred, top3, values, header, unit="", t_low=0.0, siblings=None):
     """1. 言い切りの検査。数字の種類と言い切った列だけを見る。(判定, 理由 or None)。"""
     if pred not in NUMERIC:
         return pred, None
-    cues = cue_types(header, unit)
-    cue = single_cue(header, unit)
+    if pct_values(values):   # G2：値の 8 割以上が % の列は、率の手がかりだけで見る
+        cues, cue = {"rate"}, "rate"
+    else:
+        cues = cue_types(header, unit)
+        cue = single_cue(header, unit)
     p1 = top3[0]["probability"] if top3 else 1.0
     if pred in ("amount", "quantity", "rate") and _values_without_evidence(values) and pred not in cues:
         return "unknown", "no_value_evidence"

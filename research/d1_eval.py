@@ -28,7 +28,9 @@ import eval_fixes as EF  # noqa: E402
 import d1_counts  # noqa: E402
 
 V, E = A.V, A.E
-PRODUCT = ("F4", "F8")   # 製品に入っている直し（research/fixes/confirm_adopted.md）
+PRODUCT = ("F4", "F8", "F3", "G4")   # 製品に入っている直し（research/fixes/confirm_adopted.md）。
+# 2026-11-01：止める段の直し G を recheck.py・guard.py に移した（bench/stopfix_prereg_20261101.md）。F1b・F6・G1・G2・G3 は recheck.py に入ったので旗は要らない。
+# F3・G4（日付の見張り）は guard.py にも入れたが、今ある予測ファイルの見張りの答えは古いので、評価のときに直す旗として残す
 JOBS = {1: ("A", 1), 2: ("A", 2), 3: ("V", 1), 4: ("V", 2), 5: ("U", 1), 6: ("U", 2)}
 BATCHES = [f"b{n:03d}" for n in range(66, 91) if n != 82]
 

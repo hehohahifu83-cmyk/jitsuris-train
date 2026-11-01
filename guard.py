@@ -407,6 +407,41 @@ def header_date_ok(header, values):
     return bool(ne) and all(_h1_value_ok(v) for v in ne)
 
 
+# ---------------------------------------------------------------- 2026-11-01：日付の見張りの判定を広げる（直し F3・G4、bench/stopfix_prereg_20261101.md、E2 で確かめた）
+# research/fixes/fixes.py の date_ok と同じ（そちらは今ある予測ファイルを評価するときに使う）。header を渡したときだけ（v11 と同じ）
+_G4_HEADER = re.compile(r"\btime\b|_time|^time|hour|heure|stunde|\bday\b|_day$|^day|jour|\btag\b|時|日|seit|abdeckung|期間|week|_week", re.I)
+_F3_HEADER = re.compile(r"date|datum|datierung|pubdate|\bjahr\b|^jahr|year|monat|month|\bweek|woche|semaine|^kw$|quarter|quartal|period|temporal|fiscal|"
+                        r"legislatur|^time_period$|年|月|日", re.I)
+_F3_VALUE = [re.compile(p, re.I) for p in (
+    r"(1[0-9]|20)\d{2}", r"(19|20)\d{2}[-_ ]?(w|kw)\d{1,2}", r"(19|20)\d{2}-m\d{2}", r"(19|20)\d{2}[_/-](19|20)?\d{2}",
+    r"(19|20)\d{2}(0[1-9]|[1-4]\d|5[0-3])", r"qtr\s*[1-4].*|q[1-4]\s*(19|20)?\d{2}|(19|20)\d{2}\s*q[1-4]",
+    r"\d{1,2}\.\d{1,2}\.\d{4}(\s*-\s*\d{1,2}\.\d{1,2}\.\d{4})?")]
+_G4_MONTHS = (r"(janv?|f[ée]v(rier)?|fevrier|mars|avr(il)?|mai|juin|juil(let)?|ao[uû]t|sept?(embre)?|oct(obre)?|nov(embre)?|d[ée]c(embre)?|"
+              r"januar|februar|m[äa]rz|juni|juli|oktober|dezember)\.?")
+_G4_VALUE = [re.compile(p, re.I) for p in (
+    r"([01]\d|2[0-3])[0-5]\d[0-5]\d", r"\d{1,2}/\d{1,2}(,\d{1,2})*", _G4_MONTHS, r"seit\s+(19|20)\d{2}",
+    r"[MTSHR]\s?\d{1,2}\s*[〜~～-]\s*[MTSHR]\s?\d{1,2}")]
+
+
+def header_date_ok_g(header, values):
+    """F3・G4：列名が日付の語を含み、値の 8 割以上が日付の部品の形なら date を残す。"""
+    h = unicodedata.normalize("NFKC", str(header or ""))
+    vals = [str(v).strip() for v in values if str(v).strip() and str(v).strip().lower() not in ("na", "nan", "-", "")]
+    if not vals:
+        return False
+    if _G4_HEADER.search(h) and sum(bool(any(p.fullmatch(unicodedata.normalize("NFKC", v)) for p in _G4_VALUE + _F3_VALUE) or
+                                         (re.fullmatch(r"\d{1,2}", v) and int(v) <= 53)) for v in vals) / len(vals) >= 0.8:
+        return True
+    if not _F3_HEADER.search(h):
+        return False
+    small = [v for v in vals if re.fullmatch(r"\d{1,2}", v)]
+    if small and (not re.search(r"week|woche|semaine|^kw$|monat|month|日|月|mois", h, re.I) or max(int(v) for v in small) > 53):
+        return False
+    if re.search(r"date|datum", h, re.I) and all(re.fullmatch(r"\d{5}", v) and 20000 <= int(v) <= 60000 for v in vals):
+        return True
+    return sum(any(p.fullmatch(v) for p in _F3_VALUE) or bool(re.fullmatch(r"\d{1,2}", v)) for v in vals) / len(vals) >= 0.8
+
+
 def guard_with_reason(pred, probs_sorted, values, _enabled_rules=None, header=None):
     """Return (final label, reason code); reason is None when the label is retained.
     header を渡したとき（v11）だけ、日付の見張りで規則 H1 を使う。"""
@@ -420,7 +455,7 @@ def guard_with_reason(pred, probs_sorted, values, _enabled_rules=None, header=No
             old = s["date"] + s["datetime"]
             top = probs_sorted[0][1] if probs_sorted else 0.0
             if not (max(old, strong) >= 0.5 or (max(old, strong) + year >= 0.5 and top >= YEAR_CONFIDENCE)):
-                if header is None or not header_date_ok(header, values):
+                if header is None or not (header_date_ok(header, values) or header_date_ok_g(header, values)):
                     return "unknown", "date_value_evidence_low"
             if bad_ymd8(values):
                 return "unknown", "date_invalid_8digit"
