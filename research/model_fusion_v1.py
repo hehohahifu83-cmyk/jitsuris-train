@@ -35,7 +35,6 @@ class FusionPolicy:
     source_weights: Mapping[str, float]
     thresholds: Mapping[str, float]
     numeric_labels: Tuple[str, ...] = ("date", "amount", "quantity", "rate", "id")
-    critical_labels: Tuple[str, ...] = ("date", "amount", "quantity", "rate", "id")
     min_numeric_margin: float = 0.0
     value_veto_threshold: Optional[float] = None
     numeric_rescue_threshold: Optional[float] = None
@@ -134,8 +133,6 @@ def fuse_columns(
         )
     if not set(policy.numeric_labels).issubset(labels):
         raise ValueError("numeric_labels must be contained in labels")
-    if not set(policy.critical_labels).issubset(labels):
-        raise ValueError("critical_labels must be contained in labels")
     if "*" not in policy.thresholds and not set(labels).issubset(policy.thresholds):
         missing = sorted(set(labels) - set(policy.thresholds))
         raise ValueError(f"thresholds must cover every model label or provide '*'; missing={missing}")
@@ -167,9 +164,19 @@ def fuse_columns(
             raise ValueError("numeric_rescue_threshold is required when a specialist is supplied")
         if strong_numeric_cues is None or len(strong_numeric_cues) != n_rows:
             raise ValueError("one strong_numeric_cues item is required per input row")
-        specialist = _probabilities(
-            numeric_specialist_probabilities, n_rows, labels, "numeric_specialist_probabilities"
-        )
+        raw_specialist = np.asarray(numeric_specialist_probabilities, dtype=np.float64)
+        numeric_width = len(policy.numeric_labels)
+        if raw_specialist.shape == (n_rows, numeric_width):
+            if not np.isfinite(raw_specialist).all() or (raw_specialist < 0).any():
+                raise ValueError("numeric specialist must contain finite, nonnegative probabilities")
+            totals = raw_specialist.sum(axis=1, keepdims=True)
+            if (totals <= 0).any():
+                raise ValueError("numeric specialist contains a row with zero probability mass")
+            specialist = raw_specialist / totals
+        else:
+            specialist = _probabilities(
+                raw_specialist, n_rows, labels, "numeric_specialist_probabilities"
+            )
     elif strong_numeric_cues is not None:
         raise ValueError("strong_numeric_cues requires numeric_specialist_probabilities")
 
@@ -194,7 +201,12 @@ def fuse_columns(
                 encoder_order = np.argsort(-sources["encoder"][i], kind="stable")[:3]
                 if (
                     cue_index in encoder_order
-                    and specialist[i, cue_index] >= float(policy.numeric_rescue_threshold)
+                    and specialist[
+                        i,
+                        policy.numeric_labels.index(cue)
+                        if specialist.shape[1] == len(policy.numeric_labels)
+                        else cue_index,
+                    ] >= float(policy.numeric_rescue_threshold)
                 ):
                     candidate = cue
 
