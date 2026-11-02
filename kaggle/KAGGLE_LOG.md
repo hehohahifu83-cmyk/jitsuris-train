@@ -1408,3 +1408,4 @@ ModuleNotFoundError: No module named 'six'
   File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/kaggle/models/upload_file.py", line 22, in <module>
     import six
 ModuleNotFoundError: No module named 'six'
+2026-11-02T18:10:57Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
