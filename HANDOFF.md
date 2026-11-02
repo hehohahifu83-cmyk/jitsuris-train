@@ -1,3 +1,27 @@
+# 2026-11-02 19:52 JST — ChatGPT：新規学習なし・v2.4/SCRC準備・Kaggle監視障害を修正
+
+## 確認済み
+- 前回以降に新しいKaggle学習依頼・新しいモデル評価はない。`kaggle/kaggle.request=done`、queued/in_progress Actionsは0件。直近の実学習はL′ run `41226755937`で、既に固定5集合75ファイルを監査済み・不採用。
+- Kaggle定期状態確認は2026-11-01 21:41 JST以降、5回連続で `ModuleNotFoundError: No module named 'six'`となり、最新のKaggle状態を再観測できていなかった。最後に確認済みのCOMPLETEは2026-11-01 14:55 JST。request=doneだけでは現在のCOMPLETEを断定しない。
+- 原因はActionsの`pip install kaggle`後にKaggle CLIが依存`six`を読めないこと。学習依頼を変更せず、workflowを`pip install kaggle six`へ最小修正した（commit `571aa363`）。次回定期実行で復旧確認が必要。
+- LABEL_GUIDE v2.4を決定済み。施設名称は値の多数決でなく列が指す実体で決め、同種機関の名簿・営業許可台帳の店名はorg。施設386列中182列、B3 42列中32列が現行と異なる。教材庫/評価元ファイルは直接書換えず、labelfixと評価v2.4版を別保存する。
+- v2.4の確定済み差分はB3 13行・施設名称123行・使い済み評価陣95列。教材庫の残り2,223行は二者独立ラベルと裁定が未完了。
+- SCRC型選択的リスク境界は候補だが事前記録は草案。原論文に照らし、δ、選択率LCB、一様リスク上限、未使用較正陣、α/δ事前固定、標本数の実行可能性が不足している。
+- 独立ラベル用`pool_sheet.tsv`の取得出力に`label_v24`・`reason`が一部露出したためChatGPTは回答を作らず停止した。この入力は二者独立確認に使わない。非重複ブラインド入力の再作成待ち。
+- 比較目標は表の列種類判定でChatGPT・Claudeと同一課題の同等以上を実証して実用化すること。Geminiは除外。blind_set*、セット3・5・7は閲覧・利用していない。
+
+## 未確認・原因仮説
+- 監視修正後にKaggle CLIが正常にCOMPLETEを返すかは未確認。現在のKaggle実状態は最後の確認済みCOMPLETEとrequest doneから停止と推定できるが、最新直接観測はない。
+- v2.4の教材付け直しがaddress/org・category/id誤りを改善するかは未確認。対象規模とラベル方向は確認したが、学習効果は事前登録した一要因試験が必要。
+- SCRCがraw正解をguardでunknownにしたケースを減らしつつ重大を抑えるかは未確認。較正セットの汚染を避けるまで実験を開始しない。
+
+## 未完了
+1. 次回定期状態確認で`six`修正後のKaggle状態取得を検証する。失敗時はSTATUSを未確認のまま維持し、過去COMPLETEを流用しない。
+2. 教材庫2,223行の答えを、正解・理由を含まない新しいブラインド入力で二者独立作成し、SHA固定後に裁定する。
+3. `labelfix_g24_pool.jsonl`完成後、v2.4付け直しだけを変える学び直しを事前登録・見積りしてから相談する。
+4. SCRC草案を原論文の境界式と標本数要件に合わせ、未使用較正陣と新しいE4を先に固定する。v2.4学習と同時に変えない。
+5. ChatGPT・Claude同一課題比較、封印セット#3、PD-1、本番実用化判定は未完了。
+
 # 2026-11-01 21:30 JST — Claude：v2.4 の付け直しを始めた（オーナー「やれ」）
 
 - 付け直しのファイル（教材庫・評価の陣のファイルは書き換えない）：`materials/pool/labelfix_g24_b3.jsonl`（13 行）・`labelfix_g24_sheet.jsonl`（123 行）、評価の陣の v2.4 版 `research/labels/facility_v24/eval_decisions.jsonl`（95 列）。作り方 `research/facility_names/build_fixes.py`、記録 `research/facility_names/decision.md` の「実行」。
