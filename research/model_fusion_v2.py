@@ -359,7 +359,8 @@ class TableGraphRiskFusion:
             sorted_p = np.take_along_axis(p, order, axis=1)
             margin = sorted_p[:, 0] - sorted_p[:, 1]
             entropy = -(p * np.log(np.clip(p, 1e-12, 1.0))).sum(axis=1)
-            entropy /= max(np.log(len(self.labels)), 1e-12)
+            entropy_classes = len(self.numeric_labels) if name == "numeric_specialist" else len(self.labels)
+            entropy /= max(np.log(entropy_classes), 1e-12)
             base.extend((sorted_p[:, :1], margin[:, None], entropy[:, None]))
 
         pair_agreement = []
