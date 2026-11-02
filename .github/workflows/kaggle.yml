@@ -30,7 +30,7 @@ jobs:
           from kaggle_monitor import latest_training_cycle
           print(f"cycle={latest_training_cycle(Path('kaggle/KAGGLE_LOG.md').read_text(encoding='utf-8'))}")
           PY
-      - run: pip install kaggle
+      - run: pip install kaggle six
       - name: 回収する用事があるか（定期実行のとき）
         id: gate
         run: |
