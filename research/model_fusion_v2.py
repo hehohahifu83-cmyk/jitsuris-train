@@ -41,6 +41,7 @@ class TableGraphRiskFusion:
         labels: Sequence[str],
         *,
         critical_labels: Sequence[str] = ("date", "amount", "quantity", "rate", "id"),
+        numeric_labels: Sequence[str] = ("date", "amount", "quantity", "rate", "id"),
         catch_all_label: Optional[str] = "other",
         unknown_label: str = "unknown",
         max_critical_error_rate: float = 0.0,
@@ -54,6 +55,7 @@ class TableGraphRiskFusion:
     ) -> None:
         self.labels = tuple(labels)
         self.critical_labels = tuple(critical_labels)
+        self.numeric_labels = tuple(numeric_labels)
         self.catch_all_label = catch_all_label
         self.unknown_label = unknown_label
         self.max_critical_error_rate = float(max_critical_error_rate)
@@ -70,6 +72,8 @@ class TableGraphRiskFusion:
             raise ValueError("unknown_label must be outside the trained label set")
         if not set(self.critical_labels).issubset(self.labels):
             raise ValueError("critical_labels must be contained in labels")
+        if not self.numeric_labels or not set(self.numeric_labels).issubset(self.labels):
+            raise ValueError("numeric_labels must be a nonempty subset of labels")
         if self.catch_all_label is not None and self.catch_all_label not in self.labels:
             raise ValueError("catch_all_label must be a trained label or None")
         for name, value in (
@@ -315,6 +319,18 @@ class TableGraphRiskFusion:
         out = {}
         for name in names:
             arr = np.asarray(raw[name], dtype=np.float64)
+            if name == "numeric_specialist" and arr.shape == (rows, len(self.numeric_labels)):
+                if not np.isfinite(arr).all() or (arr < 0).any():
+                    raise ValueError("numeric_specialist must contain finite, nonnegative probabilities")
+                mass = arr.sum(axis=1, keepdims=True)
+                if (mass <= 0).any():
+                    raise ValueError("numeric_specialist contains a row with zero probability mass")
+                arr = arr / mass
+                expanded = np.zeros((rows, len(self.labels)), dtype=np.float64)
+                for j, label in enumerate(self.numeric_labels):
+                    expanded[:, self.labels.index(label)] = arr[:, j]
+                out[name] = expanded
+                continue
             if arr.shape != (rows, len(self.labels)):
                 raise ValueError(
                     f"{name} must have shape {(rows, len(self.labels))}; received {arr.shape}"
