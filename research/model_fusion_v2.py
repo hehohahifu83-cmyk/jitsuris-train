@@ -194,6 +194,29 @@ class TableGraphRiskFusion:
         self.risk_threshold_, self.confidence_threshold_ = self._calibrate(
             cal_probs, cal_risk, cal_y
         )
+        cal_raw = np.asarray(self.labels, dtype=object)[np.argmax(cal_probs, axis=1)]
+        cal_accepted = (
+            (cal_risk <= self.risk_threshold_)
+            & (cal_probs.max(axis=1) >= self.confidence_threshold_)
+        )
+        if self.catch_all_label is not None:
+            cal_accepted &= cal_raw != self.catch_all_label
+        cal_mismatch = cal_raw != cal_y
+        cal_critical = np.asarray(
+            [
+                int(wrong and (pred in self.critical_labels or actual in self.critical_labels))
+                for wrong, pred, actual in zip(cal_mismatch, cal_raw, cal_y)
+            ],
+            dtype=np.int8,
+        )
+        accepted_count = int(cal_accepted.sum())
+        observed = {
+            "accepted_rows": accepted_count,
+            "unknown_rate": 1.0 - accepted_count / len(cal_y),
+            "overall_error_rate": float(cal_mismatch[cal_accepted].mean()),
+            "critical_errors": int(cal_critical[cal_accepted].sum()),
+            "critical_error_rate": float(cal_critical[cal_accepted].mean()),
+        }
         self.source_names_ = source_names
         self.fit_info_ = {
             "train_rows": int(len(train_y)),
@@ -202,6 +225,7 @@ class TableGraphRiskFusion:
             "calibration_tables": int(len(cal_group_set)),
             "meta_crossfit_folds": fold_count,
             "critical_oof_errors": positives,
+            "calibration_observed": observed,
             "risk_mode": self.risk_mode_,
             "risk_threshold": self.risk_threshold_,
             "confidence_threshold": self.confidence_threshold_,
