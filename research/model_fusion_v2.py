@@ -223,7 +223,7 @@ class TableGraphRiskFusion:
             raise RuntimeError("fit must complete before predict")
         if tuple(sorted(probabilities)) != self.source_names_:
             raise ValueError("prediction source names differ from the fitted source names")
-        first = np.asarray(probabilities[self.source_names_[0]])
+        first = np.asarray(probabilities["encoder"])
         if first.ndim != 2 or first.shape[1] != len(self.labels):
             raise ValueError("each source must provide rows-by-labels probabilities")
         groups = self._group_array(table_ids, first.shape[0], "table_ids")
@@ -276,7 +276,7 @@ class TableGraphRiskFusion:
             raise RuntimeError("fit must complete before predict_proba")
         if tuple(sorted(probabilities)) != self.source_names_:
             raise ValueError("prediction source names differ from the fitted source names")
-        first = np.asarray(probabilities[self.source_names_[0]])
+        first = np.asarray(probabilities["encoder"])
         if first.ndim != 2 or first.shape[1] != len(self.labels):
             raise ValueError("each source must provide rows-by-labels probabilities")
         groups = self._group_array(table_ids, first.shape[0], "table_ids")
