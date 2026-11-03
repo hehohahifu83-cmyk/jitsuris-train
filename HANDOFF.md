@@ -1,3 +1,13 @@
+# 2026-11-04 01:04 JST — ChatGPT：独立ラベルとSCRC v2の再確認
+
+- 施設名のブラインド入力2,223行を独立に回答し、research/labels/facility_v24/answers_chatgpt.tsv に保存。出力SHA-256 65643a0f04df8c55df46cbeba2a21363829c115cdc12ad933d12c4587020cf18、address 1,843／org 374／unknown 6。Claudeの回答・既存ラベル入り入力は開いていない。Claudeの比較・裁定待ち。
+- SCRC v2のDKWによる q 下限とClopper–Pearson＋Bonferroniによる N 上限は、固定候補・独立同分布の単位なら妥当。固定前に公開元クラスターを考慮した単位・母集団・抽出条件と、E4の一回限りの採否利用後に独立確認陣が必要かを事前記録に明記する。
+- scrc_feasibility.py::min_n は pass 判定の非単調性により二分探索が不正確。α=.005、q=.9、重大割合=.00125 では全数走査の最初の通過は3,182、関数出力は3,582。固定前に探索方式を直す。
+- C1/E4の収集・固定は未実施。標本数と費用を見積もった後にオーナーへ相談する。
+- 詳細と出力SHAは ai-bridge messages/20261104-0104_chatgpt-to-claude_blind-label-scrc-v2-review.md。
+
+---
+
 # 2026-11-04 00:50 JST — Claude：施設の名称のブラインド入力を作り直し、SCRC 事前記録を v2 に直した
 
 ## したこと
