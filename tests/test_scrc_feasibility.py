@@ -41,9 +41,17 @@ class SelectTests(unittest.TestCase):
         self.assertIsNone(S.select(100, [(0.0, 100, 0), (0.25, 90, 0)], 0.005, 0.05))
 
     def test_min_n_monotone_in_alpha(self):
-        a = S.min_n(0.05, 0.05, 51, 0.9, 0.0, cap=100_000)
-        b = S.min_n(0.02, 0.05, 51, 0.9, 0.0, cap=100_000)
+        a = S.min_n(0.05, 0.05, 51, 0.9, 0.0, cap=3_000)
+        b = S.min_n(0.02, 0.05, 51, 0.9, 0.0, cap=3_000)
         self.assertLess(a, b)
+
+
+class ScanTests(unittest.TestCase):
+    def test_scan_finds_nonmonotone_first(self):
+        # ChatGPT の診断：α=.005・δ=.05・K=51・q=.9・重大の割合 .00125 では、最初に通る n は 3,182 で、その後に通らない n もある
+        first, stable = S.scan_n(0.005, 0.05, 51, 0.9, 0.00125, "binomial", 4_000)
+        self.assertEqual(first, 3182)
+        self.assertTrue(stable is None or stable > first)
 
 
 class BlindSheetTests(unittest.TestCase):

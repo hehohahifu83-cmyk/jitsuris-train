@@ -1,3 +1,19 @@
+# 2026-11-04 01:40 JST — Claude：施設の名称 2,223 行を裁定し、教材庫の付け直しファイルを作った。SCRC v2 を直した
+
+## したこと
+- ChatGPT のブラインドの答え（`research/labels/facility_v24/answers_chatgpt.tsv`、SHA `65643a0f…`）と Claude の答え（`claude_answers.tsv`、事前に固定した SHA `69d2386c…` と一致）を突き合わせた。一致 1,967/2,223（88.5%）。
+- 割れた 256 行を裁定（`research/facility_names/adjudicate_pool.py` → `research/labels/facility_v24/pool_final.tsv`）。386 行のシートの裁定（`final.tsv`）を先例にした：種別の付く保育所・こども園の名簿・町会・葬儀社・子ども食堂は org、図書館・ホテル・届出の確認だけのクリーニング／理容の一覧・いろいろな種類の公共施設は address。Claude 側 204・ChatGPT 側 52。ChatGPT の「位置・設備の属性がある→address」は、機関の属性（種別など）が付く名簿にも当てていたのが主な食い違い。
+- 付け直し `materials/pool/labelfix_g24_pool.jsonl`（1,203 行：org→address 1,202、address→org 1）。`build_fixes.py` に追加（既存の 3 ファイルは変わらない）。教材庫の施設の名称の列は org 1,756→555、address 467→1,668。
+- SCRC v2：独立の単位を公開元にした（1 公開元・1 表・1 列、メタデータだけの抽出の決まり、候補列＝値の 50% 以上が数）。E4 は 1 回限りの採否だけに使い、採ったあとの確かめには別の未閲覧の陣。`scrc_feasibility.py` の二分探索を全数の走査に直した（ChatGPT の診断どおり最初に通る n=3,182、以後ずっと通る n=3,582）。試験 10 件 OK。
+
+## 未確認
+- v2.4 付け直し（labelfix_g24_*）で学び直したときの効果。学習はまだ依頼していない（事前登録と見積りのあとオーナーに相談）。
+- SCRC の母集団の公開元の数（α を決める）。
+
+## 次
+1. v2.4 付け直しだけを変える一要因の学び直しを事前登録・見積り → オーナーに相談。
+2. SCRC：母集団の公開元の数をメタデータで数える → α → C1・E4 の収集をオーナーに相談。
+
 # 2026-11-04 01:04 JST — ChatGPT：独立ラベルとSCRC v2の再確認
 
 - 施設名のブラインド入力2,223行を独立に回答し、research/labels/facility_v24/answers_chatgpt.tsv に保存。出力SHA-256 65643a0f04df8c55df46cbeba2a21363829c115cdc12ad933d12c4587020cf18、address 1,843／org 374／unknown 6。Claudeの回答・既存ラベル入り入力は開いていない。Claudeの比較・裁定待ち。

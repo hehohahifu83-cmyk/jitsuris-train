@@ -45,7 +45,7 @@ def cp_upper(k: int, n: int, level: float) -> float:
     if k == 0:
         return 1.0 - level ** (1.0 / n)
     lo, hi, target = k / n, 1.0, math.log(level)
-    for _ in range(200):
+    for _ in range(60):
         mid = (lo + hi) / 2
         if _log_binom_cdf(k, n, mid) > target:
             lo = mid
@@ -80,22 +80,23 @@ def select(n: int, table: list[tuple[float, int, int]], alpha: float, delta: flo
     return max(ok)[2] if ok else None
 
 
-def min_n(alpha: float, delta: float, K: int, q: float, severe_rate: float = 0.0, bound: str = "binomial", cap: int = 10_000_000) -> int | None:
-    """受け入れの割合 q・受け入れて重大の割合 severe_rate（単位あたり）が観測どおりのとき、候補が通る最小の n（二分探索）。"""
-    def ok(n):
-        acc = round(q * n)
-        sev = math.floor(severe_rate * n)
-        return passes(n, acc, sev, alpha, delta, K, bound)[0]
-    if not ok(cap):
-        return None
-    lo, hi = 1, cap
-    while lo < hi:
-        mid = (lo + hi) // 2
-        if ok(mid):
-            hi = mid
+def scan_n(alpha: float, delta: float, K: int, q: float, severe_rate: float = 0.0, bound: str = "binomial", cap: int = 20_000):
+    """n を 1 から cap まで全部調べる（2026-11-04：二分探索は round・floor の段差で通る／通らないが単調でないため、ChatGPT の指摘で置き換えた）。
+    戻り値 (first, stable)：first＝最初に通る n、stable＝それ以降 cap まで全部通る最小の n（保守的な見積り）。届かなければ None。"""
+    first, last_fail = None, 0
+    for n in range(1, cap + 1):
+        if passes(n, round(q * n), math.floor(severe_rate * n), alpha, delta, K, bound)[0]:
+            if first is None:
+                first = n
         else:
-            lo = mid + 1
-    return lo
+            last_fail = n
+    stable = last_fail + 1 if last_fail < cap else None
+    return first, stable
+
+
+def min_n(alpha: float, delta: float, K: int, q: float, severe_rate: float = 0.0, bound: str = "binomial", cap: int = 20_000) -> int | None:
+    """保守的な見積り：それ以上の n（cap まで）で必ず通る最小の n。"""
+    return scan_n(alpha, delta, K, q, severe_rate, bound, cap)[1]
 
 
 def main():
@@ -112,14 +113,14 @@ def main():
             ok, u, r = passes(a.n, round(a.q * a.n), a.severe, a.alpha, a.delta, a.K, b)
             print(f"{b:9s} n={a.n} q={a.q} 重大={a.severe}: N_UCB={u:.5f}  α·q_LCB={r:.5f}  → {'通る' if ok else '通らない'}")
         return
-    print("| α | δ | K | q | 受け入れて重大の割合 | 要る n（binomial） | 要る n（hoeffding） |")
-    print("| --- | --- | --- | --- | --- | --- | --- |")
+    print("| α | δ | K | q | 受け入れて重大の割合 | binomial 最初に通る n | binomial 以後ずっと通る n | hoeffding 最初 | hoeffding 以後ずっと |")
+    print("| --- | --- | --- | --- | --- | --- | --- | --- | --- |")
     for alpha in (0.005, 0.01, 0.02, 0.05):
         for sr in (0.0, alpha / 4):
-            nb = min_n(alpha, a.delta, a.K, a.q, sr, "binomial")
-            nh = min_n(alpha, a.delta, a.K, a.q, sr, "hoeffding")
-            print(f"| {alpha} | {a.delta} | {a.K} | {a.q} | {sr:.5f} | {nb if nb else '届かない'} | {nh if nh else '届かない'} |")
-
+            bf, bs = scan_n(alpha, a.delta, a.K, a.q, sr, "binomial", 20_000)
+            hf, hs = scan_n(alpha, a.delta, a.K, a.q, sr, "hoeffding", 500_000)
+            f = lambda v: v if v else "届かない"
+            print(f"| {alpha} | {a.delta} | {a.K} | {a.q} | {sr:.5f} | {f(bf)} | {f(bs)} | {f(hf)} | {f(hs)} |")
 
 if __name__ == "__main__":
     main()
