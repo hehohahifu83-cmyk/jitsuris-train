@@ -108,7 +108,7 @@ def count_orgs():
     for site, base in ORG_HOSTS:
         orgs, err, offset = [], None, 0
         while True:
-            url = f"{base}/api/3/action/organization_list?all_fields=true&limit=500&offset={offset}"
+            url = f"{base}/api/3/action/organization_list?all_fields=true&limit=25&offset={offset}"
             try:
                 d = get_json(url)
             except (HTTPError, URLError, TimeoutError, OSError, ValueError) as e:
@@ -117,10 +117,10 @@ def count_orgs():
             res = d.get("result") or []
             for o in res:
                 orgs.append({"name": o.get("name"), "title": (o.get("title") or "")[:80], "package_count": o.get("package_count")})
-            if len(res) < 500:
+            if not res or offset > 20000:   # all_fields は 1 回 25 件まで（CKAN の既定の上限）。空になるまでめくる
                 break
-            offset += 500
-            time.sleep(1)
+            offset += len(res)
+            time.sleep(0.3)
         n_pkg = sum(o["package_count"] or 0 for o in orgs)
         print(site, len(orgs), "orgs", n_pkg, "datasets", err or "")
         out.append({"site": site, "base": base, "n_orgs": len(orgs), "n_orgs_with_data": sum(1 for o in orgs if (o["package_count"] or 0) > 0),
