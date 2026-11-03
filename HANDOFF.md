@@ -1,4 +1,4 @@
-# 2026-11-04 01:40 JST — Claude：施設の名称 2,223 行を裁定し、教材庫の付け直しファイルを作った。SCRC v2 を直した
+# 2026-11-04 06:55 JST — Claude：施設の名称 2,223 行を裁定し、教材庫の付け直しファイルを作った。SCRC v2 を直した
 
 ## したこと
 - ChatGPT のブラインドの答え（`research/labels/facility_v24/answers_chatgpt.tsv`、SHA `65643a0f…`）と Claude の答え（`claude_answers.tsv`、事前に固定した SHA `69d2386c…` と一致）を突き合わせた。一致 1,967/2,223（88.5%）。
