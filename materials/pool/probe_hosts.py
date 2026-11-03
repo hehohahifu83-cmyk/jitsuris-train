@@ -49,6 +49,18 @@ TARGETS_E4 = [
     ("nsw", "https://data.nsw.gov.au/data/api/3/action/package_search?rows=1"),
     ("singapore", "https://api-production.data.gov.sg/v2/public/api/datasets?page=1"),
 ]
+# 2026-11-04 Claude：新しい陣 F1・C1・E4（bench/g24fix_prereg_20261104.md・bench/scrc_prereg_draft_20261104.md）の公開元の数を数える。
+# 出力の名前に orgs が入っているときだけ。11-01 の調べで Actions から届いた CKAN のサイトの組織の一覧（名前・題名・データセットの数）だけを残す。
+# データセット・表の中身・値は取らない。
+ORG_HOSTS = [
+    ("jig_jp", "https://ckan.odp.jig.jp"),
+    ("berlin", "https://datenregister.berlin.de"),
+    ("govdata_de", "https://ckan.govdata.de"),
+    ("ontario", "https://data.ontario.ca"),
+    ("alberta", "https://open.alberta.ca"),
+    ("queensland", "https://www.data.qld.gov.au"),
+    ("nsw", "https://data.nsw.gov.au/data"),
+]
 AGENTS = {
     "pool_discover": "jitsuris-train-pool-discover/1.0 (metadata only)",
     "fetch_rows": "jitsuris-train-s11/1.0 (source and license recorded)",
@@ -84,8 +96,48 @@ def probe(url, agent):
     return out
 
 
+def get_json(url):
+    req = Request(url, headers={"Accept": "application/json", "User-Agent": AGENTS["with_contact"]})
+    with urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def count_orgs():
+    """組織の一覧を頁ごとに取る（organization_list、all_fields）。名前・題名・package_count だけを残す。"""
+    out = []
+    for site, base in ORG_HOSTS:
+        orgs, err, offset = [], None, 0
+        while True:
+            url = f"{base}/api/3/action/organization_list?all_fields=true&limit=500&offset={offset}"
+            try:
+                d = get_json(url)
+            except (HTTPError, URLError, TimeoutError, OSError, ValueError) as e:
+                err = f"{type(e).__name__}: {e}"[:200]
+                break
+            res = d.get("result") or []
+            for o in res:
+                orgs.append({"name": o.get("name"), "title": (o.get("title") or "")[:80], "package_count": o.get("package_count")})
+            if len(res) < 500:
+                break
+            offset += 500
+            time.sleep(1)
+        n_pkg = sum(o["package_count"] or 0 for o in orgs)
+        print(site, len(orgs), "orgs", n_pkg, "datasets", err or "")
+        out.append({"site": site, "base": base, "n_orgs": len(orgs), "n_orgs_with_data": sum(1 for o in orgs if (o["package_count"] or 0) > 0),
+                    "n_datasets": n_pkg, "error": err, "orgs": orgs})
+        time.sleep(1)
+    return out
+
+
 def main(argv=None):
     path = (argv or sys.argv[1:])[0]
+    if "orgs" in path:
+        doc = {"created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "created_by": "materials/pool/probe_hosts.py（orgs）",
+               "metadata_only": True, "hosts": count_orgs()}
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=1)
+            fh.write("\n")
+        return
     rows = []
     e4 = "e4" in path
     for site, url in (TARGETS_E4 if e4 else TARGETS):
