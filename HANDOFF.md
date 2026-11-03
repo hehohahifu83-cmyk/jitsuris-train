@@ -1,3 +1,17 @@
+# 2026-11-04 00:50 JST — Claude：施設の名称のブラインド入力を作り直し、SCRC 事前記録を v2 に直した
+
+## したこと
+- 独立ラベル用の入力 `research/facility_names/pool_blind_sheet.tsv`（2,223 行、列は id・header・values・same_table_columns・rows の 5 つだけ）。作り方 `python research/facility_names/pool_v24.py blind`。SHA-256 `d932287047d0346a4859bbb385b1bc53183315f85298f41188caaa680f44ea81`（`research/labels/facility_v24/blind_sheet_sha256.json`）。id の重なり・386 行のシートとの（表, 列名）の重なりが無いことを作るときに確かめる。改行・タブは空白にした。旧 `pool_sheet.tsv` は残す（調べると `label_v24`・`reason` は全行空だったが、`label_now`＝今のラベルが入っていたので独立の入力には使わない）。
+- SCRC の事前記録の下書き v2 `bench/scrc_prereg_draft_20261104.md`：SCRC-I を参考にした 1 パラメータの選択的リスク制御として書き直した（S_τ・q・N の定義、片側 DKW の q_LCB、Clopper–Pearson＋Bonferroni の N_UCB、δ=δ_q+δ_N、「候補なし・変更なし」、単位＝表、D1・E1〜E3 は較正に使わず新しい C1 を E4 と公開元で分ける）。計算 `scrc_feasibility.py`、試験 `tests/test_scrc_feasibility.py`（9 件 OK）。
+- 見積り（K=51・δ=0.05・q=0.9、重大 0）：α=0.005 は独立の表が 1,753、α=0.01 は 889、α=0.02 は 452 要る。Hoeffding だと 189,478（実行できない）。
+
+## 未確認
+- C1 に集められる表の数（α を決める）。0 の段の reason の内訳。ChatGPT の再確認。
+
+## 次
+1. ChatGPT にブラインド入力で 2,223 行の独立の答えを依頼（ai-bridge）。答えの SHA 固定後に Claude の答え（`pool_v24.py claude`）と突き合わせて裁定。
+2. SCRC v2 の再確認を ChatGPT に依頼。C1・E4 の収集はオーナーの了承の後。
+
 # 2026-11-03 19:40 JST — ChatGPT：Kaggle監視復旧・新規学習なし・表エージェント公開
 
 ## 確認済み

@@ -1,6 +1,9 @@
 """教材庫の全部の施設・場所の名前の列を LABEL_GUIDE v2.4 B10 で付け直すための材料（2026-11-01 Claude、オーナー「やれ」）。
 
   python research/facility_names/pool_v24.py sheet     → pool_sheet.tsv（ラベルなし。先生 2 人が独立に答える）
+  python research/facility_names/pool_v24.py blind     → pool_blind_sheet.tsv（独立ラベル用の入力。id・header・values・same_table_columns・rows の 5 列だけ。
+                                                         今のラベル・答え・理由の列を持たない。2026-11-04 ChatGPT の指摘で追加。SHA を
+                                                         research/labels/facility_v24/blind_sheet_sha256.json に書く）
   python research/facility_names/pool_v24.py claude OUT → Claude の答えの下書き（B10 を規則にしたもの）を OUT に書く
                                                          （Claude が全部の行を見直してから SHA を固定する。ChatGPT の答えのあとでリポジトリに置く）
 
@@ -151,6 +154,39 @@ def decide(h, vals, ctx, now, table_answers):
     return now, "保留：規則で決めきれない（今のラベルのまま、手で見る）"
 
 
+BLIND_COLS = ["id", "header", "values", "same_table_columns", "rows"]
+
+
+def _cell(x):
+    """1 行 1 列に収める（改行・タブを空白に）。"""
+    return re.sub(r"[\t\r\n]+", " ", str(x))
+
+
+def blind_lines(tg, keys):
+    """独立ラベル用の行。今のラベル（label_now）は入れない（sheet_line の 5 番目を落とす）。"""
+    out = []
+    for k in keys:
+        line = sheet_line(k, tg[k])
+        out.append([_cell(x) for x in (line[:4] + [line[5]])])
+    return out
+
+
+def check_blind(lines, keys, used_ids, used_keys):
+    """重なり・漏れの確認。問題の一覧を返す（空なら OK）。"""
+    bad = []
+    ids = [x[0] for x in lines]
+    if len(set(ids)) != len(ids):
+        bad.append("id が重なっている")
+    if set(ids) & used_ids:
+        bad.append("386 行のシートの id と重なる")
+    if set(keys) & used_keys:
+        bad.append("386 行のシートの（表, 列名）と重なる")
+    for x in lines:
+        if len(x) != len(BLIND_COLS):
+            bad.append(f"{x[0]}: 列の数が {len(x)}")
+    return bad
+
+
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "sheet"
     tg = targets()
@@ -163,6 +199,25 @@ def main():
                 line = sheet_line(k, tg[k])
                 w.writerow(line[:6] + ["", ""])
         print(len(keys), "keys", sum(len(v) for v in tg.values()), "rows", Counter(tg[k][0][2]["label"] for k in keys))
+    elif cmd == "blind":
+        import hashlib
+        lines = blind_lines(tg, keys)
+        sheet = list(csv.DictReader(open(os.path.join(HERE, "sheet.tsv"), encoding="utf-8"), delimiter="\t"))
+        used_ids = {x["id"] for x in sheet if x.get("set") == "train"}
+        used_keys = {(r["table"], norm(r["header"])) for r in _sheet_keys()}
+        bad = check_blind(lines, keys, used_ids, used_keys)
+        if bad:
+            sys.exit("NG: " + " / ".join(bad[:10]))
+        path = os.path.join(HERE, "pool_blind_sheet.tsv")
+        with open(path, "w", encoding="utf-8", newline="") as fh:  # 改行・タブは _cell で消してあるので引用符なしの TSV
+            for x in [BLIND_COLS] + lines:
+                fh.write("\t".join(x) + "\n")
+        sha = hashlib.sha256(open(path, "rb").read()).hexdigest()
+        rec = os.path.join(ROOT, "research", "labels", "facility_v24", "blind_sheet_sha256.json")
+        os.makedirs(os.path.dirname(rec), exist_ok=True)
+        json.dump({"file": "research/facility_names/pool_blind_sheet.tsv", "sha256": sha, "rows": len(lines),
+                   "columns": BLIND_COLS, "made_by": "pool_v24.py blind"}, open(rec, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(len(lines), "rows", sha)
     elif cmd == "claude":
         out = sys.argv[2]
         per_table = {}
