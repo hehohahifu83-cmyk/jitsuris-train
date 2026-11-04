@@ -68,7 +68,7 @@ jobs:
           python -c "import json,sys;sys.exit(0 if json.load(open('$d/adopted.json')).get('adopted') else 1)" || exit 0
           python -I materials/fetch_rows.py --adopted "$d/adopted.json" --out "$d/corpus.jsonl" --log "$d/corpus_log.json"
           python -I materials/corpus_to_set.py "$d/corpus.jsonl" "$d/set.json" "$b"
-          python -I materials/label_sheets.py make --batch "$b"
+          python -I materials/label_sheets.py make --batch "$b" --precedent   # 先例のラベル（2026-11-04）。この陣は評価の陣にしない
           python - "$d" >> "$d/auto_log.md" <<'PY'
           import json, sys, glob, os
           d = sys.argv[1]

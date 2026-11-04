@@ -160,7 +160,7 @@ jobs:
                   log.close(); summary.append((b, "採用 0", 0)); continue
               for cmd in (["python", "-I", "materials/fetch_rows.py", "--adopted", f"{d}/adopted.json", "--out", f"{d}/corpus.jsonl", "--log", f"{d}/corpus_log.json"],
                           ["python", "-I", "materials/corpus_to_set.py", f"{d}/corpus.jsonl", f"{d}/set.json", b],
-                          ["python", "-I", "materials/label_sheets.py", "make", "--batch", b]):
+                          ["python", "-I", "materials/label_sheets.py", "make", "--batch", b, "--precedent"]):
                   subprocess.run(cmd, check=True)
               rows = [json.loads(l) for l in open(f"{d}/corpus.jsonl", encoding="utf-8")]
               log.write(f"- 取り出した列：{len(rows)}（表 {len({r['table'] for r in rows})}）\n")

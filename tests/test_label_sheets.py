@@ -65,3 +65,43 @@ class LabelSheetTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PrecedentTests(unittest.TestCase):
+    def _pool(self):
+        import json
+        d = Path(tempfile.mkdtemp())
+        rows = []
+        for i in range(6):   # 6 回・3 公開元、全部 id
+            rows.append({"table": f"t{i}", "header": "ＩＤ", "label": "id", "publisher": f"p{i % 3}", "values": []})
+        for i in range(6):   # 6 回だが 1 公開元だけ → 先例にしない
+            rows.append({"table": f"u{i}", "header": "名称", "label": "org", "publisher": "p0", "values": []})
+        for i in range(6):   # ラベルが割れる → 先例にしない
+            rows.append({"table": f"v{i}", "header": "区分", "label": "category" if i % 2 else "id", "publisher": f"p{i}", "values": []})
+        rows.append({"table": "w0", "header": "住所", "label": "org", "publisher": "p1", "values": []})
+        for i in range(1, 6):
+            rows.append({"table": f"w{i}", "header": "住所", "label": "address", "publisher": f"p{i}", "values": []})
+        (d / "batch_b001.jsonl").write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n", encoding="utf-8")
+        # 付け直しで w0 の住所も address になる → 先例になる
+        (d / "labelfix_v24.jsonl").write_text(json.dumps({"table": "w0", "header": "住所", "from": "org", "label": "address", "decision": "change"}, ensure_ascii=False) + "\n", encoding="utf-8")
+        return d
+
+    def test_build_precedent_rules(self):
+        idx = S.build_precedent(self._pool())
+        self.assertEqual(idx["id"][0], "id")            # NFKC・小文字で「ＩＤ」→「id」
+        self.assertNotIn("名称", idx)                    # 1 公開元だけ
+        self.assertNotIn("区分", idx)                    # ラベルが割れる
+        self.assertEqual(idx["住所"][0], "address")      # 付け直しを当ててから数える
+
+    def test_merge_uses_precedent_and_audit(self):
+        corpus = [row("x1", "ID", ["1"]), row("x2", "人口", ["3"])]
+        groups = S.make_groups(corpus)
+        groups[0]["precedent"] = "id"
+        groups[1]["sheet"] = 1
+        groups[1]["precedent_audit"] = "quantity"
+        labels = S.merge(corpus, groups, {"g0002": "quantity"})
+        self.assertEqual([x["label"] for x in labels], ["id", "quantity"])
+        self.assertEqual(labels[0]["teacher"], "precedent")
+        self.assertEqual(S.precedent_audit(groups, {"g0002": "rate"}), (1, [("g0002", "quantity", "rate")]))
+        with self.assertRaisesRegex(ValueError, "答えの無いグループ 1 件"):
+            S.merge(corpus, groups, {})

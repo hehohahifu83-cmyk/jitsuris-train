@@ -10,12 +10,21 @@ ChatGPT は 1 グループ 1 行「g0001<TAB>ラベル」だけを答えのフ�
   python materials/label_sheets.py status --batch b006                # どのシートの答えが済んだか
   python materials/label_sheets.py merge  --batch b006                # 答え → labels_chatgpt.jsonl（足りない・誤りがあれば止まる）
 
+先例のラベル（2026-11-04 Claude、オーナー「教材集めをより早く多く」）：
+  python materials/label_sheets.py make --batch b124 --precedent
+    教材庫（batch_b*.jsonl に付け直し labelfix_* を当てたもの）で、同じ見出しが 5 回以上・2 公開元以上で出て、ラベルが全部同じグループは
+    先生に見せずに先例のラベルを付ける（過去の陣で当てると 28% の列・裁定と一致 99.5%）。先例のグループの 10%（最少 5）は
+    抜き取りとしてシートに混ぜ（先生には分からない）、merge で先生の答えと比べる。食い違いが 3% を超えたら止まる。
+    先例を使った陣は、評価の陣にしない（groups.json の precedent で分かる）。
+
 ChatGPT の答えのファイル：work/b006/sheets/answers/sheet_001.tsv（シートの末尾の「答えの雛形」を写して埋める）
 """
 from __future__ import annotations
 
 import argparse
+import glob
 import json
+import random
 import re
 import sys
 import unicodedata
@@ -61,6 +70,48 @@ def make_groups(corpus):
     return [{"group": f"g{n + 1:04d}", "rows": members[k]} for n, k in enumerate(order)]
 
 
+# 先例を作るときに当てる付け直し（後のファイルが勝つ。encoder_context.apply_label_fix と同じ順）
+LABELFIX_FILES = ["labelfix_v24.jsonl", "labelfix_g24_b3.jsonl", "labelfix_g24_sheet.jsonl", "labelfix_g24_pool.jsonl", "labelfix_g24_pool_r4.jsonl"]
+PRECEDENT_MIN_N, PRECEDENT_MIN_PUB = 5, 2
+PRECEDENT_AUDIT_RATE, PRECEDENT_AUDIT_MIN, PRECEDENT_MAX_DISAGREE = 0.10, 5, 0.03
+
+
+def head_key(h) -> str:
+    return norm(h).casefold()
+
+
+def build_precedent(pool_dir=None, min_n=PRECEDENT_MIN_N, min_pub=PRECEDENT_MIN_PUB):
+    """教材庫の確定した列から、見出し → (ラベル, 回数, 公開元の数)。ラベルが 1 つに決まる見出しだけ。"""
+    pool_dir = Path(pool_dir or ROOT / "materials" / "pool")
+    fix = {}
+    for fn in LABELFIX_FILES:
+        f = pool_dir / fn
+        if not f.exists():
+            continue
+        for line in f.read_text(encoding="utf-8").splitlines():
+            d = json.loads(line)
+            if d.get("decision") == "change":
+                fix[(d["table"], str(d["header"]).strip())] = (d["from"], d["label"])
+    seen = {}
+    for fn in sorted(glob.glob(str(pool_dir / "batch_b*.jsonl"))):
+        for line in open(fn, encoding="utf-8"):
+            r = json.loads(line)
+            lab = r["label"]
+            f = fix.get((r["table"], str(r["header"]).strip()))
+            if f and lab == f[0]:
+                lab = f[1]
+            c, pubs = seen.setdefault(head_key(r["header"]), (Counter(), set()))
+            c[lab] += 1
+            pubs.add(r.get("publisher"))
+    out = {}
+    for k, (c, pubs) in seen.items():
+        if len(c) == 1 and sum(c.values()) >= min_n and len(pubs) >= min_pub:
+            lab = next(iter(c))
+            if lab in LABELS and lab != "unknown":
+                out[k] = (lab, sum(c.values()), len(pubs))
+    return out
+
+
 def cut(s, n):
     s = norm(s)
     return s if len(s) <= n else s[: n - 1] + "…"
@@ -92,21 +143,45 @@ def cmd_make(a):
     w = work(a.batch)
     corpus = read_jsonl(w / "corpus.jsonl")
     groups = make_groups(corpus)
+    n_prec = n_audit = 0
+    if getattr(a, "precedent", False):
+        if not re.fullmatch(r"b\d{3,}", a.batch):
+            raise SystemExit("先例は教材の陣（b123 の形）だけ。評価の陣には使わない")
+        idx = build_precedent()
+        hits = [g for g in groups if head_key(corpus[g["rows"][0]].get("header")) in idx]
+        rng = random.Random(f"precedent|{a.batch}")
+        k = min(len(hits), max(PRECEDENT_AUDIT_MIN, round(len(hits) * PRECEDENT_AUDIT_RATE)))
+        audit = {g["group"] for g in rng.sample(hits, k)} if hits else set()
+        for g in hits:
+            lab, n, npub = idx[head_key(corpus[g["rows"][0]].get("header"))]
+            if g["group"] in audit:
+                g["precedent_audit"] = lab
+                n_audit += 1
+            else:
+                g["precedent"] = lab
+                g["precedent_basis"] = f"教材庫で {n} 回・{npub} 公開元すべて {lab}"
+                n_prec += 1
     d = w / "sheets"
     if d.exists() and any(d.glob("answers/*.tsv")):
         raise SystemExit(f"{d}/answers に答えがもうある。作り直すと番号がずれるので止める")
     (d / "answers").mkdir(parents=True, exist_ok=True)
     for old in d.glob("sheet_*.md"):
         old.unlink()
-    sheets = [groups[i:i + a.size] for i in range(0, len(groups), a.size)]
+    shown = [g for g in groups if "precedent" not in g]
+    sheets = [shown[i:i + a.size] for i in range(0, len(shown), a.size)]
     guide = re.search(r"v\d+(?:\.\d+)?", (ROOT / "LABEL_GUIDE.md").read_text(encoding="utf-8").splitlines()[0])
     for n, gs in enumerate(sheets, 1):
         for g in gs:
             g["sheet"] = n
         (d / f"sheet_{n:03d}.md").write_text(render_sheet(n, gs, corpus, len(sheets), guide.group(0) if guide else ""), encoding="utf-8")
-    (d / "groups.json").write_text(json.dumps({"batch": a.batch, "rows": len(corpus), "groups": groups}, ensure_ascii=False) + "\n", encoding="utf-8")
+    meta = {"batch": a.batch, "rows": len(corpus), "groups": groups}
+    if getattr(a, "precedent", False):
+        meta["precedent"] = {"min_n": PRECEDENT_MIN_N, "min_publishers": PRECEDENT_MIN_PUB, "labelfix": LABELFIX_FILES,
+                             "groups": n_prec, "audit_groups": n_audit, "rows": sum(len(g["rows"]) for g in groups if "precedent" in g)}
+    (d / "groups.json").write_text(json.dumps(meta, ensure_ascii=False) + "\n", encoding="utf-8")
     (d / "answers" / ".keep").write_text("", encoding="utf-8")
-    print(f"{a.batch}: {len(corpus)} 列 → {len(groups)} グループ、シート {len(sheets)} 枚（{d}）")
+    print(f"{a.batch}: {len(corpus)} 列 → {len(groups)} グループ、シート {len(sheets)} 枚（{d}）"
+          + (f"。先例 {n_prec} グループ（{meta['precedent']['rows']} 列）は先生に見せない、抜き取り {n_audit} グループはシートに混ぜた" if n_prec or n_audit else ""))
 
 
 # 先生ごとの答えの置き場と、まとめたラベルのファイル（2026-10-28 Claude。Grok を 2 人目の先生に足した）。
@@ -119,7 +194,7 @@ TEACHERS = {"chatgpt": ("answers", "labels_chatgpt.jsonl", "ChatGPT"), "grok": (
 
 def read_answers(d, groups, teacher="chatgpt"):
     """答えのファイルを読む → (グループ→ラベル, 問題のリスト)。"""
-    sheet_of = {g["group"]: g["sheet"] for g in groups}
+    sheet_of = {g["group"]: g["sheet"] for g in groups if "sheet" in g}
     got, problems = {}, []
     for f in sorted((d / TEACHERS[teacher][0]).glob("sheet_*.tsv")):
         m = re.fullmatch(r"sheet_(\d{3})\.tsv", f.name)
@@ -161,20 +236,27 @@ def load(a):
 def cmd_status(a):
     _, d, meta = load(a)
     got, problems = read_answers(d, meta["groups"], a.teacher)
-    per = Counter(g["sheet"] for g in meta["groups"])
-    done = Counter(g["sheet"] for g in meta["groups"] if g["group"] in got)
+    shown = [g for g in meta["groups"] if "sheet" in g]   # 先例のグループ（シートに無い）は数えない
+    per = Counter(g["sheet"] for g in shown)
+    done = Counter(g["sheet"] for g in shown if g["group"] in got)
     full = [s for s in sorted(per) if done[s] == per[s]]
     part = [s for s in sorted(per) if 0 < done[s] < per[s]]
     rows_done = sum(len(g["rows"]) for g in meta["groups"] if g["group"] in got)
-    print(f"{a.batch}（{TEACHERS[a.teacher][2]}）: グループ {len(got)}/{len(meta['groups'])}、列 {rows_done}/{meta['rows']}、"
+    print(f"{a.batch}（{TEACHERS[a.teacher][2]}）: グループ {len(got)}/{len(shown)}、列 {rows_done}/{meta['rows']}、"
           f"済んだシート {len(full)}/{len(per)}" + (f"、途中 {', '.join(f'{s:03d}' for s in part)}" if part else ""))
     for p in problems:
         print("問題：" + p)
     return 0 if not problems else 1
 
 
+def precedent_audit(groups, got):
+    """抜き取りの先例グループで、先生の答えと先例を比べる → (比べた数, 食い違いのリスト)。"""
+    rows = [g for g in groups if "precedent_audit" in g and g["group"] in got]
+    return len(rows), [(g["group"], g["precedent_audit"], got[g["group"]]) for g in rows if got[g["group"]] != g["precedent_audit"]]
+
+
 def merge(corpus, groups, got, teacher_name="ChatGPT"):
-    missing = [g["group"] for g in groups if g["group"] not in got]
+    missing = [g["group"] for g in groups if g["group"] not in got and "precedent" not in g]
     if missing:
         raise ValueError(f"答えの無いグループ {len(missing)} 件（最初：{', '.join(missing[:5])}）")
     labels = [None] * len(corpus)
@@ -182,8 +264,12 @@ def merge(corpus, groups, got, teacher_name="ChatGPT"):
         for i in g["rows"]:
             if labels[i] is not None:
                 raise ValueError(f"{i} 行目が 2 つのグループに入っている")
-            labels[i] = {"table": corpus[i]["table"], "header": corpus[i]["header"], "label": got[g["group"]],
-                         "teacher": teacher_name, "group": g["group"]}
+            if "precedent" in g:
+                labels[i] = {"table": corpus[i]["table"], "header": corpus[i]["header"], "label": g["precedent"],
+                             "teacher": "precedent", "group": g["group"], "basis": g.get("precedent_basis", "")}
+            else:
+                labels[i] = {"table": corpus[i]["table"], "header": corpus[i]["header"], "label": got[g["group"]],
+                             "teacher": teacher_name, "group": g["group"]}
     if any(x is None for x in labels):
         raise ValueError("どのグループにも入っていない行がある")
     return labels
@@ -201,6 +287,12 @@ def cmd_merge(a):
         labels = merge(corpus, meta["groups"], got, TEACHERS[a.teacher][2])
     except ValueError as exc:
         raise SystemExit(f"まだまとめられない：{exc}（`status` で確かめる）")
+    n_aud, bad = precedent_audit(meta["groups"], got)
+    if n_aud:
+        (d / f"precedent_audit_{a.teacher}.json").write_text(json.dumps({"checked": n_aud, "disagree": bad}, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"先例の抜き取り：{n_aud} グループ中 {len(bad)} 件が先生と違う")
+        if len(bad) > PRECEDENT_MAX_DISAGREE * n_aud and not a.force:
+            raise SystemExit(f"先例の抜き取りの食い違いが {PRECEDENT_MAX_DISAGREE:.0%} を超えた（{len(bad)}/{n_aud}）。Claude が見るまでまとめない（--force で進める）")
     out = w / TEACHERS[a.teacher][1]
     if out.exists() and not a.force:
         raise SystemExit(f"{out} がもうある（上書きするなら --force）")
@@ -212,6 +304,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("make"); p.add_argument("--batch", required=True); p.add_argument("--size", type=int, default=SHEET_SIZE)
+    p.add_argument("--precedent", action="store_true", help="教材庫の先例のラベルを使う（教材の陣だけ）")
     p = sub.add_parser("status"); p.add_argument("--batch", required=True); p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
     p = sub.add_parser("merge"); p.add_argument("--batch", required=True); p.add_argument("--force", action="store_true")
     p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
