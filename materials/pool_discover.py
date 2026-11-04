@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import urlencode, urlparse
-from urllib.request import Request, urlopen
+from urllib.request import Request
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "materials"))
@@ -98,7 +98,7 @@ def bodik_candidates(train_orgs, limit=None):
 
 
 def csv_on_host(res, site):
-    """カタログと同じホスト、または allowed_hosts.json の csv_domains に書いた組織のドメインの https の CSV。"""
+    """カタログと同じホスト、または allowed_hosts.json の csv_domains に書いた組織のドメインのCSV。通常HTTPS、明記したHTTPホストだけ例外。"""
     url = str(res.get("url") or "")
     fmt = str(res.get("format") or "").lower()
     try:   # URL の欄が壊れている資料（data.gov.uk の「[wpdm_package id='15516']」など）は使わない（2026-10-27）
@@ -110,7 +110,7 @@ def csv_on_host(res, site):
 
 
 def sheet_on_host(res, site):
-    """カタログと同じホスト（または csv_domains）の https の表計算のファイル（xlsx・xls）。取り出しは fetch_rows の表計算の道（2026-10-31）。"""
+    """カタログと同じホスト（または csv_domains）の 表計算のファイル（通常HTTPS、明記したHTTPホストだけ例外）（xlsx・xls）。取り出しは fetch_rows の表計算の道（2026-10-31）。"""
     url = str(res.get("url") or "")
     fmt = str(res.get("format") or "").lower()
     try:

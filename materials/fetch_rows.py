@@ -27,7 +27,7 @@ import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlencode, urlparse
-from urllib.request import Request, urlopen, HTTPRedirectHandler, build_opener
+from urllib.request import Request
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "independent_eval"))
@@ -523,7 +523,7 @@ def fetch_table(item, known):
                     else:
                         meta["access"] = "datastore_dump"
                         return meta, fields, records, total
-        # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
+        # CSV/表計算：通常はHTTPS、設定で完全一致を許すHTTPホストだけ例外
         dl_host = urlparse(download).hostname or ""
         if not transport_allowed(download) or not host_in(dl_host, csv_domains(host)):
             raise ValueError("csv: download is not on the catalog host or its organization's domain")
