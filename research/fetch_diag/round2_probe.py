@@ -14,8 +14,13 @@ def semantic_digest(path):
     return hashlib.sha256(json.dumps(rows,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
 
 def main():
-    out={'started_utc':datetime.now(timezone.utc).isoformat(),'catalogs':[],'refetch':[]}
+    result_path=ROOT/'research/fetch_diag/round2_probe.json'
+    retry='--retry' in sys.argv
+    previous=json.loads(result_path.read_text()) if retry else None
+    out={'started_utc':datetime.now(timezone.utc).isoformat(),'catalogs':previous['catalogs'] if retry else [],'refetch':[]}
+    if retry:(ROOT/'research/fetch_diag/round2_probe_initial.json').write_text(json.dumps(previous,ensure_ascii=False,indent=1)+'\n')
     for host in ['gifu-opendata.pref.gifu.lg.jp','data.city.fukuyama.hiroshima.jp','opdt.city.toyama.lg.jp','opendata.city.imizu.toyama.jp']:
+        if retry:continue
         F.ALLOWED_HOSTS.add(host); site='https://'+host
         stats=collections.Counter(); formats=collections.Counter();reasons=collections.Counter()
         try:
@@ -33,7 +38,11 @@ def main():
         except Exception as e:out['catalogs'].append({'host':host,'error':type(e).__name__+': '+str(e)[:150]})
     with tempfile.TemporaryDirectory() as tmp:
         for n in range(148,152):
-            b=f'b{n}';d=ROOT/'materials/pool/work'/b;path=Path(tmp)/f'{b}.jsonl';log=Path(tmp)/f'{b}.log.json'
+            b=f'b{n}'
+            prior=next((r for r in previous['refetch'] if r['batch']==b),None) if retry else None
+            if prior and prior['same_content']:
+                out['refetch'].append(prior);continue
+            d=ROOT/'materials/pool/work'/b;path=Path(tmp)/f'{b}.jsonl';log=Path(tmp)/f'{b}.log.json'
             subprocess.run([sys.executable,'-I','materials/fetch_rows.py','--adopted',str(d/'adopted.json'),'--out',str(path),'--log',str(log)],cwd=ROOT,check=True)
             result=json.loads(log.read_text());before=semantic_digest(d/'corpus.jsonl');after=semantic_digest(path)
             out['refetch'].append({'batch':b,'columns':result['columns'],'ok_tables':result['ok_tables'],'tables':result['tables'],'before_semantic_sha256':before,'after_semantic_sha256':after,'same_content':before==after})
