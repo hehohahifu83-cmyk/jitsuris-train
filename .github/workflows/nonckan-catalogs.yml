@@ -2,6 +2,9 @@ name: CKAN以外の自治体カタログの調査（メタデータだけ）
 on:
   workflow_dispatch:
     inputs:
+      publishers:
+        type: boolean
+        default: false
       native:
         type: boolean
         default: false
@@ -18,12 +21,14 @@ jobs:
         with: {ref: main}
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - if: inputs.detail != true && inputs.native != true
+      - if: inputs.detail != true && inputs.native != true && inputs.publishers != true
         run: python -I research/catalogs/nonckan_probe.py
       - if: inputs.detail == true
         run: python -I research/catalogs/nonckan_detail.py
       - if: inputs.native == true
         run: python -I research/catalogs/nonckan_api.py
+      - if: inputs.publishers == true
+        run: python -I research/catalogs/shirasagi_publishers.py
       - name: メタデータ調査を保存
         run: |
           git config user.name 'github-actions[bot]'
