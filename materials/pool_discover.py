@@ -42,6 +42,11 @@ NATIONAL = [
     # 英国・スイス（2026-10-27、オーナー指示「教材もあるだけ」）。datagov_uk は FIXED_ASSIGNMENTS で train、swiss はこの日に train に固定
     {"parent": "datagov_uk", "host": "data.gov.uk", "site": "https://data.gov.uk"},
     {"parent": "swiss", "host": "opendata.swiss", "site": "https://opendata.swiss"},
+    # 日本の自治体カタログ（2026-11-04 Claude、オーナー「やれ」）。親は allocation.py の FIXED_ASSIGNMENTS で train
+    {"parent": "gifu_pref", "host": "gifu-opendata.pref.gifu.lg.jp", "site": "https://gifu-opendata.pref.gifu.lg.jp"},
+    {"parent": "fukuyama", "host": "data.city.fukuyama.hiroshima.jp", "site": "https://data.city.fukuyama.hiroshima.jp"},
+    {"parent": "toyama_city", "host": "opdt.city.toyama.lg.jp", "site": "https://opdt.city.toyama.lg.jp"},
+    {"parent": "imizu", "host": "opendata.city.imizu.toyama.jp", "site": "https://opendata.city.imizu.toyama.jp"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 # opendata.swiss は前の名乗り方（jitsuris-train-pool-discover/1.0 (metadata only)）と名乗りなしを HTTP 403 にする（2026-10-28 probe_hosts）

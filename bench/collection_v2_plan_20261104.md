@@ -32,3 +32,9 @@
 - **次の評価の陣（F2・SCRC の C1／E4 の候補）にとっておく**：HODA（`ckan.hoda.jp`、84 組織）・那須（`opendata-nasu.opendatastack.jp`、71 組織）。教材に使わない。
 - **教材（train）に使う**：岐阜県（65 組織・1,872）・相模原市（27）・福山市（15）・富山市・射水市・町田市・新潟市・ayanami（各 1 組織）。
 - 登録の前に、組織を自治体コード・名前で既存の公開元（BODIK・教材庫・主セット・E1〜E3）と照らし、重なる組織は train なら教材、それ以外は外す。
+
+## 日本の新しいカタログを教材に登録（2026-11-04 21:53 Claude、オーナー「やれ」）
+- 重なりの照合：岐阜県（団体コード 21…）・福山市・富山市・射水市・相模原市・町田市・新潟市は、allocation.json・教材庫・作業の陣（評価の陣を含む）のどこにも無い。
+- https で届く 4 つを train に登録：岐阜県（gifu-opendata.pref.gifu.lg.jp）・福山市・富山市・射水市（allocation.py の FIXED_ASSIGNMENTS、pool_discover.py の NATIONAL、allowed_hosts.json の ckan・csv_domains）。
+- 相模原市・町田市・新潟市は http だけなので今は使わない（取り出しの道具は https だけ）。HODA・那須は次の評価の陣にとっておく。
+- 第 2 回の自動の教材集め：b142〜b151（岐阜 4・福山 2・富山 2・射水 2。1 陣 1 公開元 3 表までなので陣を分けた）。

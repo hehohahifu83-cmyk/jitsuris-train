@@ -37,6 +37,12 @@ FIXED_ASSIGNMENTS = {
     "world_socrata_data_cityofnewyork_us": "main",   # 主セットの NYC と同じ組織（Socrata の公開の場）
     "sapporo": "main",
     "swiss": "train",   # opendata.swiss（2026-10-27 Claude。評価用の集合に swiss の公開元はない）
+    # 2026-11-04 Claude（オーナー「やれ」）：日本の自治体カタログ（Codex の調べ bench/jp_catalogs_20261104.md）。教材に使う。
+    # allocation・教材庫・主セット・E1〜E3 に同じ自治体（団体コード）が無いことを確かめた。HODA・那須は次の評価の陣にとっておく（ここに入れない）
+    "gifu_pref": "train",     # gifu-opendata.pref.gifu.lg.jp（岐阜県と県内の市町村、65 組織）
+    "fukuyama": "train",      # data.city.fukuyama.hiroshima.jp（福山市の部局、15 組織）
+    "toyama_city": "train",   # opdt.city.toyama.lg.jp（富山市）
+    "imizu": "train",         # opendata.city.imizu.toyama.jp（射水市）
     "yokohama": "main",
 }
 
