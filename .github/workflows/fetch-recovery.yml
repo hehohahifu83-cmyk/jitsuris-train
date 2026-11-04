@@ -12,7 +12,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: fetch-recovery
+  group: fetch-recovery-${{ inputs.phase }}
   cancel-in-progress: false
 jobs:
   recover:
@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install xlrd
+      - run: python -m unittest discover -s tests -p 'test_fetch*.py'
+      - run: python -I materials/fetch_rows.py --self-test
       - if: inputs.phase == 'probe'
         run: python -I research/fetch_diag/recovery_probe.py
       - if: inputs.phase == 'refetch'
