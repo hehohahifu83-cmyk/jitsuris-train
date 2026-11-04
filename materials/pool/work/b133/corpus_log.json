@@ -1,6 +1,6 @@
 {
  "adopted": "materials/pool/work/b133/adopted.json",
- "started_utc": "2026-11-04T11:26:32+00:00",
+ "started_utc": "2026-11-04T13:49:08+00:00",
  "tables": [
   {
    "n": 1,
@@ -68,18 +68,8 @@
    "n": 7,
    "publisher_id": "canada:esdc-edsc",
    "resource_url": "https://open.canada.ca/data/dataset/b0e4161f-5ed4-4bac-9985-e1b17549e0b6/resource/0170e153-513f-40a8-b16c-2b05816d4e42",
-   "status": "ok",
-   "columns": 2,
-   "dropped": {
-    "header_denied": 0,
-    "sensitive_value": 0,
-    "empty": 0,
-    "over_limit": 0
-   },
-   "fields": 2,
-   "records_read": 66,
-   "total": 66,
-   "platform": "ckan"
+   "status": "error",
+   "error": "ValueError: csv: header row not found"
   },
   {
    "n": 8,
@@ -117,23 +107,35 @@
    "publisher_id": "canada:statcan",
    "resource_url": "https://open.canada.ca/data/dataset/8f99b0b8-ba66-4b8a-969b-43a4512c4c76/resource/21edff6c-1ef6-4534-8fe4-ae38764d2e45",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   },
   {
    "n": 12,
    "publisher_id": "canada:statcan",
    "resource_url": "https://open.canada.ca/data/dataset/34d491a5-7f0d-4b43-838b-7a39a4307402/resource/e3121d7c-c777-4c73-9b35-cfe43a23ace9",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   },
   {
    "n": 13,
    "publisher_id": "canada:statcan",
    "resource_url": "https://open.canada.ca/data/dataset/b3c018c6-4312-4cb6-b62e-50167fba33c1/resource/07e9b71b-fc89-4f45-a0bb-c1036dc53f3f",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   }
  ],
- "columns": 10,
- "ok_tables": 3
+ "columns": 8,
+ "ok_tables": 2,
+ "recovery": {
+  "adopted_sha256": "2fa917ebbe0f6a364eca482d2853fe8a5c11b706c43212e3ce3a6a4a9590f9cf",
+  "before_columns": 10,
+  "before_ok_tables": 3,
+  "transitions": {
+   "error -> error": 9,
+   "ok -> error": 1,
+   "ok -> ok": 2,
+   "skipped_too_small -> skipped_too_small": 1
+  },
+  "blocked_redirect_hosts": {}
+ }
 }

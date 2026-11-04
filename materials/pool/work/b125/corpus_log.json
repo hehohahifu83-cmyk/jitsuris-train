@@ -1,6 +1,6 @@
 {
  "adopted": "materials/pool/work/b125/adopted.json",
- "started_utc": "2026-11-04T10:10:49+00:00",
+ "started_utc": "2026-11-04T13:45:51+00:00",
  "tables": [
   {
    "n": 1,
@@ -80,37 +80,47 @@
    "publisher_id": "australia:department-for-infrastructure-and-transport-south-australia-government",
    "resource_url": "https://data.gov.au/data/dataset/bluetooth-vehicle-origins-and-destinations-sample-only/resource/a5024a26-00f2-421d-a9e5-bcb4336e2731",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP larger than byte limit"
   },
   {
    "n": 11,
    "publisher_id": "australia:department-for-infrastructure-and-transport-south-australia-government",
    "resource_url": "https://data.gov.au/data/dataset/detection-of-vehicle-based-bluetooth-devices-sample-only/resource/14141d46-6f74-4d09-b331-36ccaa5ec4a5",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP larger than byte limit"
   },
   {
    "n": 12,
    "publisher_id": "australia:department-for-infrastructure-and-transport-south-australia-government",
    "resource_url": "https://data.gov.au/data/dataset/bluetooth-detection-sites/resource/428f2fed-f206-4ade-8043-9597643ea2c8",
-   "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "status": "skipped_too_small",
+   "columns": 0,
+   "dropped": {
+    "header_denied": 3,
+    "sensitive_value": 0,
+    "empty": 0,
+    "over_limit": 0
+   },
+   "fields": 4,
+   "records_read": 753,
+   "total": 753,
+   "platform": "ckan"
   },
   {
    "n": 13,
    "publisher_id": "australia:department-of-customer-service-datansw",
    "resource_url": "https://data.gov.au/data/dataset/nsw-top-10-speed-cameras-by-revenue-top-10-postcodes-for-speeding-offences/resource/0091cfc9-27ea-46ea-967e-f4aa81e93e74",
    "status": "ok",
-   "columns": 3,
+   "columns": 10,
    "dropped": {
     "header_denied": 0,
     "sensitive_value": 0,
     "empty": 0,
     "over_limit": 0
    },
-   "fields": 3,
-   "records_read": 146,
-   "total": 146,
+   "fields": 10,
+   "records_read": 144,
+   "total": 144,
    "platform": "ckan"
   },
   {
@@ -592,6 +602,20 @@
    "error": "RuntimeError: csv: HTTP 403"
   }
  ],
- "columns": 68,
- "ok_tables": 12
+ "columns": 75,
+ "ok_tables": 12,
+ "recovery": {
+  "adopted_sha256": "09f50270fcb533615ed0406989c4bdf145bc2cdae89585337d07c8e539698beb",
+  "before_columns": 68,
+  "before_ok_tables": 12,
+  "transitions": {
+   "error -> error": 54,
+   "error -> skipped_too_small": 1,
+   "ok -> ok": 12
+  },
+  "blocked_redirect_hosts": {
+   "publiccontent-gis-psba-qld-gov-au.s3.amazonaws.com": 2,
+   "s3.ap-southeast-2.amazonaws.com": 1
+  }
+ }
 }

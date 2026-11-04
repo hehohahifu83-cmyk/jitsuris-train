@@ -1,6 +1,6 @@
 {
  "adopted": "materials/pool/work/b131/adopted.json",
- "started_utc": "2026-11-04T11:21:01+00:00",
+ "started_utc": "2026-11-04T13:47:41+00:00",
  "tables": [
   {
    "n": 1,
@@ -38,7 +38,7 @@
    "publisher_id": "canada:cmhc-schl",
    "resource_url": "https://open.canada.ca/data/dataset/da948165-5dd7-4366-b470-95617a9e2a56/resource/64ed56bb-98cb-41a3-ba00-ee54785437fd",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   },
   {
    "n": 5,
@@ -76,7 +76,7 @@
    "publisher_id": "canada:dfo-mpo",
    "resource_url": "https://open.canada.ca/data/dataset/4bbd03ce-ae48-4aaa-97ac-5594c2a3a6c2/resource/e198c6ca-a137-433e-ae3e-1265bda4b534",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   },
   {
    "n": 9,
@@ -157,18 +157,8 @@
    "n": 14,
    "publisher_id": "canada:esdc-edsc",
    "resource_url": "https://open.canada.ca/data/dataset/1258aa2b-6f80-4fc3-b1f6-640742275747/resource/3ef640c4-e65d-4a32-946b-8f59dcbd4828",
-   "status": "ok",
-   "columns": 10,
-   "dropped": {
-    "header_denied": 3,
-    "sensitive_value": 1,
-    "empty": 0,
-    "over_limit": 15
-   },
-   "fields": 29,
-   "records_read": 531,
-   "total": 531,
-   "platform": "ckan"
+   "status": "error",
+   "error": "ValueError: csv: header row not found"
   },
   {
    "n": 15,
@@ -209,16 +199,16 @@
    "publisher_id": "canada:pch",
    "resource_url": "https://open.canada.ca/data/dataset/47d52534-27c3-46c2-bcf8-c4321d43bb4f/resource/a463f74c-2cbe-4895-86c5-67c37b5c3074",
    "status": "ok",
-   "columns": 2,
+   "columns": 10,
    "dropped": {
     "header_denied": 0,
     "sensitive_value": 0,
-    "empty": 0,
-    "over_limit": 0
+    "empty": 1,
+    "over_limit": 5
    },
-   "fields": 2,
-   "records_read": 35,
-   "total": 35,
+   "fields": 16,
+   "records_read": 30,
+   "total": 30,
    "platform": "ckan"
   },
   {
@@ -250,23 +240,34 @@
    "publisher_id": "canada:statcan",
    "resource_url": "https://open.canada.ca/data/dataset/a651a700-a2a7-41e4-b893-1a68b8b15be5/resource/e86b587e-a016-4a77-9d5b-c5141b71c2f2",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   },
   {
    "n": 21,
    "publisher_id": "canada:statcan",
    "resource_url": "https://open.canada.ca/data/dataset/8225a0cb-0f2d-4eef-9ed4-d1be99757f7c/resource/5e9794f4-3723-4b56-9474-c8cd48caa127",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   },
   {
    "n": 22,
    "publisher_id": "canada:statcan",
    "resource_url": "https://open.canada.ca/data/dataset/e9def811-63a4-4220-9a38-bc86c03b2d2b/resource/06b7d21b-97e4-465b-a00f-13f92f06a6e8",
    "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "error": "ValueError: csv: ZIP must contain exactly one CSV"
   }
  ],
- "columns": 69,
- "ok_tables": 11
+ "columns": 67,
+ "ok_tables": 10,
+ "recovery": {
+  "adopted_sha256": "9aac5fb2e4c099d096ecb00085a9d0e42e49599eb0b33964e2d88571d09de36f",
+  "before_columns": 69,
+  "before_ok_tables": 11,
+  "transitions": {
+   "error -> error": 11,
+   "ok -> error": 1,
+   "ok -> ok": 10
+  },
+  "blocked_redirect_hosts": {}
+ }
 }

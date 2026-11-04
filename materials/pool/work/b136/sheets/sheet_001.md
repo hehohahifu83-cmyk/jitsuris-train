@@ -14,7 +14,7 @@
 - 見出し：BFS_Gemeindenummer
 - 例1 値：2856 | 2761 | 2834 | 2829 | 2766
   - 同じ表の列：Betriebsnummer, Gemeinde, Betriebsart, PLZ, Ort, Bemerkung, e_eingangskoordinate, n_eingangskoordinate
-- 例2 値：4724 | 4891 | 4811 | 4471 | 4891
+- 例2 値：4724 | 4891 | 4811 | 4501 | 4891
   - 同じ表の列：Bezirksnummer_alt, BFS_Gemeindenummer_…, BFS_Bezirksnummer_b…, Bezirk_bis_2010, Gueltig_ab
 
 ## g0003（1 列）
@@ -31,7 +31,7 @@
 - 見出し：PLZ
 - 例1 値：4144 | 4104 | 4402 | 4144 | 4102
   - 同じ表の列：Betriebsnummer, BFS_Gemeindenummer, Gemeinde, Betriebsart, Ort, Bemerkung, e_eingangskoordinate, n_eingangskoordinate
-- 例2 値：8546 | 8259 | 8572 | 9573 | 9553
+- 例2 値：8500 | 8598 | 8570 | 9545 | 8554
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, Einwohner, Ortschaft, Primarschulgemeinde
 
 ## g0006（1 列）
@@ -123,14 +123,14 @@
 - 見出し：BFS_Bezirksnummer_bis_2010
 - 例1 値：2006 | 2004 | 2008 | 2005 | 2002
   - 同じ表の列：Bezirksnummer_alt, BFS_Gemeindenummer_…, Bezirk_bis_2010, BFS_Gemeindenummer, Gueltig_ab
-- 例2 値：2006 | 2007 | 2003 | 2005 | 2007
+- 例2 値：2005 | 2002 | 2001 | 2001 | 2001
   - 同じ表の列：BFS_Bezirksnummer, Bezirk, BFS_Gemeindenummer, Gemeinde, Sortierung_in_Bezirk, Bezirk_bis_2010
 
 ## g0024（2 列）
 - 見出し：Bezirk_bis_2010
 - 例1 値：Bischofszell | Weinfelden | Weinfelden | Kreuzlingen | Weinfelden
   - 同じ表の列：Bezirksnummer_alt, BFS_Gemeindenummer_…, BFS_Bezirksnummer_b…, BFS_Gemeindenummer, Gueltig_ab
-- 例2 値：Weinfelden | Bischofszell | Kreuzlingen | Weinfelden | Bischofszell
+- 例2 値：Weinfelden | Bischofszell | Kreuzlingen | Frauenfeld | Frauenfeld
   - 同じ表の列：BFS_Bezirksnummer, Bezirk, BFS_Gemeindenummer, Gemeinde, Sortierung_in_Bezirk, BFS_Bezirksnummer_b…
 
 ## g0025（1 列）
@@ -140,67 +140,67 @@
 
 ## g0026（1 列）
 - 見出し：BFS_Bezirksnummer
-- 例1 値：2011 | 2011 | 2012 | 2013 | 2013
+- 例1 値：2011 | 2014 | 2013 | 2015 | 2013
   - 同じ表の列：Bezirk, BFS_Gemeindenummer, Gemeinde, Sortierung_in_Bezirk, Bezirk_bis_2010, BFS_Bezirksnummer_b…
 
 ## g0027（1 列）
 - 見出し：Bezirk
-- 例1 値：Weinfelden | Münchwilen | Frauenfeld | Arbon | Arbon
+- 例1 値：Münchwilen | Frauenfeld | Weinfelden | Arbon | Münchwilen
   - 同じ表の列：BFS_Bezirksnummer, BFS_Gemeindenummer, Gemeinde, Sortierung_in_Bezirk, Bezirk_bis_2010, BFS_Bezirksnummer_b…
 
 ## g0028（1 列）
 - 見出し：Gemeinde
-- 例1 値：Affeltrangen | Berg | Kesswil | Kradolf-Schönenberg | Birwinken
+- 例1 値：Müllheim | Wängi | Sirnach | Salenstein | Birwinken
   - 同じ表の列：BFS_Bezirksnummer, Bezirk, BFS_Gemeindenummer, Sortierung_in_Bezirk, Bezirk_bis_2010, BFS_Bezirksnummer_b…
 
 ## g0029（1 列）
 - 見出し：Sortierung_in_Bezirk
-- 例1 値：77 | 48 | 30 | 80 | 53
+- 例1 値：54 | 65 | 75 | 80 | 27
   - 同じ表の列：BFS_Bezirksnummer, Bezirk, BFS_Gemeindenummer, Gemeinde, Bezirk_bis_2010, BFS_Bezirksnummer_b…
 
 ## g0030（1 列）
 - 見出し：Politische_Gemeinde
-- 例1 値：Hüttwilen | Birwinken | Kemmental | Kradolf-Schönenberg | Thundorf
+- 例1 値：Neunforn | Bichelsee-Balterswil | Kesswil | Kradolf-Schönenberg | Affeltrangen
   - 同じ表の列：BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, Einwohner, PLZ, Ortschaft, Primarschulgemeinde
 
 ## g0031（1 列）
 - 見出し：BFS_Nr
-- 例1 値：4806 | 4406 | 4726 | 4591 | 4656
+- 例1 値：4411 | 4411 | 4416 | 4761 | 4546
   - 同じ表の列：Politische_Gemeinde, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, Einwohner, PLZ, Ortschaft, Primarschulgemeinde
 
 ## g0032（1 列）
 - 見出し：Bezirk_Bezeichnung
-- 例1 値：Weinfelden | Weinfelden | Weinfelden | Münchwilen | Kreuzlingen
+- 例1 値：Weinfelden | Weinfelden | Münchwilen | Münchwilen | Kreuzlingen
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Nr, Siedlung, Einwohner, PLZ, Ortschaft, Primarschulgemeinde
 
 ## g0033（1 列）
 - 見出し：Bezirk_Nr
-- 例1 値：2012 | 2012 | 2012 | 2015 | 2014
+- 例1 値：2012 | 2015 | 2012 | 2015 | 2011
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Siedlung, Einwohner, PLZ, Ortschaft, Primarschulgemeinde
 
 ## g0034（1 列）
 - 見出し：Siedlung
-- 例1 値：Kronberg | Thurfeld | Schwärzi (Homburg) | Murkart | Engelswilen
+- 例1 値：Brugglen | Dietenhausen | Königsgut | Hörhausen | Höchi
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Einwohner, PLZ, Ortschaft, Primarschulgemeinde
 
 ## g0035（1 列）
 - 見出し：Einwohner
-- 例1 値：20 | x | x | x | 9
+- 例1 値：x | 91 | 48 | 88 | x
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, PLZ, Ortschaft, Primarschulgemeinde
 
 ## g0036（1 列）
 - 見出し：Ortschaft
-- 例1 値：Oberwangen | Schönenberg an der Thur | Schweizersholz | Kaltenbach | Braunau
+- 例1 値：Au | Roggwil | Aawangen | Bottighofen | Hohentannen
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, Einwohner, PLZ, Primarschulgemeinde
 
 ## g0037（1 列）
 - 見出し：Primarschulgemeinde
-- 例1 値：Fischingen | Herdern-Dettighofen | Eschlikon | Neunforn | Nollen
+- 例1 値：Bischofszell | Weinfelden | Egnach | Oberhofen-Lengwil | Münchwilen
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, Einwohner, PLZ, Ortschaft
 
 ## g0038（1 列）
 - 見出し：Sekundarschulgemeinde
-- 例1 値：Amriswil-Hefenhofen-Sommeri | Arbon | Weinfelden | Hüttwilen | Eschenz
+- 例1 値：Müllheim | Eschenz | Sirnach | Wigoltingen | Bischofszell
   - 同じ表の列：Politische_Gemeinde, BFS_Nr, Bezirk_Bezeichnung, Bezirk_Nr, Siedlung, Einwohner, PLZ, Ortschaft
 
 ## 答えの雛形

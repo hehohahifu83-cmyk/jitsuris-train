@@ -1,6 +1,6 @@
 {
  "adopted": "materials/pool/work/b137/adopted.json",
- "started_utc": "2026-11-04T11:31:52+00:00",
+ "started_utc": "2026-11-04T13:51:59+00:00",
  "tables": [
   {
    "n": 1,
@@ -108,22 +108,52 @@
    "n": 7,
    "publisher_id": "swiss:canton-geneve",
    "resource_url": "https://opendata.swiss/dataset/tiers-lieux-espaces-de-travail-partages-et-collaboratifs1/resource/7a7ef4ea-eaaa-4153-956c-84d44691808c",
-   "status": "error",
-   "error": "ValueError: csv: file is a ZIP archive"
+   "status": "ok",
+   "columns": 10,
+   "dropped": {
+    "header_denied": 4,
+    "sensitive_value": 1,
+    "empty": 0,
+    "over_limit": 7
+   },
+   "fields": 22,
+   "records_read": 99,
+   "total": 99,
+   "platform": "ckan"
   },
   {
    "n": 8,
    "publisher_id": "swiss:canton-geneve",
    "resource_url": "https://opendata.swiss/dataset/inventaire-federal-des-prairies-et-paturages-secs1/resource/ccdeb244-cf8e-4b71-be5c-da04b43dbe4d",
-   "status": "error",
-   "error": "ValueError: csv: file is HTML or XML, not CSV"
+   "status": "ok",
+   "columns": 4,
+   "dropped": {
+    "header_denied": 0,
+    "sensitive_value": 0,
+    "empty": 1,
+    "over_limit": 0
+   },
+   "fields": 5,
+   "records_read": 57,
+   "total": 57,
+   "platform": "ckan"
   },
   {
    "n": 9,
    "publisher_id": "swiss:canton-geneve",
    "resource_url": "https://opendata.swiss/dataset/inventaire-federal-des-sites-de-reproduction-des-batraciens-fixes1/resource/d4fbbe09-e27f-4b0f-824e-060013ef638b",
-   "status": "error",
-   "error": "ValueError: csv: file is HTML or XML, not CSV"
+   "status": "ok",
+   "columns": 4,
+   "dropped": {
+    "header_denied": 1,
+    "sensitive_value": 1,
+    "empty": 1,
+    "over_limit": 0
+   },
+   "fields": 7,
+   "records_read": 42,
+   "total": 42,
+   "platform": "ckan"
   },
   {
    "n": 10,
@@ -300,14 +330,14 @@
    "publisher_id": "swiss:stadt-zurich",
    "resource_url": "https://opendata.swiss/dataset/historische-fotografien-des-forstbetriebes-sihlwald1878-1962/resource/17b9f449-d16c-4984-995d-6a3c6bfac4fb",
    "status": "error",
-   "error": "ValueError: redirected outside the allowed hosts: 83025b28472d6aa2bf5ae59f3724aa78.eu.r2.cloudflarestorage.com"
+   "error": "ValueError: redirected outside the allowed hosts: ckan-prod.zurich.datopian.com"
   },
   {
    "n": 21,
    "publisher_id": "swiss:stadt-zurich",
    "resource_url": "https://opendata.swiss/dataset/matchingtabelle-quartiernummern-zu-wikidata-id/resource/261010a6-7a58-48eb-b324-73c6b60d9705",
    "status": "error",
-   "error": "ValueError: redirected outside the allowed hosts: 83025b28472d6aa2bf5ae59f3724aa78.eu.r2.cloudflarestorage.com"
+   "error": "ValueError: redirected outside the allowed hosts: ckan-prod.zurich.datopian.com"
   },
   {
    "n": 22,
@@ -334,6 +364,19 @@
    "platform": "ckan"
   }
  ],
- "columns": 137,
- "ok_tables": 17
+ "columns": 155,
+ "ok_tables": 20,
+ "recovery": {
+  "adopted_sha256": "28156b66e6c1cb824ad43fd5bdadaaa3fbc778956802a9d86982cb3719815d77",
+  "before_columns": 137,
+  "before_ok_tables": 17,
+  "transitions": {
+   "error -> error": 3,
+   "error -> ok": 3,
+   "ok -> ok": 17
+  },
+  "blocked_redirect_hosts": {
+   "ckan-prod.zurich.datopian.com": 2
+  }
+ }
 }

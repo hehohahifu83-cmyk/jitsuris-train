@@ -42,16 +42,6 @@
 - 例1 値：mobile_freql | mobile_stations | mobile_stations | mobile_stations, mobile_captures_catche… | mobile_stations, mobile_captures_catche…
   - 同じ表の列：nom_français, définition_français, english_definition
 
-## g0008（1 列）
-- 見出し：Table 1:
-- 例1 値：Table 41: | Table 35: | Table 23A: | Table 40: | Table 27A:
-  - 同じ表の列：Excluded workers in…
-
-## g0009（1 列）
-- 見出し：Excluded workers in companies (1) under federal jurisdiction
-- 例1 値：Insurance plans offered during calendar… | Number of companies (1) from the employ… | Number of employers offering benefits | Vacation leave most frequently given to… | Vacation leave most frequently given to…
-  - 同じ表の列：Table 1:
-
 ## 答えの雛形
 
 ```
@@ -62,6 +52,4 @@ g0004
 g0005	
 g0006	
 g0007	
-g0008	
-g0009	
 ```

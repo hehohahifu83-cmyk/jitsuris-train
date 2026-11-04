@@ -176,176 +176,166 @@
   - 同じ表の列：InstitutionCode, CollectionCode, SamplingEventIdenti…, SamplingEventStruct…, SurveyAreaIdentifier, CatalogNumber, GlobalUniqueIdentif…, BasisOfRecord
 
 ## g0035（1 列）
-- 見出し：Province/Territory
-- 例1 値：Ontario | New Brunswick | Manitoba | Ontario | Quebec
-  - 同じ表の列：Organization, Type of Organization, Inform, Assess, Support, Target groups, Target Code*, Prospective Apprent…
-
-## g0036（1 列）
-- 見出し：Organization
-- 例1 値：Literacy Link South Central | College Sector Committee for Academic U… | École des métiers de la construction de… | Literacy Link South Central | North West Regional College
-  - 同じ表の列：Province/Territory, Type of Organization, Inform, Assess, Support, Target groups, Target Code*, Prospective Apprent…
-
-## g0037（1 列）
-- 見出し：Type of Organization
-- 例1 値：Post-Secondary Institution | Post-Secondary Institution | Post-Secondary Institution | Post-Secondary Institution | Not-For-Profit Organization
-  - 同じ表の列：Province/Territory, Organization, Inform, Assess, Support, Target groups, Target Code*, Prospective Apprent…
-
-## g0038（1 列）
-- 見出し：Inform
-- 例1 値：1 | 1 | 1 | 1 | 1
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Assess, Support, Target groups, Target Code*, Prospective Apprent…
-
-## g0039（1 列）
-- 見出し：Assess
-- 例1 値：1 | 1 | 1 | 1 | 1
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Inform, Support, Target groups, Target Code*, Prospective Apprent…
-
-## g0040（1 列）
-- 見出し：Support
-- 例1 値：1 | 1 | 1 | 1 | 1
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Inform, Assess, Target groups, Target Code*, Prospective Apprent…
-
-## g0041（1 列）
-- 見出し：Target groups
-- 例1 値：Apprentices | Apprentices | Prospective apprentices Apprentices / T… | Prospective apprentices Apprentices / T… | Apprentices
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Inform, Assess, Support, Target Code*, Prospective Apprent…
-
-## g0042（1 列）
-- 見出し：Target Code*
-- 例1 値：TRD | TRD | TRD | GWF | TGW
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Inform, Assess, Support, Target groups, Prospective Apprent…
-
-## g0043（1 列）
-- 見出し：Prospective Apprentices
-- 例1 値：1 | 1 | 1 | 1 | 1
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Inform, Assess, Support, Target groups, Target Code*
-
-## g0044（1 列）
-- 見出し：Apprentices
-- 例1 値：1 | 1 | 1 | 1 | 1
-  - 同じ表の列：Province/Territory, Organization, Type of Organization, Inform, Assess, Support, Target groups, Target Code*
-
-## g0045（1 列）
 - 見出し：CORE_ID
 - 例1 値：915 | 515 | 105 | 219 | 647
   - 同じ表の列：SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0046（1 列）
+## g0036（1 列）
 - 見出し：SOURCE_SITEID
 - 例1 値：Z-1989-6 | Z-1972-15 | Z-1981-46 | HL03 | Z-1971-11
   - 同じ表の列：CORE_ID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0047（1 列）
+## g0037（1 列）
 - 見出し：SOURCE_SUB
 - 例1 値：Site 05 | Site 02 | Z-1981-36 | Z-1971-26-B | 15902 [B1800W+]
   - 同じ表の列：CORE_ID, SOURCE_SITEID, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0048（1 列）
+## g0038（1 列）
 - 見出し：LOC_SOURCE_FORMAT
 - 例1 値：DD.2 | DD MM DS.2 | DD.2 | DD.2 | NBS
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0049（1 列）
+## g0039（1 列）
 - 見出し：LOC_ACCURACY_NOTES
 - 例1 値：Format in Zoltai et al (2000) is DD.2, … | Format in Zoltai et al (2000) is DD.2, … | Format in Zoltai et al (2000) is DD.2, … | Format in Zoltai et al (2000) is DD.2, … | Format in Zoltai et al (2000) is DD.2, …
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0050（1 列）
+## g0040（1 列）
 - 見出し：PROV_TERR
 - 例1 値：SK | AB | ON | NT | MB
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, SAMPLING_YR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0051（1 列）
+## g0041（1 列）
 - 見出し：SAMPLING_YR
 - 例1 値：1972 | 1972 | 1981 | 1981 | 1972
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_MONTH, SAMPLING_DATE
 
-## g0052（1 列）
+## g0042（1 列）
 - 見出し：SAMPLING_MONTH
 - 例1 値：7 | 7 | 7 | 6 | 6
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_DATE
 
-## g0053（1 列）
+## g0043（1 列）
 - 見出し：SAMPLING_DATE
 - 例1 値：24 | 26 | 18 | 31 | 19
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH
 
-## g0054（1 列）
+## g0044（1 列）
 - 見出し：SAMPLING_ST
 - 例1 値：SPDESC | ZMX | ZMX | REG | ZMX
   - 同じ表の列：CORE_ID, SOURCE_SITEID, SOURCE_SUB, LOC_SOURCE_FORMAT, LOC_ACCURACY_NOTES, PROV_TERR, SAMPLING_YR, SAMPLING_MONTH
 
-## g0055（1 列）
+## g0045（1 列）
 - 見出し：OID
 - 例1 値：11051 | 13387 | 13742 | 13414 | 13763
   - 同じ表の列：Lat_DD, Long_DD, Jurisdiction, Juris_ID, Status, Commodity_Code, Mined_Quantity, Mine_Type
 
-## g0056（1 列）
+## g0046（1 列）
 - 見出し：Lat_DD
 - 例1 値：62.20250004 | 44.61620958 | 63.89250004 | 45.56480928 | 45.24896213
   - 同じ表の列：OID, Long_DD, Jurisdiction, Juris_ID, Status, Commodity_Code, Mined_Quantity, Mine_Type
 
-## g0057（1 列）
+## g0047（1 列）
 - 見出し：Long_DD
 - 例1 値：-131.601667 | -60.10541202 | -61.21736243 | -130.47 | -105.735941
   - 同じ表の列：OID, Lat_DD, Jurisdiction, Juris_ID, Status, Commodity_Code, Mined_Quantity, Mine_Type
 
-## g0058（1 列）
+## g0048（1 列）
 - 見出し：Jurisdiction
 - 例1 値：YT | SK | YT | SK | NS
   - 同じ表の列：OID, Lat_DD, Long_DD, Juris_ID, Status, Commodity_Code, Mined_Quantity, Mine_Type
 
-## g0059（1 列）
+## g0049（1 列）
 - 見出し：Juris_ID
 - 例1 値：392 | 013J/12/U 001 | 99 | 177 | 74
   - 同じ表の列：OID, Lat_DD, Long_DD, Jurisdiction, Status, Commodity_Code, Mined_Quantity, Mine_Type
 
-## g0060（1 列）
+## g0050（1 列）
 - 見出し：Status
 - 例1 値：NULL | NULL | NULL | NULL | Abandoned Non-Uranium Sites
   - 同じ表の列：OID, Lat_DD, Long_DD, Jurisdiction, Juris_ID, Commodity_Code, Mined_Quantity, Mine_Type
 
-## g0061（1 列）
+## g0051（1 列）
 - 見出し：Commodity_Code
 - 例1 値：CL | CL | CL | CL | CL
   - 同じ表の列：OID, Lat_DD, Long_DD, Jurisdiction, Juris_ID, Status, Mined_Quantity, Mine_Type
 
-## g0062（1 列）
+## g0052（1 列）
 - 見出し：Mined_Quantity
 - 例1 値：NULL | NULL | NULL | NULL | NULL
   - 同じ表の列：OID, Lat_DD, Long_DD, Jurisdiction, Juris_ID, Status, Commodity_Code, Mine_Type
 
-## g0063（1 列）
+## g0053（1 列）
 - 見出し：Mine_Type
 - 例1 値：Underground | Underground | Unknown | Unknown | Unknown
   - 同じ表の列：OID, Lat_DD, Long_DD, Jurisdiction, Juris_ID, Status, Commodity_Code, Mined_Quantity
 
-## g0064（1 列）
+## g0054（1 列）
 - 見出し：Permit
 - 例1 値：NULL | NULL | NULL | NULL | NULL
   - 同じ表の列：OID, Lat_DD, Long_DD, Jurisdiction, Juris_ID, Status, Commodity_Code, Mined_Quantity
 
+## g0055（1 列）
+- 見出し：Droits de la personne
+- 例1 値：Examen périodique universel | Déclaration d’ouverture du Canada, Conv… | À propos du Canada et le système des dr… | Guide sur la Charte canadienne des droi… | Droits par communauté ou groupe
+  - 同じ表の列：https://www.canada.…, https://www.canada.…, 42986, 42986_2, 43804, 43804_2, 11465, 8617
+
+## g0056（1 列）
+- 見出し：https://www.canada.ca/en/services/culture/canadian-identity-
+- 例1 値：https://www.canada.ca/en/canadian-herit… | https://www.canada.ca/en/canadian-herit… | https://www.canada.ca/en/canadian-herit… | https://www.canada.ca/en/canadian-herit… | https://www.canada.ca/en/canadian-herit…
+  - 同じ表の列：Droits de la person…, https://www.canada.…, 42986, 42986_2, 43804, 43804_2, 11465, 8617
+
+## g0057（1 列）
+- 見出し：https://www.canada.ca/fr/services/culture/identite-canadienn
+- 例1 値：https://www.canada.ca/fr/patrimoine-can… | https://www.canada.ca/fr/patrimoine-can… | https://www.canada.ca/fr/patrimoine-can… | https://www.canada.ca/fr/patrimoine-can… | https://www.canada.ca/fr/patrimoine-can…
+  - 同じ表の列：Droits de la person…, https://www.canada.…, 42986, 42986_2, 43804, 43804_2, 11465, 8617
+
+## g0058（1 列）
+- 見出し：42986
+- 例1 値：43031 | 43031 | 43031 | 43031 | 43032
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986_2, 43804, 43804_2, 11465, 8617
+
+## g0059（1 列）
+- 見出し：42986_2
+- 例1 値：43031 | 42986 | 43031 | 43031 | 43031
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986, 43804, 43804_2, 11465, 8617
+
+## g0060（1 列）
+- 見出し：43804
+- 例1 値：43804 | 43353 | 43033 | 43032 | 43811
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986, 42986_2, 43804_2, 11465, 8617
+
+## g0061（1 列）
+- 見出し：43804_2
+- 例1 値：43255 | 43053 | 43350 | 43353 | 43053
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986, 42986_2, 43804, 11465, 8617
+
+## g0062（1 列）
+- 見出し：11465
+- 例1 値：6021 | 90398 | 63 | 1423 | 13453
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986, 42986_2, 43804, 43804_2, 8617
+
+## g0063（1 列）
+- 見出し：8617
+- 例1 値：23252 | 10939 | 5848 | 471 | 1152
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986, 42986_2, 43804, 43804_2, 11465
+
+## g0064（1 列）
+- 見出し：2099
+- 例1 値：400 | 628 | 528 | Page did not exist | 94
+  - 同じ表の列：Droits de la person…, https://www.canada.…, https://www.canada.…, 42986, 42986_2, 43804, 43804_2, 11465
+
 ## g0065（1 列）
-- 見出し：2017/04/01-2018/03/31
-- 例1 値：2804 | 90398 | 151 | 1423 | 13453
-  - 同じ表の列：2018/04/01-2019/03/…
-
-## g0066（1 列）
-- 見出し：2018/04/01-2019/03/31
-- 例1 値：1257 | English | 2670 | 439 | 1516
-  - 同じ表の列：2017/04/01-2018/03/…
-
-## g0067（1 列）
 - 見出し：Fscl-yr_Ex-fin
 - 例1 値：2023-2024 | 2022-2023 | 2020-2021 | 2024-2025 | 2021-2022
   - 同じ表の列：Space-modernized_Es…, Total-office-space_…
 
-## g0068（1 列）
+## g0066（1 列）
 - 見出し：Space-modernized_Espace-modernise
 - 例1 値：167635.43 | 121237.23 | 98520.00 | 113730.16 | 150947.10
   - 同じ表の列：Fscl-yr_Ex-fin, Total-office-space_…
 
-## g0069（1 列）
+## g0067（1 列）
 - 見出し：Total-office-space_Espace-de-bureau-total
 - 例1 値：4550269.68 | 4548716.65 | 4787847.65 | 4866524.83 | 4749279.42
   - 同じ表の列：Fscl-yr_Ex-fin, Space-modernized_Es…
@@ -420,6 +410,4 @@ g0064
 g0065	
 g0066	
 g0067	
-g0068	
-g0069	
 ```

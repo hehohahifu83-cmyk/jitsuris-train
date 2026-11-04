@@ -1,6 +1,6 @@
 {
  "adopted": "materials/pool/work/b136/adopted.json",
- "started_utc": "2026-11-04T11:31:03+00:00",
+ "started_utc": "2026-11-04T13:51:25+00:00",
  "tables": [
   {
    "n": 1,
@@ -92,7 +92,7 @@
    "publisher_id": "swiss:stadt-zurich",
    "resource_url": "https://opendata.swiss/dataset/historische-fotografien-des-forstbetriebes-sihlwald1878-1962/resource/17b9f449-d16c-4984-995d-6a3c6bfac4fb",
    "status": "error",
-   "error": "ValueError: redirected outside the allowed hosts: 83025b28472d6aa2bf5ae59f3724aa78.eu.r2.cloudflarestorage.com"
+   "error": "ValueError: redirected outside the allowed hosts: ckan-prod.zurich.datopian.com"
   },
   {
    "n": 7,
@@ -103,5 +103,17 @@
   }
  ],
  "columns": 43,
- "ok_tables": 5
+ "ok_tables": 5,
+ "recovery": {
+  "adopted_sha256": "4c4b21eef7afc6ca04644aaddfd4178394819d88e0e59bde7c4ed174c8c2a84f",
+  "before_columns": 43,
+  "before_ok_tables": 5,
+  "transitions": {
+   "error -> error": 2,
+   "ok -> ok": 5
+  },
+  "blocked_redirect_hosts": {
+   "ckan-prod.zurich.datopian.com": 1
+  }
+ }
 }
