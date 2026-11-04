@@ -54,6 +54,8 @@ TARGETS_E4 = [
 # データセット・表の中身・値は取らない。
 ORG_HOSTS = [
     ("jig_jp", "https://ckan.odp.jig.jp"),
+    ("sendai", "https://data.city.sendai.jp"),   # 2026-11-04 ChatGPT の候補（ai-bridge messages/20261104-0904_…）
+    ("kanazawa", "https://catalog-data.city.kanazawa.ishikawa.jp"),
     ("berlin", "https://datenregister.berlin.de"),
     ("govdata_de", "https://ckan.govdata.de"),
     ("ontario", "https://data.ontario.ca"),
