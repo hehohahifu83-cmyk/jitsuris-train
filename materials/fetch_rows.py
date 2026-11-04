@@ -33,7 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "independent_eval"))
 from discover import HEADER_DENY, normalize_header  # noqa: E402
 sys.path.insert(0, str(ROOT / "materials"))
-from pipeline import ALLOWED_LICENSES  # noqa: E402  採用の道具と同じライセンスの一覧
+from url_policy import AllowedRedirect, allowed_open
+from pipeline import ALLOWED_LICENSES, transport_allowed, allowed_http_hosts  # noqa: E402  採用の道具と同じライセンスの一覧
 
 ALLOWED_HOSTS = {"data.bodik.jp"}   # 表ごとに、確かめたホストだけを足す（fetch_table）
 # CSV のファイルの転送先として許す組織のドメイン（csv_domains）。data.gov.uk のファイルは www.gov.uk などから
@@ -44,22 +45,9 @@ REDIRECT_DOMAINS = set()
 def _redirect_ok(url):
     p = urlparse(url)
     host = (p.hostname or "").lower()
-    return p.scheme == "https" and (host in ALLOWED_HOSTS or any(host == d or host.endswith("." + d) for d in REDIRECT_DOMAINS))
+    return transport_allowed(url) and (host in ALLOWED_HOSTS or any(host == d or host.endswith("." + d) for d in REDIRECT_DOMAINS))
 
 
-class AllowedRedirect(HTTPRedirectHandler):
-    """転送先へ接続する前に確認する（結果を読んでから拒否しない）。"""
-    def __init__(self, check):
-        self.check = check
-
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        if not self.check(newurl):
-            raise ValueError(f"redirected outside the allowed hosts: {urlparse(newurl).hostname}")
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
-
-
-def allowed_open(req, timeout, check):
-    return build_opener(AllowedRedirect(check)).open(req, timeout=timeout)
 # カタログの API が同じ運営の別ホストへ転送するもの（2026-10-28：data.gov.uk の API は ckan.publishing.service.gov.uk へ。b058 で 162 表が
 # 「redirected outside the allowed hosts」になった。転送先はカタログ自身の help の URL で確かめた）
 API_REDIRECTS = {"data.gov.uk": ("ckan.publishing.service.gov.uk",),
@@ -186,15 +174,15 @@ def http_json(url, step="", tries=3):
     import time
     from urllib.error import HTTPError
     host = urlparse(url).hostname or ""
-    if urlparse(url).scheme != "https" or host not in ALLOWED_HOSTS:
+    if not transport_allowed(url) or host not in ALLOWED_HOSTS:
         raise ValueError(f"host not allowed: {host}")
     for attempt in range(tries):
         time.sleep(1.0 + 4.0 * attempt)
         try:
-            with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60) as resp:
+            with allowed_open(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60, check=transport_allowed) as resp:
                 if resp.status != 200:
                     raise RuntimeError(f"{step}: HTTP {resp.status} (not a data response)")
-                if urlparse(resp.geturl()).scheme != "https" or (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
+                if not transport_allowed(resp.geturl()) or (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
                     raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
         except HTTPError as exc:
@@ -213,7 +201,7 @@ def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
     import time
     from urllib.error import HTTPError
     host = urlparse(url).hostname or ""
-    if urlparse(url).scheme != "https" or host not in ALLOWED_HOSTS:
+    if not transport_allowed(url) or host not in ALLOWED_HOSTS:
         raise ValueError(f"host not allowed: {host}")
     for attempt in range(tries):
         time.sleep(1.0 + 4.0 * attempt)
@@ -500,7 +488,7 @@ def fetch_table(item, known):
         if download in known or item["resource_url"] in known:
             raise ValueError("URL overlaps the training corpus or the main set")
         host = urlparse(item["resource_url"]).hostname or ""
-        if download.startswith("http://") and host_in(urlparse(download).hostname or "", csv_domains(host)):
+        if download.startswith("http://") and urlparse(download).hostname not in allowed_http_hosts() and host_in(urlparse(download).hostname or "", csv_domains(host)):
             # data.gov.uk の古いリンクは http:// が多い（b062 で gov.uk の CSV 30 表）。組織のドメインのものだけ https で読む
             download = "https://" + download[len("http://"):]
         REDIRECT_DOMAINS.clear()
@@ -511,7 +499,7 @@ def fetch_table(item, known):
                 "source_prefix": "jp3" if plat == "bodik" else "world", "language": language_of(host, plat)}
         def csv_ok():
             dl = urlparse(download)
-            return dl.scheme == "https" and host_in(dl.hostname or "", csv_domains(host)) and (
+            return transport_allowed(download) and host_in(dl.hostname or "", csv_domains(host)) and (
                 str(res.get("format") or "").lower() in ("csv", "text/csv") or download.lower().split("?")[0].endswith(".csv"))
         if item.get("access") != "csv" and res.get("datastore_active"):
             try:
@@ -528,7 +516,7 @@ def fetch_table(item, known):
                         raw, truncated = http_bytes(dump, "datastore_dump")
                         fields, records, total = parse_csv(raw, truncated, encodings=enc_order)
                     except (RuntimeError, ValueError) as exc2:
-                        if not (sheet_kind(res.get("format"), download) and urlparse(download).scheme == "https"
+                        if not (sheet_kind(res.get("format"), download) and transport_allowed(download)
                                 and host_in(urlparse(download).hostname or "", csv_domains(host))):
                             raise RuntimeError(f"{exc}; dump: {exc2}; file: {res.get('format')} on {urlparse(download).hostname}") from None
                         meta["dump_failed"] = str(exc2)[:80]
@@ -537,7 +525,7 @@ def fetch_table(item, known):
                         return meta, fields, records, total
         # CSV のファイル（2026-10-24）：カタログと同じホストの https のものだけ
         dl_host = urlparse(download).hostname or ""
-        if urlparse(download).scheme != "https" or not host_in(dl_host, csv_domains(host)):
+        if not transport_allowed(download) or not host_in(dl_host, csv_domains(host)):
             raise ValueError("csv: download is not on the catalog host or its organization's domain")
         ALLOWED_HOSTS.add(dl_host)
         kind = sheet_kind(res.get("format"), download)

@@ -27,7 +27,8 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "materials"))
 from pipeline import (ALLOWED_LICENSES, PER_PUBLISHER_POOL, TITLE_DENY, allowed_ckan_hosts, csv_domains, host_in,  # noqa: E402
-                      license_from_pkg, normalize_license)
+                      license_from_pkg, normalize_license, transport_allowed)
+from url_policy import allowed_open
 
 PER_PUBLISHER = PER_PUBLISHER_POOL
 # 2026-11-04 Claude（教材集め v2、オーナー「全てやってくれ」）：もう使った表（resource ID）と教材庫の公開元ごとの表の数。
@@ -69,12 +70,14 @@ def out_of_time():
 
 def get_json(url, tries=4):
     host = urlparse(url).hostname or ""
-    if urlparse(url).scheme != "https" or host not in HOSTS:
+    if not transport_allowed(url) or host not in HOSTS:
         raise ValueError(f"host not allowed: {host}")
     for attempt in range(tries):
         time.sleep(1.0 + 5.0 * attempt)
         try:
-            with urlopen(Request(url, headers=UA), timeout=120) as resp:
+            with allowed_open(Request(url, headers=UA), timeout=120, check=transport_allowed) as resp:
+                if not transport_allowed(resp.geturl()):
+                    raise ValueError("response transport not allowed")
                 return json.loads(resp.read(50_000_001).decode("utf-8-sig"))
         except HTTPError as exc:
             if (exc.code in (403, 429) or exc.code >= 500) and attempt < tries - 1:
@@ -103,7 +106,7 @@ def csv_on_host(res, site):
     except ValueError:
         return False
     return (fmt in ("csv", "text/csv") or url.lower().split("?")[0].endswith(".csv")) and \
-        parsed.scheme == "https" and host_in(parsed.hostname, csv_domains(urlparse(site).hostname or ""))
+        transport_allowed(url) and host_in(parsed.hostname, csv_domains(urlparse(site).hostname or ""))
 
 
 def sheet_on_host(res, site):
@@ -115,7 +118,7 @@ def sheet_on_host(res, site):
     except ValueError:
         return False
     ext = parsed.path.lower().rsplit(".", 1)[-1] if "." in parsed.path else ""
-    return (fmt in SHEET_FORMATS or ext in ("xlsx", "xls")) and parsed.scheme == "https" and \
+    return (fmt in SHEET_FORMATS or ext in ("xlsx", "xls")) and transport_allowed(url) and \
         host_in(parsed.hostname, csv_domains(urlparse(site).hostname or ""))
 
 

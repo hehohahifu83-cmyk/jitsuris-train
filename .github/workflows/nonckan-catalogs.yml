@@ -1,0 +1,22 @@
+name: CKAN以外の自治体カタログの調査（メタデータだけ）
+on: {workflow_dispatch: {}}
+permissions: {contents: write}
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -I research/catalogs/nonckan_probe.py
+      - name: メタデータ調査を保存
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/catalogs/nonckan_probe_20261105.json
+          git diff --cached --quiet && exit 0
+          git commit -m '非CKANカタログのメタデータ調査結果'
+          git pull --rebase origin main
+          git push origin HEAD:main

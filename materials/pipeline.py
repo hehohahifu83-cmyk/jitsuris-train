@@ -239,6 +239,32 @@ def license_text_elsewhere(pkg):
     return ""
 
 
+def allowed_http_hosts():
+    """HTTPの例外はhttp_hostsに明記された完全一致のホストだけ。登録はClaudeが行う。"""
+    p = POOL / "allowed_hosts.json"
+    if not p.exists():
+        return set()
+    with p.open(encoding="utf-8") as fh:
+        hosts = json.load(fh).get("http_hosts", [])
+    if not isinstance(hosts, list):
+        raise ValueError("http_hosts must be a list of exact hostnames")
+    return {h.lower() for h in hosts if isinstance(h, str) and re.fullmatch(r"[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*", h)}
+
+
+def transport_allowed(url):
+    """HTTPS、または設定で完全一致を許可したHTTP。ホスト/ドメインの通常検査とは別。"""
+    from urllib.parse import urlparse
+    try:
+        p = urlparse(url)
+        if not p.hostname or p.username or p.password:
+            return False
+        if p.scheme == "https":
+            return True
+        return p.scheme == "http" and p.port in (None, 80) and p.hostname.lower() in allowed_http_hosts()
+    except ValueError:
+        return False
+
+
 def csv_domains(catalog_host):
     """カタログのホストごとに、CSV を取ってよい組織のドメイン（allowed_hosts.json の csv_domains）。カタログのホストは常に含む。"""
     p = POOL / "allowed_hosts.json"
