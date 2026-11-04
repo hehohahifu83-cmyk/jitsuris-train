@@ -1,0 +1,50 @@
+name: 日本の自治体カタログを調べる（メタデータだけ）
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jp-catalogs
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: 道具の試験
+        run: python -m unittest tests.test_jp_catalogs
+      - name: 公的な一覧とCKANのメタデータだけを確認
+        run: python -I materials/pool/jp_catalogs.py --shard ${{ matrix.shard }} --shards 8 --out materials/pool/probe/jp_catalogs_$(date -u +%Y%m%d)_part${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jp-catalogs-part${{ matrix.shard }}
+          path: materials/pool/probe/jp_catalogs_*_part${{ matrix.shard }}.json
+          retention-days: 30
+  merge:
+    needs: probe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: jp-catalogs-part*
+          merge-multiple: true
+          path: /tmp/jp-catalogs
+      - name: 結果をまとめる（割り当て・許可ホストは変えない）
+        run: python -I materials/pool/jp_catalogs.py --merge /tmp/jp-catalogs --out materials/pool/probe/jp_catalogs_$(date -u +%Y%m%d).json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jp-catalogs
+          path: materials/pool/probe/jp_catalogs_*.json
+          retention-days: 30
