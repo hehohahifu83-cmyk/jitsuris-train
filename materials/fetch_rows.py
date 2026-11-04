@@ -191,11 +191,10 @@ def http_json(url, step="", tries=3):
     for attempt in range(tries):
         time.sleep(1.0 + 4.0 * attempt)
         try:
-            with allowed_open(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60,
-                              check=lambda u: urlparse(u).scheme == "https" and urlparse(u).hostname in ALLOWED_HOSTS) as resp:
+            with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60) as resp:
                 if resp.status != 200:
                     raise RuntimeError(f"{step}: HTTP {resp.status} (not a data response)")
-                if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
+                if urlparse(resp.geturl()).scheme != "https" or (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
                     raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
         except HTTPError as exc:

@@ -29,6 +29,8 @@ jobs:
       - run: python -I materials/fetch_rows.py --self-test
       - if: inputs.phase == 'probe'
         run: python -I research/fetch_diag/recovery_probe.py
+      - if: inputs.phase == 'probe'
+        run: python -I research/fetch_diag/recovery_regressions.py
       - if: inputs.phase == 'refetch'
         env:
           RECOVERY_BATCHES: '${{ inputs.batches }}'
@@ -37,7 +39,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/fetch_diag/recovery_probe.json materials/pool/work
+          git add research/fetch_diag/recovery_probe.json research/fetch_diag/recovery_regressions.json materials/pool/work
           git diff --cached --quiet && exit 0
           git commit -m '既存教材の取り出し回復の結果（自動）'
           git pull --rebase origin main
