@@ -27,7 +27,7 @@ import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlencode, urlparse
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen, HTTPRedirectHandler, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "independent_eval"))
@@ -44,7 +44,22 @@ REDIRECT_DOMAINS = set()
 def _redirect_ok(url):
     p = urlparse(url)
     host = (p.hostname or "").lower()
-    return host in ALLOWED_HOSTS or (p.scheme == "https" and any(host == d or host.endswith("." + d) for d in REDIRECT_DOMAINS))
+    return p.scheme == "https" and (host in ALLOWED_HOSTS or any(host == d or host.endswith("." + d) for d in REDIRECT_DOMAINS))
+
+
+class AllowedRedirect(HTTPRedirectHandler):
+    """転送先へ接続する前に確認する（結果を読んでから拒否しない）。"""
+    def __init__(self, check):
+        self.check = check
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if not self.check(newurl):
+            raise ValueError(f"redirected outside the allowed hosts: {urlparse(newurl).hostname}")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def allowed_open(req, timeout, check):
+    return build_opener(AllowedRedirect(check)).open(req, timeout=timeout)
 # カタログの API が同じ運営の別ホストへ転送するもの（2026-10-28：data.gov.uk の API は ckan.publishing.service.gov.uk へ。b058 で 162 表が
 # 「redirected outside the allowed hosts」になった。転送先はカタログ自身の help の URL で確かめた）
 API_REDIRECTS = {"data.gov.uk": ("ckan.publishing.service.gov.uk",),
@@ -167,7 +182,7 @@ def build_rows(meta, fields, records, total):
 
 
 def http_json(url, step="", tries=3):
-    """1 回ごとに間を空け、403・429・5xx は待って 2 回までやり直す（サーバーの連続アクセスの制限に合わせる）。失敗は段の名前つきで返す。"""
+    """1 回ごとに間を空け、429・5xx は待って 2 回までやり直す（403 は同じ要求を繰り返さない）（サーバーの連続アクセスの制限に合わせる）。失敗は段の名前つきで返す。"""
     import time
     from urllib.error import HTTPError
     host = urlparse(url).hostname or ""
@@ -176,12 +191,13 @@ def http_json(url, step="", tries=3):
     for attempt in range(tries):
         time.sleep(1.0 + 4.0 * attempt)
         try:
-            with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60) as resp:
+            with allowed_open(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60,
+                              check=lambda u: urlparse(u).scheme == "https" and urlparse(u).hostname in ALLOWED_HOSTS) as resp:
                 if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
                     raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
         except HTTPError as exc:
-            if exc.code in (403, 429) or exc.code >= 500:
+            if exc.code == 429 or exc.code >= 500:
                 if attempt < tries - 1:
                     continue
             raise RuntimeError(f"{step}: HTTP {exc.code}") from None
@@ -201,13 +217,14 @@ def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
     for attempt in range(tries):
         time.sleep(1.0 + 4.0 * attempt)
         try:
-            with urlopen(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=90) as resp:
+            with allowed_open(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=90,
+                              check=_redirect_ok) as resp:
                 if not _redirect_ok(resp.geturl()):
                     raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 raw = resp.read(limit + 1)
                 return raw[:limit], len(raw) > limit
         except HTTPError as exc:
-            if exc.code in (403, 429) or exc.code >= 500:
+            if exc.code == 429 or exc.code >= 500:
                 if attempt < tries - 1:
                     continue
             raise RuntimeError(f"{step}: HTTP {exc.code}") from None
@@ -220,8 +237,15 @@ def _find_header(rows):
         named = [c for c in cells if c]
         if len(named) < 2 or len(named) - len(set(named)) > max(1, 0.2 * len(named)) or all(re.fullmatch(r"[-0-9.,%]+", c) for c in named):
             continue
+        # 注記・出典が複数セルに分かれる前置きや、幅の広い表題を見出しにしない。
+        if re.match(r"^(?:注[：:]|出典[：:]|資料[：:]|source\s*:|notes?\s*:|table\s+\d+\b|表\s*\d+)", named[0], re.I):
+            continue
         nxt = rows[i + 1: i + 6]
-        if nxt and sum(1 for r in nxt if len(r) >= len(named)) >= max(1, len(nxt) - 1):
+        width = max((j + 1 for j, c in enumerate(cells) if c), default=0)
+        # len(named)だけでは末尾の列が無い行も通る。列位置と密度で表題を除く。
+        if len(named) < width / 2:
+            continue
+        if nxt and sum(1 for r in nxt if len(r) >= width and any(str(c).strip() for c in r)) >= max(1, len(nxt) - 1):
             seen, out = {}, []
             for c in cells:
                 if c:
@@ -236,6 +260,29 @@ CP1252_FIRST = ("utf-8-sig", "cp1252", "cp932")
 CP932_FIRST = ("utf-8-sig", "cp932", "cp1252")
 
 
+def unzip_csv(raw, truncated=False):
+    """CSVが1つだけのZIP。圧縮時・展開時とも3MB以内、ファイルへ展開しない。"""
+    import io
+    import zipfile
+    if truncated or len(raw) > CSV_MAX_BYTES:
+        raise ValueError("csv: ZIP larger than byte limit")
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as z:
+            members = [m for m in z.infolist() if not m.is_dir() and m.filename.lower().endswith('.csv')]
+            if len(members) != 1:
+                raise ValueError("csv: ZIP must contain exactly one CSV")
+            member = members[0]
+            if member.file_size > CSV_MAX_BYTES or member.flag_bits & 1:
+                raise ValueError("csv: ZIP CSV too large or encrypted")
+            with z.open(member) as fh:
+                data = fh.read(CSV_MAX_BYTES + 1)
+            if len(data) > CSV_MAX_BYTES:
+                raise ValueError("csv: ZIP CSV larger than byte limit")
+            return data
+    except (zipfile.BadZipFile, RuntimeError, NotImplementedError) as exc:
+        raise ValueError("csv: unreadable ZIP archive") from exc
+
+
 def parse_csv(raw, truncated=False, limit=FETCH_LIMIT, encodings=CP932_FIRST):
     """CSV のバイト列 → (列名, 行の dict のリスト, 読めた行の数)。読めなければ ValueError。
     文字コードは UTF-8（BOM あり・なし）→ CP932 → CP1252 の順に試す。先頭 30 行の中で、2 つ以上の文字の列名が並び（重複は 1 つ、または 2 割まで。重複には番号を付ける）、
@@ -246,7 +293,8 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT, encodings=CP932_FIRST):
     text = None
     # 2026-11-01：CSV でないファイルを止める（在庫の収集で、ZIP をそのまま読んだ表と、HTML のページを読んだ表が見つかった。research/labels/reserve_20261101）
     if raw[:4] == b"PK\x03\x04":
-        raise ValueError("csv: file is a ZIP archive")
+        raw = unzip_csv(raw, truncated)
+        truncated = False
     head8 = raw[:2048].lstrip(b"\xef\xbb\xbf \t\r\n").lower()
     if head8.startswith((b"<!doctype html", b"<html", b"<head", b"<?xml")) or (b"<script" in head8 and b"<" == head8[:1]):
         raise ValueError("csv: file is HTML or XML, not CSV")
@@ -281,7 +329,7 @@ def parse_csv(raw, truncated=False, limit=FETCH_LIMIT, encodings=CP932_FIRST):
     head, rows, err = None, [], None
     for delim in sniffed + [d for d in (",", "\t", ";") if d not in sniffed]:
         try:
-            rows = list(csv.reader(io.StringIO(text), delimiter=delim))
+            rows = list(csv.reader(io.StringIO(text, newline=""), delimiter=delim))
         except csv.Error as exc:
             err = exc
             continue

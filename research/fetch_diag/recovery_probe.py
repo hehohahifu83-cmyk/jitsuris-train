@@ -1,6 +1,8 @@
 """b124〜b141の豪州403をActionsから診断。本文は保存しない。"""
 import json
 import re
+import io
+import csv
 import sys
 import time
 from collections import Counter
@@ -11,6 +13,8 @@ from urllib.parse import urlencode, urlparse
 from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT/'materials'))
+import fetch_rows as F
 UA = 'jitsuris-train-s11/1.0 (source and license recorded)'
 VARIANTS = {
  'original': {'User-Agent': UA},
@@ -22,7 +26,18 @@ def probe(url, headers):
         with urlopen(Request(url, headers=headers), timeout=30) as r:
             raw = r.read(3_000_001)
             lead = raw[:2048].lstrip().lower()
-            return {'status': r.status, 'final_host': urlparse(r.geturl()).hostname,
+            parsed = {}
+            try:
+                fields, records, n = F.parse_csv(raw[:3_000_000], len(raw)>3_000_000, encodings=F.CP1252_FIRST)
+                parsed = {'fields':len(fields),'records':n}
+            except ValueError as e:
+                parsed = {'parse_error':str(e)}
+                try:
+                    rows=list(csv.reader(io.StringIO(raw[:20000].decode('utf-8-sig'),newline='')))
+                    parsed['first40_widths']=[len(row) for row in rows[:40]]
+                    parsed['first40_filled']=[sum(bool(c.strip()) for c in row) for row in rows[:40]]
+                except Exception: pass
+            return {'parse':parsed, 'status': r.status, 'final_host': urlparse(r.geturl()).hostname,
                     'content_type': r.headers.get('Content-Type'), 'bytes_read': len(raw),
                     'html': lead.startswith((b'<!doctype',b'<html')), 'zip': raw[:4] == b'PK\x03\x04'}
     except HTTPError as e:
@@ -36,19 +51,24 @@ def main():
         d=ROOT/f'materials/pool/work/b{n}'
         adopted={a['n']:a for a in json.loads((d/'adopted.json').read_text())['adopted']}
         for t in json.loads((d/'corpus_log.json').read_text())['tables']:
-            if 'csv: HTTP 403' not in t.get('error',''): continue
+            error=t.get('error','')
+            kind='403' if 'csv: HTTP 403' in error else 'header' if 'header row not found' in error else None
+            if not kind:continue
             a=adopted[t['n']]
             # Two resources from each batch; retain no values or teacher labels.
-            if sum(x['batch']==n for x in selected)>=2: continue
-            selected.append({'batch':n,**a})
+            if a['resource_id'] in seen or sum(x['batch']==n and x['kind']==kind for x in selected)>=2: continue
+            seen.add(a['resource_id'])
+            selected.append({'batch':n,'kind':kind,**a})
     out=[]
     for a in selected:
         rid=a['resource_id']; base='https://data.gov.au/data/api/3/action/'
-        r={'batch':a['batch'],'resource_id':rid,'resource_url':a['resource_url']}
+        r={'kind':a['kind'],'batch':a['batch'],'resource_id':rid,'resource_url':a['resource_url']}
         try:
             with urlopen(Request(base+'resource_show?'+urlencode({'id':rid}),headers={'User-Agent':UA,'Accept':'application/json'}),timeout=30) as resp:
                 res=json.load(resp)['result']
             url=res['url']; r['metadata_url']=url
+            if url.startswith('http://'):url='https://'+url[7:]
+            r['tested_url']=url
             for variant,headers in VARIANTS.items():
                 r[variant]=probe(url,headers); time.sleep(.5)
             # CKAN's advertised /download link may differ from the canonical metadata URL.
