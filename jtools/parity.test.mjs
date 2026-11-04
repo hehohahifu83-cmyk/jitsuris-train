@@ -9,6 +9,9 @@ import { readValue, columnSummary as readSummary } from "./read_value.mjs";
 import { check, columnSummary as idSummary } from "./check_digits.mjs";
 import { relations } from "./table_arith.mjs";
 import { runTable } from "./run_tools.mjs";
+import {lookup} from './std_fields.mjs';
+import {decide} from './facility_kind.mjs';
+import {findLinks, baseHeader} from './column_links.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
@@ -44,5 +47,19 @@ test("本物の表で、道具の結果と計算の関係が Python と同じ", 
     same(runTable(cols.map((c) => ({ header: c.header, values: c.values, rows: c.row_values }))), f.result, `table ${f.table}`);
     const aligned = cols.length >= 2 && new Set(cols.map((c) => c.row_values.length)).size === 1;
     same(aligned ? relations(cols.map((c) => ({ header: c.header, rows: c.row_values }))) : [], f.relations, `relations ${f.table}`);
+  }
+});
+
+test('全標準項目の和名・英名・未登録名の検索がPythonと同じ', () => {
+  for (const f of FX.standard) same(lookup(f.header), f.result, `standard ${f.header}`);
+});
+test('施設の候補・保留・境界値がPythonと同じ', () => {
+  for (const f of FX.facility) same(decide(...f.in), f.result, `facility ${JSON.stringify(f.in)}`);
+});
+test('読みの元・関連候補・短い文がPythonと同じ', () => {
+  for (const f of FX.base_headers) same(baseHeader(f.in), f.result, `base ${f.in}`);
+  for (const f of FX.column_links) {
+    same(findLinks(f.in), f.links, 'column links');
+    same(runTable(f.in), f.result, 'new tools end to end');
   }
 });

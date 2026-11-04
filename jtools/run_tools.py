@@ -5,7 +5,7 @@
 外と通信しない。JS 版 run_tools.mjs と同じ結果にする（jtools/fixtures.json）。
 
   python jtools/run_tools.py <corpus.jsonl> [表の URL]   → 表ごとに列の結果を表示（確かめ用）
-順番：1 値の読み取り（read_value）→ 2 番号の検査数字（check_digits）→ 3 表の計算の整合（table_arith、行のそろった値があるときだけ）。
+順番：1 値の読み取り → 2 番号の検査数字 → 3 表の計算の整合 → 4 標準項目 → 5 施設名候補 → 6 列の関連候補。
 辞書（table_dictionary.py）と値の統計（value_profile.py）は前からある道具で、ここでは呼ばない（すでに評価・入力の段にある）。
 """
 from __future__ import annotations
@@ -18,6 +18,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from jtools import check_digits as CD  # noqa: E402
 from jtools import read_value as RV  # noqa: E402
 from jtools import table_arith as TA  # noqa: E402
+from jtools import std_fields as SF
+from jtools import facility_kind as FK
+from jtools import column_links as CL
 
 TAG_TEXT = {"product_result": "他の2列の積", "factor": "積の因数", "sum_result": "他の2列の和", "addend": "和の項",
             "tax_included": "税込", "tax_base": "税抜", "tax_amount": "税額", "ratio_result": "比率の結果", "ratio_part": "比率の分子",
@@ -37,6 +40,21 @@ def run_table(columns) -> list:
         tags = TA.column_tags([{"header": columns[i].get("header", ""), "rows": columns[i]["rows"]} for i in with_rows])
         for i, t in zip(with_rows, tags):
             out[i]["arith"] = t
+    # 4 標準項目辞書 → 5 施設名の候補 → 6 列の関連候補。
+    headers = [c.get('header', '') for c in columns]
+    for c, r in zip(columns, out):
+        r['standard'] = SF.lookup(c.get('header'))
+    for c, r in zip(columns, out):
+        r['facility'] = FK.decide(c.get('header'), c.get('rows') or c.get('values') or [], headers)
+    links = CL.find_links(columns)
+    for r in out:
+        r['links'] = []
+    for link in links:
+        a, b = link['source'], link['target']
+        for i, other, role in ((a, b, 'source'), (b, a, 'target')):
+            out[i]['links'].append({'kind': link['kind'], 'role': role, 'column': other, 'header': headers[other], 'ambiguous': link['ambiguous']})
+        if link['kind'] == 'reading' and not link['ambiguous'] and out[b]['facility']['label'] != 'unknown':
+            out[a]['facility'] = {'label': out[b]['facility']['label'], 'reason': '読み・英字・通称の列は同じ表の名前の列に合わせる', 'rule': 'R4'}
     for r in out:
         r["text"] = to_text(r)
     return out
@@ -71,6 +89,15 @@ def to_text(r) -> str:
         if m >= 3 and r["ids"].get(k, 0) * 5 >= m * 4:   # 違う値が 3 つ以上で、その 8 割以上
             parts.append(CD_TEXT[k])
     parts += [TAG_TEXT[t] for t in r["arith"]]
+    if r.get('standard'):
+        matches = r['standard']
+        parts.append(f"標準項目 {matches[0]['name']}（{len(matches)}候補）")
+    facility = r.get('facility', {})
+    if facility.get('label') in ('org', 'address'):
+        parts.append('施設名候補:' + ('組織' if facility['label'] == 'org' else '場所'))
+    labels = {('reading', 'source'): '読みの元→', ('reading', 'target'): '読みの列←', ('unit', 'source'): '単位の対象→', ('unit', 'target'): '単位列←', ('operator', 'source'): '運営対象→', ('operator', 'target'): '運営者列←'}
+    for link in r.get('links', [])[:3]:
+        parts.append(labels[link['kind'], link['role']] + str(link['header'])[:24] + ('（複数候補）' if link['ambiguous'] else ''))
     return " ".join(parts)
 
 

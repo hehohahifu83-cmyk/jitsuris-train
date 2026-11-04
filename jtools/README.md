@@ -6,7 +6,7 @@
 ## 決まり（9.5「呼び方の決まり」）
 - 道具はプログラムが**決まった順番で毎回全部**呼ぶ。ジツリス（モデル）が道具を選ぶ形（エージェント）にはしない（9.3 の 5）。
 - AI は使わない。ブラウザの中だけで動き、**外と通信しない**（G6）。
-- **Python と JS で同じ結果**にする。`python jtools/make_fixtures.py` で正解を作り、`node --test jtools/parity.test.mjs` で確かめる（Actions `jtools-tests.yml`）。
+- **Python と JS で同じ結果**にする。`python jtools/build_data.py` で共有辞書・規則を作り、`python jtools/make_fixtures.py` で正解を作り、`node --test jtools/parity.test.mjs` で確かめる（Actions `jtools-tests.yml`）。
 - 割合は整数の数で返す（Python の round と JS の Math.round の違いを避ける）。
 
 ## 道具の一覧
@@ -16,7 +16,17 @@
 | 1 | 値の読み取り | **新しく作った** | `read_value.py`・`.mjs` | 全角・千の区切り（1,234／1.234,56／1'234）・負の印（△▲()・末尾 -）・漢数字（3万5千）・通貨（¥ $ € £ 円 ドル R$ …）・単位と倍率（% 千円 百万円 kg 人 …）・和暦（令和7年4月1日・R7.4.1・H18. 1.26・平成30年度）・西暦の日付（ISO・米・欧）・時刻 | 日付・数の見張りの損（直し G・H で手で書いた形の多く）、金額↔数量 |
 | 2 | 番号の検査数字 | **新しく作った** | `check_digits.py`・`.mjs` | 法人番号・インボイス登録番号・JAN/EAN/GTIN・ISBN・IBAN・Luhn 16 桁（カード番号の形＝個人の情報の疑い）・地方公共団体コード（検査数字つき）・郵便番号（日英加、米は ZIP+4 だけ） | id・org・address、id↔quantity |
 | 3 | 表の計算の整合 | **新しく作った** | `table_arith.py`・`.mjs` | 行のそろった値（row_values）で、積（単価×数量＝金額）・和（男＋女＝計）・税（×1.1 など）・税の額・比率（部分÷全体×100）・同じ値・片側だけ（借方・貸方）を見つける | 金額↔数量（重大の大半）、quantity↔rate、合計の列 |
-| 4 | まとめて呼ぶ | **新しく作った** | `run_tools.py`・`.mjs` | 1→2→3 の順で呼び、列ごとの結果と短い文（例「数100% 通貨JPY 他の2列の積」）にする | ― |
+| 4 | まとめて呼ぶ | **更新 2026-11-04** | `run_tools.py`・`.mjs` | 値→番号→計算→標準項目→施設名候補→列の関連候補の順で毎回全部呼ぶ | ― |
+| 7 | 標準項目の辞書 | **2026-11-04 Codex** | `std_fields.py`・`.mjs` | 公的な自治体標準1,319項目を和名・英名で検索し、データセット・項目名・形式を全部返す | 名称の文脈・形式 |
+| 8 | 施設名の候補 | **2026-11-04 Codex** | `facility_kind.py`・`.mjs` | B10規則からorg/address/unknown＋理由。既存ラベル・手動裁定に依存しない | org↔address |
+| 9 | 同じ表の関連候補 | **2026-11-04 Codex** | `column_links.py`・`.mjs` | 読み→名称、単位→数の列、運営者→施設名の列。複数候補の印つき | R4・単位・施設と運営者 |
+
+### 新しい3道具のAPIと制限
+- `std_fields.lookup(header)`（Python/JS共通名）：NFKC・前後空白・英字大小だけをそろえ、完全一致で検索。`名称`などの候補を一つに絞らない。JSONはdataset/name/name_en/formatだけを残し、`std_fields_data.mjs`には同じJSONを埋め込むのでブラウザで通信せず使える。
+- `facility_kind.decide(header, values, context)`：`{label, reason, rule}`。`pool_v24.py`の下書き規則だけを抽出した補助候補。元の`decide`が保留で「今のラベル」を返す所はunknownにする。固有idのMANUAL、既存ラベル、先生の答え、裁定、教材先例は使わない。R1〜R4の裁定で行った上書きと同一ではなく、予測精度は未測定。
+- `column_links.find_links(columns)` / JS `findLinks(columns)`：`[{kind, source, target, ambiguous}]`（0始まり）。同名列が複数なら読みの元を決めない。単位が複数なら全部を候補として残す。数が非空値の8割以上の列へ単位候補を結び、番号・コード列は外す。関連候補は実際の意味関係を保証しない。
+- `run_tools`は各列に`standard`・`facility`・`links`を追加する。読みの元が一意で名称側の候補があるときだけ、読み側の候補をそろえる。入力の列・ラベルは変更しない。`text`は標準項目の候補数と関連候補を短く出す（関連文は先頭3件、全件は`links`）。
+- 生成元の辞書・規則コードを変えたときは`build_data.py`と`make_fixtures.py`を両方動かす。評価への利用はClaudeが事前記録・新しい陣の測定後に決める。tool-koboへの写し・公開はClaudeが行う。
 | 5 | 値の統計 | 前からある | `value_profile.py`（Python だけ） | 桁・小数・負・区切り・文字の種類（W3a） | 数の種類どうし |
 | 6 | 辞書 | 前からある | `table_dictionary.py`、`materials/dictionary/`、`materials/dict/`（市区町村・国・通貨の公式の一覧） | 列名・値の知識（NACE・GWR のコードなど） | B3（種類のコード）・address |
 
@@ -34,7 +44,7 @@
 ## まだ作っていない候補（必要になったら）
 - **値の統計の JS 版**：`value_profile.py` を入力に使うと決めたら作る（そのとき一致の試験を足す）。
 - **表の形の見分け**：見出しが崩れた表・注記の行（LABEL_GUIDE v1.9 の S）を、行の値の形から見つける。E1・E2 の裁定で S の食い違いが多かった。
-- **単位の列との結び付け**：同じ表の UNIT・EINHEIT の列の値を、数の列ごとに結び付ける（G1 の直しの一般化）。
+- **単位の関連候補の絞り込み**：`column_links`の候補から、複数単位と複数の数の列の意味上の対応を確かめる。
 
 ## ジツリスへのつなぎ方（まだつないでいない）
 道具の結果をどこに使うかは、1 回に 1 要因の決まりで事前記録してから測る。候補は 2 つ：

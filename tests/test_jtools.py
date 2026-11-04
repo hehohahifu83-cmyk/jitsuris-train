@@ -10,6 +10,9 @@ from jtools import check_digits as CD  # noqa: E402
 from jtools import read_value as RV  # noqa: E402
 from jtools import run_tools as RT  # noqa: E402
 from jtools import table_arith as TA  # noqa: E402
+from jtools import std_fields as SF
+from jtools import facility_kind as FK
+from jtools import column_links as CL
 
 
 def num(v):
@@ -114,6 +117,51 @@ class RunTools(unittest.TestCase):
         for f in fx["values"]:
             self.assertEqual(RV.read_value(f["in"]), f["read"], f["in"])
             self.assertEqual(CD.check(f["in"]), f["check"], f["in"])
+
+
+class NewTools(unittest.TestCase):
+    def test_standard_all_aliases_and_ambiguity(self):
+        self.assertEqual(len(SF.DATA['fields']), 1319)
+        for dataset, name, english, fmt in SF.DATA['fields']:
+            expected = {'dataset': dataset, 'name': name, 'name_en': english, 'format': fmt}
+            self.assertIn(expected, SF.lookup(name))
+            if english: self.assertIn(expected, SF.lookup(english))
+        self.assertGreater(len(SF.lookup('名称')), 1)
+        self.assertEqual(SF.lookup(' ＩＤ '), SF.lookup('id'))
+        self.assertEqual(SF.lookup('不明な項目名'), [])
+        self.assertEqual(SF.lookup(None), [])
+
+    def test_facility_rules_and_unknown(self):
+        cases = [
+            ('名称', ['小売店'], ['営業許可番号'], 'org'),
+            ('施設名', ['中央病院'], ['診療科'], 'org'),
+            ('名称', ['中央公園'], [], 'address'),
+            ('名称', ['株式会社A', '株式会社B', '株式会社C', 'x', 'x'], [], 'org'),
+            ('名称', ['株式会社A', '株式会社B', 'x', 'x', 'x'], [], 'unknown'),
+            ('名称', [], [], 'unknown'),
+            ('値', ['中央公園'], ['住所'], 'unknown'),
+            ('名称_カナ', ['チュウオウ'], ['許可番号'], 'unknown')]
+        for header, vals, ctx, expected in cases:
+            with self.subTest(header=header, values=vals): self.assertEqual(FK.decide(header, vals, ctx)['label'], expected)
+        self.assertTrue(FK.decide('施設名', ['公園'], [])['reason'])
+
+    def test_links_are_candidates_and_exclude_codes(self):
+        cols = [{'header': 'UNIT', 'values': ['人']}, {'header': '人口', 'values': ['100', '200']}, {'header': '市区町村コード', 'values': ['111111', '222222']}]
+        self.assertEqual(CL.find_links(cols), [{'kind': 'unit', 'source': 0, 'target': 1, 'ambiguous': False}])
+        cols.insert(0, {'header': '単位', 'values': ['円']})
+        self.assertTrue(all(link['ambiguous'] for link in CL.find_links(cols)))
+        self.assertEqual(CL.find_links([]), [])
+
+    def test_reading_and_operator_end_to_end(self):
+        cols = [{'header': '施設名', 'values': ['中央公園']}, {'header': '施設名_カナ', 'values': ['チュウオウコウエン']}, {'header': '運営者', 'values': ['市']}]
+        result = RT.run_table(cols)
+        self.assertEqual([r['facility']['label'] for r in result], ['address', 'address', 'unknown'])
+        self.assertEqual(result[1]['facility']['rule'], 'R4')
+        self.assertIn('読みの元→施設名', result[1]['text'])
+        self.assertIn('運営者列←運営者', result[0]['text'])
+        self.assertEqual([c['header'] for c in cols], ['施設名', '施設名_カナ', '運営者'])
+        duplicate = [{'header': h} for h in ['名称', '名称', '名称_カナ']]
+        self.assertTrue(all(link['ambiguous'] for link in CL.find_links(duplicate)))
 
 
 if __name__ == "__main__":
