@@ -408,10 +408,15 @@ def load_preds(w, second=None):
     return align_preds(cols, preds)
 
 
+def first_labels(w):
+    """1 人目の先生のラベルのファイル。2026-11-04 から Codex（labels_codex.jsonl）。無ければ以前の ChatGPT（labels_chatgpt.jsonl）。"""
+    return "labels_codex.jsonl" if (w / "labels_codex.jsonl").exists() else "labels_chatgpt.jsonl"
+
+
 def cmd_reconcile(a):
     w = work(a.batch)
     corpus = read_jsonl(w / "corpus.jsonl")
-    labels = read_jsonl(w / "labels_chatgpt.jsonl")
+    labels = read_jsonl(w / first_labels(w))
     preds = load_preds(w, a.second)
     split, rows = reconcile(corpus, labels, preds, seed=f"jitsuris-pool-audit|{a.batch}")
     write_jsonl(w / "review.jsonl", rows)
@@ -468,11 +473,13 @@ def cmd_finalize(a):
     if final.exists():
         raise SystemExit(f"{final} がもうある")
     corpus = read_jsonl(w / "corpus.jsonl")
-    labels = read_jsonl(w / "labels_chatgpt.jsonl")
+    labels = read_jsonl(w / first_labels(w))
     preds = load_preds(w, a.second)
     review = read_jsonl(w / "review.jsonl")
     decisions = read_jsonl(w / "decisions.jsonl")
-    teacher = (labels[0].get("teacher") if labels else "chatgpt") or "chatgpt"
+    # 先例のラベル（teacher=precedent）の行があっても、陣の先生は人の先生の名前にする（2026-11-04）
+    people = Counter(x.get("teacher") for x in labels if x.get("teacher") not in (None, "", "precedent"))
+    teacher = people.most_common(1)[0][0] if people else "chatgpt"
     out, record, stat, audit = finalize(corpus, labels, preds, review, decisions, a.batch, teacher, a.second or "e5base")
     write_jsonl(final, out)
     write_jsonl(POOL / f"adjudication_{a.batch}.jsonl", record)
@@ -482,7 +489,7 @@ def cmd_finalize(a):
                          "publishers": len({r["publisher"] for r in out}), "labels": dict(Counter(r["label"] for r in out)),
                          "stats": dict(stat), **audit, "sha256": sha256(final),
                          "second": a.second or "e5base",
-                         "inputs": {n: sha256(w / n) for n in ("adopted.json", "corpus.jsonl", "labels_chatgpt.jsonl",
+                         "inputs": {n: sha256(w / n) for n in ("adopted.json", "corpus.jsonl", first_labels(w),
                                                                 "labels_grok.jsonl" if a.second == "grok" else "pred_e5base_seed1.json",
                                                                 "review.jsonl", "decisions.jsonl")}})
     save_manifest(m)

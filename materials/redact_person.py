@@ -28,8 +28,9 @@ MARK = "［個人名のため削除］"
 def person_rows(w):
     """作業の置き場で、先生・裁定・モデルのどれかが person の行の番号。"""
     rows = set()
-    if (w / "labels_chatgpt.jsonl").exists():
-        rows |= {i for i, x in enumerate(read_jsonl(w / "labels_chatgpt.jsonl")) if x.get("label") == "person"}
+    for name in ("labels_chatgpt.jsonl", "labels_codex.jsonl"):
+        if (w / name).exists():
+            rows |= {i for i, x in enumerate(read_jsonl(w / name)) if x.get("label") == "person"}
     if (w / "decisions.jsonl").exists():
         rows |= {d["i"] for d in read_jsonl(w / "decisions.jsonl") if d.get("label") == "person"}
     if (w / "pred_e5base_seed1.json").exists() and (w / "set.json").exists():
