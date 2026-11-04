@@ -39,7 +39,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/fetch_diag/recovery_probe.json research/fetch_diag/recovery_regressions.json materials/pool/work
+          git add research/fetch_diag materials/pool/work
           git diff --cached --quiet && exit 0
           git commit -m '既存教材の取り出し回復の結果（自動）'
           git pull --rebase origin main
