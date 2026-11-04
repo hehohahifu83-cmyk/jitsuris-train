@@ -23,6 +23,10 @@ def main():
    row={'url':u}
    try:
     raw,fu,ct=get(u);p=json.loads(raw.decode('utf-8-sig'));d=p.get('result',p)
+    list_url=u.split('/api/')[0]+'/api/package_list?limit=0'
+    time.sleep(2)
+    lb,_,_=get(list_url);ld=json.loads(lb.decode('utf-8-sig'));lv=ld.get('result',ld) if isinstance(ld,dict) else ld
+    row['list_shape']={'root_type':type(ld).__name__,'root_keys':list(ld)[:8] if isinstance(ld,dict) else [],'result_type':type(lv).__name__,'result_keys':list(lv)[:8] if isinstance(lv,dict) else [],'count':len(lv) if isinstance(lv,(dict,list)) else None}
     row['owner_fields']={k:{'type':type(d[k]).__name__,'keys':sorted(d[k]) if isinstance(d[k],dict) else None,'safe_evidence':safe(d[k])} for k in ('author','user','groups','areas','site') if k in d}
    except Exception as e:row['error']=type(e).__name__+': '+str(e)[:100]
    out.append(row)
