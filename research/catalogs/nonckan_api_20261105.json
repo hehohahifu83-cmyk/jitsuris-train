@@ -1,0 +1,786 @@
+{
+ "created_utc": "2026-11-04T15:48:39.466069+00:00",
+ "metadata_only": true,
+ "data_files_fetched": false,
+ "results": [
+  {
+   "url": "https://www.harp.lg.jp/opendata/",
+   "municipality_links_count": 0,
+   "checks": [
+    {
+     "url": "https://www.harp.lg.jp/opendata/api/package_show?id=d20c0d77-30c7-41d4-b82f-7671b94f1a20",
+     "action": "package_show",
+     "error": "TimeoutError: The read operation timed out"
+    }
+   ],
+   "municipality_links": {}
+  },
+  {
+   "url": "https://opendata.pref.aomori.lg.jp/",
+   "municipality_links_count": 41,
+   "checks": [
+    {
+     "url": "https://opendata.pref.aomori.lg.jp/api/package_list?limit=0",
+     "action": "package_list",
+     "content_type": "application/json; charset=utf-8",
+     "returned_type": "dict",
+     "count": null,
+     "all_ids": null
+    },
+    {
+     "url": "https://opendata.pref.aomori.lg.jp/api/package_show?id=cf068228-cc2e-4241-b0fd-b442bd6e6bad",
+     "action": "package_show",
+     "content_type": "application/json; charset=utf-8",
+     "keys": [
+      "areas",
+      "author",
+      "categories",
+      "created",
+      "downloaded",
+      "estat_categories",
+      "filename",
+      "groups",
+      "id",
+      "name",
+      "num_resources",
+      "point",
+      "released",
+      "resources",
+      "site",
+      "state",
+      "tags",
+      "text",
+      "type",
+      "update_plan",
+      "updated",
+      "url",
+      "user",
+      "uuid"
+     ],
+     "metadata": {
+      "id": 2469
+     },
+     "resources": [
+      {
+       "id": 27877,
+       "url": "https://opendata.pref.aomori.lg.jp/fs/2/7/8/7/7/_/05_______202608.pdf",
+       "format": "PDF",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2018-12-11T19:42:38.046+09:00",
+        "updated": "2018-12-11T19:42:38.062+09:00"
+       }
+      },
+      {
+       "id": 27828,
+       "url": "https://opendata.pref.aomori.lg.jp/fs/2/7/8/2/8/_/05_______202607.pdf",
+       "format": "PDF",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2018-12-11T19:42:38.046+09:00",
+        "updated": "2018-12-11T19:42:38.062+09:00"
+       }
+      },
+      {
+       "id": 27755,
+       "url": "https://opendata.pref.aomori.lg.jp/fs/2/7/7/5/5/_/05_______202606.pdf",
+       "format": "PDF",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2018-12-11T19:42:38.046+09:00",
+        "updated": "2018-12-11T19:42:38.062+09:00"
+       }
+      },
+      {
+       "id": 27697,
+       "url": "https://opendata.pref.aomori.lg.jp/fs/2/7/6/9/7/_/05_______202605.pdf",
+       "format": "PDF",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2018-12-11T19:42:38.046+09:00",
+        "updated": "2018-12-11T19:42:38.062+09:00"
+       }
+      }
+     ]
+    }
+   ],
+   "municipality_links": {
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/": "青森県",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/aomori/": "青森市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/hirosaki/": "弘前市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/hathinohe/": "八戸市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/kuroishi/": "黒石市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/gosyogawara/": "五所川原市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/towada/": "十和田市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/misawa/": "三沢市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/mutsu/": "むつ市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/tsugaru/": "つがる市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/hirakawa/": "平川市",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/hiranai/": "平内町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/imabetsu/": "今別町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/yomogita/": "蓬田村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/sotogaha/": "外ヶ浜町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/azigasawa/": "鰺ヶ沢町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/hukaura/": "深浦町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/nishimeya/": "西目屋村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/huzisaki/": "藤崎町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/owani/": "大鰐町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/inakadate/": "田舎館村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/itayanagi/": "板柳町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/tsuruta/": "鶴田町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/nakadomari/": "中泊町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/nohezi/": "野辺地町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/shithinohe/": "七戸町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/rokunohe/": "六戸町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/yokohama/": "横浜町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/tohoku/": "東北町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/rokkasyo/": "六ヶ所村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/oirase/": "おいらせ町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/oma/": "大間町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/higashidori/": "東通村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/kazamaura/": "風間浦村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/sai/": "佐井村",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/sannohe/": "三戸町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/gonohe/": "五戸町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/takko/": "田子町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/nanbu/": "南部町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/hashikami/": "階上町",
+    "https://opendata.pref.aomori.lg.jp/dataset/chiiki/aomori/shingo/": "新郷村"
+   }
+  },
+  {
+   "url": "https://opendata.pref.akita.lg.jp/",
+   "municipality_links_count": 0,
+   "checks": [],
+   "municipality_links": {}
+  },
+  {
+   "url": "https://opendata.pref.shizuoka.jp/",
+   "municipality_links_count": 36,
+   "checks": [
+    {
+     "url": "https://opendata.pref.shizuoka.jp/api/package_list?limit=0",
+     "action": "package_list",
+     "content_type": "application/json; charset=utf-8",
+     "returned_type": "list",
+     "count": 3802,
+     "all_ids": true
+    },
+    {
+     "url": "https://opendata.pref.shizuoka.jp/api/package_show?id=b55d794d-2709-4ac9-8862-9741e648a719",
+     "action": "package_show",
+     "content_type": "application/json; charset=utf-8",
+     "keys": [
+      "areas",
+      "author",
+      "categories",
+      "created",
+      "downloaded",
+      "estat_categories",
+      "filename",
+      "groups",
+      "id",
+      "name",
+      "num_resources",
+      "point",
+      "released",
+      "resources",
+      "site",
+      "state",
+      "tags",
+      "text",
+      "type",
+      "update_plan",
+      "updated",
+      "url",
+      "uuid"
+     ],
+     "metadata": {
+      "id": 12912
+     },
+     "resources": [
+      {
+       "id": 861510,
+       "url": "https://static.hamamatsu.odpf.net/opendata/v01/221309_on-site_childcare_business/221309_on-site_childcare_business.xlsx",
+       "format": "XLSX",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": "cc-by",
+        "state": "public",
+        "created": "2018-09-11T11:42:05.756+09:00",
+        "updated": "2025-08-05T00:53:15.720+09:00"
+       }
+      },
+      {
+       "id": 861511,
+       "url": "https://static.hamamatsu.odpf.net/opendata/v01/221309_on-site_childcare_business/221309_on-site_childcare_business.csv",
+       "format": "CSV",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": "cc-by",
+        "state": "public",
+        "created": "2018-09-11T11:42:05.756+09:00",
+        "updated": "2025-08-05T00:53:15.720+09:00"
+       }
+      }
+     ]
+    }
+   ],
+   "municipality_links": {
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/": "静岡県",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/shizuoka/": "静岡市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/hamamatu/": "浜松市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/numazu/": "沼津市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/atami/": "熱海市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/mishima/": "三島市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/huzimiya/": "富士宮市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/ito/": "伊東市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/shimada/": "島田市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/huzi/": "富士市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/iwata/": "磐田市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/yaizu/": "焼津市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kakegawa/": "掛川市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/fujie/": "藤枝市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/gotenba/": "御殿場市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/fukuroi/": "袋井市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/shimoda/": "下田市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/susono/": "裾野市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kosai/": "湖西市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/izu/": "伊豆市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/omaezaki/": "御前崎市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kikugawa/": "菊川市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/izunokuni/": "伊豆の国市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/makinohara/": "牧之原市",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kamo-higashiizu/": "東伊豆町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kamo-kawazu/": "河津町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kamo-minamiizu/": "南伊豆町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kamo-matsuzaki/": "松崎町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/kamo-nishiizu/": "西伊豆町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/tagata-kannami/": "函南町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/sunto-shimizu/": "清水町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/sunto-nagaizumi/": "長泉町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/sunto-koyama/": "小山町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/haibara-yoshida/": "吉田町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/haibara-kawane/": "川根本町",
+    "https://opendata.pref.shizuoka.jp/dataset/chiiki/shizuoka/shuchi-morimachi/": "森町"
+   }
+  },
+  {
+   "url": "https://odp-pref-tottori.tori-info.co.jp/",
+   "municipality_links_count": 0,
+   "checks": [
+    {
+     "url": "https://odp-pref-tottori.tori-info.co.jp/api/package_show?id=75ef8cb2-485d-4556-be98-add97219abcc",
+     "action": "package_show",
+     "content_type": "application/json; charset=utf-8",
+     "keys": [
+      "areas",
+      "author",
+      "categories",
+      "created",
+      "downloaded",
+      "estat_categories",
+      "filename",
+      "groups",
+      "id",
+      "name",
+      "num_resources",
+      "point",
+      "released",
+      "resources",
+      "site",
+      "state",
+      "tags",
+      "text",
+      "type",
+      "update_plan",
+      "updated",
+      "url",
+      "user",
+      "uuid"
+     ],
+     "metadata": {
+      "id": 1893
+     },
+     "resources": [
+      {
+       "id": 574945,
+       "url": "https://odp-pref-tottori.tori-info.co.jp/fs/5/7/4/9/4/5/_/312011_tourist_attraction.csv",
+       "format": "CSV",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2015-11-12T11:56:27.816+09:00",
+        "updated": "2015-11-12T11:56:27.839+09:00"
+       }
+      },
+      {
+       "id": 574946,
+       "url": "https://odp-pref-tottori.tori-info.co.jp/fs/5/7/4/9/4/6/_/312011_tourist_attraction.csv",
+       "format": "CSV",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2015-11-12T11:56:27.816+09:00",
+        "updated": "2015-11-12T11:56:27.839+09:00"
+       }
+      }
+     ]
+    }
+   ],
+   "municipality_links": {}
+  },
+  {
+   "url": "https://opendata.pref.tokushima.lg.jp/",
+   "municipality_links_count": 22,
+   "checks": [
+    {
+     "url": "https://opendata.pref.tokushima.lg.jp/api/package_list?limit=0",
+     "action": "package_list",
+     "content_type": "application/json; charset=utf-8",
+     "returned_type": "list",
+     "count": 1932,
+     "all_ids": true
+    },
+    {
+     "url": "https://opendata.pref.tokushima.lg.jp/api/package_show?id=72ec8e38-3c8d-432e-8677-fde7286624d5",
+     "action": "package_show",
+     "content_type": "application/json; charset=utf-8",
+     "keys": [
+      "areas",
+      "author",
+      "categories",
+      "created",
+      "downloaded",
+      "estat_categories",
+      "filename",
+      "groups",
+      "id",
+      "name",
+      "num_resources",
+      "point",
+      "released",
+      "resources",
+      "site",
+      "state",
+      "tags",
+      "text",
+      "type",
+      "update_plan",
+      "updated",
+      "url",
+      "user",
+      "uuid"
+     ],
+     "metadata": {
+      "id": 5210
+     },
+     "resources": [
+      {
+       "id": 59993,
+       "url": "https://opendata.pref.tokushima.lg.jp/fs/5/9/9/9/3/_/___2_R8.10.1.csv",
+       "format": "CSV",
+       "license": {
+        "id": 2,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2014-12-09T17:38:30.938+09:00",
+        "updated": "2015-03-03T10:39:45.874+09:00"
+       }
+      }
+     ]
+    }
+   ],
+   "municipality_links": {
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/tokushima/": "徳島市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/naruto/": "鳴門市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/komatsushima/": "小松島市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/anan/": "阿南市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/yoshinogawa/": "吉野川市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/awa": "阿波市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/mima/": "美馬市",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/katsuura/": "勝浦町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/kamikatsu/": "上勝町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/sanagochi/": "佐那河内村",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/ishii/": "石井町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/kamiyama/": "神山町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/naka/": "那賀町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/mugi/": "牟岐町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/kaiyo/": "海陽町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/matsushige/": "松茂町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/kitajima/": "北島町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/aizumi/ ": "藍住町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/itano/": "板野町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/kamiita/": "上板町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/tsurugi/": "つるぎ町",
+    "https://opendata.pref.tokushima.lg.jp/dataset/chiiki/tokushima/higashimiyoshi/": "東みよし町"
+   }
+  },
+  {
+   "url": "https://opendata.pref.kagawa.lg.jp/",
+   "municipality_links_count": 0,
+   "checks": [
+    {
+     "url": "https://opendata.pref.kagawa.lg.jp/api/package_show?id=800f36d8-f5a7-4670-8a59-de9f3fc44985",
+     "action": "package_show",
+     "content_type": "application/json; charset=utf-8",
+     "keys": [
+      "areas",
+      "author",
+      "categories",
+      "created",
+      "downloaded",
+      "estat_categories",
+      "filename",
+      "groups",
+      "id",
+      "name",
+      "num_resources",
+      "point",
+      "released",
+      "resources",
+      "site",
+      "state",
+      "tags",
+      "text",
+      "type",
+      "update_plan",
+      "updated",
+      "url",
+      "user",
+      "uuid"
+     ],
+     "metadata": {
+      "id": 396
+     },
+     "resources": [
+      {
+       "id": 23807,
+       "url": "https://opendata.pref.kagawa.lg.jp/fs/2/3/8/0/7/_/open_data_list.csv",
+       "format": "CSV",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2017-10-31T11:01:11.939+09:00",
+        "updated": "2017-10-31T11:01:11.957+09:00"
+       }
+      }
+     ]
+    }
+   ],
+   "municipality_links": {}
+  },
+  {
+   "url": "https://shimane-opendata.jp/",
+   "municipality_links_count": 20,
+   "checks": [],
+   "municipality_links": {
+    "https://shimane-opendata.jp/datasets?organization_id=17": "島根県",
+    "https://shimane-opendata.jp/datasets?organization_id=11": "松江市",
+    "https://shimane-opendata.jp/datasets?organization_id=20": "浜田市",
+    "https://shimane-opendata.jp/datasets?organization_id=10": "出雲市",
+    "https://shimane-opendata.jp/datasets?organization_id=5": "益田市",
+    "https://shimane-opendata.jp/datasets?organization_id=14": "大田市",
+    "https://shimane-opendata.jp/datasets?organization_id=2": "安来市",
+    "https://shimane-opendata.jp/datasets?organization_id=9": "江津市",
+    "https://shimane-opendata.jp/datasets?organization_id=4": "雲南市",
+    "https://shimane-opendata.jp/datasets?organization_id=6": "奥出雲町",
+    "https://shimane-opendata.jp/datasets?organization_id=18": "飯南町",
+    "https://shimane-opendata.jp/datasets?organization_id=13": "川本町",
+    "https://shimane-opendata.jp/datasets?organization_id=19": "美郷町",
+    "https://shimane-opendata.jp/datasets?organization_id=21": "邑南町",
+    "https://shimane-opendata.jp/datasets?organization_id=16": "津和野町",
+    "https://shimane-opendata.jp/datasets?organization_id=8": "吉賀町",
+    "https://shimane-opendata.jp/datasets?organization_id=7": "海士町",
+    "https://shimane-opendata.jp/datasets?organization_id=12": "西ノ島町",
+    "https://shimane-opendata.jp/datasets?organization_id=15": "知夫村",
+    "https://shimane-opendata.jp/datasets?organization_id=3": "隠岐の島町"
+   },
+   "dataeye_metadata": {
+    "dataset_url": "https://shimane-opendata.jp/datasets/209",
+    "resource_links": [
+     {
+      "url": "https://shimane-opendata.jp/resources/76991",
+      "label": "\n                  \n                    令和7年度末5歳刻み男女別人口（雲南市全域）\n                 "
+     },
+     {
+      "url": "https://shimane-opendata.jp/resources/76992",
+      "label": "\n                  \n                    令和7年度末5歳刻み男女別人口（大東町）\n                   "
+     },
+     {
+      "url": "https://shimane-opendata.jp/resources/76993",
+      "label": "\n                  \n                    令和7年度末5歳刻み男女別人口（加茂町）\n                   "
+     },
+     {
+      "url": "https://shimane-opendata.jp/resources/76994",
+      "label": "\n                  \n                    令和7年度末5歳刻み男女別人口（木次町）\n                   "
+     },
+     {
+      "url": "https://shimane-opendata.jp/resources/76995",
+      "label": "\n                  \n                    令和7年度末5歳刻み男女別人口（三刀屋町）\n                  "
+     }
+    ],
+    "license_markup": []
+   }
+  },
+  {
+   "url": "https://miyagi.dataeye.jp/",
+   "municipality_links_count": 36,
+   "checks": [],
+   "municipality_links": {
+    "https://miyagi.dataeye.jp/datasets?organization_id=1": "宮城県",
+    "https://miyagi.dataeye.jp/datasets?organization_id=2": "仙台市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=3": "石巻市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=4": "塩竈市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=5": "気仙沼市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=6": "白石市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=7": "名取市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=8": "角田市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=9": "多賀城市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=10": "岩沼市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=11": "登米市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=12": "栗原市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=13": "東松島市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=14": "大崎市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=15": "富谷市",
+    "https://miyagi.dataeye.jp/datasets?organization_id=16": "蔵王町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=17": "七ヶ宿町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=18": "大河原町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=19": "村田町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=20": "柴田町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=21": "川崎町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=22": "丸森町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=23": "亘理町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=24": "山元町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=25": "松島町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=26": "七ヶ浜町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=27": "利府町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=28": "大和町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=29": "大郷町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=30": "大衡村",
+    "https://miyagi.dataeye.jp/datasets?organization_id=31": "色麻町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=32": "加美町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=33": "涌谷町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=34": "美里町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=35": "女川町",
+    "https://miyagi.dataeye.jp/datasets?organization_id=36": "南三陸町"
+   },
+   "dataeye_metadata": {
+    "dataset_url": "https://miyagi.dataeye.jp/datasets/270",
+    "resource_links": [
+     {
+      "url": "https://miyagi.dataeye.jp/resources/33039",
+      "label": "\n                  \n                    令和8年10月1日現在\n                    \n\n      "
+     },
+     {
+      "url": "https://miyagi.dataeye.jp/resources/32889",
+      "label": "\n                  \n                    令和8年4月1日現在\n                    \n\n       "
+     },
+     {
+      "url": "https://miyagi.dataeye.jp/resources/32667",
+      "label": "\n                  \n                    令和8年1月1日現在\n                    \n\n       "
+     },
+     {
+      "url": "https://miyagi.dataeye.jp/resources/32666",
+      "label": "\n                  \n                    令和7年10月1日現在\n                    \n\n      "
+     },
+     {
+      "url": "https://miyagi.dataeye.jp/resources/32283",
+      "label": "\n                  \n                    令和7年4月1日現在\n                    \n\n       "
+     }
+    ],
+    "license_markup": []
+   }
+  },
+  {
+   "url": "https://hiroshima-opendata.dataeye.jp/",
+   "municipality_links_count": 39,
+   "checks": [],
+   "municipality_links": {
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=131": "広島県",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=78": "広島市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=79": "呉市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=80": "竹原市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=81": "三原市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=132": "尾道市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=133": "福山市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=134": "府中市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=105": "三次市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=135": "庄原市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=82": "大竹市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=83": "東広島市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=84": "廿日市市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=85": "安芸高田市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=86": "江田島市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=87": "府中町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=88": "海田町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=89": "熊野町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=90": "坂町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=91": "安芸太田町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=92": "北広島町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=93": "大崎上島町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=94": "世羅町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=136": "神石高原町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=95": "岩国市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=96": "柳井市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=97": "周防大島町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=98": "和木町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=99": "上関町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=100": "田布施町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=101": "平生町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=138": "浜田市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=143": "出雲市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=144": "益田市",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=141": "飯南町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=142": "川本町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=139": "美郷町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=140": "邑南町",
+    "https://hiroshima-opendata.dataeye.jp/datasets?organization_id=145": "吉賀町"
+   },
+   "dataeye_metadata": {
+    "dataset_url": "https://hiroshima-opendata.dataeye.jp/datasets/898",
+    "resource_links": [
+     {
+      "url": "https://hiroshima-opendata.dataeye.jp/resources/26532",
+      "label": "\n                  \n                    府中町_地域・年齢別人口（2026年10月1日時点）(csv)\n        "
+     },
+     {
+      "url": "https://hiroshima-opendata.dataeye.jp/resources/26531",
+      "label": "\n                  \n                    府中町_地域・年齢別人口（2026年10月1日時点）(Excel)\n      "
+     },
+     {
+      "url": "https://hiroshima-opendata.dataeye.jp/resources/26444",
+      "label": "\n                  \n                    府中町_地域・年齢別人口（2026年9月1日時点）(csv)\n         "
+     },
+     {
+      "url": "https://hiroshima-opendata.dataeye.jp/resources/26443",
+      "label": "\n                  \n                    府中町_地域・年齢別人口（2026年9月1日時点）(Excel)\n       "
+     },
+     {
+      "url": "https://hiroshima-opendata.dataeye.jp/resources/26431",
+      "label": "\n                  \n                    府中町_地域・年齢別人口（2026年8月1日時点）(csv)\n         "
+     }
+    ],
+    "license_markup": []
+   }
+  },
+  {
+   "url": "https://www.pref.ehime.jp/opendata-catalog/",
+   "municipality_links_count": 1,
+   "checks": [
+    {
+     "url": "https://www.pref.ehime.jp/opendata-catalog/api/package_list?limit=0",
+     "action": "package_list",
+     "content_type": "application/json; charset=utf-8",
+     "returned_type": "dict",
+     "count": null,
+     "all_ids": null
+    },
+    {
+     "url": "https://www.pref.ehime.jp/opendata-catalog/api/package_show?id=90d8917d-e9b1-41a4-8096-fd0e14646156",
+     "action": "package_show",
+     "content_type": "application/json; charset=utf-8",
+     "keys": [
+      "areas",
+      "author",
+      "categories",
+      "created",
+      "downloaded",
+      "estat_categories",
+      "filename",
+      "groups",
+      "id",
+      "name",
+      "num_resources",
+      "point",
+      "released",
+      "resources",
+      "site",
+      "state",
+      "tags",
+      "text",
+      "type",
+      "update_plan",
+      "updated",
+      "url",
+      "uuid"
+     ],
+     "metadata": {
+      "id": 3138
+     },
+     "resources": [
+      {
+       "id": null,
+       "url": "https://www.town.kihoku.ehime.jp/uploaded/attachment/14632.csv",
+       "format": "CSV",
+       "license": {
+        "id": 1,
+        "name": "表示（CC BY）",
+        "uid": null,
+        "state": "public",
+        "created": "2019-01-09T18:07:06.926+09:00",
+        "updated": "2024-03-19T16:24:03.538+09:00"
+       }
+      }
+     ]
+    }
+   ],
+   "municipality_links": {
+    "https://www.pref.ehime.jp/opendata-catalog/dataset/search/?utf8=%E2%9C%93&s%5Bkeyword%5D=&s%5Bcategory_id%5D=&s%5Bestat_category_id%5D=&s%5Barea_id%5D=228&s%5Btag%5D=&s%5Bformat%5D=&s%5Blicense_id%5D=&s%5Bdataset_group_id%5D=&s%5Bsort%5D=released&s%5Boption%5D=all_keywords&search=%E6%A4%9C%E7%B4%A2": "愛媛県"
+   }
+  },
+  {
+   "url": "https://opendata.pref.kanagawa.jp/",
+   "municipality_links_count": 0,
+   "checks": [],
+   "municipality_links": {}
+  }
+ ],
+ "catalogue_manifest": {
+  "url": "https://www.pref.miyagi.jp/documents/5880/od_20260325.csv",
+  "explicitly_catalogue_metadata": true,
+  "headers": [
+   "地方公共団体コード",
+   "地方公共団体名",
+   "遠しNo.",
+   "No.",
+   "タイトル",
+   "分類",
+   "URL",
+   "データ形式",
+   "担当所属",
+   "ライセンス",
+   "登録日",
+   "最終更新日",
+   "備考"
+  ],
+  "records": 187,
+  "url_fields": [
+   "URL"
+  ],
+  "license_fields": [
+   "ライセンス"
+  ]
+ }
+}
