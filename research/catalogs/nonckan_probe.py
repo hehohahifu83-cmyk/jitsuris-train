@@ -20,10 +20,10 @@ class Links(HTMLParser):
   self.text.append(s)
   if self.current is not None:self.current[1]+=s
 
-def get(url):
+def get(url,timeout=12):
  p=urlsplit(url)
  if p.scheme not in ('http','https') or not p.hostname or p.username or p.password:raise ValueError('not a public catalog URL')
- with urlopen(Request(url,headers={'User-Agent':UA,'Accept':'application/json,text/html;q=0.9'}),timeout=12) as r:
+ with urlopen(Request(url,headers={'User-Agent':UA,'Accept':'application/json,text/html;q=0.9'}),timeout=timeout) as r:
   raw=r.read(4_000_001)
   if len(raw)>4_000_000:raise ValueError('metadata exceeds 4MB')
   return raw,r.geturl(),r.headers.get('Content-Type','')
