@@ -1,5 +1,5 @@
 {
- "started_utc": "2026-11-04T14:22:19.628896+00:00",
+ "started_utc": "2026-11-04T14:25:50.647053+00:00",
  "catalogs": [
   {
    "host": "gifu-opendata.pref.gifu.lg.jp",
@@ -264,8 +264,8 @@
   },
   {
    "batch": "b151",
-   "columns": 9,
-   "ok_tables": 2,
+   "columns": 15,
+   "ok_tables": 3,
    "tables": [
     {
      "n": 1,
@@ -288,8 +288,18 @@
      "n": 2,
      "publisher_id": "imizu:org-imizu-city",
      "resource_url": "https://opendata.city.imizu.toyama.jp/dataset/age_population_foreign_residents/resource/e30e516f-642f-4800-9920-2964bbaf9f4e",
-     "status": "error",
-     "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>"
+     "status": "ok",
+     "columns": 6,
+     "dropped": {
+      "header_denied": 0,
+      "sensitive_value": 0,
+      "empty": 0,
+      "over_limit": 0
+     },
+     "fields": 6,
+     "records_read": 1000,
+     "total": 1000,
+     "platform": "ckan"
     },
     {
      "n": 3,
@@ -310,8 +320,8 @@
     }
    ],
    "before_semantic_sha256": "c3a9d3afffae313c41d5d65ba766144914350985f4d537ff53c121ec4fb2a622",
-   "after_semantic_sha256": "6065a083c8c46ab8c23e86733b7e95e7b2f9da35c3c5e728f133c8ef79533866",
-   "same_content": false
+   "after_semantic_sha256": "c3a9d3afffae313c41d5d65ba766144914350985f4d537ff53c121ec4fb2a622",
+   "same_content": true
   }
  ]
 }
