@@ -1,0 +1,41 @@
+name: 教材取り出しの回復（既存の採用だけ）
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        type: choice
+        options: [probe, refetch]
+        default: probe
+      batches:
+        description: '再取得する既存の陣（空白区切り）'
+        default: 'b124 b125 b126 b127 b128 b129 b130 b131 b132 b133 b134 b135 b136 b137 b138 b139 b140 b141'
+permissions:
+  contents: write
+concurrency:
+  group: fetch-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install xlrd
+      - if: inputs.phase == 'probe'
+        run: python -I research/fetch_diag/recovery_probe.py
+      - if: inputs.phase == 'refetch'
+        env:
+          RECOVERY_BATCHES: '${{ inputs.batches }}'
+        run: python -I materials/pool/refetch_existing.py $RECOVERY_BATCHES
+      - name: 結果を保存
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/fetch_diag/recovery_probe.json materials/pool/work
+          git diff --cached --quiet && exit 0
+          git commit -m '既存教材の取り出し回復の結果（自動）'
+          git pull --rebase origin main
+          git push origin HEAD:main
