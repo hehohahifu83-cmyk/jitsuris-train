@@ -42,6 +42,16 @@
 - 例1 値：mobile_freql | mobile_stations | mobile_stations | mobile_stations, mobile_captures_catche… | mobile_stations, mobile_captures_catche…
   - 同じ表の列：nom_français, définition_français, english_definition
 
+## g0008（1 列）
+- 見出し：Table 7A:
+- 例1 値：Table 9: | Table 38: | Table 44: | Table 7B: | Table 27A:
+  - 同じ表の列：Retirement within 1…
+
+## g0009（1 列）
+- 見出し：Retirement within 10 years of survey date (averages weighted
+- 例1 値：Leave most frequently given to permanen… | Number of Employees by Hours Worked by … | Road transport activities (3) | Number of days of annual unpaid leave o… | Refusing overtime as at survey date
+  - 同じ表の列：Table 7A:
+
 ## 答えの雛形
 
 ```
@@ -52,4 +62,6 @@ g0004
 g0005	
 g0006	
 g0007	
+g0008	
+g0009	
 ```
