@@ -80,6 +80,11 @@ def head_key(h) -> str:
     return norm(h).casefold()
 
 
+# 2026-11-04 Claude：名前・住所・文章の列は先例にしない。b142〜b145 で「法人の名称」（教材庫ではいつも org）に個人名が入っており、
+# 先例で隠すと個人名が先生の目を通らずに教材に入る（隠した 714 グループの答え合わせで org→S が 42）
+PRECEDENT_SKIP_LABELS = {"org", "address", "text", "person"}
+
+
 def build_precedent(pool_dir=None, min_n=PRECEDENT_MIN_N, min_pub=PRECEDENT_MIN_PUB):
     """教材庫の確定した列から、見出し → (ラベル, 回数, 公開元の数)。ラベルが 1 つに決まる見出しだけ。"""
     pool_dir = Path(pool_dir or ROOT / "materials" / "pool")
@@ -107,7 +112,7 @@ def build_precedent(pool_dir=None, min_n=PRECEDENT_MIN_N, min_pub=PRECEDENT_MIN_
     for k, (c, pubs) in seen.items():
         if len(c) == 1 and sum(c.values()) >= min_n and len(pubs) >= min_pub:
             lab = next(iter(c))
-            if lab in LABELS and lab != "unknown":
+            if lab in LABELS and lab != "unknown" and lab not in PRECEDENT_SKIP_LABELS:
                 out[k] = (lab, sum(c.values()), len(pubs))
     return out
 
@@ -301,10 +306,10 @@ def cmd_merge(a):
     print(f"{a.batch}: {len(labels)} 列のラベルを {out} に書いた（グループ {len(got)}）。{dict(Counter(x['label'] for x in labels))}")
 
 
-def reveal(groups, size, start_sheet):
+def reveal(groups, size, start_sheet, labels=None):
     """先例で隠したグループを、続きのシート番号でシートに出す（2026-11-04 Claude）。グループの番号は変えないので、出してある答えはそのまま使える。
     先例のラベルは precedent_revealed に残す（先生には見せない）。戻り値：新しいシート（グループのリストのリスト）。"""
-    hidden = [g for g in groups if "precedent" in g]
+    hidden = [g for g in groups if "precedent" in g and (not labels or g["precedent"] in labels)]
     for g in hidden:
         g["precedent_revealed"] = g.pop("precedent")
         g.pop("precedent_basis", None)
@@ -319,18 +324,19 @@ def cmd_reveal(a):
     """抜き取りの食い違いが決まり（PRECEDENT_MAX_DISAGREE）を超えた陣で、先例を使わず、隠したグループも先生に付けてもらう。"""
     w, d, meta = load(a)
     corpus = read_jsonl(w / "corpus.jsonl")
-    if not any("precedent" in g for g in meta["groups"]):
+    labels = set(a.labels.split(",")) if a.labels else None
+    if not any("precedent" in g and (not labels or g["precedent"] in labels) for g in meta["groups"]):
         raise SystemExit(f"{a.batch}: 隠したグループが無い")
     last = max((g["sheet"] for g in meta["groups"] if "sheet" in g), default=0)
-    sheets = reveal(meta["groups"], a.size, last + 1)
+    sheets = reveal(meta["groups"], a.size, last + 1, labels)
     guide = re.search(r"v\d+(?:\.\d+)?", (ROOT / "LABEL_GUIDE.md").read_text(encoding="utf-8").splitlines()[0])
     total = last + len(sheets)
     for n, gs in enumerate(sheets, last + 1):
         (d / f"sheet_{n:03d}.md").write_text(render_sheet(n, gs, corpus, total, guide.group(0) if guide else ""), encoding="utf-8")
-    meta.setdefault("precedent", {})["revealed"] = {"reason": a.reason, "sheets": [last + 1, total],
-                                                     "groups": sum(len(x) for x in sheets)}
+    meta.setdefault("precedent", {}).setdefault("revealed_log", []).append({"reason": a.reason, "labels": sorted(labels or []), "sheets": [last + 1, total],
+                                                     "groups": sum(len(x) for x in sheets)})
     (d / "groups.json").write_text(json.dumps(meta, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"{a.batch}: 隠したグループ {meta['precedent']['revealed']['groups']} をシート {last + 1:03d}〜{total:03d} に出した")
+    print(f"{a.batch}: 隠したグループ {sum(len(x) for x in sheets)} をシート {last + 1:03d}〜{total:03d} に出した")
 
 
 def main(argv=None):
@@ -343,6 +349,7 @@ def main(argv=None):
     p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
     p = sub.add_parser("reveal"); p.add_argument("--batch", required=True); p.add_argument("--size", type=int, default=SHEET_SIZE)
     p.add_argument("--reason", required=True)
+    p.add_argument("--labels", help="この先例のラベルのグループだけ出す（コンマ区切り、例 org,address）")
     a = ap.parse_args(argv)
     return {"make": cmd_make, "status": cmd_status, "merge": cmd_merge, "reveal": cmd_reveal}[a.cmd](a) or 0
 

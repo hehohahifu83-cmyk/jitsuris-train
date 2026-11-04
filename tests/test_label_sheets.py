@@ -91,7 +91,13 @@ class PrecedentTests(unittest.TestCase):
         self.assertEqual(idx["id"][0], "id")            # NFKC・小文字で「ＩＤ」→「id」
         self.assertNotIn("名称", idx)                    # 1 公開元だけ
         self.assertNotIn("区分", idx)                    # ラベルが割れる
-        self.assertEqual(idx["住所"][0], "address")      # 付け直しを当ててから数える
+        self.assertNotIn("住所", idx)                    # 2026-11-04：名前・住所・文章の列は先例にしない
+        skip = S.PRECEDENT_SKIP_LABELS
+        S.PRECEDENT_SKIP_LABELS = set()
+        try:
+            self.assertEqual(S.build_precedent(self._pool())["住所"][0], "address")      # 付け直しを当ててから数える
+        finally:
+            S.PRECEDENT_SKIP_LABELS = skip
 
     def test_merge_uses_precedent_and_audit(self):
         corpus = [row("x1", "ID", ["1"]), row("x2", "人口", ["3"])]
@@ -113,6 +119,9 @@ class RevealTests(unittest.TestCase):
                   {"group": "g0002", "rows": [1], "precedent": "id", "precedent_basis": "x"},
                   {"group": "g0003", "rows": [2], "sheet": 1, "precedent_audit": "date"},
                   {"group": "g0004", "rows": [3], "precedent": "org"}]
+        part = [dict(g) for g in groups]
+        self.assertEqual([[g["group"] for g in x] for x in S.reveal(part, size=5, start_sheet=2, labels={"org"})], [["g0004"]])
+        self.assertEqual(part[1]["precedent"], "id")    # ほかのラベルの先例は隠したまま
         sheets = S.reveal(groups, size=1, start_sheet=2)
         self.assertEqual([[g["group"] for g in s] for s in sheets], [["g0002"], ["g0004"]])
         self.assertEqual([g.get("sheet") for g in groups], [1, 2, 1, 3])
