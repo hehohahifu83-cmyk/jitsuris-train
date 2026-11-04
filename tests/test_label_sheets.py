@@ -105,3 +105,22 @@ class PrecedentTests(unittest.TestCase):
         self.assertEqual(S.precedent_audit(groups, {"g0002": "rate"}), (1, [("g0002", "quantity", "rate")]))
         with self.assertRaisesRegex(ValueError, "答えの無いグループ 1 件"):
             S.merge(corpus, groups, {})
+
+
+class RevealTests(unittest.TestCase):
+    def test_reveal_keeps_ids_and_continues_sheets(self):
+        groups = [{"group": "g0001", "rows": [0], "sheet": 1},
+                  {"group": "g0002", "rows": [1], "precedent": "id", "precedent_basis": "x"},
+                  {"group": "g0003", "rows": [2], "sheet": 1, "precedent_audit": "date"},
+                  {"group": "g0004", "rows": [3], "precedent": "org"}]
+        sheets = S.reveal(groups, size=1, start_sheet=2)
+        self.assertEqual([[g["group"] for g in s] for s in sheets], [["g0002"], ["g0004"]])
+        self.assertEqual([g.get("sheet") for g in groups], [1, 2, 1, 3])
+        self.assertFalse(any("precedent" in g for g in groups))
+        self.assertEqual(groups[3]["precedent_revealed"], "org")
+        # まとめるとき、出したグループにも答えが要る
+        corpus = [row("t", "h", ["1"]) for _ in range(4)]
+        with self.assertRaises(ValueError):
+            S.merge(corpus, groups, {"g0001": "id", "g0003": "date"})
+        labels = S.merge(corpus, groups, {"g0001": "id", "g0002": "id", "g0003": "date", "g0004": "S"}, "Codex")
+        self.assertEqual([x["label"] for x in labels], ["id", "id", "date", "S"])

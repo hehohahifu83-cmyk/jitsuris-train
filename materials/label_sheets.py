@@ -301,6 +301,38 @@ def cmd_merge(a):
     print(f"{a.batch}: {len(labels)} 列のラベルを {out} に書いた（グループ {len(got)}）。{dict(Counter(x['label'] for x in labels))}")
 
 
+def reveal(groups, size, start_sheet):
+    """先例で隠したグループを、続きのシート番号でシートに出す（2026-11-04 Claude）。グループの番号は変えないので、出してある答えはそのまま使える。
+    先例のラベルは precedent_revealed に残す（先生には見せない）。戻り値：新しいシート（グループのリストのリスト）。"""
+    hidden = [g for g in groups if "precedent" in g]
+    for g in hidden:
+        g["precedent_revealed"] = g.pop("precedent")
+        g.pop("precedent_basis", None)
+    sheets = [hidden[i:i + size] for i in range(0, len(hidden), size)]
+    for n, gs in enumerate(sheets, start_sheet):
+        for g in gs:
+            g["sheet"] = n
+    return sheets
+
+
+def cmd_reveal(a):
+    """抜き取りの食い違いが決まり（PRECEDENT_MAX_DISAGREE）を超えた陣で、先例を使わず、隠したグループも先生に付けてもらう。"""
+    w, d, meta = load(a)
+    corpus = read_jsonl(w / "corpus.jsonl")
+    if not any("precedent" in g for g in meta["groups"]):
+        raise SystemExit(f"{a.batch}: 隠したグループが無い")
+    last = max((g["sheet"] for g in meta["groups"] if "sheet" in g), default=0)
+    sheets = reveal(meta["groups"], a.size, last + 1)
+    guide = re.search(r"v\d+(?:\.\d+)?", (ROOT / "LABEL_GUIDE.md").read_text(encoding="utf-8").splitlines()[0])
+    total = last + len(sheets)
+    for n, gs in enumerate(sheets, last + 1):
+        (d / f"sheet_{n:03d}.md").write_text(render_sheet(n, gs, corpus, total, guide.group(0) if guide else ""), encoding="utf-8")
+    meta.setdefault("precedent", {})["revealed"] = {"reason": a.reason, "sheets": [last + 1, total],
+                                                     "groups": sum(len(x) for x in sheets)}
+    (d / "groups.json").write_text(json.dumps(meta, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"{a.batch}: 隠したグループ {meta['precedent']['revealed']['groups']} をシート {last + 1:03d}〜{total:03d} に出した")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -309,8 +341,10 @@ def main(argv=None):
     p = sub.add_parser("status"); p.add_argument("--batch", required=True); p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
     p = sub.add_parser("merge"); p.add_argument("--batch", required=True); p.add_argument("--force", action="store_true")
     p.add_argument("--teacher", choices=sorted(TEACHERS), default="chatgpt")
+    p = sub.add_parser("reveal"); p.add_argument("--batch", required=True); p.add_argument("--size", type=int, default=SHEET_SIZE)
+    p.add_argument("--reason", required=True)
     a = ap.parse_args(argv)
-    return {"make": cmd_make, "status": cmd_status, "merge": cmd_merge}[a.cmd](a) or 0
+    return {"make": cmd_make, "status": cmd_status, "merge": cmd_merge, "reveal": cmd_reveal}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":
