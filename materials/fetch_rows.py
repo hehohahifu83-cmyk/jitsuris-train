@@ -245,11 +245,9 @@ def _find_header(rows):
         # 注記・出典が複数セルに分かれる前置きや、幅の広い表題を見出しにしない。
         if re.match(r"^(?:注[：:]|出典[：:]|資料[：:]|source\s*:|notes?\s*:|table\s+\d+\b|表\s*\d+)", named[0], re.I):
             continue
-        nxt = rows[i + 1: i + 6]
+        nxt = [r for r in rows[i + 1:] if any(str(c).strip() for c in r)][:5]
         width = max((j + 1 for j, c in enumerate(cells) if c), default=0)
-        # len(named)だけでは末尾の列が無い行も通る。列位置と密度で表題を除く。
-        if len(named) < width / 2:
-            continue
+        # len(named)だけでは末尾の列が無い行も通る。空の区切り列が多い表も列位置で確かめる。
         if nxt and sum(1 for r in nxt if len(r) >= width and any(str(c).strip() for c in r)) >= max(1, len(nxt) - 1):
             seen, out = {}, []
             for c in cells:

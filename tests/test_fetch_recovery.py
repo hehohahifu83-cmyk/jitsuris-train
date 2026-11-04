@@ -80,3 +80,11 @@ class ResponseTests(unittest.TestCase):
         response.read.return_value=b'Year,Count\n2020,1\n'
         with patch.object(F,'allowed_open',return_value=response),patch('time.sleep'):
             self.assertEqual(F.http_bytes('https://data.bodik.jp/a.csv','csv'),(b'Year,Count\n2020,1\n',False))
+
+class BlankRowsAndSparseHeaders(unittest.TestCase):
+    def test_blank_lines_between_records_do_not_hide_header(self):
+        f,r,n=F.parse_csv(b'Year,Count\r\r\n2020,5\r\r\n2021,7\r\r\n2022,9\r\r\n')
+        self.assertEqual(f,['Year','Count']);self.assertEqual(n,3)
+    def test_spacer_columns_are_allowed_if_records_align(self):
+        f,r,n=F.parse_csv(b'Year,,,,,,,,,,,Count\n2020,,,,,,,,,,,5\n2021,,,,,,,,,,,7\n')
+        self.assertEqual(f,['Year','Count']);self.assertEqual(r[1]['Count'],'7')
