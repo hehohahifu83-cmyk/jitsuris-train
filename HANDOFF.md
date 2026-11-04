@@ -1,3 +1,11 @@
+# 2026-11-04 17:45 JST — Codex：教材集めv2のB・D・EとR4再現性確認
+
+- R4後の再生成は差分なし。L24のpoolファイルSHA維持・r4別ファイル1行を確認。
+- B：先例の時系列再生は31,199列中8,762適用・8,716一致、不一致46。`bench/precedent_replay_20261104.md`。現在の規則での回顧検証でありF1の性能ではない。
+- D：公的一覧3 CSV・5,909参照・2,438 API基点。Actions調査とページング修正後の再集計が成功（run 41801461167）。CKAN15基点・HTTP/HTTPS重複を除き14サイト。`bench/jp_catalogs_20261104.md` と `materials/pool/probe/jp_catalogs_20261104.json`。許可ホスト・割り当ては未変更、採用判断はClaudeへ。
+- E：候補の並列処理より、逐次の採用＋抽出＋シートが長い（92.70/152.58分）。境界時刻が無い採用と抽出は分離不能と明記。`bench/collection_timing_20261104.md`。
+- Python関連55試験成功。F1の答え・予測は未閲覧、新規学習・表の収集・裁定は未実行。
+
 # 2026-11-04 13:17 JST — Claude：オーナー指示で ChatGPT を Codex に置き換え
 
 - このファイルの「ChatGPT」の役割（独立ラベルの先生・見直し・Claude が止まったときの代わり）は、今後すべて Codex が引き継ぐ（ai-bridge README 冒頭、`AGENTS.md`）。過去の記録はそのまま。
