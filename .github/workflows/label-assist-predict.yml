@@ -81,6 +81,11 @@ jobs:
             # 2026-11-01：D2 の L 3 本（run 41192849082 の ft_out_job2〜4）を新しい在庫の陣で。事前記録 bench/valuefix_prereg_20261101.md。
             case "$out_path" in materials/pool/work/e[1-3]*) ;; *) echo "出力の場所が違う"; exit 1;; esac
             run_id=41192849082; want=manifest; label="L の 3 本（新しい陣）"; njobs=4; tag=d2e; first=2
+          elif [ "$model" = "lp" ]; then
+            # 2026-11-04：教材の陣の 2 人目の票を今の土台 L（D2 の L 種子 1、run 41192849082 の ft_out_job2）で。
+            # 教材集め v2（bench/collection_v2_plan_20261104.md）。いくつもの陣をまとめた set（materials/pool/work/r*）で 1 回だけ予測する。
+            case "$out_path" in materials/pool/work/r[0-9]*) ;; *) echo "出力の場所が違う"; exit 1;; esac
+            run_id=41192849082; want=manifest; label="L 種子 1（教材の 2 人目の票）"; njobs=2; tag=lp; first=2
           elif [ "$model" = "d3tta" ]; then
             # 2026-10-31：D3 の値の引き直し（--tta 4）。D2 の L 3 本（run 41192849082 の ft_out_job2〜4）。事前記録 bench/d3_prereg_20261031.md。
             case "$out_path" in materials/pool/work/d1*) ;; *) echo "出力の場所が違う"; exit 1;; esac
@@ -142,6 +147,10 @@ jobs:
                   o = out[f"job{j}"]
                   if not o["FT_LABELFIX"] or o["FT_VALUEFIX"] or str(o["seed"]) != str(j - 1):
                       raise SystemExit(f"job{j}: settings do not match bench/valuefix_prereg_20261101.md")
+          if tag == "lp":
+              o = out["job2"]
+              if not o["FT_LABELFIX"] or o["FT_VALUEFIX"] or str(o["seed"]) != "1":
+                  raise SystemExit("job2: not L seed 1")
           if tag == "d1a":
               for j in (1, 2):
                   if out[f"job{j}"]["FT_VALSEL"] or out[f"job{j}"]["FT_UNITX"] or out[f"job{j}"]["FT_LABELFIX"] or str(out[f"job{j}"]["seed"]) != str(j):

@@ -403,7 +403,9 @@ def load_preds(w, second=None):
     予測と同じ形（guarded_prediction）にして返す（2026-10-28 Claude。先生 2 人の突き合わせ）。"""
     if second == "grok":
         return [{"guarded_prediction": r["label"]} for r in read_jsonl(w / "labels_grok.jsonl")]
-    preds = json.load(open(w / "pred_e5base_seed1.json", encoding="utf-8"))["rows"]
+    # 2026-11-04：今の土台 L 種子 1 の予測（pred_l_seed1.json、split_preds で陣ごとに分けたもの）があればそれを使う
+    pf = w / "pred_l_seed1.json"
+    preds = json.load(open(pf if pf.exists() else w / "pred_e5base_seed1.json", encoding="utf-8"))["rows"]
     cols = json.load(open(w / "set.json", encoding="utf-8"))["columns"]
     return align_preds(cols, preds)
 
