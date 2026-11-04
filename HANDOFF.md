@@ -1,3 +1,10 @@
+# 2026-11-04 10:50 JST — Claude：L24 の学習が完了。F1 は日本の 3 カタログ、SCRC は延ばすと決定
+
+- L24（v2.4 付け直し 3 本）：run 41735353926 成功、モデル artifact 13283895077（期限 12-04）。relabeled 1492 は予測の前に照合する。
+- F1：ODP（jig.jp）の自治体・金沢市のカタログ（7 組織）・仙台市を、ポータル単位で F1 に（オーナー「より効果的な方を選べ」、ChatGPT の意見のあと）。国の機関と横浜市（主セット）は外す。海外のカタログは割り当てない。記録 `bench/g24fix_prereg_20261104.md` 末尾。
+- SCRC：日本の公開元が足りない（約 60 組織）ので延ばす。α=0.01 は下げない。
+- 次：3 つのホストを `materials/pool/allowed_hosts.json` に足す → 組織を `independent_eval/allocation.json` に hold で登録 → `pool_discover.py` で hold のプールを探せるようにする → 候補 → 採用 → 取り出し → 2 人のブラインドのラベル（v2.4）→ 予測（L・L24）→ 1 回だけ測る。
+
 # 2026-11-04 07:03 JST — Claude：v2.4 付け直しだけの学び直しの事前記録（オーナー「いいぞ」）
 
 - 事前記録 `bench/g24fix_prereg_20261104.md`。L（labelfix_v24）に labelfix_g24_b3・sheet・pool を足した L24 を 3 本。手元で教材庫 31,625 行のうち 1,339 行が L と違う（org→address 1,325）。見積り約 1.5 時間（Kaggle 無料枠）。
