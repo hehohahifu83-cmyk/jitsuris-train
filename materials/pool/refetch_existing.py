@@ -11,11 +11,20 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
-def run(batch):
+def validate_batch(batch):
     if not re.fullmatch(r'b1(?:2[4-9]|[34][0-9]|5[01])',batch):raise ValueError('対象外の陣')
     d=ROOT/'materials/pool/work'/batch
     if any((d/'sheets').glob('answers*/*.tsv')) or any(d.glob('labels_*.jsonl')):
         raise ValueError(f'{batch}: 回答があるので再生成しない')
+    if json.loads((d/'adopted.json').read_text()).get('pool','train') != 'train':
+        raise ValueError(f'{batch}: 教材の採用ではない')
+    if not (d/'corpus_log.json').is_file():
+        raise ValueError(f'{batch}: 元の取り出し記録がない')
+    return d
+
+
+def run(batch):
+    d=validate_batch(batch)
     adopted_sha=digest(d/'adopted.json')
     before=json.loads((d/'corpus_log.json').read_text())
     tmp=d/'corpus.recovery.jsonl'; log=d/'corpus.recovery_log.json'
@@ -43,6 +52,7 @@ def run(batch):
 def main():
     batches=sys.argv[1:]
     if not batches or len(set(batches))!=len(batches):raise SystemExit('陣の指定が空か重複')
+    for batch in batches:validate_batch(batch)
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         list(pool.map(run,batches))
 if __name__=='__main__':main()
