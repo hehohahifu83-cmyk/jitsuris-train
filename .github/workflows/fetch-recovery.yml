@@ -4,7 +4,7 @@ on:
     inputs:
       phase:
         type: choice
-        options: [probe, refetch]
+        options: [probe, refetch, round2]
         default: probe
       batches:
         description: '再取得する既存の陣（空白区切り）'
@@ -31,6 +31,8 @@ jobs:
         run: python -I research/fetch_diag/recovery_probe.py
       - if: inputs.phase == 'probe'
         run: python -I research/fetch_diag/recovery_regressions.py
+      - if: inputs.phase == 'round2'
+        run: python -I research/fetch_diag/round2_probe.py
       - if: inputs.phase == 'refetch'
         env:
           RECOVERY_BATCHES: '${{ inputs.batches }}'
