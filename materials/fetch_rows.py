@@ -193,6 +193,8 @@ def http_json(url, step="", tries=3):
         try:
             with allowed_open(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=60,
                               check=lambda u: urlparse(u).scheme == "https" and urlparse(u).hostname in ALLOWED_HOSTS) as resp:
+                if resp.status != 200:
+                    raise RuntimeError(f"{step}: HTTP {resp.status} (not a data response)")
                 if (urlparse(resp.geturl()).hostname or "") not in ALLOWED_HOSTS:
                     raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 return json.loads(resp.read(30_000_001).decode("utf-8-sig"))
@@ -219,9 +221,13 @@ def http_bytes(url, step="", tries=3, limit=CSV_MAX_BYTES):
         try:
             with allowed_open(Request(url, headers={"User-Agent": "jitsuris-train-s11/1.0 (source and license recorded)"}), timeout=90,
                               check=_redirect_ok) as resp:
+                if resp.status != 200:
+                    raise RuntimeError(f"{step}: HTTP {resp.status} (not a data response)")
                 if not _redirect_ok(resp.geturl()):
                     raise ValueError(f"redirected outside the allowed hosts: {urlparse(resp.geturl()).hostname}")
                 raw = resp.read(limit + 1)
+                if not raw:
+                    raise ValueError(f"{step}: empty download response")
                 return raw[:limit], len(raw) > limit
         except HTTPError as exc:
             if exc.code == 429 or exc.code >= 500:

@@ -60,3 +60,23 @@ class NetworkRecoveryTests(unittest.TestCase):
             with patch.object(F,'allowed_open',side_effect=HTTPError(url,status,'Denied',{},None)) as op, patch('time.sleep'):
                 with self.assertRaisesRegex(RuntimeError,str(status)):F.http_bytes(url,'csv')
                 self.assertEqual(op.call_count,tries)
+
+class ResponseTests(unittest.TestCase):
+    def test_non_data_success_status_and_empty_body(self):
+        from unittest.mock import MagicMock, patch
+        for status,body,expected in ((202,b'','HTTP 202'),(204,b'','HTTP 204'),(200,b'','empty download')):
+            response=MagicMock()
+            response.__enter__.return_value=response
+            response.status=status
+            response.geturl.return_value='https://data.bodik.jp/a.csv'
+            response.read.return_value=body
+            with patch.object(F,'allowed_open',return_value=response),patch('time.sleep'):
+                with self.assertRaisesRegex((RuntimeError,ValueError),expected):
+                    F.http_bytes('https://data.bodik.jp/a.csv','csv')
+    def test_complete_csv_response(self):
+        from unittest.mock import MagicMock, patch
+        response=MagicMock();response.__enter__.return_value=response
+        response.status=200;response.geturl.return_value='https://data.bodik.jp/a.csv'
+        response.read.return_value=b'Year,Count\n2020,1\n'
+        with patch.object(F,'allowed_open',return_value=response),patch('time.sleep'):
+            self.assertEqual(F.http_bytes('https://data.bodik.jp/a.csv','csv'),(b'Year,Count\n2020,1\n',False))
