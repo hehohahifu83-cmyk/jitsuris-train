@@ -283,6 +283,8 @@ def main(argv=None):
     ap.add_argument("--only-national", action="append", default=[], help="--national で探すホストを絞る")
     ap.add_argument("--only-host", action="append", default=[], help="--ckan で探すホストを絞る（取り直し用）")
     ap.add_argument("--socrata", action="store_true")
+    ap.add_argument("--shirasagi", action="store_true", help="登録済み独自APIのtrainだけを探す（登録・割り当ては変更しない）")
+    ap.add_argument("--only-shirasagi", action="append", default=[], help="独自APIのホストを絞る")
     ap.add_argument("--limit-publishers", type=int)
     ap.add_argument("--budget-minutes", type=float, help="この時間を過ぎたら新しい組織を探さずに止めて書き出す")
     ap.add_argument("--query", help="CKAN・Socrata の検索語（例：予算+OR+budget。空白は +）。題名・説明に含むデータセットだけを探す")
@@ -292,6 +294,8 @@ def main(argv=None):
     global DEADLINE, POOL_NAME, QUERY
     POOL_NAME = a.pool
     QUERY = a.query.replace("+", " ") if a.query else None   # 依頼ファイルは空白で区切るので、検索語の空白は + で書く
+    if a.pool != "train" and a.shirasagi:
+        raise SystemExit("--shirasagi はtrain専用")
     if a.pool != "train" and a.national:
         raise SystemExit("--national の組織は親が train に固定なので、--pool eval2／eval3 と一緒に使えない")
     if a.budget_minutes:
@@ -338,6 +342,24 @@ def main(argv=None):
         for host, (nat, orgs) in found.items():
             c, stats["national"][host] = ckan_candidates(host, orgs, "ckan", None, site=nat["site"], rows=200)
             selected += c
+            save()
+    if a.shirasagi:
+        import shirasagi
+        registry=shirasagi.allocation_registry()
+        stats["shirasagi"]={}
+        for cfg in shirasagi.configurations():
+            host=urlparse(cfg["site"]).hostname
+            if a.only_shirasagi and host not in a.only_shirasagi:
+                continue
+            if out_of_time():
+                break
+            try:
+                c, report=shirasagi.discover(cfg,registry,KNOWN_RIDS,POOL_PUB,title_key,TITLE_DENY,
+                                             stop=out_of_time,limit_publishers=a.limit_publishers,query=QUERY)
+                selected += c
+                stats["shirasagi"][host]=dict(report)
+            except (ValueError,RuntimeError,OSError) as exc:
+                stats["shirasagi"][host]={"error":str(exc)[:150]}
             save()
     if a.socrata:
         hosts = set()

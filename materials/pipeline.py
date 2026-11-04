@@ -109,6 +109,8 @@ def known_resources():
         for a in json.load(open(f, encoding="utf-8")).get("adopted", []):
             if a.get("resource_url") not in failed:
                 urls.add(a.get("resource_url", ""))
+                if a.get("resource_id"):
+                    rids.add(a["resource_id"])
     for u in list(urls):
         m = re.search(r"/resource/([0-9a-f-]{36})", u or "")
         if m:
@@ -303,6 +305,13 @@ def platform_of(c):
     from urllib.parse import urlparse
     url = c.get("resource_url") or c.get("catalog_url") or ""
     host = (urlparse(url).hostname or "").lower()
+    if (c.get("platform") or "").lower() == "shirasagi":
+        import shirasagi
+        try:
+            shirasagi.locate(url, c.get("resource_id"))
+            return "shirasagi", host
+        except ValueError:
+            return None, host
     if (c.get("platform") or "").lower() == "socrata":
         pid = str(c.get("publisher_id", ""))
         if pid.startswith("world_socrata_") and pid[len("world_socrata_"):] == re.sub(r"[.-]", "_", host) and re.fullmatch(r"[a-z0-9]{4}-[a-z0-9]{4}", str(c.get("resource_id", ""))):

@@ -454,6 +454,9 @@ def fetch_table(item, known):
     from pipeline import platform_of, normalize_license
     plat = item.get("platform") or "bodik"
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    if plat == "shirasagi":
+        from shirasagi import fetch_table as fetch_shirasagi
+        return fetch_shirasagi(item, known)
     if plat in ("bodik", "ckan"):
         m = re.search(r"/resource/([0-9a-f-]{36})", item["resource_url"])
         if not m:
