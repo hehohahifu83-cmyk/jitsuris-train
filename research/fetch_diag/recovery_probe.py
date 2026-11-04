@@ -72,11 +72,11 @@ def main():
             for variant,headers in VARIANTS.items():
                 r[variant]=probe(url,headers); time.sleep(.5)
             # CKAN's advertised /download link may differ from the canonical metadata URL.
+            path=urlparse(url).path
+            r['catalog_download']=probe(a['resource_url']+'/download/'+path.rsplit('/',1)[-1],VARIANTS['original'])
             if urlparse(url).hostname=='data.gov.au' and '/download/' in url:
-                path=urlparse(url).path
                 canonical='https://data.gov.au'+path
                 if canonical!=url: r['canonical_without_query']=probe(canonical,VARIANTS['original'])
-                r['dataset_download']=probe(a['resource_url']+'/download/'+path.rsplit('/',1)[-1],VARIANTS['original'])
         except Exception as e: r['error']=type(e).__name__
         out.append(r); print(json.dumps(r),flush=True)
     doc={'created_utc':datetime.now(timezone.utc).isoformat(),'runner':'GitHub Actions','rows':out}

@@ -25,6 +25,7 @@ jobs:
         with: {python-version: '3.12'}
       - run: pip install xlrd
       - run: python -m unittest discover -s tests -p 'test_fetch*.py'
+      - run: python -m unittest discover -s tests -p 'test_refetch_existing.py'
       - run: python -I materials/fetch_rows.py --self-test
       - if: inputs.phase == 'probe'
         run: python -I research/fetch_diag/recovery_probe.py
