@@ -445,7 +445,9 @@ def cmd_reconcile(a):
 
 # ---------------------------------------------------------------- 7. 確定
 
-def finalize(corpus, labels, preds, review, decisions, batch, teacher_name, second_name="e5base"):
+def finalize(corpus, labels, preds, review, decisions, batch, teacher_name, second_name="e5base", exclude=()):
+    """exclude：表ごと外す表（resource_page か table の URL、exclude_tables.py。2026-11-04）"""
+    exclude = set(exclude)
     dec = {d["i"]: d for d in decisions}
     need = [r["i"] for r in review if r["kind"] in ("to_review", "audit")]
     missing = [i for i in need if i not in dec]
@@ -463,6 +465,9 @@ def finalize(corpus, labels, preds, review, decisions, batch, teacher_name, seco
     out, record, stat = [], [], Counter()
     for i, c in enumerate(corpus):
         k = kind.get(i, "agree")
+        if exclude and (c.get("resource_page") in exclude or c.get("table") in exclude):
+            stat["excluded_table"] += 1
+            continue
         if k == "dropped":
             stat["dropped"] += 1
             continue
@@ -499,7 +504,11 @@ def cmd_finalize(a):
     # 先例のラベル（teacher=precedent）の行があっても、陣の先生は人の先生の名前にする（2026-11-04）
     people = Counter(x.get("teacher") for x in labels if x.get("teacher") not in (None, "", "precedent"))
     teacher = people.most_common(1)[0][0] if people else "chatgpt"
-    out, record, stat, audit = finalize(corpus, labels, preds, review, decisions, a.batch, teacher, a.second or "e5base")
+    ex = w / "exclude_tables.json"
+    exclude = json.load(open(ex, encoding="utf-8"))["tables"] if ex.exists() else []
+    pred_name = "pred_l_seed1.json" if (w / "pred_l_seed1.json").exists() else "pred_e5base_seed1.json"
+    second = a.second or ("l_seed1" if pred_name == "pred_l_seed1.json" else "e5base")
+    out, record, stat, audit = finalize(corpus, labels, preds, review, decisions, a.batch, teacher, second, exclude)
     write_jsonl(final, out)
     write_jsonl(POOL / f"adjudication_{a.batch}.jsonl", record)
     m = manifest()
@@ -507,10 +516,11 @@ def cmd_finalize(a):
                          "columns": len(out), "tables": len({r["table"] for r in out}),
                          "publishers": len({r["publisher"] for r in out}), "labels": dict(Counter(r["label"] for r in out)),
                          "stats": dict(stat), **audit, "sha256": sha256(final),
-                         "second": a.second or "e5base",
+                         "second": second,
                          "inputs": {n: sha256(w / n) for n in ("adopted.json", "corpus.jsonl", first_labels(w),
-                                                                "labels_grok.jsonl" if a.second == "grok" else "pred_e5base_seed1.json",
-                                                                "review.jsonl", "decisions.jsonl")}})
+                                                                "labels_grok.jsonl" if a.second == "grok" else pred_name,
+                                                                "review.jsonl", "decisions.jsonl")
+                                    + (("exclude_tables.json",) if ex.exists() else ())}})
     save_manifest(m)
     print(f"batch {a.batch}: {len(out)} columns into the pool; {dict(stat)}; audit {audit}")
 

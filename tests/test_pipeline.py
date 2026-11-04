@@ -68,6 +68,13 @@ class ReconcileFinalizeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "5%"):
             P.finalize(self.c, self.l, self.p, self.rows, bad, "b1", "chatgpt-x")
 
+    def test_finalize_excludes_whole_tables_20261104(self):
+        good = [{"i": r["i"], "label": self.l[r["i"]]["label"] if r["kind"] == "audit" else "amount", "reason": "r"} for r in self.rows if r["kind"] != "dropped"]
+        out, _, stat, _ = P.finalize(self.c, self.l, self.p, self.rows, good, "b1", "chatgpt-x", exclude={"t0", "t5"})
+        self.assertEqual(len(out), 54)
+        self.assertEqual(stat["excluded_table"], 6)
+        self.assertFalse({"t0", "t5"} & {r["table"] for r in out})
+
     def test_mismatched_rows_rejected(self):
         bad = [dict(self.l[0], header="x")] + self.l[1:]
         with self.assertRaises(ValueError):

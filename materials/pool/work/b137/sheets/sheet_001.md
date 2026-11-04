@@ -7,67 +7,67 @@
 
 ## g0001（1 列）
 - 見出し：Anlage_projekt-bezeichnung
-- 例1 値：natürliche Person | natürliche Person | natürliche Person | natürliche Person | natürliche Person
-  - 同じ表の列：Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, Jahr, Anmeldedatum, Anlage_inbetriebnah…
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0002（1 列）
 - 見出し：Empfaengerwechsel
 - 例1 値：0 | 0 | 0 | 0 | 0
-  - 同じ表の列：Anlage_projekt-beze…, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, Jahr, Anmeldedatum, Anlage_inbetriebnah…
+  - 同じ表の列：Anlage_projekt-beze…, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0003（1 列）
 - 見出し：Anlage_energietraeger
-- 例1 値：Photovoltaik | Photovoltaik | Photovoltaik | Photovoltaik | Photovoltaik
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Leistung_kw, Produktion_kwh, Verguetung_chf, Jahr, Anmeldedatum, Anlage_inbetriebnah…
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Leistung_kw, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0004（1 列）
 - 見出し：Leistung_kw
-- 例1 値：3.6 | 3.1 | 3 | 2.9 | 3.4
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Produktion_kwh, Verguetung_chf, Jahr, Anmeldedatum, Anlage_inbetriebnah…
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | 3 | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0005（1 列）
 - 見出し：Produktion_kwh
-- 例1 値：1755 | 3554 | 5323 | 2880 | 2153
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Verguetung_chf, Jahr, Anmeldedatum, Anlage_inbetriebnah…
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0006（1 列）
 - 見出し：Verguetung_chf
-- 例1 値：2905 | 4035 | 639 | 1760 | 1563
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Jahr, Anmeldedatum, Anlage_inbetriebnah…
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, ［個人別の記録のため削除］hr, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0007（1 列）
-- 見出し：Jahr
-- 例1 値：2011 | 2011 | 2011 | 2011 | 2011
+- 見出し：［個人別の記録のため削除］hr
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, Anmeldedatum, Anlage_inbetriebnah…
 
 ## g0008（1 列）
 - 見出し：Anmeldedatum
-- 例1 値：2008-05-02 | 2008-06-06 | 2008-05-01 | 2008-05-02 | 2008-05-02
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, Jahr, Anlage_inbetriebnah…
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anlage_inbetriebnah…
 
 ## g0009（1 列）
 - 見出し：Anlage_inbetriebnahme
-- 例1 値：2008-11-12 | 2010-02-05 | 2010-07-02 | 2011-09-09 | 2007-10-02
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, Jahr, Anmeldedatum
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum
 
 ## g0010（1 列）
 - 見出し：Anlage_vertragsende
-- 例1 値：2032-12-31 | 2031-12-01 | 2033-12-01 | 2033-12-01 | 2033-12-31
-  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, Jahr, Anmeldedatum
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
+  - 同じ表の列：Anlage_projekt-beze…, Empfaengerwechsel, Anlage_energietraeg…, Leistung_kw, Produktion_kwh, Verguetung_chf, ［個人別の記録のため削除］hr, Anmeldedatum
 
 ## g0011（1 列）
 - 見出し：Id
-- 例1 値：5 | 16 | 3 | 4 | 12
+- 例1 値：5 | ［個人別の記録のため削除］ | 3 | 4 | ［個人別の記録のため削除］
   - 同じ表の列：Titel, Ausgabejahr, Auftraggeber, Kanton, Link
 
-## g0012（1 列）
+## g00［個人別の記録のため削除］（1 列）
 - 見出し：Titel
-- 例1 値：Wärme- und Kältenutzung aus Sempacher- … | Perspectives chaleur du canton de Vaud | Potenzial des Walensees für Wärme- und … | Impacts of using lakes and rivers for e… | Factsheet Wärmenutzung aus Seen und Fli…
+- 例1 値：Wärme- und Kältenutzung aus Sempacher- … | ［個人別の記録のため削除］ | Potenzial des Walensees für Wärme- und … | Impacts of using lakes and rivers for e… | Factsheet Wärmenutzung aus Seen und Fli…
   - 同じ表の列：Id, Ausgabejahr, Auftraggeber, Kanton, Link
 
 ## g0013（1 列）
 - 見出し：Ausgabejahr
-- 例1 値：2019 | 2017 | 2014 | 2017 | 2019
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Id, Titel, Auftraggeber, Kanton, Link
 
 ## g0014（1 列）
@@ -77,7 +77,7 @@
 
 ## g0015（1 列）
 - 見出し：Kanton
-- 例1 値：CH | SG | SG | LU | ZH
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Id, Titel, Ausgabejahr, Auftraggeber, Link
 
 ## g0018（1 列）
@@ -87,17 +87,17 @@
 
 ## g0019（1 列）
 - 見出し：Uranium_depleted_Kg
-- 例1 値：16 | 8 | 8 | 15 | 8
+- 例1 値：［個人別の記録のため削除］ | 8 | 8 | 15 | 8
   - 同じ表の列：Date, Thorium_Kg, Uranium_natural_Kg, Uranium_enriched_lo…, Uranium_enriched_hi…, Uranium_reprocessin…, Plutonium_Kg
 
 ## g0020（1 列）
 - 見出し：Uranium_natural_Kg
-- 例1 値：955833 | 1545182 | 1543682 | 1642580 | 662399
+- 例1 値：955833 | 1545182 | 1543682 | ［個人別の記録のため削除］42580 | 662399
   - 同じ表の列：Date, Thorium_Kg, Uranium_depleted_Kg, Uranium_enriched_lo…, Uranium_enriched_hi…, Uranium_reprocessin…, Plutonium_Kg
 
 ## g0021（1 列）
 - 見出し：Uranium_enriched_low_Kg
-- 例1 値：107565 | 89831 | 81903 | 134011 | 131252
+- 例1 値：107565 | 89831 | 81903 | 134011 | 13［個人別の記録のため削除］52
   - 同じ表の列：Date, Thorium_Kg, Uranium_depleted_Kg, Uranium_natural_Kg, Uranium_enriched_hi…, Uranium_reprocessin…, Plutonium_Kg
 
 ## g0022（1 列）
@@ -107,7 +107,7 @@
 
 ## g0023（1 列）
 - 見出し：Uranium_reprocessing_Kg
-- 例1 値：68416 | 0 | 127623 | 68416 | 183728
+- 例1 値：684［個人別の記録のため削除］ | 0 | ［個人別の記録のため削除］7623 | 684［個人別の記録のため削除］ | 183728
   - 同じ表の列：Date, Thorium_Kg, Uranium_depleted_Kg, Uranium_natural_Kg, Uranium_enriched_lo…, Uranium_enriched_hi…, Plutonium_Kg
 
 ## g0024（1 列）
@@ -118,98 +118,98 @@
 ## g0025（2 列）
 - 見出し：GEO_NR
 - 例1 値：118 | 1322 | 138 | 723 | 243
-  - 同じ表の列：CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 - 例2 値：52 | 62 | 62 | 52 | 62
-  - 同じ表の列：CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0026（1 列）
 - 見出し：CLASS_HAB
 - 例1 値：2 | 2 | 3 | 4 | 1
-  - 同じ表の列：GEO_NR, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0027（3 列）
 - 見出し：GEOM_PERIOD
 - 例1 値：2022-05-01 | 2022-05-01 | 2022-05-01 | 2022-05-01 | 2022-05-01
-  - 同じ表の列：GEO_NR, CLASS_HAB, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 - 例2 値：2022-05-01 | 2022-05-01 | 2022-05-01 | 2022-05-01 | 2022-05-01
-  - 同じ表の列：GEO_NR, CLASS_HAB, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0028（1 列）
 - 見出し：VARIABLE
 - 例1 値：sec_t_20 | sec_t_20 | sec_tran_20 | schu_t_98 | sec_gen_20
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0029（2 列）
 - 見出し：SOURCE
 - 例1 値：SDL | SDL | SDL | SDL | SDL
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 - 例2 値：ESTV | ESTV | EFV | ESTV | ESTV
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0030（1 列）
-- 見出し：VALUE_PERIOD
-- 例1 値：1998/99 | 2020/21 | 2008/09 | 2019/20 | 2020/21
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, UNIT_VALUE, VALUE, STATUS
+- 見出し：VA［個人別の記録のため削除］E_PERIOD
+- 例1 値：1998/99 | 2020/21 | 2008/09 | ［個人別の記録のため削除］/20 | 2020/21
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0031（3 列）
-- 見出し：UNIT_VALUE
+- 見出し：UNIT_VA［個人別の記録のため削除］E
 - 例1 値：Num | Num | Num | Num | Num
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, VA［個人別の記録のため削除］E, STATUS
 - 例2 値：Num | Num | Per | Num | Num
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, VA［個人別の記録のため削除］E, STATUS
 
 ## g0032（1 列）
-- 見出し：VALUE
-- 例1 値：56 | 1233 | 3095 | 1120 | 0
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, STATUS
+- 見出し：VA［個人別の記録のため削除］E
+- 例1 値：56 | ［個人別の記録のため削除］33 | 3095 | 1［個人別の記録のため削除］0 | 0
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, STATUS
 
 ## g0033（3 列）
 - 見出し：STATUS
 - 例1 値：A | A | A | A | A
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E
 - 例2 値：A | A | A | A | A
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E
 
 ## g0034（1 列）
 - 見出し：GEO_NR
-- 例1 値：CH | 121 | 131 | 121 | CH
-  - 同じ表の列：CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］1 | 131 | ［個人別の記録のため削除］1 | ［個人別の記録のため削除］
+  - 同じ表の列：CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0035（2 列）
 - 見出し：CLASS_HAB
 - 例1 値：4 | 2 | 2 | Total | 3
-  - 同じ表の列：GEO_NR, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 - 例2 値：Total | 3 | 4 | Total | 4
-  - 同じ表の列：GEO_NR, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0036（1 列）
 - 見出し：VARIABLE
 - 例1 値：wh_en_gaz | umz_zu_t_p | bat_stor_2 | sur_5z | bat_tot
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0037（1 列）
 - 見出し：SOURCE
 - 例1 値：GWS | GWS | GWS, STATPOP | GWS | GWS
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0038（2 列）
-- 見出し：VALUE_PERIOD
+- 見出し：VA［個人別の記録のため削除］E_PERIOD
 - 例1 値：2021 | 2020 | 2021 | 2021 | 2021
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 - 例2 値：2023 | 2021 | 2023 | 2023 | 2021
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0039（2 列）
-- 見出し：VALUE
+- 見出し：VA［個人別の記録のため削除］E
 - 例1 値：8428.0 | 886.0 | 208.0 | 275.0 | 44.0
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, STATUS
-- 例2 値：26.05 | 0.0 | 223006.96 | 548.9 | 12.46
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VALUE_PERIOD, UNIT_VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, STATUS
+- 例2 値：26.05 | 0.0 | 223006.96 | 548.9 | ［個人別の記録のため削除］.46
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, VARIABLE, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, STATUS
 
 ## g0040（1 列）
 - 見出し：VARIABLE
 - 例1 値：rev_cel_20 | rev_mar_35 | rev_ren_70 | rev_cel_80 | dep_inv
-  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, SOURCE, VALUE_PERIOD, UNIT_VALUE, VALUE, STATUS
+  - 同じ表の列：GEO_NR, CLASS_HAB, GEOM_PERIOD, SOURCE, VA［個人別の記録のため削除］E_PERIOD, UNIT_VA［個人別の記録のため削除］E, VA［個人別の記録のため削除］E, STATUS
 
 ## g0042（1 列）
 - 見出し：NOM_DU_LIEU
@@ -260,12 +260,12 @@
 - 見出し：SHAPE_AREA
 - 例1 値：3331.89690848 | 1186.31878776 | 4143.97593582 | 5265.544757325 | 6796.302675835
   - 同じ表の列：OBJECTID, LIEU_DIT, SHAPE_LEN
-- 例2 値：594564.13077637 | 737051.358648255 | 281837.89335279 | 351243.172792715 | 457554.0503896
+- 例2 値：594564.13077637 | 737051.358648255 | 281837.89335279 | 35［個人別の記録のため削除］4［個人別の記録のため削除］72792715 | 457554.0503896
   - 同じ表の列：OBJECTID, AM_L_OBJ, AM_L_BEREI
 
 ## g0053（1 列）
 - 見出し：SHAPE_LEN
-- 例1 値：568.431134751232 | 371.8316456079 | 376.966283063243 | 181.953703678122 | 331.857542509064
+- 例1 値：568.43113475［個人別の記録のため削除］32 | 371.83［個人別の記録のため削除］456079 | 376.966283063243 | 181.953703678［個人別の記録のため削除］2 | 331.857542509064
   - 同じ表の列：OBJECTID, LIEU_DIT, SHAPE_AREA
 
 ## g0054（1 列）
@@ -302,7 +302,7 @@
 
 ## g0063（1 列）
 - 見出し：Alter
-- 例1 値：4 bis 13 Jahre | 4 bis 12 Jahre | 4 Monate bis Kindergarteneeintritt | 3 Monate bis 13 Jahre | 6 bis 13 Jahre
+- 例1 値：4 bis 13 ［個人別の記録のため削除］hre | 4 bis ［個人別の記録のため削除］ ［個人別の記録のため削除］hre | 4 Monate bis Kindergarteneeintritt | 3 Monate bis 13 ［個人別の記録のため削除］hre | 6 bis 13 ［個人別の記録のため削除］hre
   - 同じ表の列：BFS_Gemeindenummer, Gemeinde, Institution, PLZ, Ort, Trägerschaft, Rechtsform, Anzahl_Plätze_Tages…
 
 ## g0064（1 列）
@@ -312,7 +312,7 @@
 
 ## g0065（1 列）
 - 見出し：Anzahl_Plätze_Mittagstisch
-- 例1 値：140 | 12 | 60 | 47 | 30
+- 例1 値：140 | ［個人別の記録のため削除］ | 60 | 47 | 30
   - 同じ表の列：BFS_Gemeindenummer, Gemeinde, Institution, PLZ, Ort, Trägerschaft, Rechtsform, Alter
 
 ## g0066（1 列）
@@ -327,19 +327,19 @@
 
 ## g0071（1 列）
 - 見出し：e_eingangskoordinate
-- 例1 値：2612552.315 | 2633387.897 | 2604342.986 | 2613082.039 | 2622673.998
+- 例1 値：26［個人別の記録のため削除］552.315 | 2633387.897 | 260434［個人別の記録のため削除］86 | 2613082.039 | 2622673.998
   - 同じ表の列：BFS_Gemeindenummer, Gemeinde, Kategorie, PLZ, Ort, Website, Datenquelle, n_eingangskoordinate
 
 ## g0072（1 列）
 - 見出し：n_eingangskoordinate
-- 例1 値：1260423.022 | 1257689.259 | 1265441.86 | 1257419.895 | 1263654.607
+- 例1 値：［個人別の記録のため削除］60423.022 | ［個人別の記録のため削除］57689.259 | ［個人別の記録のため削除］65441.86 | ［個人別の記録のため削除］57419.895 | ［個人別の記録のため削除］63654.607
   - 同じ表の列：BFS_Gemeindenummer, Gemeinde, Kategorie, PLZ, Ort, Website, Datenquelle, e_eingangskoordinate
 
 ## g0073（2 列）
 - 見出し：koordinaten
-- 例1 値：47.532371526089605, 7.6319822337704455 | 47.50954343697323, 7.599860505798547 | 47.54016386996969, 7.574738266367988 | 47.5095434279977, 7.599860492497234 | 47.51301154383288, 7.598501364512049
+- 例1 値：47.［個人別の記録のため削除］71526089605, 7.6319822337704455 | 47.50954343697323, 7.599860505798547 | 47.540［個人別の記録のため削除］386996969, 7.574738266367988 | 47.5095434279977, 7.599860492497234 | 47.51301154383288, 7.5985013645［個人別の記録のため削除］049
   - 同じ表の列：BFS_Gemeindenummer, Gemeinde, Kategorie, PLZ, Ort, Website, Datenquelle, e_eingangskoordinate
-- 例2 値：47.49374270802317, 7.591097830566832 | 47.46316461919887, 7.836230540920188 | 47.461132638449556, 7.914650025186573 | 47.41206395741037, 7.844308260868218 | 47.49913102298276, 7.558253240913667
+- 例2 値：47.49374270802317, 7.591097830566832 | 47.463［個人別の記録のため削除］461919887, 7.836230540920188 | 47.461132638449556, 7.914650025186573 | 47.4［個人別の記録のため削除］0［個人別の記録のため削除］5741037, 7.844308260868218 | 47.49913102298276, 7.558253240913667
   - 同じ表の列：BFS_Nummer, Zusatz, PLZ, Ort, Website, UID_Nummer, UID_Link, GKODE
 
 ## g0074（1 列）
@@ -364,7 +364,7 @@
 
 ## g0078（1 列）
 - 見出し：UID_Nummer
-- 例1 値：CHE115091561 | CHE115091070 | CHE115093063 | CHE115090946 | CHE115091897
+- 例1 値：［個人別の記録のため削除］E115091561 | ［個人別の記録のため削除］E115091070 | ［個人別の記録のため削除］E115093063 | ［個人別の記録のため削除］E115090946 | ［個人別の記録のため削除］E115091897
   - 同じ表の列：BFS_Nummer, Zusatz, PLZ, Ort, Website, UID_Link, GKODE, GKODN
 
 ## g0079（1 列）
@@ -374,12 +374,12 @@
 
 ## g0080（1 列）
 - 見出し：GKODE
-- 例1 値：2630957.514 | 2627789.583 | 2628702.59 | 2624169.498 | 2635893.487
+- 例1 値：2630957.514 | 2627789.583 | 2628702.59 | 2624［個人別の記録のため削除］9.498 | 263589［個人別の記録のため削除］87
   - 同じ表の列：BFS_Nummer, Zusatz, PLZ, Ort, Website, UID_Nummer, UID_Link, GKODN
 
 ## g0081（1 列）
 - 見出し：GKODN
-- 例1 値：1252905.321 | 1265693.976 | 1249827.567 | 1262063.929 | 1255642.584
+- 例1 値：［個人別の記録のため削除］5［個人別の記録のため削除］.321 | ［個人別の記録のため削除］65693.976 | ［個人別の記録のため削除］49827.567 | ［個人別の記録のため削除］62063.929 | ［個人別の記録のため削除］55642.584
   - 同じ表の列：BFS_Nummer, Zusatz, PLZ, Ort, Website, UID_Nummer, UID_Link, GKODE
 
 ## g0083（2 列）
@@ -477,37 +477,37 @@
 
 ## g0102（1 列）
 - 見出し：abstimmung_uid
-- 例1 値：46a74f36-c808-43df-885d-a5668e2c5ccc | 7f120b28-5071-4c40-a59a-cd8ca765ac83 | a6ced6ac-c395-4a0d-b7e7-8ea72b181218 | 7f120b28-5071-4c40-a59a-cd8ca765ac83 | 0fac2ba7-179d-4b35-b041-3ca837274ecd
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：traktandum_uid, abstimmungsliste_st…, Übersicht vom
 
 ## g0103（1 列）
 - 見出し：traktandum_uid
-- 例1 値：8ffaea47e49c4149bf701644fa52ed47 | 4e6eedc28dd54a54a7174db854405046 | 3703926f3fdf43f0b508508a235cc1bf | c863e8c364d2410983c454fe13b28d0c | c863e8c364d2410983c454fe13b28d0c
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：abstimmung_uid, abstimmungsliste_st…, Übersicht vom
 
 ## g0104（1 列）
 - 見出し：abstimmungsliste_stimme
-- 例1 値：Ja | Ja | Ja | Ja | Ja
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：abstimmung_uid, traktandum_uid, Übersicht vom
 
 ## g0105（1 列）
 - 見出し：Übersicht vom
-- 例1 値：2026-11-04 00:00 | 2026-11-04 00:00 | 2026-11-04 00:00 | 2026-11-04 00:00 | 2026-11-04 00:00
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：abstimmung_uid, traktandum_uid, abstimmungsliste_st…
 
 ## g0106（1 列）
 - 見出し：datum_vorstoss_eingang
-- 例1 値：2019-01-23 | 2022-03-30 | 2017-08-30 | 2019-05-08 | 2023-03-01
+- 例1 値：［個人別の記録のため削除］-01-23 | 2022-03-30 | ［個人別の記録のため削除］-08-30 | ［個人別の記録のため削除］-05-08 | 2023-03-01
   - 同じ表の列：registraturnummer, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…, sachbegriffe_grgeko…
 
 ## g0107（1 列）
 - 見出し：registraturnummer
-- 例1 値：2020/EA 46/111 | 2020/EA 13/47 | 2012/EA 62/182 | 2020/MO 18/195 | 2012/LM 2/190
+- 例1 値：2020/EA 46/111 | 2020/EA 13/47 | 20［個人別の記録のため削除］/EA 62/182 | 2020/MO 18/195 | 20［個人別の記録のため削除］/LM 2/190
   - 同じ表の列：datum_vorstoss_eing…, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…, sachbegriffe_grgeko…
 
 ## g0108（1 列）
 - 見出し：nr_legislatur
-- 例1 値：0421/2016-2020/GR | 0288/2012-2016/GR | 0043/2020-2024/GR | 0329/2012-2016/GR | 0470/2016-2020/GR
+- 例1 値：0421/20［個人別の記録のため削除］-2020/GR | 0288/20［個人別の記録のため削除］-20［個人別の記録のため削除］/GR | 0043/2020-2024/GR | 0329/20［個人別の記録のため削除］-20［個人別の記録のため削除］/GR | 0470/20［個人別の記録のため削除］-2020/GR
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…, sachbegriffe_grgeko…
 
 ## g0109（1 列）
@@ -517,7 +517,7 @@
 
 ## g0110（1 列）
 - 見出し：vorstoss_bezeichnung
-- 例1 値：Spassfahrten mit hochmotorisierten und … | Kriminalitätszunahme: Was tut der Kanto… | Stimmrechtsalter 16 im Kanton Thurgau | Beteiligung der Politischen Gemeinden a… | Vollzugskonzept Qualitativer Bodenschut…
+- 例1 値：Spassfahrten mit hochmotorisierten und … | Kriminalitätszunahme: Was tut der Kanto… | Stimmrechtsalter ［個人別の記録のため削除］ im Kanton Thurgau | Beteiligung der Politischen Gemeinden a… | Vollzugskonzept Qualitativer Bodenschut…
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, nr_legislatur, grg_nr, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…, sachbegriffe_grgeko…
 
 ## g0111（1 列）
@@ -525,29 +525,29 @@
 - 例1 値：Einfache Anfrage | Einfache Anfrage | Antrag nach § 52 bzw. § 46 der Geschäft… | Interpellation | Interpellation
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_code, sachbegriffe_grgeko…, sachbegriffe_grgeko…
 
-## g0112（1 列）
+## g01［個人別の記録のため削除］（1 列）
 - 見出し：vorstossart_code
 - 例1 値：5 | 2 | 5 | 5 | 4
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, sachbegriffe_grgeko…, sachbegriffe_grgeko…
 
 ## g0113（1 列）
 - 見出し：sachbegriffe_grgeko_1
-- 例1 値：17.7 Staatspersonal: einzelne Personale… | 85.0 Fürsorge, Massnahmen, Kinderheime,… | 14.2 Niederlassung, Aufenthalt, Asyl | 64.1 Staats- und Gemeindesteuern, allge… | 13.1 Gebiet, Organisation, Reglemente, …
+- 例1 値：17.7 Staatspersonal: einzelne Personale… | 85.0 Fürsorge, Massnahmen, Kinderheime,… | 14.2 Niederlassung, Aufenthalt, Asyl | 64.1 Staats- und Gemeindesteuern, allge… | 1［個人別の記録のため削除］ Gebiet, Organisation, Reglemente, …
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…
 
 ## g0114（1 列）
 - 見出し：sachbegriffe_grgeko_2
-- 例1 値：90.0 Wirtschaftliche Entwicklung | 73.2 Elektrizität inkl. Versorgung, Was… | 16.2 Abstimmungen | 70.2 Baugesetz; Planungen Hoch- und Tie… | 74.1 Strassenverkehr, öffentlicher Verk…
+- 例1 値：90.0 Wirtschaftliche Entwicklung | 73.2 Elektrizität inkl. Versorgung, Was… | ［個人別の記録のため削除］.2 Abstimmungen | 70.2 Baugesetz; Planungen Hoch- und Tie… | 74.1 Strassenverkehr, öffentlicher Verk…
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…
 
 ## g0115（1 列）
 - 見出し：sachbegriffe_grgeko_3
-- 例1 値：73.1 Allgemeines, Energiegesetz, Kernen… | 90.0 Wirtschaftliche Entwicklung | 70.1 Raumplanung, Richtpläne | 13.1 Gebiet, Organisation, Reglemente, …
+- 例1 値：7［個人別の記録のため削除］ Allgemeines, Energiegesetz, Kernen… | 90.0 Wirtschaftliche Entwicklung | 70.1 Raumplanung, Richtpläne | 1［個人別の記録のため削除］ Gebiet, Organisation, Reglemente, …
   - 同じ表の列：datum_vorstoss_eing…, registraturnummer, nr_legislatur, grg_nr, vorstoss_bezeichnung, vorstossart_bezeich…, vorstossart_code, sachbegriffe_grgeko…
 
-## g0116（1 列）
+## g01［個人別の記録のため削除］（1 列）
 - 見出し：VM-Nummer
-- 例1 値：27 | 612 | 769 | 704 | 146
+- 例1 値：27 | 6［個人別の記録のため削除］ | 769 | 704 | 146
   - 同じ表の列：TU-Code, Variante, SJYID, Abfahrt-BP-Nummer, Abfahrtsort, Abfahrtszeit, Ankunft-BP-Nummer, Ankunftsort
 
 ## g0117（1 列）
@@ -565,70 +565,70 @@
 - 例1 値：ch:1:sjyid:100001:66-005 | ch:1:sjyid:100001:13-002 | ch:1:sjyid:100001:717-001 | ch:1:sjyid:100001:74-002 | ch:1:sjyid:100001:40-001
   - 同じ表の列：VM-Nummer, TU-Code, Variante, Abfahrt-BP-Nummer, Abfahrtsort, Abfahrtszeit, Ankunft-BP-Nummer, Ankunftsort
 
-## g0120（1 列）
+## g0［個人別の記録のため削除］0（1 列）
 - 見出し：Abfahrt-BP-Nummer
 - 例1 値：8507000 | 8507492 | 8500010 | 8507000 | 8509000
   - 同じ表の列：VM-Nummer, TU-Code, Variante, SJYID, Abfahrtsort, Abfahrtszeit, Ankunft-BP-Nummer, Ankunftsort
 
-## g0121（1 列）
+## g0［個人別の記録のため削除］1（1 列）
 - 見出し：Abfahrtsort
 - 例1 値：Basel SBB | St. Gallen | Domodossola (I) | Basel SBB | Bregenz
   - 同じ表の列：VM-Nummer, TU-Code, Variante, SJYID, Abfahrt-BP-Nummer, Abfahrtszeit, Ankunft-BP-Nummer, Ankunftsort
 
-## g0122（1 列）
+## g0［個人別の記録のため削除］2（1 列）
 - 見出し：Abfahrtszeit
 - 例1 値：07:18 | 31:14 | 14:30 | 20:38 | 19:41
   - 同じ表の列：VM-Nummer, TU-Code, Variante, SJYID, Abfahrt-BP-Nummer, Abfahrtsort, Ankunft-BP-Nummer, Ankunftsort
 
-## g0123（1 列）
+## g0［個人別の記録のため削除］3（1 列）
 - 見出し：Ankunft-BP-Nummer
-- 例1 値：8503000 | 8301003 | 8501609 | 8500010 | 8500090
+- 例1 値：8503000 | 8301003 | 850［個人別の記録のため削除］09 | 8500010 | 8500090
   - 同じ表の列：VM-Nummer, TU-Code, Variante, SJYID, Abfahrt-BP-Nummer, Abfahrtsort, Abfahrtszeit, Ankunftsort
 
-## g0124（1 列）
+## g0［個人別の記録のため削除］4（1 列）
 - 見出し：Ankunftsort
 - 例1 値：Basel Bad Bf | Basel SBB | Zürich HB | Feldkirch | Domodossola (I)
   - 同じ表の列：VM-Nummer, TU-Code, Variante, SJYID, Abfahrt-BP-Nummer, Abfahrtsort, Abfahrtszeit, Ankunft-BP-Nummer
 
-## g0125（1 列）
+## g0［個人別の記録のため削除］5（1 列）
 - 見出し：Ankunftszeit
 - 例1 値：18:13 | 09:53 | 20:23 | 11:52 | 11:29
   - 同じ表の列：VM-Nummer, TU-Code, Variante, SJYID, Abfahrt-BP-Nummer, Abfahrtsort, Abfahrtszeit, Ankunft-BP-Nummer
 
-## g0126（1 列）
+## g0［個人別の記録のため削除］6（1 列）
 - 見出し：ID
 - 例1 値：FK | SPB | KOM | SBF | OMB
   - 同じ表の列：Organisation_Kurzbe…, Direktion_Kurzbezei…, Dienststelle_Kurzbe…
 
-## g0127（1 列）
+## g0［個人別の記録のため削除］7（1 列）
 - 見出し：Organisation_Kurzbezeichnung
 - 例1 値：Stadt | Stadt | Stadt | Stadt | Stadt
   - 同じ表の列：ID, Direktion_Kurzbezei…, Dienststelle_Kurzbe…
 
-## g0128（1 列）
+## g0［個人別の記録のため削除］8（1 列）
 - 見出し：Direktion_Kurzbezeichnung
 - 例1 値：DPB | DIF | DSSI | DPB | BB
   - 同じ表の列：ID, Organisation_Kurzbe…, Dienststelle_Kurzbe…
 
-## g0129（1 列）
+## g0［個人別の記録のため削除］9（1 列）
 - 見出し：Dienststelle_Kurzbezeichnung
-- 例1 値：SF | SGR | SGSW | PD | ABB
+- 例1 値：SF | ［個人別の記録のため削除］R | ［個人別の記録のため削除］SW | PD | ABB
   - 同じ表の列：ID, Organisation_Kurzbe…, Direktion_Kurzbezei…
 
 ## g0130（1 列）
 - 見出し：PUBLISHER
 - 例1 値：Oberjugendanwaltschaft des Kantons Züri… | Statistisches Amt des Kantons Zürich | Volksschulamt des Kantons Zürich | Stadt Uster | Gesundheitsdirektion des Kantons Zürich
-  - 同じ表の列：ABTEILUNG, PUBLISHER_SUFFIX
+  - 同じ表の列：ABTEI［個人別の記録のため削除］NG, PUBLISHER_SUFFIX
 
 ## g0131（1 列）
-- 見出し：ABTEILUNG
+- 見出し：ABTEI［個人別の記録のため削除］NG
 - 例1 値：Kantonale Denkmalpflege | Analysen & Studien | Kantonales Rechnungswesen | Geschäftsfeld Medizin, Abteilung Gesund… | Kantonales Labor
   - 同じ表の列：PUBLISHER, PUBLISHER_SUFFIX
 
 ## g0132（1 列）
 - 見出し：PUBLISHER_SUFFIX
 - 例1 値：stadt-uster | statistisches-amt-kanton-zuerich | stadt-winterthur | direktion-der-justiz-und-des-innern-kan… | aln-kanton-zuerich
-  - 同じ表の列：PUBLISHER, ABTEILUNG
+  - 同じ表の列：PUBLISHER, ABTEI［個人別の記録のため削除］NG
 
 ## 答えの雛形
 
@@ -644,7 +644,7 @@ g0008
 g0009	
 g0010	
 g0011	
-g0012	
+g00［個人別の記録のため削除］	
 g0013	
 g0014	
 g0015	
@@ -731,24 +731,24 @@ g0108
 g0109	
 g0110	
 g0111	
-g0112	
+g01［個人別の記録のため削除］	
 g0113	
 g0114	
 g0115	
-g0116	
+g01［個人別の記録のため削除］	
 g0117	
 g0118	
 g0119	
-g0120	
-g0121	
-g0122	
-g0123	
-g0124	
-g0125	
-g0126	
-g0127	
-g0128	
-g0129	
+g0［個人別の記録のため削除］0	
+g0［個人別の記録のため削除］1	
+g0［個人別の記録のため削除］2	
+g0［個人別の記録のため削除］3	
+g0［個人別の記録のため削除］4	
+g0［個人別の記録のため削除］5	
+g0［個人別の記録のため削除］6	
+g0［個人別の記録のため削除］7	
+g0［個人別の記録のため削除］8	
+g0［個人別の記録のため削除］9	
 g0130	
 g0131	
 g0132	

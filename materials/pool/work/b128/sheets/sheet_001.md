@@ -17,12 +17,12 @@
 
 ## g0003（1 列）
 - 見出し：Usage
-- 例1 値：72361 | 4405 | 11174 | 1804 | 21020
+- 例1 値：72361 | 4405 | 11174 | ［個人別の記録のため削除］04 | 21020
   - 同じ表の列：DRAFT - Annual Repo…, Quality Measures, Costs, Standards Compliance
 
 ## g0004（1 列）
 - 見出し：Costs
-- 例1 値：0 | 18018 | 40322 | 0 | 0
+- 例1 値：0 | ［個人別の記録のため削除］0［個人別の記録のため削除］ | 40322 | 0 | 0
   - 同じ表の列：DRAFT - Annual Repo…, Quality Measures, Usage, Standards Compliance
 
 ## g0005（1 列）
@@ -37,32 +37,32 @@
 
 ## g0007（1 列）
 - 見出し：Date of Trip
-- 例1 値：27-28 April 2009 | 14-15 October 2009 | 27-28 May 2009 | 7-8 September 2009 | 7-8 May 2009
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Minister, Destination, Purpose, No.32 (The Royal Sq…, Number of officials…, Total Cost includin…
 
 ## g0008（1 列）
 - 見出し：Destination
-- 例1 値：Brussels | Abu Dhabi, Dubai and Qatar | Tripoli, Libya | Washington DC, USA | Copenhagen, Denmark
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Minister, Date of Trip, Purpose, No.32 (The Royal Sq…, Number of officials…, Total Cost includin…
 
 ## g0009（1 列）
 - 見出し：Purpose
-- 例1 値：World Gas Conference | D-Day Celebrations | G8 Foreign Ministers' Meeting | Ministerial Visit on Preventing Extremi… | ASEAN Conference
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | Ministerial Visit on Preventing Extremi… | ［個人別の記録のため削除］
   - 同じ表の列：Minister, Date of Trip, Destination, No.32 (The Royal Sq…, Number of officials…, Total Cost includin…
 
 ## g0010（1 列）
-- 見出し：No.32 (The Royal Squadron)' or 'other RAF' or 'Charter' or
-- 例1 値：Charter | Scheduled | Charter | Scheduled | Eurostar
+- 見出し：No.32 (The Royal Squadron)' or 'other RAF' or '［個人別の記録のため削除］' or
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Minister, Date of Trip, Destination, Purpose, Number of officials…, Total Cost includin…
 
 ## g0011（1 列）
 - 見出し：Number of officials accompanying Ministers (where non-schedu
-- 例1 値：18 | 2 | 18 | 4 | 31
+- 例1 値：［個人別の記録のため削除］ | 2 | ［個人別の記録のため削除］ | 4 | ［個人別の記録のため削除］
   - 同じ表の列：Minister, Date of Trip, Destination, Purpose, No.32 (The Royal Sq…, Total Cost includin…
 
 ## g0012（1 列）
 - 見出し：Total Cost including travel and accommodation of Minister on
-- 例1 値：£5,422 | £872 | £623 | £8,626 | £695
+- 例1 値：［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］ | ［個人別の記録のため削除］
   - 同じ表の列：Minister, Date of Trip, Destination, Purpose, No.32 (The Royal Sq…, Number of officials…
 
 ## g0013（1 列）
@@ -90,9 +90,9 @@
 - 例1 値：12425 | 6668 | 2713654 | 406988 | 7758029
   - 同じ表の列：Domestic Energy Con…, Method of Counting, Type of Measurement, Plymouth Unitary Au…, England
 
-## g0018（1 列）
+## g00［個人別の記録のため削除］（1 列）
 - 見出し：England
-- 例1 値：371756954 | 019586188 | 070428614 | 000003777 | 000005478
+- 例1 値：371756954 | 019586［個人別の記録のため削除］8 | 070428614 | 000003777 | 000005478
   - 同じ表の列：Domestic Energy Con…, Method of Counting, Type of Measurement, Plymouth Unitary Au…, South West Region
 
 ## 答えの雛形
@@ -115,5 +115,5 @@ g0014
 g0015	
 g0016	
 g0017	
-g0018	
+g00［個人別の記録のため削除］	
 ```

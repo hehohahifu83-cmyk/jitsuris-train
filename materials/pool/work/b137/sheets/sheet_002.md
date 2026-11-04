@@ -5,14 +5,14 @@
 - 1 グループ＝見出しと値の形が同じ列のまとまり。グループの全部の列に同じラベルが付く。例が 2 つあるときは両方を見て決める
 - 答え：末尾の「答えの雛形」を `answers/sheet_002.tsv` に写し、各行の TAB の後ろにラベルを 1 つ書く
 
-## g0016（1 列）
+## g00［個人別の記録のため削除］（1 列）
 - 見出し：Link
 - 例1 値：https://www.dora.lib4ri.ch/eawag/island… | https://energie.tg.ch/public/upload/ass… | https://wires.onlinelibrary.wiley.com/d… | https://www.klimaschutz.bs.ch/informati… | https://thermdis.eawag.ch/static/templa…
   - 同じ表の列：Id, Titel, Ausgabejahr, Auftraggeber, Kanton
 
 ## g0017（1 列）
 - 見出し：Date
-- 例1 値：2012-12-31 | 2017-12-31 | 2016-12-31 | 2020-12-31 | 2010-12-31
+- 例1 値：20［個人別の記録のため削除］-［個人別の記録のため削除］-31 | ［個人別の記録のため削除］-［個人別の記録のため削除］-31 | 20［個人別の記録のため削除］-［個人別の記録のため削除］-31 | 2020-［個人別の記録のため削除］-31 | 2010-［個人別の記録のため削除］-31
   - 同じ表の列：Thorium_Kg, Uranium_depleted_Kg, Uranium_natural_Kg, Uranium_enriched_lo…, Uranium_enriched_hi…, Uranium_reprocessin…, Plutonium_Kg
 
 ## g0041（3 列）
@@ -79,7 +79,7 @@
 ## 答えの雛形
 
 ```
-g0016	
+g00［個人別の記録のため削除］	
 g0017	
 g0041	
 g0046	
