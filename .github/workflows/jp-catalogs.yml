@@ -1,8 +1,14 @@
 name: 日本の自治体カタログを調べる（メタデータだけ）
 on:
   workflow_dispatch:
+    inputs:
+      reprobe_run:
+        description: '既存runのCKANだけを再集計（空なら全件調査）'
+        required: false
+        default: ''
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: jp-catalogs
   cancel-in-progress: false
@@ -21,8 +27,20 @@ jobs:
         with: {python-version: '3.12'}
       - name: 道具の試験
         run: python -m unittest tests.test_jp_catalogs
+      - uses: actions/download-artifact@v4
+        if: inputs.reprobe_run != ''
+        with:
+          name: jp-catalogs
+          run-id: ${{ inputs.reprobe_run }}
+          github-token: ${{ github.token }}
+          path: /tmp/previous-catalogs
       - name: 公的な一覧とCKANのメタデータだけを確認
-        run: python -I materials/pool/jp_catalogs.py --shard ${{ matrix.shard }} --shards 8 --out materials/pool/probe/jp_catalogs_$(date -u +%Y%m%d)_part${{ matrix.shard }}.json
+        env:
+          REPROBE: ${{ inputs.reprobe_run }}
+        run: |
+          args=()
+          if [ -n "$REPROBE" ]; then args=(--reprobe /tmp/previous-catalogs/jp_catalogs_20261104.json); fi
+          python -I materials/pool/jp_catalogs.py "${args[@]}" --shard ${{ matrix.shard }} --shards 8 --out materials/pool/probe/jp_catalogs_$(date -u +%Y%m%d)_part${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

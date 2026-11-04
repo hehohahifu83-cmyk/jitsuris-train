@@ -104,9 +104,9 @@ def probe(base, fetch=get_json):
             result['error'] = 'status_show did not identify a CKAN API'
             return result
         result['ckan'] = True
-        orgs, seen = [], set()
-        for page in range(20):
-            data = fetch(base + '/api/3/action/organization_list?' + urlencode({'all_fields': 'true', 'limit': 1000, 'offset': page * 1000}))
+        orgs, seen, offset = [], set(), 0
+        for page in range(200):
+            data = fetch(base + '/api/3/action/organization_list?' + urlencode({'all_fields': 'true', 'limit': 1000, 'offset': offset}))
             values = data.get('result')
             if data.get('success') is not True or not isinstance(values, list):
                 raise ValueError('organization_list failed')
@@ -123,6 +123,7 @@ def probe(base, fetch=get_json):
             if not added:
                 raise ValueError('organization_list repeated a page; offset may be ignored')
             orgs.extend(added)
+            offset += len(values)  # CKAN may cap the requested limit (e.g. 25).
         result['n_organizations'] = len(orgs)
         result['organizations'] = orgs
         counts = [o['package_count'] for o in orgs]
@@ -175,6 +176,7 @@ def main():
     ap.add_argument('--shard', type=int, default=0)
     ap.add_argument('--shards', type=int, default=1)
     ap.add_argument('--merge', type=Path)
+    ap.add_argument('--reprobe', type=Path, help='再調査は既存結果のCKAN候補のみ。ほかの結果は保持')
     args = ap.parse_args()
     if args.merge:
         docs = [json.loads(p.read_text(encoding='utf-8')) for p in sorted(args.merge.glob('jp_catalogs_*_part*.json'))]
@@ -197,10 +199,17 @@ def main():
         ap.error('workers=1..16, max-sites=1..3000')
     if not 0 <= args.shard < args.shards <= 16:
         ap.error('require 0 <= shard < shards <= 16')
-    sources, rows, errors = discover()
-    candidates = sorted({b for r in rows for b in bases(r['url'])})
-    selected = candidates[:args.max_sites][args.shard::args.shards]
-    hosts = []
+    if args.reprobe:
+        previous = json.loads(args.reprobe.read_text(encoding='utf-8'))
+        sources, rows, errors = previous['sources'], previous['catalog_references'], previous['source_errors']
+        candidates = sorted(h['base'] for h in previous['hosts'])
+        selected = sorted(h['base'] for h in previous['hosts'] if h['ckan'])[args.shard::args.shards]
+        hosts = [h for h in previous['hosts'] if not h['ckan']] if args.shard == 0 else []
+    else:
+        sources, rows, errors = discover()
+        candidates = sorted({b for r in rows for b in bases(r['url'])})
+        selected = candidates[:args.max_sites][args.shard::args.shards]
+        hosts = []
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
         jobs = {executor.submit(probe, base): base for base in selected}
         for future in as_completed(jobs):

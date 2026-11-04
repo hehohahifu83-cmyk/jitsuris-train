@@ -43,6 +43,18 @@ class CatalogTests(unittest.TestCase):
         self.assertIsNone(out['n_datasets'])
         self.assertIn('repeated', out['error'])
 
+    def test_server_caps_page_below_requested_limit(self):
+        from urllib.parse import urlsplit, parse_qs
+        seen = []
+        def fetch(url):
+            if 'status_show' in url: return {'success': True, 'result': {}}
+            offset = int(parse_qs(urlsplit(url).query)['offset'][0]); seen.append(offset)
+            return {'success': True, 'result': [{'name': f'city{offset}', 'package_count': 2}] if offset < 3 else []}
+        result = J.probe('https://catalog.example', fetch)
+        self.assertEqual(seen, [0, 1, 2, 3])
+        self.assertEqual(result['n_organizations'], 3)
+        self.assertEqual(result['n_datasets'], 6)
+
     def test_merge_requires_complete_disjoint_shards(self):
         directory = Path(tempfile.mkdtemp())
         out = directory / 'result.json'
