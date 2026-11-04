@@ -30,6 +30,13 @@ from pipeline import (ALLOWED_LICENSES, PER_PUBLISHER_POOL, TITLE_DENY, allowed_
                       license_from_pkg, normalize_license)
 
 PER_PUBLISHER = PER_PUBLISHER_POOL
+# 2026-11-04 Claude（教材集め v2、オーナー「全てやってくれ」）：もう使った表（resource ID）と教材庫の公開元ごとの表の数。
+# 候補を数える前に使った表を飛ばし、公開元の残りの枠（15 − 教材庫の表）だけ探す。前は新しい順の上位 15 表を毎回返し、
+# 採用で「もう使った表」として落ちていた（b124〜b141 で候補の多くがそれ）。main で入れる。空なら前と同じ動き
+KNOWN_RIDS: set = set()
+POOL_PUB: dict = {}
+SHEET_FORMATS = ("xlsx", "xls", "ms-excel xlsx", "application/vnd.ms-excel",
+                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 # 国のポータル（2026-10-24）。親の公開元は allocation.py の FIXED_ASSIGNMENTS で train に固定されているので、
 # 組織は「親:組織」で登録すれば必ず train になる（parent_publisher の決まり）。データセットを見る前に組織だけ登録する
 NATIONAL = [
@@ -99,6 +106,19 @@ def csv_on_host(res, site):
         parsed.scheme == "https" and host_in(parsed.hostname, csv_domains(urlparse(site).hostname or ""))
 
 
+def sheet_on_host(res, site):
+    """カタログと同じホスト（または csv_domains）の https の表計算のファイル（xlsx・xls）。取り出しは fetch_rows の表計算の道（2026-10-31）。"""
+    url = str(res.get("url") or "")
+    fmt = str(res.get("format") or "").lower()
+    try:
+        parsed = urlparse(url)
+    except ValueError:
+        return False
+    ext = parsed.path.lower().rsplit(".", 1)[-1] if "." in parsed.path else ""
+    return (fmt in SHEET_FORMATS or ext in ("xlsx", "xls")) and parsed.scheme == "https" and \
+        host_in(parsed.hostname, csv_domains(urlparse(site).hostname or ""))
+
+
 def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
     """CKAN の組織（organization_id → publisher_id）ごとに package_search。datastore のあるリソースだけを候補にする。
     site は API と dataset の URL の根（data.gov.au は https://data.gov.au/data）。"""
@@ -124,9 +144,13 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
             stats[f"search_failed:{str(exc)[:40]}"] += 1
             continue
         stats["publishers_searched"] += 1
+        room = PER_PUBLISHER - int(POOL_PUB.get(pid, 0))
+        if room <= 0:
+            stats["pool_full"] += 1
+            continue
         seen_titles, picked = set(), 0
         for pkg in sorted(packages, key=lambda p: p.get("metadata_modified") or "", reverse=True):
-            if picked >= PER_PUBLISHER:
+            if picked >= room:
                 break
             lic = license_from_pkg(pkg, host)
             title = str(pkg.get("title") or "")
@@ -144,18 +168,27 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
             if key in seen_titles:
                 stats["same_title"] += 1
                 continue
-            res = next((r for r in pkg.get("resources", []) if r.get("datastore_active")), None)
+            resources = pkg.get("resources", [])
+            if KNOWN_RIDS and any(r.get("id") in KNOWN_RIDS for r in resources):
+                stats["used"] += 1          # 同じデータセットの別の資料も使わない（同じ表の別の形・別の年のことが多い）
+                seen_titles.add(key)
+                continue
+            res = next((r for r in resources if r.get("datastore_active")), None)
             access = "datastore"
             if not res:
-                # datastore が無ければ、カタログと同じホストの https の CSV（2026-10-24）
-                res = next((r for r in pkg.get("resources", []) if csv_on_host(r, site)), None)
+                # datastore が無ければ、カタログと同じホストの https の CSV（2026-10-24）、それも無ければ表計算のファイル（2026-11-04）
+                res = next((r for r in resources if csv_on_host(r, site)), None)
                 access = "csv"
-                if not res:
-                    stats["no_datastore"] += 1
-                    if any(str(r.get("format") or "").lower() == "csv" for r in pkg.get("resources", [])):
-                        stats["csv_other_host"] += 1
-                    continue
-                stats["csv"] += 1
+                if res:
+                    stats["csv"] += 1
+                else:
+                    res = next((r for r in resources if sheet_on_host(r, site)), None)
+                    if not res:
+                        stats["no_datastore"] += 1
+                        if any(str(r.get("format") or "").lower() == "csv" for r in resources):
+                            stats["csv_other_host"] += 1
+                        continue
+                    stats["sheet"] += 1     # 取り出しは access=csv の道（fetch_rows が拡張子・形式で表計算を読む）
             seen_titles.add(key)
             picked += 1
             out.append({"publisher_id": pid, "pool": POOL_NAME, "platform": platform, "title": title, "resource_name": res.get("name", ""),
@@ -247,6 +280,7 @@ def main(argv=None):
     ap.add_argument("--budget-minutes", type=float, help="この時間を過ぎたら新しい組織を探さずに止めて書き出す")
     ap.add_argument("--query", help="CKAN・Socrata の検索語（例：予算+OR+budget。空白は +）。題名・説明に含むデータセットだけを探す")
     ap.add_argument("--pool", default="train", choices=["train", "eval2", "eval3"], help="探す公開元のプール（eval2・eval3 は封印セット用。--national は train 専用）")
+    ap.add_argument("--include-used", action="store_true", help="もう使った表・教材庫の枠を見ない（2026-11-04 より前の動き）")
     a = ap.parse_args(argv)
     global DEADLINE, POOL_NAME, QUERY
     POOL_NAME = a.pool
@@ -255,6 +289,11 @@ def main(argv=None):
         raise SystemExit("--national の組織は親が train に固定なので、--pool eval2／eval3 と一緒に使えない")
     if a.budget_minutes:
         DEADLINE = time.monotonic() + a.budget_minutes * 60
+    KNOWN_RIDS.clear(); POOL_PUB.clear()
+    if not a.include_used:
+        from pipeline import known_resources, pool_publisher_tables
+        KNOWN_RIDS.update(known_resources()[1])
+        POOL_PUB.update(pool_publisher_tables())
     pubs = json.load(open(ROOT / "independent_eval" / "allocation.json", encoding="utf-8"))["publishers"]
     train = {p["publisher_id"] for p in pubs if p["pool"] == a.pool}   # 名前は train のまま（--pool の公開元の集合）
     selected, stats = [], {}

@@ -117,10 +117,27 @@ def known_resources():
     return urls, rids
 
 
-def pool_publisher_tables():
+def pool_publisher_tables(pending=True):
+    """公開元ごとの表の数：確定した教材庫（batch_*.jsonl）＋まだ確定していない教材の陣（work/bNNN/adopted.json、
+    取り出しで届かなかった表を除く）。2026-11-04 Claude：未確定の陣を数えないと、同じカタログを何陣も集めたとき 15 表を超えて採っていた。
+    取り出せなかった・確定で 0 列になった表も数えるので、少し控えめになる。"""
     c = Counter()
+    done = set()
     for f in glob.glob(str(POOL / "batch_*.jsonl")):
         c.update(Counter(r["publisher"] for r in {r["table"]: r for r in read_jsonl(f)}.values()))
+        done.add(Path(f).stem[len("batch_"):])
+    if pending:
+        for f in glob.glob(str(POOL / "work" / "b[0-9][0-9][0-9]*" / "adopted.json")):
+            b = Path(f).parent.name
+            if b in done or not re.fullmatch(r"b\d{3,}", b):
+                continue
+            log = Path(f).with_name("corpus_log.json")
+            failed = set()
+            if log.exists():
+                failed = {t.get("resource_url") for t in json.load(open(log, encoding="utf-8")).get("tables", [])
+                          if t.get("status") == "error" and re.search(ACCESS_ERRORS, t.get("error", ""))}
+            c.update(Counter(a.get("publisher_id") for a in json.load(open(f, encoding="utf-8")).get("adopted", [])
+                             if a.get("resource_url") not in failed))
     return c
 
 

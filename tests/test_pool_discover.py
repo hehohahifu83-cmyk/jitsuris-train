@@ -7,6 +7,44 @@ import pool_discover as D  # noqa: E402
 
 
 class PoolDiscoverTests(unittest.TestCase):
+    def setUp(self):
+        D.KNOWN_RIDS.clear(); D.POOL_PUB.clear()
+
+    def tearDown(self):
+        D.KNOWN_RIDS.clear(); D.POOL_PUB.clear()
+
+    def test_used_tables_are_skipped_before_counting_and_pool_room_20261104(self):
+        pkgs = [{"name": f"p{i}", "title": f"表{chr(0x30a2 + i)}", "license_id": "cc-by-4.0", "metadata_modified": f"20{50 - i}",
+                 "resources": [{"id": f"r{i}", "datastore_active": True}]} for i in range(20)]
+        orig = D.get_json
+        D.get_json = lambda url, tries=4: {"result": {"count": len(pkgs), "results": pkgs}}
+        try:
+            D.KNOWN_RIDS.update({"r0", "r1", "r2"})   # 新しい順の上位 3 つは使用済み
+            D.POOL_PUB.update({"111111": 10})          # 教材庫に 10 表 → 残り 5
+            out, stats = D.bodik_candidates({"111111"})
+            self.assertEqual([x["resource_id"] for x in out], ["r3", "r4", "r5", "r6", "r7"])
+            self.assertEqual(stats["used"], 3)
+            D.POOL_PUB.update({"111111": 15})
+            out, stats = D.bodik_candidates({"111111"})
+            self.assertEqual((out, stats["pool_full"]), ([], 1))
+        finally:
+            D.get_json = orig
+
+    def test_sheet_file_on_same_host_is_a_candidate_20261104(self):
+        pkgs = [{"name": "p1", "title": "施設", "license_id": "cc-by-4.0", "metadata_modified": "2024",
+                 "resources": [{"id": "r1", "datastore_active": False, "format": "XLSX", "url": "https://data.bodik.jp/dataset/p1/resource/r1/download/a.xlsx"}]},
+                {"name": "p2", "title": "人口", "license_id": "cc-by-4.0", "metadata_modified": "2023",
+                 "resources": [{"id": "r2", "datastore_active": False, "format": "PDF", "url": "https://data.bodik.jp/x.pdf"},
+                               {"id": "r3", "datastore_active": False, "format": "", "url": "https://other.example.jp/x.xls"}]}]
+        orig = D.get_json
+        D.get_json = lambda url, tries=4: {"result": {"count": len(pkgs), "results": pkgs}}
+        try:
+            out, stats = D.bodik_candidates({"111111"})
+        finally:
+            D.get_json = orig
+        self.assertEqual([(x["resource_id"], x["access"]) for x in out], [("r1", "csv")])
+        self.assertEqual((stats["sheet"], stats["no_datastore"]), (1, 1))
+
     def test_title_key_merges_years(self):
         self.assertEqual(D.title_key("令和5年版 統計書 第2章"), D.title_key("令和6年版 統計書 第2章"))
         self.assertEqual(D.title_key("2019年度 決算"), D.title_key("2020年度 決算"))
