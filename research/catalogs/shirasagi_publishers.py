@@ -27,6 +27,11 @@ def main():
     time.sleep(2)
     lb,_,_=get(list_url);ld=json.loads(lb.decode('utf-8-sig'));lv=ld.get('result',ld) if isinstance(ld,dict) else ld
     row['list_shape']={'root_type':type(ld).__name__,'root_keys':list(ld)[:8] if isinstance(ld,dict) else [],'result_type':type(lv).__name__,'result_keys':list(lv)[:8] if isinstance(lv,dict) else [],'count':len(lv) if isinstance(lv,(dict,list)) else None}
+    if isinstance(ld,dict) and ld.get('success') is False:
+     row['list_error']=ld.get('error')
+     time.sleep(2)
+     lb,_,_=get(u.split('/api/')[0]+'/api/package_list?limit=100&offset=0');ld=json.loads(lb.decode('utf-8-sig'));lv=ld.get('result',ld)
+     row['list_positive_limit']={'success':ld.get('success'),'error':ld.get('error'),'type':type(lv).__name__,'count':len(lv) if isinstance(lv,(list,dict)) else None,'keys':list(lv)[:8] if isinstance(lv,dict) else []}
     row['owner_fields']={k:{'type':type(d[k]).__name__,'keys':sorted(d[k]) if isinstance(d[k],dict) else None,'safe_evidence':safe(d[k])} for k in ('author','user','groups','areas','site') if k in d}
    except Exception as e:row['error']=type(e).__name__+': '+str(e)[:100]
    out.append(row)
