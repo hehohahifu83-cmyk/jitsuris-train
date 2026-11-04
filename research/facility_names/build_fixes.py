@@ -75,15 +75,17 @@ def main():
     # 施設の名称：教材庫の残り 2,223 行（ブラインド入力への 2 人の独立の答えの裁定、adjudicate_pool.py → pool_final.tsv）。2026-11-04 Claude
     pf = os.path.join(ROOT, "research", "labels", "facility_v24", "pool_final.tsv")
     if os.path.exists(pf):
-        out = []
+        out, out_r4 = [], []
         for x in csv.DictReader(open(pf, encoding="utf-8"), delimiter="\t"):
             f, i, r = idx[x["id"]]
             if x["label_final"] == r["label"]:
                 continue
-            out.append({"file": f, "line": i, "rule": "B10_facility_name", "header": r["header"], "table": r["table"], "values": r["values"][:5],
+            # R4後（2026-11-04 Codex の指摘で足した直し）は別のファイルに。labelfix_g24_pool.jsonl は L24 の学習（run 41735353926）に使ったまま変えない
+            (out_r4 if x["basis"].startswith("R4後") else out).append({"file": f, "line": i, "rule": "B10_facility_name", "header": r["header"], "table": r["table"], "values": r["values"][:5],
                         "from": r["label"], "decision": "change", "label": x["label_final"],
                         "reason": f"LABEL_GUIDE v2.4 B10（research/labels/facility_v24/pool_final.tsv：{x['basis']}）", "decided_by": "chatgpt+claude-g24-20261104"})
         write(os.path.join(POOL, "labelfix_g24_pool.jsonl"), out)
+        write(os.path.join(POOL, "labelfix_g24_pool_r4.jsonl"), out_r4)
     # 評価の陣：同じ陣の同じ表・同じ列名の列と、その読み・英字・通称の列に当てる
     import d1_counts
     ev = [x for x in fin if x["set"] != "train"]

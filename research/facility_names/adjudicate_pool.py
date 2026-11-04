@@ -9,7 +9,7 @@
   R1 同じ種類の機関の名簿：機関としての属性（種別・団体名・法人番号・定員・受入年齢・診療科・開設…）が同じ表にあれば org（B10-1）、無ければ address（座標・場所の属性だけの同種の一覧、B10-3）
   R2 団体・会社の名前（町会・自治会・葬儀社など）：org（先例：町会 7/8 が org、葬儀社 org）
   R3 台帳：許可番号・業種・営業の種類・登録番号があれば org（B10-2）。確認番号・確認年月日・営業形態だけ（クリーニング・理容・美容所の届出の確認）は address（先例 b011#1129・b010#1326・b008#1451・b007#2097）
-  R4 読み・英字・通称の列：同じ表の名前の列の裁定に合わせる
+  R4 読み・英字・通称の列：同じ表の名前の列の裁定に合わせる（2 人が一致していても合わせる＝R4後、2026-11-04 Codex の指摘）
   MANUAL 規則で決めない行は Claude が 1 行ずつ見て決めた（理由つき）
 """
 import csv, json, os, re, sys
@@ -110,6 +110,16 @@ def main():
             out[i] = ("org", "R3 許可・登録の台帳（B10-2）") if LIC_STRONG.search(ctx) else ("address", "R3 届出の確認だけの台帳（先例）")
         else:
             out[i] = (None, "未裁定")
+    # R4 の後の確かめ（2026-11-04、Codex の指摘：2 人が一致した読みの列は R4 を通らず、名前の列の裁定と食い違うことがあった。b005#965）。
+    # 読みの列は、一致していても同じ表の名前の列の最終ラベルに合わせる。basis は「R4後」（L24 の学習に使った付け直しとは別のファイルにする）。
+    for i in order:
+        k = idk[i]
+        if not P.READING.search(k[1]):
+            continue
+        base = (k[0], P.base_header(k[1]))
+        ids = [j for j, kk in idk.items() if kk == base]
+        if ids and out[ids[0]][0] is not None and out[i][0] != out[ids[0]][0]:
+            out[i] = (out[ids[0]][0], f"R4後 一致していたが同じ表の名前の列（{ids[0]}）の裁定に合わせる")
     left = [i for i in out if out[i][0] is None]
     if left:
         for i in left:
@@ -128,6 +138,7 @@ def main():
     print("final", Counter(v[0] for v in out.values()))
     print("winner", Counter("claude" if out[i][0] == cl[i]["label_v24"] else "chatgpt" if out[i][0] == gp[i]["label"] else "neither" for i in dis))
     print("basis", Counter(out[i][1].split(" ")[0] if out[i][1].startswith("R") else "MANUAL" for i in dis))
+    print("R4後", [i for i in out if out[i][1].startswith("R4後")])
 
 
 if __name__ == "__main__":
