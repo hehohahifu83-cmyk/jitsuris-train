@@ -55,6 +55,10 @@ NATIONAL = [
     {"parent": "fukuyama", "host": "data.city.fukuyama.hiroshima.jp", "site": "https://data.city.fukuyama.hiroshima.jp"},
     {"parent": "toyama_city", "host": "opdt.city.toyama.lg.jp", "site": "https://opdt.city.toyama.lg.jp"},
     {"parent": "imizu", "host": "opendata.city.imizu.toyama.jp", "site": "https://opendata.city.imizu.toyama.jp"},
+    # 2026-11-05：http だけのカタログ（allowed_hosts.json の http_hosts に完全一致で登録）
+    {"parent": "sagamihara", "host": "opendata.city.sagamihara.kanagawa.jp", "site": "http://opendata.city.sagamihara.kanagawa.jp"},
+    {"parent": "machida", "host": "opendata.city.machida.tokyo.jp", "site": "http://opendata.city.machida.tokyo.jp"},
+    {"parent": "niigata_city", "host": "opendata.city.niigata.lg.jp", "site": "http://opendata.city.niigata.lg.jp"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 # opendata.swiss は前の名乗り方（jitsuris-train-pool-discover/1.0 (metadata only)）と名乗りなしを HTTP 403 にする（2026-10-28 probe_hosts）

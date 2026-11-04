@@ -43,6 +43,10 @@ FIXED_ASSIGNMENTS = {
     "fukuyama": "train",      # data.city.fukuyama.hiroshima.jp（福山市の部局、15 組織）
     "toyama_city": "train",   # opdt.city.toyama.lg.jp（富山市）
     "imizu": "train",         # opendata.city.imizu.toyama.jp（射水市）
+    # 2026-11-05 Claude（オーナー「全てやってくれ」）：http だけのカタログ（Codex の限定 http 対応、materials/pool/HTTP_CATALOGS.md）。重なりは 11-04 に確認済み
+    "sagamihara": "train",    # opendata.city.sagamihara.kanagawa.jp（相模原市、27 組織）
+    "machida": "train",       # opendata.city.machida.tokyo.jp（町田市）
+    "niigata_city": "train",  # opendata.city.niigata.lg.jp（新潟市）
     "yokohama": "main",
 }
 
