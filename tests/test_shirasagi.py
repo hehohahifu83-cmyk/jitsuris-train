@@ -137,4 +137,33 @@ class NativeTests(unittest.TestCase):
   with self.assertRaises(ValueError):self.fetch(lambda d:d['resources'][0].update(license={'uid':'cc-by-nc'}))
  def test_fetch_changed_numeric_id_rejected(self):
   with self.assertRaises(ValueError):self.fetch(lambda d:d.update(id=456))
+class MetadataErrorTests(unittest.TestCase):
+ def test_transport_causes(self):
+  import errno,socket,ssl
+  from urllib.error import URLError,HTTPError
+  cases=[(URLError(socket.timeout('private')), 'timeout'),
+         (TimeoutError('private'),'timeout'),
+         (URLError(ConnectionRefusedError(errno.ECONNREFUSED,'private')),'connection_refused'),
+         (URLError(ConnectionResetError(errno.ECONNRESET,'private')),'connection_reset'),
+         (URLError(OSError(errno.ETIMEDOUT,'private')),'timeout'),
+         (URLError(OSError(errno.EHOSTUNREACH,'private')),'unreachable'),
+         (URLError(socket.gaierror(-2,'private')),'dns'),
+         (URLError(ssl.SSLError('private')),'tls'),
+         (HTTPError('https://private.test',429,'private',None,None),'http_429'),
+         (HTTPError('https://private.test',503,'private',None,None),'http_5xx'),
+         (HTTPError('https://private.test',403,'private',None,None),'http_other'),
+         (URLError('Tunnel connection failed: 502 private'),'proxy_5xx'),
+         (URLError('Tunnel connection failed: 429 private'),'proxy_429'),
+         (URLError('private'),'url_other'),(ValueError('private'),'other')]
+  for exc,want in cases:
+   with self.subTest(want=want):self.assertEqual(S.metadata_error_cause(exc),want)
+ def test_discover_keeps_totals_without_exception_text(self):
+  import errno
+  from urllib.error import URLError
+  client=Mock();client.ids.return_value=[U];client.show.side_effect=URLError(ConnectionRefusedError(errno.ECONNREFUSED,'sensitive details'))
+  out,stats=S.discover(CFG,REG,set(),{},D.title_key,P.TITLE_DENY,client=client)
+  self.assertEqual(out,[])
+  self.assertEqual(stats,{'metadata_error':1,'metadata_error:URLError':1,'metadata_cause:connection_refused':1,'tables':0,'publishers':0})
+  self.assertNotIn('sensitive',json.dumps(stats))
+
 if __name__=='__main__':unittest.main()

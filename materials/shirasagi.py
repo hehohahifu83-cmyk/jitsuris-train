@@ -1,6 +1,7 @@
 """Shirasagi独自APIのメタデータ・提供元・資料の識別。登録/割り当ては変更しない。"""
 from __future__ import annotations
-import hashlib,json,re,threading,time,sys
+import errno,hashlib,json,re,socket,ssl,threading,time,sys
+from urllib.error import HTTPError,URLError
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse,urlencode,parse_qs
@@ -108,6 +109,26 @@ def locate(page,rid=None):
             return cfg,q['uuid'][0].lower(),m.group(1),q['resource'][0]
     raise ValueError('shirasagi catalog is not registered')
 
+def metadata_error_cause(exc):
+    """失敗原因を固定語だけで記録する。例外本文や応答本文は保存しない。"""
+    if isinstance(exc,HTTPError):
+        return 'http_429' if exc.code==429 else 'http_5xx' if 500<=exc.code<600 else 'http_other'
+    reason=exc.reason if isinstance(exc,URLError) else exc
+    if isinstance(reason,(TimeoutError,socket.timeout)):return 'timeout'
+    if isinstance(reason,ssl.SSLError):return 'tls'
+    if isinstance(reason,socket.gaierror):return 'dns'
+    if isinstance(reason,OSError):
+        if reason.errno==errno.ETIMEDOUT:return 'timeout'
+        if reason.errno==errno.ECONNREFUSED:return 'connection_refused'
+        if reason.errno==errno.ECONNRESET:return 'connection_reset'
+        if reason.errno in (errno.ENETUNREACH,errno.EHOSTUNREACH):return 'unreachable'
+    # urllib のプロキシCONNECTエラーは reason が文字列になる。
+    # 決まったエラー種別だけを抽出し、ホスト・資格情報などを転記しない。
+    if isinstance(reason,str):
+        if re.search(r'tunnel connection failed:\s*429\b',reason,re.I):return 'proxy_429'
+        if re.search(r'tunnel connection failed:\s*5\d\d\b',reason,re.I):return 'proxy_5xx'
+    return 'url_other' if isinstance(exc,URLError) else 'other'
+
 class Client:
     def __init__(self,cfg,fetch_json=None):self.cfg=cfg;self.site=cfg['site'];self.fetch_json=fetch_json
     def request(self,action,params):
@@ -161,7 +182,11 @@ def discover(cfg,registry,known_rids,pool_pub,title_key,title_deny,stop=lambda:F
             stats['used_dataset']+=1;continue
         if stop():stats['stopped_by_budget']+=1;break
         try:dataset=client.show(uuid)
-        except Exception as exc:stats['metadata_error']+=1;stats['metadata_error:'+type(exc).__name__]+=1;continue  # 種類も数える（b176 青森 162 件の原因が分からなかった）
+        except Exception as exc:
+            stats['metadata_error']+=1
+            stats['metadata_error:'+type(exc).__name__]+=1
+            stats['metadata_cause:'+metadata_error_cause(exc)]+=1
+            continue
         title=str(dataset.get('name') or '')
         if not title or title_deny.search(title):stats['title_denied']+=1;continue
         if query and query.lower() not in (title+' '+str(dataset.get('text',''))).lower():continue
