@@ -1,3 +1,28 @@
+# 2026-11-05 19:30 JST — Codex：L24固定5集合全件監査と現在状態
+
+## 確認済み事実
+
+- L24 run [41735353926](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/41735353926) は成功。評価artifact 13283840097（154ファイル）とモデルartifact 13283895077（約2.64 GB、2026-12-04期限）を別々に確認した。seed 1/2/3は各142,117行、loop 1614/1647/1615秒、最大GPU 5.5/5.5/5.6 GiB、train切詰め849行（0.60%）。
+- 許可された固定5集合だけで75個のprobs JSONと75個のerrors JSONを照合した。問題出力1,626（wrong 701、unknown 741、other見落し184）、重大135、固有評価行231。全3 seed再発207、2 seed再発11、1 seedのみ13。raw正解をguardがunknownへ変えた397、raw誤りをguardがunknownへ変えた344。
+- 同じseedのL（run 41192849082）との差は、5集合を同じ重みで平均して ft -0.0615pp、blend50 -0.1682pp、blend60 +0.0121pp、blend70 -0.0228pp、sparse -0.1794pp。全条件1.5pp未満で固定試験上は差なし。L24採用はF1の一回限り新規公開元試験まで未決定。
+- 全231固有行とLから予測が変わった472出力（改善165、悪化191、正誤不変116）を `cpu_lab/reports/eval-audit-run-41735353926.md` に保存した。固定試験例は教材へ転用しない。
+- Kaggleは2026-11-05 17:57 JSTの直接観測でCOMPLETE、`kaggle/kaggle.request=done`。queued/in_progressのworkflow項目は返らず、現在学習中ではない。進行中依頼は変更していない。
+- b176〜b180はメタデータ候補68表を選んだが、adopt時の `ModuleNotFoundError: No module named 'shirasagi'` で5陣とも採用失敗・0列。これは教材収集の実装障害で、学習完了ではない。前段までの確定教材庫は37,344列。
+
+## 未確認
+
+- 事前記録の `relabeled 1492` とL24 artifactで実際に適用されたlabel-fix件数の一致。manifestは4ファイル名と学習行hashを記録するが適用件数を持たない。
+- 各問題行の根本原因。artifactには列名・正解・raw/guard後予測・上位確率はあるが、元値・兄弟列・UNIT・出典・token長を含まない。guardの即時機構は確認済みだが、教材不足・定義疑義・文脈不足は仮説。
+- b176〜b180の68候補表が修正後に安全に採用・取得できるか。
+
+## 未完了と次の一要因検証
+
+1. F1予測前にlabel-fix実適用件数1492を独立再集計し、一致しなければ予測しない。
+2. 事前登録済みF1でL対L24を一回だけ測る。先生2人の独立ラベルと根拠裁定までラベルを変更しない。
+3. raw正解→unknown 397出力を理由コードとmarginで層別化し、guardだけを一要因で検証する。
+4. `shirasagi` import経路を直し、既存候補を変えずにadopt試験→b176〜b180を再開する。学習依頼とは分離する。
+5. 比較目標は表の列種類判定でChatGPT・Claudeと同一課題の同等以上を実証し実用化すること。Geminiは比較目標に含めない。
+
 # 2026-11-05 18:17 JST — Claude：Shirasagi の保留の組を groups で確かめ、34 組を足した（124 組・train 37 自治体）
 
 - 保留の user.id・部署名だけの組を、Codex の一覧の groups（Shirasagi の所属。「鳥取県/鳥取市」「徳島県/美馬市/企画総務部/…」）で確かめた（`shirasagi_register.py` の G1〜G3）。その値の全部の組で、候補の自治体を指す groups ≥ データセットの数、ほかは県のカタログ管理（情報政策課）か県名だけ、県が候補なら市町村の名前が無いこと。
