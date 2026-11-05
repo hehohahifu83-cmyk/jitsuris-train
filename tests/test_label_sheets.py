@@ -73,14 +73,14 @@ class PrecedentTests(unittest.TestCase):
         d = Path(tempfile.mkdtemp())
         rows = []
         for i in range(6):   # 6 回・3 公開元、全部 id
-            rows.append({"table": f"t{i}", "header": "ＩＤ", "label": "id", "publisher": f"p{i % 3}", "values": []})
+            rows.append({"table": f"t{i}", "header": "ＩＤ", "label": "id", "publisher": f"p{i % 3}", "values": [str(i)]})
         for i in range(6):   # 6 回だが 1 公開元だけ → 先例にしない
-            rows.append({"table": f"u{i}", "header": "名称", "label": "org", "publisher": "p0", "values": []})
+            rows.append({"table": f"u{i}", "header": "名称", "label": "org", "publisher": "p0", "values": ["a"]})
         for i in range(6):   # ラベルが割れる → 先例にしない
-            rows.append({"table": f"v{i}", "header": "区分", "label": "category" if i % 2 else "id", "publisher": f"p{i}", "values": []})
-        rows.append({"table": "w0", "header": "住所", "label": "org", "publisher": "p1", "values": []})
+            rows.append({"table": f"v{i}", "header": "区分", "label": "category" if i % 2 else "id", "publisher": f"p{i}", "values": ["a"]})
+        rows.append({"table": "w0", "header": "住所", "label": "org", "publisher": "p1", "values": ["a"]})
         for i in range(1, 6):
-            rows.append({"table": f"w{i}", "header": "住所", "label": "address", "publisher": f"p{i}", "values": []})
+            rows.append({"table": f"w{i}", "header": "住所", "label": "address", "publisher": f"p{i}", "values": ["a"]})
         (d / "batch_b001.jsonl").write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n", encoding="utf-8")
         # 付け直しで w0 の住所も address になる → 先例になる
         (d / "labelfix_v24.jsonl").write_text(json.dumps({"table": "w0", "header": "住所", "from": "org", "label": "address", "decision": "change"}, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -88,16 +88,25 @@ class PrecedentTests(unittest.TestCase):
 
     def test_build_precedent_rules(self):
         idx = S.build_precedent(self._pool())
-        self.assertEqual(idx["id"][0], "id")            # NFKC・小文字で「ＩＤ」→「id」
-        self.assertNotIn("名称", idx)                    # 1 公開元だけ
-        self.assertNotIn("区分", idx)                    # ラベルが割れる
-        self.assertNotIn("住所", idx)                    # 2026-11-04：名前・住所・文章の列は先例にしない
+        self.assertEqual(idx[("id", "num")][0], "id")   # NFKC・小文字で「ＩＤ」→「id」
+        self.assertNotIn(("id", "text"), idx)           # 2026-11-05：値の形が違えば先例にしない
+        self.assertNotIn(("名称", "text"), idx)          # 1 公開元だけ
+        self.assertNotIn(("区分", "text"), idx)          # ラベルが割れる
+        self.assertNotIn(("住所", "text"), idx)          # 2026-11-04：名前・住所・文章の列は先例にしない
         skip = S.PRECEDENT_SKIP_LABELS
         S.PRECEDENT_SKIP_LABELS = set()
         try:
-            self.assertEqual(S.build_precedent(self._pool())["住所"][0], "address")      # 付け直しを当ててから数える
+            self.assertEqual(S.build_precedent(self._pool())[("住所", "text")][0], "address")      # 付け直しを当ててから数える
         finally:
             S.PRECEDENT_SKIP_LABELS = skip
+
+    def test_value_kind(self):
+        self.assertEqual(S.value_kind(["1", "1,200", "△3", "12.5%"]), "num")
+        self.assertEqual(S.value_kind(["市税", "国庫支出金"]), "text")
+        self.assertEqual(S.value_kind(["起時", "9", "%"]), "mixed")
+        self.assertEqual(S.value_kind(["null", ""]), "empty")
+        self.assertIsNone(S.precedent_key({"header": "月", "values": ["起時", "9"]}))
+        self.assertEqual(S.precedent_key({"header": "会計", "values": ["1", "2"]}), ("会計", "num"))
 
     def test_merge_uses_precedent_and_audit(self):
         corpus = [row("x1", "ID", ["1"]), row("x2", "人口", ["3"])]

@@ -85,8 +85,29 @@ def head_key(h) -> str:
 PRECEDENT_SKIP_LABELS = {"org", "address", "text", "person"}
 
 
+NUMERIC = re.compile(r"[-+△▲]?[\d,]+(?:\.\d+)?%?")
+
+
+def value_kind(values) -> str:
+    """値の形：num（全部が数）・text（数が無い）・mixed（混ざる）・empty（空）。
+    2026-11-05 Claude：先例を見出しだけで引くと、名前の列で account だった「会計・款・項」を番号だけの列（→ id）にも当て、
+    値が崩れた表（世帯数に「総人口・女・男」、月に「起時・最高値」）にも当てた（b163 の抜き取り 3/5 不合格）。見出し＋値の形で引き、
+    mixed・empty の列には先例を使わない。"""
+    v = [norm(x) for x in values or [] if norm(x) not in ("", "null", "none", "-", "－")]
+    if not v:
+        return "empty"
+    n = sum(bool(NUMERIC.fullmatch(x)) for x in v)
+    return "num" if n == len(v) else "text" if n == 0 else "mixed"
+
+
+def precedent_key(row):
+    """先例を引く鍵（見出し, 値の形）。mixed・empty は None（先例を使わない）。"""
+    k = value_kind(row.get("values"))
+    return None if k in ("mixed", "empty") else (head_key(row.get("header")), k)
+
+
 def build_precedent(pool_dir=None, min_n=PRECEDENT_MIN_N, min_pub=PRECEDENT_MIN_PUB):
-    """教材庫の確定した列から、見出し → (ラベル, 回数, 公開元の数)。ラベルが 1 つに決まる見出しだけ。"""
+    """教材庫の確定した列から、(見出し, 値の形) → (ラベル, 回数, 公開元の数)。ラベルが 1 つに決まるものだけ。"""
     pool_dir = Path(pool_dir or ROOT / "materials" / "pool")
     fix = {}
     for fn in LABELFIX_FILES:
@@ -105,7 +126,10 @@ def build_precedent(pool_dir=None, min_n=PRECEDENT_MIN_N, min_pub=PRECEDENT_MIN_
             f = fix.get((r["table"], str(r["header"]).strip()))
             if f and lab == f[0]:
                 lab = f[1]
-            c, pubs = seen.setdefault(head_key(r["header"]), (Counter(), set()))
+            key = precedent_key(r)
+            if key is None:
+                continue
+            c, pubs = seen.setdefault(key, (Counter(), set()))
             c[lab] += 1
             pubs.add(r.get("publisher"))
     out = {}
@@ -153,12 +177,13 @@ def cmd_make(a):
         if not re.fullmatch(r"b\d{3,}", a.batch):
             raise SystemExit("先例は教材の陣（b123 の形）だけ。評価の陣には使わない")
         idx = build_precedent()
-        hits = [g for g in groups if head_key(corpus[g["rows"][0]].get("header")) in idx]
+        # グループの全部の列が同じ鍵で先例にあるときだけ（グループの中で値の形が違う列があれば先生に見せる）
+        hits = [g for g in groups if len({precedent_key(corpus[i]) for i in g["rows"]}) == 1 and precedent_key(corpus[g["rows"][0]]) in idx]
         rng = random.Random(f"precedent|{a.batch}")
         k = min(len(hits), max(PRECEDENT_AUDIT_MIN, round(len(hits) * PRECEDENT_AUDIT_RATE)))
         audit = {g["group"] for g in rng.sample(hits, k)} if hits else set()
         for g in hits:
-            lab, n, npub = idx[head_key(corpus[g["rows"][0]].get("header"))]
+            lab, n, npub = idx[precedent_key(corpus[g["rows"][0]])]
             if g["group"] in audit:
                 g["precedent_audit"] = lab
                 n_audit += 1
