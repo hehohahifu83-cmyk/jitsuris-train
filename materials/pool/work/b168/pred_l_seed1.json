@@ -1,0 +1,993 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b168",
+ "set_sha256": "5e074a4269a5dc41c6fd4e242887bd286f382223ffc3816f3cabce9f5d9b50bc",
+ "created_utc": "2026-11-04T22:48:23Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "939240908e4fd67520c112ad385719d5528b3d95"
+ },
+ "input": {
+  "val_select": false,
+  "unit_ext": false,
+  "title": true
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "titles": {
+  "path": "materials/pool/work/r152/titles.json",
+  "sha256": "fba2fb7239928010bad9327753b89a77a0ef7fc9c89bde9e9af21ef1a2f43767",
+  "columns_with_title": 1672
+ },
+ "timing": {
+  "columns": 1672,
+  "seconds": 284.31,
+  "ms_per_column": 170.042
+ },
+ "rows": [
+  {
+   "id": "b168-0001",
+   "column": "年[西暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.980805
+    },
+    {
+     "label": "org",
+     "probability": 0.004843
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002618
+    }
+   ]
+  },
+  {
+   "id": "b168-0002",
+   "column": "年[和暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984835
+    },
+    {
+     "label": "org",
+     "probability": 0.003144
+    },
+    {
+     "label": "person",
+     "probability": 0.001626
+    }
+   ]
+  },
+  {
+   "id": "b168-0003",
+   "column": "月",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984611
+    },
+    {
+     "label": "quantity",
+     "probability": 0.003611
+    },
+    {
+     "label": "org",
+     "probability": 0.002167
+    }
+   ]
+  },
+  {
+   "id": "b168-0004",
+   "column": "新潟市人口[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.963819
+    },
+    {
+     "label": "other",
+     "probability": 0.024219
+    },
+    {
+     "label": "amount",
+     "probability": 0.003891
+    }
+   ]
+  },
+  {
+   "id": "b168-0005",
+   "column": "新潟市男[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.986748
+    },
+    {
+     "label": "other",
+     "probability": 0.005438
+    },
+    {
+     "label": "amount",
+     "probability": 0.003062
+    }
+   ]
+  },
+  {
+   "id": "b168-0006",
+   "column": "新潟市女[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.989076
+    },
+    {
+     "label": "other",
+     "probability": 0.004072
+    },
+    {
+     "label": "amount",
+     "probability": 0.00273
+    }
+   ]
+  },
+  {
+   "id": "b168-0007",
+   "column": "新潟市世帯数[世帯]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.979259
+    },
+    {
+     "label": "other",
+     "probability": 0.014133
+    },
+    {
+     "label": "amount",
+     "probability": 0.00202
+    }
+   ]
+  },
+  {
+   "id": "b168-0008",
+   "column": "北区人口[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.96964
+    },
+    {
+     "label": "other",
+     "probability": 0.021521
+    },
+    {
+     "label": "amount",
+     "probability": 0.002607
+    }
+   ]
+  },
+  {
+   "id": "b168-0009",
+   "column": "北区男[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.988994
+    },
+    {
+     "label": "other",
+     "probability": 0.004378
+    },
+    {
+     "label": "amount",
+     "probability": 0.002499
+    }
+   ]
+  },
+  {
+   "id": "b168-0010",
+   "column": "北区女[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.98966
+    },
+    {
+     "label": "other",
+     "probability": 0.004443
+    },
+    {
+     "label": "amount",
+     "probability": 0.001847
+    }
+   ]
+  },
+  {
+   "id": "b168-0011",
+   "column": "年[西暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.98402
+    },
+    {
+     "label": "org",
+     "probability": 0.004103
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001617
+    }
+   ]
+  },
+  {
+   "id": "b168-0012",
+   "column": "年[和暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.98443
+    },
+    {
+     "label": "org",
+     "probability": 0.003458
+    },
+    {
+     "label": "address",
+     "probability": 0.001733
+    }
+   ]
+  },
+  {
+   "id": "b168-0013",
+   "column": "月",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.981705
+    },
+    {
+     "label": "org",
+     "probability": 0.002808
+    },
+    {
+     "label": "quantity",
+     "probability": 0.00279
+    }
+   ]
+  },
+  {
+   "id": "b168-0014",
+   "column": "区名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.987138
+    },
+    {
+     "label": "org",
+     "probability": 0.005143
+    },
+    {
+     "label": "category",
+     "probability": 0.002073
+    }
+   ]
+  },
+  {
+   "id": "b168-0015",
+   "column": "区役所・出張所名",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.933976
+    },
+    {
+     "label": "address",
+     "probability": 0.034301
+    },
+    {
+     "label": "account",
+     "probability": 0.017794
+    }
+   ]
+  },
+  {
+   "id": "b168-0016",
+   "column": "町丁名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.981478
+    },
+    {
+     "label": "org",
+     "probability": 0.015095
+    },
+    {
+     "label": "id",
+     "probability": 0.000681
+    }
+   ]
+  },
+  {
+   "id": "b168-0017",
+   "column": "世帯数[世帯]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.990203
+    },
+    {
+     "label": "other",
+     "probability": 0.005112
+    },
+    {
+     "label": "amount",
+     "probability": 0.000953
+    }
+   ]
+  },
+  {
+   "id": "b168-0018",
+   "column": "男女別・計",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988022
+    },
+    {
+     "label": "id",
+     "probability": 0.003043
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002622
+    }
+   ]
+  },
+  {
+   "id": "b168-0019",
+   "column": "人口計[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.98811
+    },
+    {
+     "label": "other",
+     "probability": 0.006373
+    },
+    {
+     "label": "amount",
+     "probability": 0.001117
+    }
+   ]
+  },
+  {
+   "id": "b168-0020",
+   "column": "0~4歳[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993269
+    },
+    {
+     "label": "category",
+     "probability": 0.001828
+    },
+    {
+     "label": "other",
+     "probability": 0.001075
+    }
+   ]
+  },
+  {
+   "id": "b168-0021",
+   "column": "年[西暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984073
+    },
+    {
+     "label": "org",
+     "probability": 0.004077
+    },
+    {
+     "label": "person",
+     "probability": 0.001675
+    }
+   ]
+  },
+  {
+   "id": "b168-0022",
+   "column": "年[和暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.984523
+    },
+    {
+     "label": "org",
+     "probability": 0.003493
+    },
+    {
+     "label": "person",
+     "probability": 0.001661
+    }
+   ]
+  },
+  {
+   "id": "b168-0023",
+   "column": "月",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.985059
+    },
+    {
+     "label": "org",
+     "probability": 0.002522
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001974
+    }
+   ]
+  },
+  {
+   "id": "b168-0024",
+   "column": "市・区名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.988781
+    },
+    {
+     "label": "org",
+     "probability": 0.007159
+    },
+    {
+     "label": "id",
+     "probability": 0.000826
+    }
+   ]
+  },
+  {
+   "id": "b168-0025",
+   "column": "人口総数[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.947242
+    },
+    {
+     "label": "other",
+     "probability": 0.043145
+    },
+    {
+     "label": "amount",
+     "probability": 0.002576
+    }
+   ]
+  },
+  {
+   "id": "b168-0026",
+   "column": "男[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.99099
+    },
+    {
+     "label": "other",
+     "probability": 0.003036
+    },
+    {
+     "label": "amount",
+     "probability": 0.002124
+    }
+   ]
+  },
+  {
+   "id": "b168-0027",
+   "column": "女[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.992218
+    },
+    {
+     "label": "other",
+     "probability": 0.002371
+    },
+    {
+     "label": "amount",
+     "probability": 0.00178
+    }
+   ]
+  },
+  {
+   "id": "b168-0028",
+   "column": "前月末との人口総数の差[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.769068
+    },
+    {
+     "label": "other",
+     "probability": 0.20817
+    },
+    {
+     "label": "rate",
+     "probability": 0.008691
+    }
+   ]
+  },
+  {
+   "id": "b168-0029",
+   "column": "前月末との男の差[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.791315
+    },
+    {
+     "label": "other",
+     "probability": 0.166747
+    },
+    {
+     "label": "rate",
+     "probability": 0.017226
+    }
+   ]
+  },
+  {
+   "id": "b168-0030",
+   "column": "前月末との女の差[人]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.843096
+    },
+    {
+     "label": "other",
+     "probability": 0.129638
+    },
+    {
+     "label": "rate",
+     "probability": 0.011279
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "r152-b152-b175",
+  "set_sha256": "bdbbc7101770e3f1c6f00f22d98c00623587e85bc591c0ebdc151ede9e452306"
+ }
+}

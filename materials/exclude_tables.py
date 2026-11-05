@@ -17,9 +17,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "materials"))
 from pipeline import read_jsonl, work, write_jsonl  # noqa: E402
+from label_sheets import norm  # noqa: E402
 
 MARK = "［個人別の記録のため削除］"
-URL = re.compile(r"(?:^|\s)[-*]\s*(.*?)\s+—\s+(https://\S+)")
+URL = re.compile(r"(?:^|\s)[-*]\s*(.*?)\s+—\s+(https?://\S+)")  # http だけのカタログ（相模原・町田・新潟）も（2026-11-05）
 
 
 def notes_tables(w):
@@ -52,7 +53,9 @@ def main(argv=None):
     secret = set()
     for i in rows:
         c = corpus[i]
-        secret.update(str(v) for v in c.get("values", []) if len(str(v).strip()) >= 2)
+        for v in c.get("values", []):
+            # シートには NFKC・空白をまとめた形で出るので、その形も消す（2026-11-05）
+            secret.update(s for s in (str(v), norm(v)) if len(s.strip()) >= 2)
         c["values"] = [MARK] * len(c.get("values", []))
         if "row_values" in c:
             c["row_values"] = MARK
@@ -67,6 +70,17 @@ def main(argv=None):
                 if "row_values" in col:
                     col["row_values"] = MARK
         sp.write_text(json.dumps(s, ensure_ascii=False) + "\n", encoding="utf-8")
+    # 予測のためにまとめた set（work/r*/set.json）にも同じ列の値が残るので消す（2026-11-05）
+    tables = {corpus[i]["table"] for i in rows}
+    for cp in sorted(w.parent.glob("r*/set.json")):
+        s = json.loads(cp.read_text(encoding="utf-8"))
+        hit_cols = [col for col in s.get("columns", []) if str(col.get("id", "")).startswith(f"{a.batch}-") and col.get("table") in tables]
+        for col in hit_cols:
+            col["values"] = [MARK] * len(col.get("values", []))
+            if "row_values" in col:
+                col["row_values"] = MARK
+        if hit_cols:
+            cp.write_text(json.dumps(s, ensure_ascii=False) + "\n", encoding="utf-8")
     for md in (w / "sheets").glob("sheet_*.md"):
         t = md.read_text(encoding="utf-8")
         for v in sorted(secret, key=len, reverse=True):

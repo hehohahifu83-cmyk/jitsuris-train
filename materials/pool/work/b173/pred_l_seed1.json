@@ -1,0 +1,280 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b173",
+ "set_sha256": "3f3f1dc94f343237d6fe0a5df34a3b05b819a64f6f790b4992e3607064c507f2",
+ "created_utc": "2026-11-04T22:48:23Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "939240908e4fd67520c112ad385719d5528b3d95"
+ },
+ "input": {
+  "val_select": false,
+  "unit_ext": false,
+  "title": true
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "titles": {
+  "path": "materials/pool/work/r152/titles.json",
+  "sha256": "fba2fb7239928010bad9327753b89a77a0ef7fc9c89bde9e9af21ef1a2f43767",
+  "columns_with_title": 1672
+ },
+ "timing": {
+  "columns": 1672,
+  "seconds": 284.31,
+  "ms_per_column": 170.042
+ },
+ "rows": [
+  {
+   "id": "b173-0001",
+   "column": "no.",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993367
+    },
+    {
+     "label": "address",
+     "probability": 0.001851
+    },
+    {
+     "label": "category",
+     "probability": 0.001839
+    }
+   ]
+  },
+  {
+   "id": "b173-0002",
+   "column": "刊行物番号カンコウブツバンゴウ",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992012
+    },
+    {
+     "label": "category",
+     "probability": 0.002327
+    },
+    {
+     "label": "address",
+     "probability": 0.001335
+    }
+   ]
+  },
+  {
+   "id": "b173-0003",
+   "column": "タイトル",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.980866
+    },
+    {
+     "label": "product",
+     "probability": 0.005625
+    },
+    {
+     "label": "address",
+     "probability": 0.002239
+    }
+   ]
+  },
+  {
+   "id": "b173-0004",
+   "column": "担当課タントウカ",
+   "raw_prediction": "account",
+   "guarded_prediction": "account",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "account",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "account",
+     "probability": 0.962868
+    },
+    {
+     "label": "org",
+     "probability": 0.024003
+    },
+    {
+     "label": "category",
+     "probability": 0.00464
+    }
+   ]
+  },
+  {
+   "id": "b173-0005",
+   "column": "発行年(年度)ハッコウネンネンド",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.985299
+    },
+    {
+     "label": "org",
+     "probability": 0.00393
+    },
+    {
+     "label": "person",
+     "probability": 0.00154
+    }
+   ]
+  },
+  {
+   "id": "b173-0006",
+   "column": "分野ブンヤ",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.926634
+    },
+    {
+     "label": "text",
+     "probability": 0.032823
+    },
+    {
+     "label": "account",
+     "probability": 0.032437
+    }
+   ]
+  },
+  {
+   "id": "b173-0007",
+   "column": "性質セイシツ",
+   "raw_prediction": "text",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.436192
+    },
+    {
+     "label": "category",
+     "probability": 0.364125
+    },
+    {
+     "label": "other",
+     "probability": 0.135395
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "r152-b152-b175",
+  "set_sha256": "bdbbc7101770e3f1c6f00f22d98c00623587e85bc591c0ebdc151ede9e452306"
+ }
+}

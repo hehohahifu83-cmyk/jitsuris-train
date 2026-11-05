@@ -31,8 +31,13 @@ def main():
             t = by_url.get(c.get("resource_page")) or by_url.get(c["table"]) or ""
             if t:
                 titles[c["table"]] = t
+        ex = w / "exclude_tables.json"
+        # 表ごと外した表（個人別の記録。exclude_tables.py）の列は入れない（2026-11-05）
+        drop = set(json.load(open(ex, encoding="utf-8"))["tables"]) if ex.exists() else set()
         if (w / "decisions.jsonl").exists():
             for d in read_jsonl(w / "decisions.jsonl"):
+                if d["i"] < len(corpus) and (corpus[d["i"]].get("resource_page") in drop or corpus[d["i"]]["table"] in drop):
+                    continue
                 if d["label"] == "unknown" and d["i"] < len(corpus):
                     undec.append({**corpus[d["i"]], "label": "unknown", "teacher": f"claude-{b}", "batch": b})
     (POOL / "titles.json").write_text(json.dumps(titles, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")

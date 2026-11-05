@@ -1,0 +1,404 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b165",
+ "set_sha256": "dc921dc081af0e44e24a72fb655f46e6bbd44e5a65999be6edafa70457c02f63",
+ "created_utc": "2026-11-04T22:48:23Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "939240908e4fd67520c112ad385719d5528b3d95"
+ },
+ "input": {
+  "val_select": false,
+  "unit_ext": false,
+  "title": true
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "titles": {
+  "path": "materials/pool/work/r152/titles.json",
+  "sha256": "fba2fb7239928010bad9327753b89a77a0ef7fc9c89bde9e9af21ef1a2f43767",
+  "columns_with_title": 1672
+ },
+ "timing": {
+  "columns": 1672,
+  "seconds": 284.31,
+  "ms_per_column": 170.042
+ },
+ "rows": [
+  {
+   "id": "b165-0001",
+   "column": "年度[西暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.987826
+    },
+    {
+     "label": "org",
+     "probability": 0.002727
+    },
+    {
+     "label": "person",
+     "probability": 0.001265
+    }
+   ]
+  },
+  {
+   "id": "b165-0002",
+   "column": "年度[和暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986815
+    },
+    {
+     "label": "org",
+     "probability": 0.002986
+    },
+    {
+     "label": "person",
+     "probability": 0.001315
+    }
+   ]
+  },
+  {
+   "id": "b165-0003",
+   "column": "むし歯有病者率[%]",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.980747
+    },
+    {
+     "label": "other",
+     "probability": 0.005487
+    },
+    {
+     "label": "date",
+     "probability": 0.002357
+    }
+   ]
+  },
+  {
+   "id": "b165-0004",
+   "column": "一人平均むし歯数[本]",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.853868
+    },
+    {
+     "label": "quantity",
+     "probability": 0.082549
+    },
+    {
+     "label": "rate",
+     "probability": 0.051359
+    }
+   ]
+  },
+  {
+   "id": "b165-0005",
+   "column": "歯周疾患有病者率[%](※cpi法コード3以上)",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.981701
+    },
+    {
+     "label": "other",
+     "probability": 0.004868
+    },
+    {
+     "label": "date",
+     "probability": 0.002586
+    }
+   ]
+  },
+  {
+   "id": "b165-0006",
+   "column": "年度[西暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.987301
+    },
+    {
+     "label": "org",
+     "probability": 0.002922
+    },
+    {
+     "label": "person",
+     "probability": 0.001342
+    }
+   ]
+  },
+  {
+   "id": "b165-0007",
+   "column": "年度[和暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986925
+    },
+    {
+     "label": "org",
+     "probability": 0.002862
+    },
+    {
+     "label": "person",
+     "probability": 0.001314
+    }
+   ]
+  },
+  {
+   "id": "b165-0008",
+   "column": "有病者率[%]",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.981854
+    },
+    {
+     "label": "other",
+     "probability": 0.004218
+    },
+    {
+     "label": "date",
+     "probability": 0.00277
+    }
+   ]
+  },
+  {
+   "id": "b165-0009",
+   "column": "年度[西暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.987368
+    },
+    {
+     "label": "org",
+     "probability": 0.002775
+    },
+    {
+     "label": "person",
+     "probability": 0.001332
+    }
+   ]
+  },
+  {
+   "id": "b165-0010",
+   "column": "年度[和暦]",
+   "raw_prediction": "date",
+   "guarded_prediction": "unknown",
+   "decision_reason": "date_value_evidence_low",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "date_value_evidence_low"
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986741
+    },
+    {
+     "label": "org",
+     "probability": 0.002768
+    },
+    {
+     "label": "person",
+     "probability": 0.00131
+    }
+   ]
+  },
+  {
+   "id": "b165-0011",
+   "column": "診療日数[日]",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.982799
+    },
+    {
+     "label": "date",
+     "probability": 0.007113
+    },
+    {
+     "label": "other",
+     "probability": 0.002402
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "r152-b152-b175",
+  "set_sha256": "bdbbc7101770e3f1c6f00f22d98c00623587e85bc591c0ebdc151ede9e452306"
+ }
+}

@@ -1,0 +1,435 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b159",
+ "set_sha256": "b67a4baf71fa4e7809a9982ddb4025027683f0a35599a952444976c643493b75",
+ "created_utc": "2026-11-04T22:48:23Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "939240908e4fd67520c112ad385719d5528b3d95"
+ },
+ "input": {
+  "val_select": false,
+  "unit_ext": false,
+  "title": true
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "titles": {
+  "path": "materials/pool/work/r152/titles.json",
+  "sha256": "fba2fb7239928010bad9327753b89a77a0ef7fc9c89bde9e9af21ef1a2f43767",
+  "columns_with_title": 1672
+ },
+ "timing": {
+  "columns": 1672,
+  "seconds": 284.31,
+  "ms_per_column": 170.042
+ },
+ "rows": [
+  {
+   "id": "b159-0001",
+   "column": "日本人ニホンジン",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.99053
+    },
+    {
+     "label": "other",
+     "probability": 0.004029
+    },
+    {
+     "label": "amount",
+     "probability": 0.001208
+    }
+   ]
+  },
+  {
+   "id": "b159-0002",
+   "column": "外国人ガイコクジン",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.992756
+    },
+    {
+     "label": "other",
+     "probability": 0.002688
+    },
+    {
+     "label": "id",
+     "probability": 0.000989
+    }
+   ]
+  },
+  {
+   "id": "b159-0003",
+   "column": "合計ゴウケイ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.983763
+    },
+    {
+     "label": "other",
+     "probability": 0.010909
+    },
+    {
+     "label": "amount",
+     "probability": 0.001186
+    }
+   ]
+  },
+  {
+   "id": "b159-0004",
+   "column": "世帯数セタイスウ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.981662
+    },
+    {
+     "label": "other",
+     "probability": 0.013057
+    },
+    {
+     "label": "amount",
+     "probability": 0.001135
+    }
+   ]
+  },
+  {
+   "id": "b159-0005",
+   "column": "合計ゴウケイ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.983993
+    },
+    {
+     "label": "other",
+     "probability": 0.010797
+    },
+    {
+     "label": "amount",
+     "probability": 0.001256
+    }
+   ]
+  },
+  {
+   "id": "b159-0006",
+   "column": "男オトコ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.991925
+    },
+    {
+     "label": "other",
+     "probability": 0.003155
+    },
+    {
+     "label": "amount",
+     "probability": 0.001143
+    }
+   ]
+  },
+  {
+   "id": "b159-0007",
+   "column": "女オンナ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.992432
+    },
+    {
+     "label": "other",
+     "probability": 0.002683
+    },
+    {
+     "label": "amount",
+     "probability": 0.001195
+    }
+   ]
+  },
+  {
+   "id": "b159-0008",
+   "column": "地区名チクメイ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.97299
+    },
+    {
+     "label": "id",
+     "probability": 0.013063
+    },
+    {
+     "label": "other",
+     "probability": 0.004984
+    }
+   ]
+  },
+  {
+   "id": "b159-0009",
+   "column": "世帯数セタイスウ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.983683
+    },
+    {
+     "label": "other",
+     "probability": 0.01125
+    },
+    {
+     "label": "amount",
+     "probability": 0.000998
+    }
+   ]
+  },
+  {
+   "id": "b159-0010",
+   "column": "男オトコ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.992883
+    },
+    {
+     "label": "other",
+     "probability": 0.002516
+    },
+    {
+     "label": "amount",
+     "probability": 0.000976
+    }
+   ]
+  },
+  {
+   "id": "b159-0011",
+   "column": "女オンナ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993545
+    },
+    {
+     "label": "other",
+     "probability": 0.001711
+    },
+    {
+     "label": "amount",
+     "probability": 0.001069
+    }
+   ]
+  },
+  {
+   "id": "b159-0012",
+   "column": "計ケイ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.990884
+    },
+    {
+     "label": "other",
+     "probability": 0.003938
+    },
+    {
+     "label": "id",
+     "probability": 0.001322
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "r152-b152-b175",
+  "set_sha256": "bdbbc7101770e3f1c6f00f22d98c00623587e85bc591c0ebdc151ede9e452306"
+ }
+}
