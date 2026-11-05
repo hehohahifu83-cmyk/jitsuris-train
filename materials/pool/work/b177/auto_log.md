@@ -1,11 +1,6 @@
 - 依頼：`auto b177 --shirasagi --only-shirasagi opendata.pref.tokushima.lg.jp`（まとめての依頼 auto_multi.request）
-selected 19 tables from 9 publishers; {"shirasagi": {"opendata.pref.tokushima.lg.jp": {"resource_rejected": 6685, "title_denied": 76, "xlsx": 6, "csv": 13, "same_title": 7, "tables": 19, "publishers": 9}}}
-- 採用が失敗：, urls, rids, pool_publisher_tables(), pool_header_sets())
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/materials/pipeline.py", line 353, in adopt
-    elif platform_of(c)[0] is None or not rid:
-         ^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/materials/pipeline.py", line 309, in platform_of
-    import shirasagi
-ModuleNotFoundError: No module named 'shirasagi'
-
+selected 42 tables from 14 publishers; {"shirasagi": {"opendata.pref.tokushima.lg.jp": {"resource_rejected": 6437, "title_denied": 76, "csv": 29, "xlsx": 13, "same_title": 5, "stopped_by_budget": 1, "tables": 42, "publishers": 14}}}
+adopted 31/42 tables; dropped {'この陣で 1 公開元 3 表まで': 11}
+- 採用した表：31
+- 取り出した列：229（表 25）
+- ラベル用シート：2 枚（materials/pool/work/b177/sheets/）

@@ -1,11 +1,6 @@
 - 依頼：`auto b180 --shirasagi --only-shirasagi www.pref.ehime.jp`（まとめての依頼 auto_multi.request）
-selected 15 tables from 1 publishers; {"shirasagi": {"www.pref.ehime.jp": {"resource_rejected": 8832, "xlsx": 8, "csv": 1, "title_denied": 61, "xls": 6, "same_title": 5, "pool_full": 47, "tables": 15, "publishers": 1}}}
-- 採用が失敗：, urls, rids, pool_publisher_tables(), pool_header_sets())
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/materials/pipeline.py", line 353, in adopt
-    elif platform_of(c)[0] is None or not rid:
-         ^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/materials/pipeline.py", line 309, in platform_of
-    import shirasagi
-ModuleNotFoundError: No module named 'shirasagi'
-
+selected 15 tables from 1 publishers; {"shirasagi": {"www.pref.ehime.jp": {"resource_rejected": 8666, "xlsx": 11, "same_title": 9, "csv": 1, "title_denied": 61, "xls": 3, "pool_full": 58, "tables": 15, "publishers": 1}}}
+adopted 3/15 tables; dropped {'この陣で 1 公開元 3 表まで': 12}
+- 採用した表：3
+- 取り出した列：21（表 3）
+- ラベル用シート：1 枚（materials/pool/work/b180/sheets/）

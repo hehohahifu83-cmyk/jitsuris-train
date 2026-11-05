@@ -1,11 +1,6 @@
 - 依頼：`auto b179 --shirasagi --only-shirasagi odp-pref-tottori.tori-info.co.jp`（まとめての依頼 auto_multi.request）
-selected 7 tables from 4 publishers; {"shirasagi": {"odp-pref-tottori.tori-info.co.jp": {"resource_rejected": 930, "title_denied": 7, "csv": 7, "tables": 7, "publishers": 4}}}
-- 採用が失敗：, urls, rids, pool_publisher_tables(), pool_header_sets())
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/materials/pipeline.py", line 353, in adopt
-    elif platform_of(c)[0] is None or not rid:
-         ^^^^^^^^^^^^^^
-  File "/home/runner/work/jitsuris-train/jitsuris-train/materials/pipeline.py", line 309, in platform_of
-    import shirasagi
-ModuleNotFoundError: No module named 'shirasagi'
-
+selected 43 tables from 9 publishers; {"shirasagi": {"odp-pref-tottori.tori-info.co.jp": {"resource_rejected": 888, "csv": 43, "title_denied": 7, "tables": 43, "publishers": 9}}}
+adopted 19/43 tables; dropped {'この陣で 1 公開元 3 表まで': 24}
+- 採用した表：19
+- 取り出した列：138（表 17）
+- ラベル用シート：1 枚（materials/pool/work/b179/sheets/）
