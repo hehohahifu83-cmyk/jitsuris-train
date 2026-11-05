@@ -44,6 +44,10 @@ jobs:
                   raise SystemExit(f"陣の名前が違う：{b}")
               if b in seen or os.path.exists(f"materials/pool/batch_{b}.jsonl") or os.path.exists(f"materials/pool/work/{b}/adopted.json"):
                   raise SystemExit(f"{b} は重なっているか、もう使った番号")
+              if opts.strip().startswith("--same-candidates"):
+                  parts = opts.split()
+                  if len(parts) != 2 or parts[1] not in seen:
+                      raise SystemExit(f"{b}：--same-candidates は同じ依頼の前の陣を 1 つだけ指す")
               seen.add(b)
               items.append({"batch": b, "opts": opts.strip()})
           if not 1 <= len(items) <= 20:
@@ -71,6 +75,8 @@ jobs:
         run: |
           set -eu
           b="${{ matrix.item.batch }}"
+          # 2026-11-06：「--same-candidates bNNN」の陣は候補を探さない（同じ依頼の bNNN の候補から、前の陣が使っていない表を採用する）
+          case "${{ matrix.item.opts }}" in --same-candidates*) echo "候補は ${{ matrix.item.opts }} を使う"; exit 0;; esac
           python -I materials/pool_discover.py --out "candidates_${b}_auto.json" --budget-minutes 90 ${{ matrix.item.opts }} | tail -3 > "discover_${b}.log"
           cat "discover_${b}.log"
           cp independent_eval/allocation.json "alloc_${b}.json"   # 国のポータルの組織の登録（決まりで決まる）を、まとめる側に渡す
@@ -143,10 +149,13 @@ jobs:
               os.makedirs(d, exist_ok=True)
               log = open(f"{d}/auto_log.md", "w", encoding="utf-8")
               log.write(f"- 依頼：`auto {b} {opts}`（まとめての依頼 auto_multi.request）\n")
-              src = f"/tmp/cands/candidates_{b}_auto.json"
+              ref = opts.split()[1] if opts.startswith("--same-candidates") else b
+              src = f"/tmp/cands/candidates_{ref}_auto.json"
               if not os.path.exists(src):
                   log.write("- 候補集めが失敗した（この陣は飛ばした）\n"); log.close(); summary.append((b, "候補なし", 0)); continue
-              if os.path.exists(f"/tmp/cands/discover_{b}.log"):
+              if ref != b:
+                  log.write(f"- 候補は {ref} と同じ（前の陣が使った表は採用しない）\n")
+              elif os.path.exists(f"/tmp/cands/discover_{b}.log"):
                   log.write(open(f"/tmp/cands/discover_{b}.log", encoding="utf-8").read())
               shutil.copy(src, f"materials/pool/candidates_{b}_auto.json")
               out = subprocess.run(["python", "-I", "materials/pipeline.py", "adopt", "--batch", b, "--candidates", f"materials/pool/candidates_{b}_auto.json"],

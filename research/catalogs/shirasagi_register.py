@@ -47,7 +47,8 @@ TODAY = "2026-11-05"
 EXCLUDED = {"041009"}
 MAX_DATASETS = {"https://opendata.pref.aomori.lg.jp": 1100, "https://opendata.pref.tokushima.lg.jp": 2000,
                 "https://opendata.pref.kagawa.lg.jp": 700, "https://odp-pref-tottori.tori-info.co.jp": 300,
-                "https://www.pref.ehime.jp/opendata-catalog": 1000}
+                "https://www.pref.ehime.jp/opendata-catalog": 1000, "https://opendata.pref.shizuoka.jp": 4000}
+SHIZUOKA = "https://opendata.pref.shizuoka.jp"
 EHIME = "https://www.pref.ehime.jp/opendata-catalog"
 
 
@@ -120,6 +121,45 @@ def group_check(row, inventory):
     return True, f"G 持ち主の groups {own} ≥ データセット {ds}（ほか {other} は県のカタログ管理・県名だけ）"
 
 
+def shizuoka_rows(inventory):
+    """静岡（2026-11-06 追加）：Codex の確認順には静岡が無い（一覧 3,800 件のうち 2 件が取れず、単独の案を出さなかった）。
+    一覧の静岡の組から、投稿者（user.id）ごとに、groups がただ 1 つの市町（または県の組織）を指すものを候補にする。確かめは group_check（G1〜G3）。
+    取れなかった 2 件は、取り出しのときに user.id を照らすだけで、groups は見ない。その 2 件が別の持ち主でも、混ざるのはその 2 件まで。"""
+    cities = {r["city"]: r["code"] for r in MUNI if r["pref"] == "静岡県" and r["city"]}
+    by_uid = {}
+    for c in inventory[SHIZUOKA]["combinations"]:
+        if c["user_id"] is None:
+            continue
+        by_uid.setdefault(str(c["user_id"]), []).append(c)
+    out = []
+    for uid, cs in sorted(by_uid.items(), key=lambda kv: int(kv[0]) if kv[0].isdigit() else 0):
+        hit = set()
+        for c in cs:
+            for g in c["group_affiliations"]:
+                parts = [norm(x) for x in g.split("/")]
+                hit |= {cn for cn in cities for x in parts[:3] if x.startswith(cn)}
+        if len(hit) == 1:
+            m = next(iter(hit)); code = cities[m]
+        elif not hit and any(g.startswith("静岡県/") for c in cs for g in c["group_affiliations"]):
+            m, code = "静岡県", "220001"
+        else:
+            continue
+        out.append({"site": SHIZUOKA, "field": "user.id", "value": uid, "municipality": m, "municipality_code": code,
+                    "datasets": sum(c["datasets"] for c in cs), "evidence_url": (cs[0].get("evidence_pages") or [""])[0], "_shizuoka": True})
+    # 投稿者の無い組（user.id が None。島田市・静岡市など）は、author がちょうど「静岡県/<市町>」か「<市町>」のものだけ
+    seen_auth = set()
+    for c in inventory[SHIZUOKA]["combinations"]:
+        a = norm(c["author"])
+        m = a.split("/", 1)[1] if a.startswith("静岡県/") else a
+        if m not in cities or c["author"] in seen_auth:
+            continue
+        seen_auth.add(c["author"])
+        ds = sum(x["datasets"] for x in inventory[SHIZUOKA]["combinations"] if x["author"] == c["author"])
+        out.append({"site": SHIZUOKA, "field": "author", "value": c["author"], "municipality": m, "municipality_code": cities[m],
+                    "datasets": ds, "evidence_url": (c.get("evidence_pages") or [""])[0], "_shizuoka": True})
+    return out
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
@@ -137,7 +177,7 @@ def main(argv=None):
     inventory = {x["site"]: x for x in json.load(open(INVENTORY, encoding="utf-8"))["results"]}
     alloc = load_allocation(ALLOC)
     results = []
-    for x in d["reduced_review_queue"]:
+    for x in d["reduced_review_queue"] + shizuoka_rows(inventory):
         why = []
         v, m = norm(x["value"]), x["municipality"]
         named = x["field"] != "user.id" and (v.startswith(m) or (x["site"] == EHIME and m == "愛媛県" and ehime_department(x["value"], names)))
@@ -149,7 +189,7 @@ def main(argv=None):
             else:
                 why.append(("A1 user.id" if x["field"] == "user.id" else "A2 部署の名前だけ") + "で、groups でも確かめられない：" + msg)
         other = owners.get((x["site"], x["field"], str(x["value"])), set()) - {x["municipality_code"]}
-        if other:
+        if other and not x.get("_shizuoka"):   # 静岡は Codex が多くを「不明」にしたので、持ち主の食い違いは groups（G2/G3）で見る
             why.append(f"A3 同じ値が別の持ち主にも使われる {sorted(other)}")
         code = x["municipality_code"]
         if not valid_code(code) or code in EXCLUDED:
