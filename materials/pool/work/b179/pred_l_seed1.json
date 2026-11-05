@@ -1,0 +1,4341 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b179",
+ "set_sha256": "872339a5400648adcf1d07590b52632a0da07cd567bc61ab9a0b9d464fc12223",
+ "created_utc": "2026-11-05T16:52:37Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "939240908e4fd67520c112ad385719d5528b3d95"
+ },
+ "input": {
+  "val_select": false,
+  "unit_ext": false,
+  "title": true
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "titles": {
+  "path": "materials/pool/work/r176/titles.json",
+  "sha256": "2e4bb068c7f0e971f42926ddb433000abd7436ebf2834139b5e87bd17bcd03b6",
+  "columns_with_title": 466
+ },
+ "timing": {
+  "columns": 466,
+  "seconds": 61.62,
+  "ms_per_column": 132.233
+ },
+ "rows": [
+  {
+   "id": "b179-0001",
+   "column": "no.",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992814
+    },
+    {
+     "label": "address",
+     "probability": 0.002625
+    },
+    {
+     "label": "category",
+     "probability": 0.001225
+    }
+   ]
+  },
+  {
+   "id": "b179-0002",
+   "column": "データセットid",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993752
+    },
+    {
+     "label": "category",
+     "probability": 0.00145
+    },
+    {
+     "label": "address",
+     "probability": 0.000917
+    }
+   ]
+  },
+  {
+   "id": "b179-0003",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993582
+    },
+    {
+     "label": "category",
+     "probability": 0.001742
+    },
+    {
+     "label": "address",
+     "probability": 0.001139
+    }
+   ]
+  },
+  {
+   "id": "b179-0004",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.990164
+    },
+    {
+     "label": "org",
+     "probability": 0.005487
+    },
+    {
+     "label": "date",
+     "probability": 0.000705
+    }
+   ]
+  },
+  {
+   "id": "b179-0005",
+   "column": "データセット_タイトル",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.985544
+    },
+    {
+     "label": "category",
+     "probability": 0.003936
+    },
+    {
+     "label": "product",
+     "probability": 0.00172
+    }
+   ]
+  },
+  {
+   "id": "b179-0006",
+   "column": "データセット_分類",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988364
+    },
+    {
+     "label": "text",
+     "probability": 0.004531
+    },
+    {
+     "label": "id",
+     "probability": 0.002116
+    }
+   ]
+  },
+  {
+   "id": "b179-0007",
+   "column": "データセット最終更新日",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.986996
+    },
+    {
+     "label": "org",
+     "probability": 0.002888
+    },
+    {
+     "label": "text",
+     "probability": 0.001865
+    }
+   ]
+  },
+  {
+   "id": "b179-0008",
+   "column": "ファイル_タイトル",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.478985
+    },
+    {
+     "label": "text",
+     "probability": 0.462692
+    },
+    {
+     "label": "email",
+     "probability": 0.010794
+    }
+   ]
+  },
+  {
+   "id": "b179-0009",
+   "column": "ファイル形式",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988292
+    },
+    {
+     "label": "id",
+     "probability": 0.003135
+    },
+    {
+     "label": "text",
+     "probability": 0.001611
+    }
+   ]
+  },
+  {
+   "id": "b179-0010",
+   "column": "ファイル_公開日",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.987903
+    },
+    {
+     "label": "org",
+     "probability": 0.002842
+    },
+    {
+     "label": "person",
+     "probability": 0.001438
+    }
+   ]
+  },
+  {
+   "id": "b179-0011",
+   "column": "localgovernmentcode",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992449
+    },
+    {
+     "label": "category",
+     "probability": 0.002379
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.00093
+    }
+   ]
+  },
+  {
+   "id": "b179-0012",
+   "column": "identifier",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.99336
+    },
+    {
+     "label": "category",
+     "probability": 0.001176
+    },
+    {
+     "label": "address",
+     "probability": 0.00103
+    }
+   ]
+  },
+  {
+   "id": "b179-0013",
+   "column": "service",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.987159
+    },
+    {
+     "label": "text",
+     "probability": 0.004599
+    },
+    {
+     "label": "id",
+     "probability": 0.001923
+    }
+   ]
+  },
+  {
+   "id": "b179-0014",
+   "column": "locatedlocalgovernmentcode",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.990412
+    },
+    {
+     "label": "category",
+     "probability": 0.003979
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.001024
+    }
+   ]
+  },
+  {
+   "id": "b179-0015",
+   "column": "prefecture",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989247
+    },
+    {
+     "label": "org",
+     "probability": 0.006513
+    },
+    {
+     "label": "id",
+     "probability": 0.000821
+    }
+   ]
+  },
+  {
+   "id": "b179-0016",
+   "column": "city",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.983202
+    },
+    {
+     "label": "org",
+     "probability": 0.01292
+    },
+    {
+     "label": "date",
+     "probability": 0.000633
+    }
+   ]
+  },
+  {
+   "id": "b179-0017",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994303
+    },
+    {
+     "label": "address",
+     "probability": 0.001694
+    },
+    {
+     "label": "category",
+     "probability": 0.000875
+    }
+   ]
+  },
+  {
+   "id": "b179-0018",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989278
+    },
+    {
+     "label": "org",
+     "probability": 0.006891
+    },
+    {
+     "label": "id",
+     "probability": 0.000795
+    }
+   ]
+  },
+  {
+   "id": "b179-0019",
+   "column": "調査年月日",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.98792
+    },
+    {
+     "label": "org",
+     "probability": 0.003195
+    },
+    {
+     "label": "person",
+     "probability": 0.001378
+    }
+   ]
+  },
+  {
+   "id": "b179-0020",
+   "column": "地域名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.988184
+    },
+    {
+     "label": "org",
+     "probability": 0.008258
+    },
+    {
+     "label": "id",
+     "probability": 0.000755
+    }
+   ]
+  },
+  {
+   "id": "b179-0021",
+   "column": "総人口",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.985407
+    },
+    {
+     "label": "other",
+     "probability": 0.008103
+    },
+    {
+     "label": "amount",
+     "probability": 0.002021
+    }
+   ]
+  },
+  {
+   "id": "b179-0022",
+   "column": "男性",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993369
+    },
+    {
+     "label": "other",
+     "probability": 0.001683
+    },
+    {
+     "label": "amount",
+     "probability": 0.001449
+    }
+   ]
+  },
+  {
+   "id": "b179-0023",
+   "column": "女性",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993649
+    },
+    {
+     "label": "other",
+     "probability": 0.001634
+    },
+    {
+     "label": "amount",
+     "probability": 0.001326
+    }
+   ]
+  },
+  {
+   "id": "b179-0024",
+   "column": "0-4歳の男性",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993887
+    },
+    {
+     "label": "other",
+     "probability": 0.001579
+    },
+    {
+     "label": "amount",
+     "probability": 0.00108
+    }
+   ]
+  },
+  {
+   "id": "b179-0025",
+   "column": "0-4歳の女性",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993897
+    },
+    {
+     "label": "other",
+     "probability": 0.001527
+    },
+    {
+     "label": "amount",
+     "probability": 0.000952
+    }
+   ]
+  },
+  {
+   "id": "b179-0026",
+   "column": "5-9歳の男性",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.993717
+    },
+    {
+     "label": "other",
+     "probability": 0.001688
+    },
+    {
+     "label": "amount",
+     "probability": 0.000918
+    }
+   ]
+  },
+  {
+   "id": "b179-0027",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994137
+    },
+    {
+     "label": "address",
+     "probability": 0.001739
+    },
+    {
+     "label": "category",
+     "probability": 0.000919
+    }
+   ]
+  },
+  {
+   "id": "b179-0028",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989702
+    },
+    {
+     "label": "org",
+     "probability": 0.006409
+    },
+    {
+     "label": "id",
+     "probability": 0.000743
+    }
+   ]
+  },
+  {
+   "id": "b179-0029",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.976214
+    },
+    {
+     "label": "address",
+     "probability": 0.017311
+    },
+    {
+     "label": "account",
+     "probability": 0.002303
+    }
+   ]
+  },
+  {
+   "id": "b179-0030",
+   "column": "名称_カナ",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.911002
+    },
+    {
+     "label": "address",
+     "probability": 0.082481
+    },
+    {
+     "label": "id",
+     "probability": 0.001239
+    }
+   ]
+  },
+  {
+   "id": "b179-0031",
+   "column": "種別",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989908
+    },
+    {
+     "label": "text",
+     "probability": 0.002628
+    },
+    {
+     "label": "id",
+     "probability": 0.001836
+    }
+   ]
+  },
+  {
+   "id": "b179-0032",
+   "column": "アクセス方法",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.968885
+    },
+    {
+     "label": "address",
+     "probability": 0.013288
+    },
+    {
+     "label": "category",
+     "probability": 0.004226
+    }
+   ]
+  },
+  {
+   "id": "b179-0033",
+   "column": "駐車場情報",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.837027
+    },
+    {
+     "label": "text",
+     "probability": 0.153592
+    },
+    {
+     "label": "quantity",
+     "probability": 0.001639
+    }
+   ]
+  },
+  {
+   "id": "b179-0034",
+   "column": "法人番号",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993508
+    },
+    {
+     "label": "address",
+     "probability": 0.001956
+    },
+    {
+     "label": "phone",
+     "probability": 0.000945
+    }
+   ]
+  },
+  {
+   "id": "b179-0035",
+   "column": "団体名",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.870472
+    },
+    {
+     "label": "address",
+     "probability": 0.110935
+    },
+    {
+     "label": "person",
+     "probability": 0.005098
+    }
+   ]
+  },
+  {
+   "id": "b179-0036",
+   "column": "収容定員",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.992191
+    },
+    {
+     "label": "other",
+     "probability": 0.002883
+    },
+    {
+     "label": "id",
+     "probability": 0.001234
+    }
+   ]
+  },
+  {
+   "id": "b179-0037",
+   "column": "localgovernmentcode",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992122
+    },
+    {
+     "label": "category",
+     "probability": 0.002607
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.000951
+    }
+   ]
+  },
+  {
+   "id": "b179-0038",
+   "column": "identifier",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992968
+    },
+    {
+     "label": "category",
+     "probability": 0.001459
+    },
+    {
+     "label": "address",
+     "probability": 0.000878
+    }
+   ]
+  },
+  {
+   "id": "b179-0039",
+   "column": "locatedlocalgovernmentcode",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.990326
+    },
+    {
+     "label": "category",
+     "probability": 0.00402
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.001037
+    }
+   ]
+  },
+  {
+   "id": "b179-0040",
+   "column": "prefecture",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.987417
+    },
+    {
+     "label": "org",
+     "probability": 0.008604
+    },
+    {
+     "label": "id",
+     "probability": 0.000756
+    }
+   ]
+  },
+  {
+   "id": "b179-0041",
+   "column": "city",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.976478
+    },
+    {
+     "label": "org",
+     "probability": 0.01972
+    },
+    {
+     "label": "text",
+     "probability": 0.000587
+    }
+   ]
+  },
+  {
+   "id": "b179-0042",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993885
+    },
+    {
+     "label": "address",
+     "probability": 0.001841
+    },
+    {
+     "label": "category",
+     "probability": 0.00102
+    }
+   ]
+  },
+  {
+   "id": "b179-0043",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989351
+    },
+    {
+     "label": "org",
+     "probability": 0.006832
+    },
+    {
+     "label": "id",
+     "probability": 0.000751
+    }
+   ]
+  },
+  {
+   "id": "b179-0044",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.967387
+    },
+    {
+     "label": "address",
+     "probability": 0.02739
+    },
+    {
+     "label": "account",
+     "probability": 0.001739
+    }
+   ]
+  },
+  {
+   "id": "b179-0045",
+   "column": "名称_カナ",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.784412
+    },
+    {
+     "label": "address",
+     "probability": 0.208944
+    },
+    {
+     "label": "id",
+     "probability": 0.001354
+    }
+   ]
+  },
+  {
+   "id": "b179-0046",
+   "column": "名称_英字",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.957426
+    },
+    {
+     "label": "address",
+     "probability": 0.037042
+    },
+    {
+     "label": "account",
+     "probability": 0.001819
+    }
+   ]
+  },
+  {
+   "id": "b179-0047",
+   "column": "建物名等(方書)",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.984639
+    },
+    {
+     "label": "org",
+     "probability": 0.01107
+    },
+    {
+     "label": "text",
+     "probability": 0.001174
+    }
+   ]
+  },
+  {
+   "id": "b179-0048",
+   "column": "設置位置",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.965438
+    },
+    {
+     "label": "text",
+     "probability": 0.01249
+    },
+    {
+     "label": "org",
+     "probability": 0.008806
+    }
+   ]
+  },
+  {
+   "id": "b179-0049",
+   "column": "法人番号",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993235
+    },
+    {
+     "label": "address",
+     "probability": 0.001772
+    },
+    {
+     "label": "category",
+     "probability": 0.001541
+    }
+   ]
+  },
+  {
+   "id": "b179-0050",
+   "column": "利用可能曜日",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.988795
+    },
+    {
+     "label": "text",
+     "probability": 0.003134
+    },
+    {
+     "label": "id",
+     "probability": 0.001757
+    }
+   ]
+  },
+  {
+   "id": "b179-0051",
+   "column": "開始時間",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.988694
+    },
+    {
+     "label": "text",
+     "probability": 0.001658
+    },
+    {
+     "label": "person",
+     "probability": 0.001476
+    }
+   ]
+  },
+  {
+   "id": "b179-0052",
+   "column": "データセット_id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994432
+    },
+    {
+     "label": "address",
+     "probability": 0.001121
+    },
+    {
+     "label": "category",
+     "probability": 0.001055
+    }
+   ]
+  },
+  {
+   "id": "b179-0053",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993738
+    },
+    {
+     "label": "address",
+     "probability": 0.001773
+    },
+    {
+     "label": "category",
+     "probability": 0.001282
+    }
+   ]
+  },
+  {
+   "id": "b179-0054",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989697
+    },
+    {
+     "label": "org",
+     "probability": 0.006358
+    },
+    {
+     "label": "id",
+     "probability": 0.000763
+    }
+   ]
+  },
+  {
+   "id": "b179-0055",
+   "column": "データセット_タイトル",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.985791
+    },
+    {
+     "label": "category",
+     "probability": 0.003003
+    },
+    {
+     "label": "address",
+     "probability": 0.001708
+    }
+   ]
+  },
+  {
+   "id": "b179-0056",
+   "column": "データセット_概要",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.987796
+    },
+    {
+     "label": "category",
+     "probability": 0.002454
+    },
+    {
+     "label": "address",
+     "probability": 0.001917
+    }
+   ]
+  },
+  {
+   "id": "b179-0057",
+   "column": "データセット_キーワード",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.973673
+    },
+    {
+     "label": "category",
+     "probability": 0.018077
+    },
+    {
+     "label": "product",
+     "probability": 0.001396
+    }
+   ]
+  },
+  {
+   "id": "b179-0058",
+   "column": "データセット_分類",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.986597
+    },
+    {
+     "label": "id",
+     "probability": 0.00354
+    },
+    {
+     "label": "account",
+     "probability": 0.003393
+    }
+   ]
+  },
+  {
+   "id": "b179-0059",
+   "column": "データセット_公開日",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.987772
+    },
+    {
+     "label": "org",
+     "probability": 0.002931
+    },
+    {
+     "label": "text",
+     "probability": 0.001404
+    }
+   ]
+  },
+  {
+   "id": "b179-0060",
+   "column": "データセット_最終更新日",
+   "raw_prediction": "date",
+   "guarded_prediction": "date",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "date",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "date",
+     "probability": 0.987759
+    },
+    {
+     "label": "org",
+     "probability": 0.003009
+    },
+    {
+     "label": "text",
+     "probability": 0.00136
+    }
+   ]
+  },
+  {
+   "id": "b179-0061",
+   "column": "データセット_言語",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989338
+    },
+    {
+     "label": "text",
+     "probability": 0.004079
+    },
+    {
+     "label": "id",
+     "probability": 0.001787
+    }
+   ]
+  },
+  {
+   "id": "b179-0062",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993936
+    },
+    {
+     "label": "address",
+     "probability": 0.001806
+    },
+    {
+     "label": "category",
+     "probability": 0.001034
+    }
+   ]
+  },
+  {
+   "id": "b179-0063",
+   "column": "品目",
+   "raw_prediction": "product",
+   "guarded_prediction": "product",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "product",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "product",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "product",
+     "probability": 0.977785
+    },
+    {
+     "label": "category",
+     "probability": 0.00551
+    },
+    {
+     "label": "text",
+     "probability": 0.002489
+    }
+   ]
+  },
+  {
+   "id": "b179-0064",
+   "column": "注意点",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.977552
+    },
+    {
+     "label": "text",
+     "probability": 0.01522
+    },
+    {
+     "label": "id",
+     "probability": 0.001797
+    }
+   ]
+  },
+  {
+   "id": "b179-0065",
+   "column": "料金種別",
+   "raw_prediction": "text",
+   "guarded_prediction": "text",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "text",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "text",
+     "probability": 0.570837
+    },
+    {
+     "label": "category",
+     "probability": 0.414947
+    },
+    {
+     "label": "product",
+     "probability": 0.002655
+    }
+   ]
+  },
+  {
+   "id": "b179-0066",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.97122
+    },
+    {
+     "label": "address",
+     "probability": 0.022544
+    },
+    {
+     "label": "account",
+     "probability": 0.002379
+    }
+   ]
+  },
+  {
+   "id": "b179-0067",
+   "column": "連結表記",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.986352
+    },
+    {
+     "label": "org",
+     "probability": 0.006996
+    },
+    {
+     "label": "id",
+     "probability": 0.002101
+    }
+   ]
+  },
+  {
+   "id": "b179-0068",
+   "column": "投票所区分",
+   "raw_prediction": "category",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.493267
+    },
+    {
+     "label": "address",
+     "probability": 0.396873
+    },
+    {
+     "label": "id",
+     "probability": 0.057696
+    }
+   ]
+  },
+  {
+   "id": "b179-0069",
+   "column": "id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994599
+    },
+    {
+     "label": "address",
+     "probability": 0.001023
+    },
+    {
+     "label": "category",
+     "probability": 0.000868
+    }
+   ]
+  },
+  {
+   "id": "b179-0070",
+   "column": "名称",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.633422
+    },
+    {
+     "label": "org",
+     "probability": 0.357964
+    },
+    {
+     "label": "text",
+     "probability": 0.002727
+    }
+   ]
+  },
+  {
+   "id": "b179-0071",
+   "column": "災害種別_洪水",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990512
+    },
+    {
+     "label": "id",
+     "probability": 0.002343
+    },
+    {
+     "label": "text",
+     "probability": 0.002026
+    }
+   ]
+  },
+  {
+   "id": "b179-0072",
+   "column": "災害種別_高潮",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989473
+    },
+    {
+     "label": "id",
+     "probability": 0.003114
+    },
+    {
+     "label": "text",
+     "probability": 0.001977
+    }
+   ]
+  },
+  {
+   "id": "b179-0073",
+   "column": "災害種別_地震",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990074
+    },
+    {
+     "label": "id",
+     "probability": 0.002772
+    },
+    {
+     "label": "text",
+     "probability": 0.001913
+    }
+   ]
+  },
+  {
+   "id": "b179-0074",
+   "column": "災害種別_津波",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990512
+    },
+    {
+     "label": "id",
+     "probability": 0.002355
+    },
+    {
+     "label": "text",
+     "probability": 0.001937
+    }
+   ]
+  },
+  {
+   "id": "b179-0075",
+   "column": "災害種別_大規模な火事",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.98952
+    },
+    {
+     "label": "id",
+     "probability": 0.00363
+    },
+    {
+     "label": "text",
+     "probability": 0.001545
+    }
+   ]
+  },
+  {
+   "id": "b179-0076",
+   "column": "災害種別_内水氾濫",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989646
+    },
+    {
+     "label": "id",
+     "probability": 0.00373
+    },
+    {
+     "label": "text",
+     "probability": 0.00156
+    }
+   ]
+  },
+  {
+   "id": "b179-0077",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993722
+    },
+    {
+     "label": "address",
+     "probability": 0.002147
+    },
+    {
+     "label": "phone",
+     "probability": 0.000716
+    }
+   ]
+  },
+  {
+   "id": "b179-0078",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.98899
+    },
+    {
+     "label": "org",
+     "probability": 0.007025
+    },
+    {
+     "label": "id",
+     "probability": 0.000745
+    }
+   ]
+  },
+  {
+   "id": "b179-0079",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.975922
+    },
+    {
+     "label": "address",
+     "probability": 0.016541
+    },
+    {
+     "label": "account",
+     "probability": 0.003575
+    }
+   ]
+  },
+  {
+   "id": "b179-0080",
+   "column": "連結表記",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.985707
+    },
+    {
+     "label": "org",
+     "probability": 0.007271
+    },
+    {
+     "label": "text",
+     "probability": 0.00161
+    }
+   ]
+  },
+  {
+   "id": "b179-0081",
+   "column": "都道府県",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.990124
+    },
+    {
+     "label": "org",
+     "probability": 0.004962
+    },
+    {
+     "label": "id",
+     "probability": 0.000889
+    }
+   ]
+  },
+  {
+   "id": "b179-0082",
+   "column": "投票所区分",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.987762
+    },
+    {
+     "label": "id",
+     "probability": 0.00357
+    },
+    {
+     "label": "org",
+     "probability": 0.001358
+    }
+   ]
+  },
+  {
+   "id": "b179-0083",
+   "column": "投票区名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.977873
+    },
+    {
+     "label": "id",
+     "probability": 0.008118
+    },
+    {
+     "label": "org",
+     "probability": 0.008059
+    }
+   ]
+  },
+  {
+   "id": "b179-0084",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993723
+    },
+    {
+     "label": "address",
+     "probability": 0.002219
+    },
+    {
+     "label": "category",
+     "probability": 0.000695
+    }
+   ]
+  },
+  {
+   "id": "b179-0085",
+   "column": "id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994584
+    },
+    {
+     "label": "address",
+     "probability": 0.001089
+    },
+    {
+     "label": "category",
+     "probability": 0.000767
+    }
+   ]
+  },
+  {
+   "id": "b179-0086",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.957143
+    },
+    {
+     "label": "address",
+     "probability": 0.037374
+    },
+    {
+     "label": "account",
+     "probability": 0.001586
+    }
+   ]
+  },
+  {
+   "id": "b179-0087",
+   "column": "災害種別_洪水",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990329
+    },
+    {
+     "label": "text",
+     "probability": 0.00228
+    },
+    {
+     "label": "id",
+     "probability": 0.002274
+    }
+   ]
+  },
+  {
+   "id": "b179-0088",
+   "column": "災害種別_崖崩れ、土石流及び地滑り",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990104
+    },
+    {
+     "label": "id",
+     "probability": 0.003127
+    },
+    {
+     "label": "text",
+     "probability": 0.001766
+    }
+   ]
+  },
+  {
+   "id": "b179-0089",
+   "column": "災害種別_高潮",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989609
+    },
+    {
+     "label": "id",
+     "probability": 0.002749
+    },
+    {
+     "label": "text",
+     "probability": 0.002274
+    }
+   ]
+  },
+  {
+   "id": "b179-0090",
+   "column": "災害種別_地震",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989631
+    },
+    {
+     "label": "id",
+     "probability": 0.002927
+    },
+    {
+     "label": "text",
+     "probability": 0.00208
+    }
+   ]
+  },
+  {
+   "id": "b179-0091",
+   "column": "災害種別_津波",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990183
+    },
+    {
+     "label": "id",
+     "probability": 0.002386
+    },
+    {
+     "label": "text",
+     "probability": 0.002134
+    }
+   ]
+  },
+  {
+   "id": "b179-0092",
+   "column": "災害種別_大規模な火事",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989826
+    },
+    {
+     "label": "id",
+     "probability": 0.003272
+    },
+    {
+     "label": "text",
+     "probability": 0.001738
+    }
+   ]
+  },
+  {
+   "id": "b179-0093",
+   "column": "指定避難所との重複",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.981581
+    },
+    {
+     "label": "id",
+     "probability": 0.009647
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002569
+    }
+   ]
+  },
+  {
+   "id": "b179-0094",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.969769
+    },
+    {
+     "label": "address",
+     "probability": 0.024179
+    },
+    {
+     "label": "account",
+     "probability": 0.001978
+    }
+   ]
+  },
+  {
+   "id": "b179-0095",
+   "column": "名称_カナ",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.867887
+    },
+    {
+     "label": "address",
+     "probability": 0.125225
+    },
+    {
+     "label": "id",
+     "probability": 0.001397
+    }
+   ]
+  },
+  {
+   "id": "b179-0096",
+   "column": "標高",
+   "raw_prediction": "other",
+   "guarded_prediction": "unknown",
+   "decision_reason": "other_class",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "other_class"
+    }
+   },
+   "top3": [
+    {
+     "label": "other",
+     "probability": 0.990589
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002162
+    },
+    {
+     "label": "rate",
+     "probability": 0.001367
+    }
+   ]
+  },
+  {
+   "id": "b179-0097",
+   "column": "市区町村コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.99296
+    },
+    {
+     "label": "address",
+     "probability": 0.002795
+    },
+    {
+     "label": "category",
+     "probability": 0.001084
+    }
+   ]
+  },
+  {
+   "id": "b179-0098",
+   "column": "都道府県名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989512
+    },
+    {
+     "label": "org",
+     "probability": 0.005983
+    },
+    {
+     "label": "date",
+     "probability": 0.00075
+    }
+   ]
+  },
+  {
+   "id": "b179-0099",
+   "column": "市区町村名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.986015
+    },
+    {
+     "label": "org",
+     "probability": 0.010477
+    },
+    {
+     "label": "id",
+     "probability": 0.00075
+    }
+   ]
+  },
+  {
+   "id": "b179-0100",
+   "column": "避難所種別",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989218
+    },
+    {
+     "label": "id",
+     "probability": 0.002738
+    },
+    {
+     "label": "text",
+     "probability": 0.001657
+    }
+   ]
+  },
+  {
+   "id": "b179-0101",
+   "column": "災害種別_洪水",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.99037
+    },
+    {
+     "label": "id",
+     "probability": 0.002308
+    },
+    {
+     "label": "text",
+     "probability": 0.002151
+    }
+   ]
+  },
+  {
+   "id": "b179-0102",
+   "column": "災害種別_崖崩れ、土石流及び地滑り",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.99018
+    },
+    {
+     "label": "id",
+     "probability": 0.003176
+    },
+    {
+     "label": "text",
+     "probability": 0.001678
+    }
+   ]
+  },
+  {
+   "id": "b179-0103",
+   "column": "災害種別_地震",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.98976
+    },
+    {
+     "label": "id",
+     "probability": 0.002836
+    },
+    {
+     "label": "text",
+     "probability": 0.00203
+    }
+   ]
+  },
+  {
+   "id": "b179-0104",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.9946
+    },
+    {
+     "label": "address",
+     "probability": 0.001301
+    },
+    {
+     "label": "category",
+     "probability": 0.000947
+    }
+   ]
+  },
+  {
+   "id": "b179-0105",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989267
+    },
+    {
+     "label": "org",
+     "probability": 0.006723
+    },
+    {
+     "label": "id",
+     "probability": 0.000775
+    }
+   ]
+  },
+  {
+   "id": "b179-0106",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.950668
+    },
+    {
+     "label": "address",
+     "probability": 0.042724
+    },
+    {
+     "label": "account",
+     "probability": 0.002306
+    }
+   ]
+  },
+  {
+   "id": "b179-0107",
+   "column": "連結表記",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.98698
+    },
+    {
+     "label": "org",
+     "probability": 0.00819
+    },
+    {
+     "label": "id",
+     "probability": 0.001194
+    }
+   ]
+  },
+  {
+   "id": "b179-0108",
+   "column": "投票所区分",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.98761
+    },
+    {
+     "label": "id",
+     "probability": 0.003794
+    },
+    {
+     "label": "org",
+     "probability": 0.001348
+    }
+   ]
+  },
+  {
+   "id": "b179-0109",
+   "column": "投票区名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.98037
+    },
+    {
+     "label": "org",
+     "probability": 0.008566
+    },
+    {
+     "label": "id",
+     "probability": 0.005601
+    }
+   ]
+  },
+  {
+   "id": "b179-0110",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994472
+    },
+    {
+     "label": "address",
+     "probability": 0.001396
+    },
+    {
+     "label": "category",
+     "probability": 0.001049
+    }
+   ]
+  },
+  {
+   "id": "b179-0111",
+   "column": "id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.99455
+    },
+    {
+     "label": "address",
+     "probability": 0.001011
+    },
+    {
+     "label": "category",
+     "probability": 0.000795
+    }
+   ]
+  },
+  {
+   "id": "b179-0112",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.959761
+    },
+    {
+     "label": "address",
+     "probability": 0.034653
+    },
+    {
+     "label": "account",
+     "probability": 0.001637
+    }
+   ]
+  },
+  {
+   "id": "b179-0113",
+   "column": "市区町村コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.993407
+    },
+    {
+     "label": "address",
+     "probability": 0.002366
+    },
+    {
+     "label": "category",
+     "probability": 0.001057
+    }
+   ]
+  },
+  {
+   "id": "b179-0114",
+   "column": "災害種別_洪水",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990149
+    },
+    {
+     "label": "id",
+     "probability": 0.002481
+    },
+    {
+     "label": "text",
+     "probability": 0.002151
+    }
+   ]
+  },
+  {
+   "id": "b179-0115",
+   "column": "災害種別_崖崩れ、土石流及び地滑り",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990176
+    },
+    {
+     "label": "id",
+     "probability": 0.003315
+    },
+    {
+     "label": "text",
+     "probability": 0.001571
+    }
+   ]
+  },
+  {
+   "id": "b179-0116",
+   "column": "災害種別_地震",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989559
+    },
+    {
+     "label": "id",
+     "probability": 0.002963
+    },
+    {
+     "label": "text",
+     "probability": 0.00202
+    }
+   ]
+  },
+  {
+   "id": "b179-0117",
+   "column": "災害種別_大規模な火事",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989696
+    },
+    {
+     "label": "id",
+     "probability": 0.003429
+    },
+    {
+     "label": "text",
+     "probability": 0.001695
+    }
+   ]
+  },
+  {
+   "id": "b179-0118",
+   "column": "指定避難所との重複",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.979321
+    },
+    {
+     "label": "id",
+     "probability": 0.01168
+    },
+    {
+     "label": "quantity",
+     "probability": 0.002821
+    }
+   ]
+  },
+  {
+   "id": "b179-0119",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994347
+    },
+    {
+     "label": "address",
+     "probability": 0.001576
+    },
+    {
+     "label": "category",
+     "probability": 0.000811
+    }
+   ]
+  },
+  {
+   "id": "b179-0120",
+   "column": "id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994746
+    },
+    {
+     "label": "address",
+     "probability": 0.001026
+    },
+    {
+     "label": "category",
+     "probability": 0.000705
+    }
+   ]
+  },
+  {
+   "id": "b179-0121",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.989727
+    },
+    {
+     "label": "org",
+     "probability": 0.006208
+    },
+    {
+     "label": "id",
+     "probability": 0.000713
+    }
+   ]
+  },
+  {
+   "id": "b179-0122",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.858314
+    },
+    {
+     "label": "address",
+     "probability": 0.132748
+    },
+    {
+     "label": "id",
+     "probability": 0.002035
+    }
+   ]
+  },
+  {
+   "id": "b179-0123",
+   "column": "名称_カナ",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.899048
+    },
+    {
+     "label": "address",
+     "probability": 0.091294
+    },
+    {
+     "label": "id",
+     "probability": 0.002958
+    }
+   ]
+  },
+  {
+   "id": "b179-0124",
+   "column": "施設通称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.969635
+    },
+    {
+     "label": "address",
+     "probability": 0.023051
+    },
+    {
+     "label": "account",
+     "probability": 0.003367
+    }
+   ]
+  },
+  {
+   "id": "b179-0125",
+   "column": "連結表記",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.977294
+    },
+    {
+     "label": "org",
+     "probability": 0.009856
+    },
+    {
+     "label": "text",
+     "probability": 0.005422
+    }
+   ]
+  },
+  {
+   "id": "b179-0126",
+   "column": "都道府県",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.990253
+    },
+    {
+     "label": "org",
+     "probability": 0.004921
+    },
+    {
+     "label": "id",
+     "probability": 0.000844
+    }
+   ]
+  },
+  {
+   "id": "b179-0127",
+   "column": "市区町村",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.982291
+    },
+    {
+     "label": "org",
+     "probability": 0.014173
+    },
+    {
+     "label": "id",
+     "probability": 0.000662
+    }
+   ]
+  },
+  {
+   "id": "b179-0128",
+   "column": "町字",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.976478
+    },
+    {
+     "label": "org",
+     "probability": 0.019139
+    },
+    {
+     "label": "id",
+     "probability": 0.00083
+    }
+   ]
+  },
+  {
+   "id": "b179-0129",
+   "column": "全国地方公共団体コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994442
+    },
+    {
+     "label": "address",
+     "probability": 0.00157
+    },
+    {
+     "label": "category",
+     "probability": 0.000912
+    }
+   ]
+  },
+  {
+   "id": "b179-0130",
+   "column": "id",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.994614
+    },
+    {
+     "label": "address",
+     "probability": 0.001114
+    },
+    {
+     "label": "category",
+     "probability": 0.000797
+    }
+   ]
+  },
+  {
+   "id": "b179-0131",
+   "column": "名称",
+   "raw_prediction": "org",
+   "guarded_prediction": "org",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "org",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "org",
+     "probability": 0.951912
+    },
+    {
+     "label": "address",
+     "probability": 0.042549
+    },
+    {
+     "label": "account",
+     "probability": 0.001684
+    }
+   ]
+  },
+  {
+   "id": "b179-0132",
+   "column": "市区町村コード",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.992896
+    },
+    {
+     "label": "address",
+     "probability": 0.00293
+    },
+    {
+     "label": "category",
+     "probability": 0.000995
+    }
+   ]
+  },
+  {
+   "id": "b179-0133",
+   "column": "地方公共団体名",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.988305
+    },
+    {
+     "label": "org",
+     "probability": 0.00799
+    },
+    {
+     "label": "id",
+     "probability": 0.000799
+    }
+   ]
+  },
+  {
+   "id": "b179-0134",
+   "column": "災害種別_洪水",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990342
+    },
+    {
+     "label": "text",
+     "probability": 0.002351
+    },
+    {
+     "label": "id",
+     "probability": 0.00222
+    }
+   ]
+  },
+  {
+   "id": "b179-0135",
+   "column": "災害種別_崖崩れ、土石流及び地滑り",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.99023
+    },
+    {
+     "label": "id",
+     "probability": 0.003053
+    },
+    {
+     "label": "text",
+     "probability": 0.001731
+    }
+   ]
+  },
+  {
+   "id": "b179-0136",
+   "column": "災害種別_高潮",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.989678
+    },
+    {
+     "label": "id",
+     "probability": 0.002688
+    },
+    {
+     "label": "text",
+     "probability": 0.002311
+    }
+   ]
+  },
+  {
+   "id": "b179-0137",
+   "column": "災害種別_地震",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990039
+    },
+    {
+     "label": "id",
+     "probability": 0.00259
+    },
+    {
+     "label": "text",
+     "probability": 0.002152
+    }
+   ]
+  },
+  {
+   "id": "b179-0138",
+   "column": "災害種別_津波",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.990437
+    },
+    {
+     "label": "id",
+     "probability": 0.002235
+    },
+    {
+     "label": "text",
+     "probability": 0.002195
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "r176-b176-b180",
+  "set_sha256": "0e02252514e97a3eea3ac7d7f945f937019be88fe2a01f63c3cb0c9134667653"
+ }
+}
