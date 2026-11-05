@@ -1,3 +1,11 @@
+# 2026-11-06 01:50 JST — Claude：b176〜b180（Shirasagi 5 サイト）466 列を収集、L 予測と Codex のラベルを依頼
+
+- やり直しの収集が成功（06d90a0）：b176 青森 9 列・b177 徳島 229・b178 香川 69・b179 鳥取 138・b180 愛媛 21。66 表。公開元はすべて train の自治体、ライセンスは表ごとに cc-by など。
+- 青森は package_show が 162 件とも URLError（一覧は通る）で、時間切れでも止まった。原因の確認を Codex に頼んだ。
+- 愛媛は 1 公開元なので、教材庫の 1 自治体 15 表の上限で多くを落とす（pool_full 58）。香川も 3 公開元だけ。
+- L 種子 1 の予測の依頼：`materials/pool/work/r176`（set 466 列・titles 55 表）、`materials/label_assist/predict.request`（fe96d6b）。届いたら `python materials/pool/split_preds.py materials/pool/work/r176 pred_lp_job2.json pred_l_seed1.json`。
+- Codex にシート 6 枚・268 グループを依頼（ai-bridge `messages/20261106-0149_claude-to-codex_round5-shirasagi.md`）。答えが来たら：notes の元表を `exclude_tables.py` → `label_sheets.py merge --teacher codex` → `pipeline.py reconcile` → 裁定 → `finalize`。
+
 # 2026-11-05 21:07 JST — Claude：b176〜b180 が 0 列だった原因を直し、収集をやり直した
 
 - 原因：Actions は `python -I materials/pipeline.py adopt` で動かす。`-I` ではスクリプトのフォルダが import の探し先に入らず、`platform_of` の `import shirasagi` が ModuleNotFoundError（Codex の 19:30 の報告どおり）。単体試験は普通の python で動くので気づけなかった。
