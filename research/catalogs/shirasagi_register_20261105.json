@@ -3,27 +3,44 @@
  "draft_sha256_source": "shirasagi_owner_crosswalk_draft_20261105.json",
  "summary": {
   "queue": 255,
-  "accepted": 90,
-  "accepted_datasets": 1169,
+  "accepted": 124,
+  "accepted_datasets": 1507,
   "registered_codes": [
    "020001",
    "022063",
    "022080",
+   "022101",
    "024414",
+   "024457",
+   "024465",
+   "310000",
+   "312011",
+   "312029",
+   "312037",
+   "312045",
    "313289",
+   "313645",
    "313700",
    "313718",
+   "313726",
    "313840",
    "313866",
+   "313891",
+   "313904",
+   "314013",
    "314021",
    "360007",
    "362018",
+   "362026",
    "362042",
    "362051",
    "362069",
+   "362077",
    "362085",
    "363014",
    "363022",
+   "363219",
+   "363413",
    "363421",
    "363685",
    "363839",
@@ -31,35 +48,57 @@
    "363880",
    "364011",
    "364029",
+   "364037",
    "364045",
    "364053",
    "364681",
+   "364894",
    "370002",
+   "372021",
    "372048",
    "372056",
    "372064",
    "372081",
+   "373648",
+   "373869",
    "380008"
   ],
   "pools": {
    "020001": "train",
    "022063": "train",
    "022080": "train",
+   "022101": "eval3",
    "024414": "eval3",
+   "024457": "eval2",
+   "024465": "train",
+   "310000": "eval2",
+   "312011": "train",
+   "312029": "eval3",
+   "312037": "train",
+   "312045": "train",
    "313289": "eval3",
+   "313645": "eval3",
    "313700": "eval2",
    "313718": "train",
+   "313726": "train",
    "313840": "train",
    "313866": "train",
+   "313891": "train",
+   "313904": "train",
+   "314013": "train",
    "314021": "train",
    "360007": "eval2",
    "362018": "eval2",
+   "362026": "train",
    "362042": "eval3",
    "362051": "eval3",
    "362069": "train",
+   "362077": "train",
    "362085": "train",
    "363014": "train",
    "363022": "eval3",
+   "363219": "train",
+   "363413": "train",
    "363421": "eval2",
    "363685": "train",
    "363839": "train",
@@ -67,14 +106,19 @@
    "363880": "train",
    "364011": "train",
    "364029": "train",
+   "364037": "train",
    "364045": "train",
    "364053": "train",
    "364681": "eval2",
+   "364894": "train",
    "370002": "eval3",
+   "372021": "train",
    "372048": "train",
    "372056": "train",
    "372064": "eval3",
    "372081": "train",
+   "373648": "train",
+   "373869": "eval3",
    "380008": "train"
   }
  },
@@ -89,8 +133,9 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1521.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A1 user.idで、groups でも確かめられない：G1 持ち主の groups 1 < データセット 150"
    ]
   },
   {
@@ -102,10 +147,9 @@
    "datasets": 47,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1641.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 47 ≥ データセット 47（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -117,8 +161,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2158.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -130,10 +175,9 @@
    "datasets": 89,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2477.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 141 ≥ データセット 89（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -145,8 +189,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1301.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -159,8 +204,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/647.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -173,8 +219,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2260.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -187,6 +234,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1194.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -200,10 +248,9 @@
    "datasets": 11,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4988.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 11 ≥ データセット 11（ほか 2 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -214,10 +261,9 @@
    "datasets": 7,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4504.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 7 ≥ データセット 7（ほか 3 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -228,10 +274,9 @@
    "datasets": 25,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1426.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 25 ≥ データセット 25（ほか 6 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -243,8 +288,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1186.html",
    "pool": "train",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A1 user.idで、groups でも確かめられない：G2/G3 ほかの持ち主の groups ['徳島県/110企画総務部/徳島県 企画総務部 統計課']"
    ]
   },
   {
@@ -256,10 +302,9 @@
    "datasets": 15,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2378.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 15 ≥ データセット 15（ほか 1 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://odp-pref-tottori.tori-info.co.jp",
@@ -270,10 +315,9 @@
    "datasets": 4,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1845.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 4（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.kagawa.lg.jp",
@@ -285,8 +329,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/217.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -299,8 +344,9 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2016.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -312,10 +358,9 @@
    "datasets": 37,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2168.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 37 ≥ データセット 37（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.kagawa.lg.jp",
@@ -327,6 +372,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/596.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -339,8 +385,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2023.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -352,10 +399,9 @@
    "datasets": 11,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/3205.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 11 ≥ データセット 11（ほか 8 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -367,8 +413,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1782.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -380,10 +427,9 @@
    "datasets": 6,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2320.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 8 ≥ データセット 6（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://odp-pref-tottori.tori-info.co.jp",
@@ -394,10 +440,9 @@
    "datasets": 4,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1832.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 4（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.aomori.lg.jp",
@@ -408,10 +453,9 @@
    "datasets": 3,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2047.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 3（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -423,8 +467,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2155.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -437,6 +482,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2064.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -451,6 +497,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1626.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -463,6 +510,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/202.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -477,6 +525,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2088.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -489,6 +538,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1459.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -501,6 +551,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1373.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -513,6 +564,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/101.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -527,6 +579,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1367.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -539,6 +592,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2380.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -551,6 +605,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1494.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -563,8 +618,9 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2019.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -577,8 +633,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4848.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -591,8 +648,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1649.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -605,8 +663,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/493.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -619,6 +678,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1417.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -630,10 +690,9 @@
    "datasets": 14,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1851.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 14 ≥ データセット 14（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -645,6 +704,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1086.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -659,8 +719,9 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1686.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -673,6 +734,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/1927.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -685,6 +747,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/241.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -697,6 +760,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/450.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -711,8 +775,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1718.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -724,10 +789,9 @@
    "datasets": 8,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2344.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 8 ≥ データセット 8（ほか 8 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -739,8 +803,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4588.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -753,8 +818,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1153.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -767,6 +833,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/675.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -781,6 +848,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4577.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -795,6 +863,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2672.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -807,6 +876,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2669.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -818,10 +888,9 @@
    "datasets": 4,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2581.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 5 ≥ データセット 4（ほか 4 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -833,6 +902,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1100.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -847,6 +917,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4904.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -861,6 +932,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/398.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -874,10 +946,9 @@
    "datasets": 3,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1413.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 3（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://odp-pref-tottori.tori-info.co.jp",
@@ -889,8 +960,9 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1841.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -903,8 +975,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2489.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -916,10 +989,9 @@
    "datasets": 3,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2242.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 3 ≥ データセット 3（ほか 1 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -930,10 +1002,9 @@
    "datasets": 3,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2490.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 3 ≥ データセット 3（ほか 2 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -944,10 +1015,9 @@
    "datasets": 3,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2527.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 3 ≥ データセット 3（ほか 3 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.kagawa.lg.jp",
@@ -959,8 +1029,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/192.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -973,6 +1044,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2248.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -987,8 +1059,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/378.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -1001,6 +1074,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/633.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1015,8 +1089,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1833.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -1029,8 +1104,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1723.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -1043,6 +1119,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1370.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1055,6 +1132,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1372.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1067,6 +1145,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1746.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1081,6 +1160,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1369.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1093,6 +1173,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/217.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1107,6 +1188,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1429.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1119,6 +1201,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1982.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1131,6 +1214,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2392.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1143,6 +1227,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/250.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1157,6 +1242,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1457.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1169,6 +1255,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/139.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1183,6 +1270,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1424.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1195,6 +1283,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1903.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1209,6 +1298,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/165.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1223,6 +1313,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1471.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1235,6 +1326,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1225.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1246,10 +1338,9 @@
    "datasets": 14,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1431.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 16 ≥ データセット 14（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.kagawa.lg.jp",
@@ -1261,6 +1352,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/493.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1275,6 +1367,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2240.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1287,6 +1380,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/177.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1301,6 +1395,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4834.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1315,6 +1410,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/185.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1329,6 +1425,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2443.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1341,6 +1438,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1981.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1353,6 +1451,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/588.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1365,6 +1464,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/246.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1379,6 +1479,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/181.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1393,6 +1494,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/183.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1407,6 +1509,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/365.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1421,6 +1524,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2037.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1433,6 +1537,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1762.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1447,6 +1552,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/148.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1461,6 +1567,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/231.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1473,6 +1580,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2340.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1487,6 +1595,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4527.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1499,6 +1608,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/352.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1513,6 +1623,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2082.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1525,6 +1636,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1401.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1537,6 +1649,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1287.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1549,6 +1662,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1821.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1563,6 +1677,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2498.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1576,10 +1691,9 @@
    "datasets": 4,
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/625.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 4（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://www.pref.ehime.jp/opendata-catalog",
@@ -1590,10 +1704,9 @@
    "datasets": 4,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/93.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 4（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://www.pref.ehime.jp/opendata-catalog",
@@ -1605,6 +1718,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/1624.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1616,10 +1730,9 @@
    "datasets": 4,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2503.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 7 ≥ データセット 4（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -1631,8 +1744,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4577.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -1645,8 +1759,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1086.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -1658,10 +1773,9 @@
    "datasets": 4,
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1065.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 4 ≥ データセット 4（ほか 1 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.aomori.lg.jp",
@@ -1673,6 +1787,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1506.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1687,6 +1802,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2359.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1699,6 +1815,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2084.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1711,6 +1828,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2159.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1725,6 +1843,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/160.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1739,8 +1858,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1796.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -1753,8 +1873,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/396.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -1767,6 +1888,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1414.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1779,6 +1901,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1423.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1791,6 +1914,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/2088.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1803,6 +1927,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1276.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1815,6 +1940,7 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1840.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1827,6 +1953,7 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1842.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1839,6 +1966,7 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1843.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1853,6 +1981,7 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1847.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1865,8 +1994,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4511.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -1879,6 +2009,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2642.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -1893,6 +2024,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4823.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1907,6 +2039,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1729.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1921,6 +2054,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1738.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1935,6 +2069,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1306.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1949,6 +2084,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1742.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -1963,6 +2099,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2085.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1975,6 +2112,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2479.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -1987,6 +2125,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1187.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2001,6 +2140,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2576.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2015,6 +2155,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1192.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2029,6 +2170,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/163.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2043,6 +2185,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/138.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2057,6 +2200,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/145.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2071,6 +2215,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/184.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2085,6 +2230,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/154.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2099,6 +2245,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2212.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2111,6 +2258,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2422.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2123,6 +2271,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/3205.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2134,10 +2283,9 @@
    "datasets": 2,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/1097.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 2 ≥ データセット 2（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://www.pref.ehime.jp/opendata-catalog",
@@ -2149,6 +2297,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/3788.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2161,6 +2310,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/3182.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2173,8 +2323,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2008.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2187,8 +2338,9 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/484.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -2200,10 +2352,9 @@
    "datasets": 1,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1679.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.aomori.lg.jp",
@@ -2214,10 +2365,9 @@
    "datasets": 1,
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1596.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.aomori.lg.jp",
@@ -2229,6 +2379,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1271.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2241,6 +2392,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1312.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2253,6 +2405,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1294.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2265,6 +2418,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/243.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2277,6 +2431,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1497.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2289,6 +2444,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/244.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2301,6 +2457,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1281.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2313,6 +2470,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1410.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2325,6 +2483,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1295.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2337,6 +2496,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1409.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2349,6 +2509,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1302.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2361,6 +2522,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1278.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2373,6 +2535,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1306.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2385,6 +2548,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1634.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2397,6 +2561,7 @@
    "evidence_url": "https://opendata.pref.aomori.lg.jp/dataset/1425.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2408,10 +2573,9 @@
    "datasets": 1,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1712.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://odp-pref-tottori.tori-info.co.jp",
@@ -2423,8 +2587,9 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1708.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2437,6 +2602,7 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1864.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2449,6 +2615,7 @@
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1854.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2462,10 +2629,9 @@
    "datasets": 1,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1709.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.tokushima.lg.jp",
@@ -2477,6 +2643,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2575.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2491,6 +2658,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2637.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2505,8 +2673,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1793.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2519,6 +2688,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2643.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2531,6 +2701,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2496.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2543,8 +2714,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2635.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A2 部署の名前だけで、groups でも確かめられない：G2/G3 ほかの持ち主の groups ['徳島県/鳴門市/市長直轄組織/鳴門市 市長直轄組織 行革デジタル推進本部']"
    ]
   },
   {
@@ -2557,8 +2729,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1733.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2571,8 +2744,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1819.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2585,6 +2759,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1101.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2597,6 +2772,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2641.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2609,6 +2785,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4790.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2621,6 +2798,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2725.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2633,6 +2811,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4794.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2645,6 +2824,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4788.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2657,8 +2837,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4770.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -2671,6 +2852,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4515.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2685,6 +2867,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1843.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2699,6 +2882,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4516.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -2713,8 +2897,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4503.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval3（教材に使わない）"
    ]
   },
   {
@@ -2727,6 +2912,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4773.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2741,6 +2927,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4847.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2755,6 +2942,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4780.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2769,6 +2957,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/5094.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2783,6 +2972,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/8.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2797,6 +2987,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4556.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2811,6 +3002,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4630.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2825,6 +3017,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1741.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2839,6 +3032,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1825.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2853,6 +3047,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1789.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2867,6 +3062,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4576.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2881,6 +3077,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4534.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2895,8 +3092,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4592.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2909,8 +3107,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1732.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2923,6 +3122,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/4740.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2935,6 +3135,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1069.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -2947,8 +3148,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1787.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2961,6 +3163,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2587.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -2975,8 +3178,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1745.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -2989,6 +3193,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2636.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval2（教材に使わない）"
    ]
@@ -3003,8 +3208,9 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/5190.html",
    "pool": "eval2",
    "accepted": false,
+   "basis": "",
    "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
+    "A5 自治体の pool が eval2（教材に使わない）"
    ]
   },
   {
@@ -3017,6 +3223,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/2644.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3029,6 +3236,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1846.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3041,6 +3249,7 @@
    "evidence_url": "https://opendata.pref.tokushima.lg.jp/dataset/1193.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3055,6 +3264,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/503.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3068,10 +3278,9 @@
    "datasets": 1,
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/375.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://opendata.pref.kagawa.lg.jp",
@@ -3083,6 +3292,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/510.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3095,6 +3305,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/407.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3109,6 +3320,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/137.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3123,6 +3335,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/151.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3137,6 +3350,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/176.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3151,6 +3365,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/530.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3165,6 +3380,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/172.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3179,6 +3395,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/189.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3193,6 +3410,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/191.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3207,6 +3425,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/473.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3221,6 +3440,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/153.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3235,6 +3455,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/159.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3249,6 +3470,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/258.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3263,6 +3485,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/529.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3277,6 +3500,7 @@
    "evidence_url": "https://opendata.pref.kagawa.lg.jp/dataset/359.html",
    "pool": "eval3",
    "accepted": false,
+   "basis": "",
    "reasons": [
     "A5 自治体の pool が eval3（教材に使わない）"
    ]
@@ -3291,6 +3515,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2354.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3303,6 +3528,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2182.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3315,6 +3541,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2239.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3327,6 +3554,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2085.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3339,6 +3567,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2104.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3351,6 +3580,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2203.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3362,10 +3592,9 @@
    "datasets": 1,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/1119.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 1 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://www.pref.ehime.jp/opendata-catalog",
@@ -3376,10 +3605,9 @@
    "datasets": 1,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/3214.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A2 値が持ち主を名乗らない（部署の名前だけ）"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://www.pref.ehime.jp/opendata-catalog",
@@ -3391,6 +3619,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2260.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3403,6 +3632,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/646.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3415,6 +3645,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2273.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3427,6 +3658,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/138.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3439,6 +3671,7 @@
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/3623.html",
    "pool": "train",
    "accepted": true,
+   "basis": "A2 値が持ち主を名乗る",
    "reasons": []
   },
   {
@@ -3450,10 +3683,9 @@
    "datasets": 1,
    "evidence_url": "https://odp-pref-tottori.tori-info.co.jp/dataset/1853.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   },
   {
    "site": "https://www.pref.ehime.jp/opendata-catalog",
@@ -3464,10 +3696,9 @@
    "datasets": 1,
    "evidence_url": "https://www.pref.ehime.jp/opendata-catalog/dataset/2419.html",
    "pool": "train",
-   "accepted": false,
-   "reasons": [
-    "A1 user.id（投稿者のアカウント）はページを見るまで採らない"
-   ]
+   "accepted": true,
+   "basis": "G 持ち主の groups 1 ≥ データセット 1（ほか 0 は県のカタログ管理・県名だけ）",
+   "reasons": []
   }
  ]
 }

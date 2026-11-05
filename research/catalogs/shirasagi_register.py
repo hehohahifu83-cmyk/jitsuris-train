@@ -13,7 +13,14 @@ allowed_hosts.json の shirasagi に train の自治体だけを書く。
   A4 6 桁のコードの検査数字が正しい・仙台市 041009 でない・allocation で train 以外（hold・main・eval）に登録済みでない
   A5 ハッシュの pool が train（新しく登録する自治体）
 静岡は全件を取れていない（2 件取得できない）ので、下書きにも単独の案が無く、登録しない。
+
+2026-11-05 追加：A1・A2 で落ちた組（user.id・部署名だけ）は、Codex の一覧（shirasagi_owner_inventory_20261105.json）の
+groups（Shirasagi の所属。「鳥取県/鳥取市」「徳島県/美馬市/企画総務部/…」のように持ち主が階層で入る）で確かめる：
+  G1 その値を持つ全部の組で、候補の自治体を指す groups の数 ≥ データセットの数
+  G2 ほかの groups は、県のカタログ管理の課（…情報政策課）か県の名前だけ
+  G3 県が候補のときは、groups に県内の市町村の名前が無い（2 段目が部・局・庁などの県の組織）
 """
+
 import argparse
 import json
 import re
@@ -31,6 +38,10 @@ DRAFT = ROOT / "research/catalogs/shirasagi_owner_crosswalk_draft_20261105.json"
 ORGS = ROOT / "research/catalogs/shirasagi_official_organizations_20261105.json"
 ALLOC = ROOT / "independent_eval/allocation.json"
 HOSTS = ROOT / "materials/pool/allowed_hosts.json"
+INVENTORY = ROOT / "research/catalogs/shirasagi_owner_inventory_20261105.json"
+MUNI = json.load(open(ROOT / "materials/dict/jp_municipalities.json", encoding="utf-8"))
+CITY_NAMES = {r["city"] for r in MUNI if r["city"]}
+PREF_NAMES = {r["pref"] for r in MUNI}
 OUT = ROOT / "research/catalogs/shirasagi_register_20261105.json"
 TODAY = "2026-11-05"
 EXCLUDED = {"041009"}
@@ -69,6 +80,46 @@ def ehime_department(value, names):
                                                                       or any(n.endswith(tail) for n in names))
 
 
+def group_check(row, inventory):
+    """G1〜G3。戻り値：(通るか, 説明)。"""
+    combos = [c for c in inventory[row["site"]]["combinations"]
+              if (str(c["user_id"]) == row["value"] if row["field"] == "user.id"
+                  else c["author" if row["field"] == "author" else "user_name"] == row["value"])]
+    ds = sum(c["datasets"] for c in combos)
+    if not ds:
+        return False, "G0 一覧に組が無い"
+    groups = {}
+    for c in combos:
+        for g, n in c["group_affiliations"].items():
+            groups[g] = groups.get(g, 0) + n
+    m = row["municipality"]
+    is_pref = m in PREF_NAMES
+    own = other = 0
+    bad = []
+    for g, n in groups.items():
+        parts = [norm(x) for x in g.split("/")]
+        cities = [x for x in parts if x in CITY_NAMES or any(x.startswith(cn + " ") for cn in CITY_NAMES)]
+        if is_pref:
+            if parts[0] == m and len(parts) >= 2 and not cities:
+                own += n
+            elif parts == [m]:
+                other += n
+            else:
+                bad.append(g)
+        else:
+            if any(x == m or x.startswith(m + " ") or x.startswith(m) for x in parts[:3]):
+                own += n
+            elif parts == [parts[0]] and parts[0] in PREF_NAMES or (parts[0] in PREF_NAMES and parts[-1].endswith("情報政策課")):
+                other += n
+            else:
+                bad.append(g)
+    if bad:
+        return False, f"G2/G3 ほかの持ち主の groups {bad[:3]}"
+    if own < ds:
+        return False, f"G1 持ち主の groups {own} < データセット {ds}"
+    return True, f"G 持ち主の groups {own} ≥ データセット {ds}（ほか {other} は県のカタログ管理・県名だけ）"
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
@@ -83,15 +134,20 @@ def main(argv=None):
                 continue
             owners.setdefault((c["site"], f, str(v)), set()).add(c["municipality_code"] if not c.get("excluded") else "除外/不明")
     names = ehime_names()
+    inventory = {x["site"]: x for x in json.load(open(INVENTORY, encoding="utf-8"))["results"]}
     alloc = load_allocation(ALLOC)
     results = []
     for x in d["reduced_review_queue"]:
         why = []
         v, m = norm(x["value"]), x["municipality"]
-        if x["field"] == "user.id":
-            why.append("A1 user.id（投稿者のアカウント）はページを見るまで採らない")
-        elif not (v.startswith(m) or (x["site"] == EHIME and m == "愛媛県" and ehime_department(x["value"], names))):
-            why.append("A2 値が持ち主を名乗らない（部署の名前だけ）")
+        named = x["field"] != "user.id" and (v.startswith(m) or (x["site"] == EHIME and m == "愛媛県" and ehime_department(x["value"], names)))
+        basis = "A2 値が持ち主を名乗る"
+        if not named:
+            ok, msg = group_check(x, inventory)
+            if ok:
+                basis = msg
+            else:
+                why.append(("A1 user.id" if x["field"] == "user.id" else "A2 部署の名前だけ") + "で、groups でも確かめられない：" + msg)
         other = owners.get((x["site"], x["field"], str(x["value"])), set()) - {x["municipality_code"]}
         if other:
             why.append(f"A3 同じ値が別の持ち主にも使われる {sorted(other)}")
@@ -102,7 +158,7 @@ def main(argv=None):
         if not why and pool != "train":
             why.append(f"A5 自治体の pool が {pool}（教材に使わない）")
         results.append({**{k: x[k] for k in ("site", "field", "value", "municipality", "municipality_code", "datasets", "evidence_url")},
-                        "pool": pool, "accepted": not why, "reasons": why})
+                        "pool": pool, "accepted": not why, "basis": basis if not why else "", "reasons": why})
     accepted = [r for r in results if r["accepted"]]
     # 採らなかった自治体も、名乗りが確かめられたもの（A5 だけで落ちたもの）は登録して eval の側に固定する
     register = sorted({r["municipality_code"] for r in results if r["accepted"] or r["reasons"] and all(w.startswith("A5") for w in r["reasons"])})
