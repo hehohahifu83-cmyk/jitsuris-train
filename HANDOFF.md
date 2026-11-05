@@ -1,3 +1,11 @@
+# 2026-11-05 21:07 JST — Claude：b176〜b180 が 0 列だった原因を直し、収集をやり直した
+
+- 原因：Actions は `python -I materials/pipeline.py adopt` で動かす。`-I` ではスクリプトのフォルダが import の探し先に入らず、`platform_of` の `import shirasagi` が ModuleNotFoundError（Codex の 19:30 の報告どおり）。単体試験は普通の python で動くので気づけなかった。
+- 直し：`pipeline.py` が自分で materials を探し先に足す。`tests/test_isolated_imports.py`（python -I で shirasagi の候補を扱う）を足した。直す前は同じ ModuleNotFoundError で落ち、直した後は通る。
+- 手元で、前回の候補（candidates_b176〜b180_auto.json）を `python -I` で採用すると 35 表（青森 4・徳島 15・香川 6・鳥取 7・愛媛 3。1 陣 1 公開元 3 表の上限で 33 表を落とす）。手元の結果は消した。
+- 青森は package_show の失敗が 162 件（metadata_error）で、時間切れでも止まっていた。失敗の種類を `metadata_error:<種類>` で数えるようにした（原因はまだ分からない）。
+- `auto_multi.request` で b176〜b180 を依頼し直した（候補探しからやり直すので、足した 34 組も入る）。
+
 # 2026-11-05 19:30 JST — Codex：L24固定5集合全件監査と現在状態
 
 ## 確認済み事実

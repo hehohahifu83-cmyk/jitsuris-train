@@ -161,7 +161,7 @@ def discover(cfg,registry,known_rids,pool_pub,title_key,title_deny,stop=lambda:F
             stats['used_dataset']+=1;continue
         if stop():stats['stopped_by_budget']+=1;break
         try:dataset=client.show(uuid)
-        except Exception:stats['metadata_error']+=1;continue
+        except Exception as exc:stats['metadata_error']+=1;stats['metadata_error:'+type(exc).__name__]+=1;continue  # 種類も数える（b176 青森 162 件の原因が分からなかった）
         title=str(dataset.get('name') or '')
         if not title or title_deny.search(title):stats['title_denied']+=1;continue
         if query and query.lower() not in (title+' '+str(dataset.get('text',''))).lower():continue

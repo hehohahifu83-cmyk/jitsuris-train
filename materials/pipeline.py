@@ -33,6 +33,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POOL = ROOT / "materials" / "pool"
+# python -I で動かすと materials が import の探し先に入らない（Actions の adopt で shirasagi を読めず b176〜b180 が 0 列。2026-11-05）
+if str(ROOT / "materials") not in sys.path:
+    sys.path.insert(0, str(ROOT / "materials"))
 LABELS = ("account", "address", "amount", "category", "date", "email", "id", "org", "other", "person", "phone",
           "product", "quantity", "rate", "tax_class", "text")
 NOT_USED = ("unknown", "S")
