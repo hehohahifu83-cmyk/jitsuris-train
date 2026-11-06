@@ -27,7 +27,7 @@ class Guards(unittest.TestCase):
         p.unlink();(self.d/'adopted.json').write_text('{"pool":"eval2"}')
         with self.assertRaisesRegex(ValueError,'教材'):R.validate_batch('b124')
     def test_outside_requested_range_is_rejected(self):
-        for b in ('b018','F1','b123','b152','../b124','b124;anything'):
+        for b in ('b018','F1','b123','b152','b186','b188','../b124','b124;anything'):
             with self.assertRaisesRegex(ValueError,'対象外'):R.validate_batch(b)
     def test_entire_input_is_validated_before_network_work(self):
         with patch.object(R.sys,'argv',['refetch','b124','b018']),patch.object(R,'run') as run:

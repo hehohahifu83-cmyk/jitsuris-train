@@ -12,7 +12,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def validate_batch(batch):
-    if not re.fullmatch(r'b1(?:2[4-9]|[34][0-9]|5[01])',batch):raise ValueError('対象外の陣')
+    # 2026-11-06 Claude：b187（静岡、55 表すべて timed out）を足した。採用を変えず、時刻だけを変えて取り直す
+    if not re.fullmatch(r'b1(?:2[4-9]|[34][0-9]|5[01]|87)',batch):raise ValueError('対象外の陣')
     d=ROOT/'materials/pool/work'/batch
     if any((d/'sheets').glob('answers*/*.tsv')) or any(d.glob('labels_*.jsonl')):
         raise ValueError(f'{batch}: 回答があるので再生成しない')
