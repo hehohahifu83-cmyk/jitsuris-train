@@ -1,0 +1,683 @@
+{
+ "schema_version": 1,
+ "set_id": "label-assist-b185",
+ "set_sha256": "bd117d54dbe83fc84d05e1964834dc9b060f2ef4492afefd032c2f93b4758899",
+ "created_utc": "2026-11-06T08:00:42Z",
+ "guard_version": "v9.1",
+ "guard_implementation_version": "v10",
+ "available_guard_versions": [
+  "v9.1",
+  "v10"
+ ],
+ "checkpoint": {
+  "weights_sha256": "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+  "model": "intfloat/multilingual-e5-base",
+  "hf_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "model_type": "xlm-roberta",
+  "prefix": "query: ",
+  "max_length": 160,
+  "ctx_unit": true,
+  "seed": "1",
+  "train_commit": "939240908e4fd67520c112ad385719d5528b3d95"
+ },
+ "input": {
+  "val_select": false,
+  "unit_ext": false,
+  "title": true
+ },
+ "labels": [
+  "account",
+  "address",
+  "amount",
+  "category",
+  "date",
+  "email",
+  "id",
+  "org",
+  "other",
+  "person",
+  "phone",
+  "product",
+  "quantity",
+  "rate",
+  "tax_class",
+  "text"
+ ],
+ "device": "cpu",
+ "titles": {
+  "path": "materials/pool/work/r182/titles.json",
+  "sha256": "43637a6b21d7bf2cb62caecd97be307cc4138f52c0aaa01c68a5e78eb77b9a21",
+  "columns_with_title": 195
+ },
+ "timing": {
+  "columns": 195,
+  "seconds": 33.854,
+  "ms_per_column": 173.61
+ },
+ "rows": [
+  {
+   "id": "b185-0001",
+   "column": "2019年",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.970536
+    },
+    {
+     "label": "rate",
+     "probability": 0.014599
+    },
+    {
+     "label": "other",
+     "probability": 0.006942
+    }
+   ]
+  },
+  {
+   "id": "b185-0002",
+   "column": "部位",
+   "raw_prediction": "category",
+   "guarded_prediction": "category",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "category",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "category",
+     "probability": 0.953951
+    },
+    {
+     "label": "address",
+     "probability": 0.015694
+    },
+    {
+     "label": "text",
+     "probability": 0.008333
+    }
+   ]
+  },
+  {
+   "id": "b185-0003",
+   "column": "icd-10",
+   "raw_prediction": "id",
+   "guarded_prediction": "id",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "id",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "id",
+     "probability": 0.882563
+    },
+    {
+     "label": "category",
+     "probability": 0.106294
+    },
+    {
+     "label": "address",
+     "probability": 0.002534
+    }
+   ]
+  },
+  {
+   "id": "b185-0004",
+   "column": "罹患数(男)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.989132
+    },
+    {
+     "label": "other",
+     "probability": 0.005804
+    },
+    {
+     "label": "id",
+     "probability": 0.000893
+    }
+   ]
+  },
+  {
+   "id": "b185-0005",
+   "column": "罹患数(女)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.988946
+    },
+    {
+     "label": "other",
+     "probability": 0.006038
+    },
+    {
+     "label": "id",
+     "probability": 0.000902
+    }
+   ]
+  },
+  {
+   "id": "b185-0006",
+   "column": "罹患数(総数)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.984805
+    },
+    {
+     "label": "other",
+     "probability": 0.009522
+    },
+    {
+     "label": "id",
+     "probability": 0.00118
+    }
+   ]
+  },
+  {
+   "id": "b185-0007",
+   "column": "部位割合(男)",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.982291
+    },
+    {
+     "label": "other",
+     "probability": 0.004298
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.002504
+    }
+   ]
+  },
+  {
+   "id": "b185-0008",
+   "column": "部位割合(女)",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.982337
+    },
+    {
+     "label": "other",
+     "probability": 0.003848
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.002651
+    }
+   ]
+  },
+  {
+   "id": "b185-0009",
+   "column": "部位割合(総数)",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.982262
+    },
+    {
+     "label": "other",
+     "probability": 0.004401
+    },
+    {
+     "label": "tax_class",
+     "probability": 0.002593
+    }
+   ]
+  },
+  {
+   "id": "b185-0010",
+   "column": "粗罹患率(男)",
+   "raw_prediction": "rate",
+   "guarded_prediction": "rate",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "rate",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "rate",
+     "probability": 0.978811
+    },
+    {
+     "label": "other",
+     "probability": 0.009301
+    },
+    {
+     "label": "date",
+     "probability": 0.001804
+    }
+   ]
+  },
+  {
+   "id": "b185-0011",
+   "column": "令和3年レイワ",
+   "raw_prediction": "address",
+   "guarded_prediction": "address",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "address",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "address",
+     "probability": 0.97555
+    },
+    {
+     "label": "org",
+     "probability": 0.017439
+    },
+    {
+     "label": "date",
+     "probability": 0.00254
+    }
+   ]
+  },
+  {
+   "id": "b185-0012",
+   "column": "不 動 産 取 引 業",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.864005
+    },
+    {
+     "label": "amount",
+     "probability": 0.119101
+    },
+    {
+     "label": "id",
+     "probability": 0.006268
+    }
+   ]
+  },
+  {
+   "id": "b185-0013",
+   "column": "不動産賃貸業・管理業",
+   "raw_prediction": "amount",
+   "guarded_prediction": "amount",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "amount",
+     "probability": 0.77152
+    },
+    {
+     "label": "quantity",
+     "probability": 0.211137
+    },
+    {
+     "label": "id",
+     "probability": 0.003474
+    }
+   ]
+  },
+  {
+   "id": "b185-0014",
+   "column": "物品賃貸業",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.790476
+    },
+    {
+     "label": "amount",
+     "probability": 0.195416
+    },
+    {
+     "label": "id",
+     "probability": 0.002691
+    }
+   ]
+  },
+  {
+   "id": "b185-0015",
+   "column": "学術・開発研究機関",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "quantity",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "quantity",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.857965
+    },
+    {
+     "label": "amount",
+     "probability": 0.124008
+    },
+    {
+     "label": "id",
+     "probability": 0.005735
+    }
+   ]
+  },
+  {
+   "id": "b185-0016",
+   "column": "専門サービス業(他に分類されないもの)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "numeric_top2_too_close",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_top2_too_close"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_top2_too_close"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.54654
+    },
+    {
+     "label": "amount",
+     "probability": 0.419429
+    },
+    {
+     "label": "id",
+     "probability": 0.015274
+    }
+   ]
+  },
+  {
+   "id": "b185-0017",
+   "column": "広 告 業ヒロコクギョウ",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "probability_below_threshold",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "probability_below_threshold"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.499502
+    },
+    {
+     "label": "amount",
+     "probability": 0.481049
+    },
+    {
+     "label": "id",
+     "probability": 0.005222
+    }
+   ]
+  },
+  {
+   "id": "b185-0018",
+   "column": "技術サービス業(他に分類されないもの)",
+   "raw_prediction": "quantity",
+   "guarded_prediction": "unknown",
+   "decision_reason": "numeric_top2_too_close",
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_top2_too_close"
+    },
+    "v10": {
+     "guarded_prediction": "unknown",
+     "decision_reason": "numeric_top2_too_close"
+    }
+   },
+   "top3": [
+    {
+     "label": "quantity",
+     "probability": 0.539199
+    },
+    {
+     "label": "amount",
+     "probability": 0.437013
+    },
+    {
+     "label": "id",
+     "probability": 0.00744
+    }
+   ]
+  },
+  {
+   "id": "b185-0019",
+   "column": "宿 泊 業ヤドトマリギョウ",
+   "raw_prediction": "amount",
+   "guarded_prediction": "amount",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "amount",
+     "probability": 0.743146
+    },
+    {
+     "label": "quantity",
+     "probability": 0.234976
+    },
+    {
+     "label": "id",
+     "probability": 0.005959
+    }
+   ]
+  },
+  {
+   "id": "b185-0020",
+   "column": "飲 食 店",
+   "raw_prediction": "amount",
+   "guarded_prediction": "amount",
+   "decision_reason": null,
+   "guard_predictions": {
+    "v9.1": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    },
+    "v10": {
+     "guarded_prediction": "amount",
+     "decision_reason": null
+    }
+   },
+   "top3": [
+    {
+     "label": "amount",
+     "probability": 0.743592
+    },
+    {
+     "label": "quantity",
+     "probability": 0.231212
+    },
+    {
+     "label": "id",
+     "probability": 0.007704
+    }
+   ]
+  }
+ ],
+ "split_from": {
+  "set_id": "r182-b182-b185",
+  "set_sha256": "96ac071f16945fb6d51fa37b08f20c862d88678ae0478d4776073c106b736551"
+ }
+}
