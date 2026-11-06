@@ -1,3 +1,11 @@
+# 2026-11-06 JST — Claude：連絡箱。b182〜b185 の 195 列の L 予測を依頼、b186 が動かなかった原因を直し、静岡ほか 11 陣を依頼
+
+- b181〜b185（第 2 回）：b181 青森は 0 列（package_show 163 件すべて URLError、Codex の原因カウンタで `metadata_cause:timeout` 163）。b182 徳島 46・b183 香川 67・b184 鳥取 62・b185 愛媛 20 列＝195 列（22 表）。シートは 4 枚・140 グループ（157 行）。
+- **b186（静岡）が何も集めていなかった原因**：`pool-auto.yml` の陣の名前の確認が `^b0[0-9]{2}$` で、b100 以降を「陣の名前が違う」で止めていた（保存の段は always で `done` に書き換えるので、成功に見えた）。`^b[0-9]{3}$` に直した（まとめての方 `pool-auto-multi.yml` は `b\d{3}` で元から通る）。
+- `auto_multi.request` で 11 陣を依頼：静岡 b186＋同じ候補から b187〜b189、徳島 b190＋b191、香川 b192＋b193、鳥取 b194＋b195・b196。青森（時間切れ）と愛媛（1 公開元 15 表の上限 pool_full）は外した。
+- L 種子 1 の予測：`materials/pool/work/r182`（set 195 列・titles 22 表）、`predict.request`。届いたら `python materials/pool/split_preds.py materials/pool/work/r182 pred_lp_job2.json pred_l_seed1.json`。
+- Codex にシート 4 枚を依頼（ai-bridge）。答えが来たら：notes の元表を `exclude_tables.py` → `label_sheets.py merge --teacher codex` → `pipeline.py reconcile` → 裁定 → `finalize`。
+
 # 2026-11-06 07:44 JST — Claude：教材が少ない（オーナー「すくないな」）→ 静岡を登録し、同じ候補から続けて採用できるようにした
 
 - 少ない原因：(1) 6 サイトでいちばん大きい静岡（3,798 件）を登録していなかった（2 件が取れず Codex は単独の案を出さなかった）。(2) 1 陣 1 公開元 3 表まで・1 サイト 1 陣なので、1 回の収集で 1 自治体 3 表まで（徳島 42 候補→31 表、愛媛 15 候補→3 表）。

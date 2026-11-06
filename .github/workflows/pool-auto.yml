@@ -38,7 +38,7 @@ jobs:
           set -eu
           read -r cmd batch opts <<< "$(head -1 materials/pool/auto.request) "
           test "$cmd" = "auto"
-          echo "$batch" | grep -Eq '^b0[0-9]{2}$' || { echo "陣の名前が違う（b018 の形）"; exit 1; }
+          echo "$batch" | grep -Eq '^b[0-9]{3}$' || { echo "陣の名前が違う（b018・b186 の形）"; exit 1; }
           test ! -e "materials/pool/batch_$batch.jsonl" || { echo "$batch は確定済み。次の番号を使う"; exit 1; }
           test ! -e "materials/pool/work/$batch/adopted.json" || { echo "$batch は採用済み。次の番号を使う"; exit 1; }
           echo "batch=$batch" >> "$GITHUB_OUTPUT"
