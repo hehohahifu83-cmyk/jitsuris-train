@@ -42,6 +42,17 @@ class RealFractionTests(unittest.TestCase):
         self.assertLess(len(keys(quarter)), len(keys(half)))
         self.assertLess(len(keys(half)), len(keys(full)))
 
+    def test_pool_salt_nests_and_differs_from_real_salt(self):
+        """FT_POOL_FRAC（教材庫の学習曲線、2026-11-07）は別の塩で選び、入れ子になる。"""
+        from real_fraction import DEFAULT_REAL_FRAC_SALT, POOL_FRAC_SALT
+        self.assertNotEqual(POOL_FRAC_SALT, DEFAULT_REAL_FRAC_SALT)
+        rows = [("h", ["v"], "label", [], f"pool-table-{i}") for i in range(400)]
+        sel = {f: {r[4] for r in select_real_fraction(rows, f, salt=POOL_FRAC_SALT)} for f in (0.25, 0.5, 1.0)}
+        self.assertTrue(sel[0.25] <= sel[0.5] <= sel[1.0])
+        self.assertEqual(len(sel[1.0]), 400)
+        real = {r[4] for r in select_real_fraction(rows, 0.5)}
+        self.assertNotEqual(sel[0.5], real)
+
     def test_missing_table_key_is_rejected(self):
         with self.assertRaises(ValueError):
             select_real_fraction([("h", ["v"], "label", [])], 0.25)

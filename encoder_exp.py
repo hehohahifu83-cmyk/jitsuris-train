@@ -8,7 +8,7 @@ from sklearn.linear_model import LogisticRegression
 import gen
 from exp7 import load_real, split, perturb
 from encoder_context import attach_unit_context, format_encoder_text, indicator_context_map, load_rows_valsel, real_train_rows_with_units, unit_context_map
-from real_fraction import parse_real_fraction, select_real_fraction
+from real_fraction import POOL_FRAC_SALT, parse_real_fraction, select_real_fraction
 from llm_baseline import score_real
 from train3 import build_train, mat, split_curriculum, decide
 from dev_eval import rows_of
@@ -95,6 +95,16 @@ if POOL:
     from pool_families import cap_tables_per_family
     pooltr, _capped = cap_tables_per_family(pooltr, POOL_FAMILY_CAP)
     print(f"FT_POOL_FAMILY_CAP={POOL_FAMILY_CAP}: dropped {_capped} same-template tables from pool training", flush=True)
+# FT_POOL_FRAC=0.25|0.5|1.0（既定 1.0、2026-11-07 学習曲線 W2）：教材庫の学習側（検証に回した様式・FT_POOL_EXCLUDE・様式の上限の後）から、
+# 表ごとに決まった割合だけ残す（real_fraction.py、塩 jitsuris-ft-pool-v1。0.25 の表は 0.5 に、0.5 は 1.0 に含まれる）。検証（教材庫）は割合によらず同じ。
+# 裁定した列の上乗せ（FT_POOL_HARD_COPIES）・苦手の一覧も pooltr から取るので同じ表だけになる。決められない列（FT_POOL_UNDECIDABLE）も同じ塩で表を選ぶ
+POOL_FRAC = parse_real_fraction(os.environ.get("FT_POOL_FRAC"))
+if POOL_FRAC < 1.0:
+    if not POOL:
+        raise SystemExit("FT_POOL_FRAC は FT_POOL=1 と一緒に使う")
+    _n_rows, _n_tables = len(pooltr), len({str(r[4]) for r in pooltr})
+    pooltr = select_real_fraction(pooltr, POOL_FRAC, salt=POOL_FRAC_SALT)
+    print(f"FT_POOL_FRAC={POOL_FRAC:g}: kept {len({str(r[4]) for r in pooltr})}/{_n_tables} pool tables and {len(pooltr)}/{_n_rows} pool rows", flush=True)
 # FT_VAL=1：学習率などを選ぶための検証モード（2026-10-20）。学習側の本物の表のうち 1/8 を検証に回し、固定の試験側には触れない（val_split.py）。
 VAL_MODE = os.environ.get("FT_VAL") == "1"
 gval = bval = b2val = jval = []
@@ -126,6 +136,8 @@ if POOL and POOL_UNDEC > 0:
         _u_tr, _u_val = split_val_by_family(_undec, salt="jitsuris-poolval-v2", mod=8)
         _val_tables |= {r[4] for r in _u_val}
     undec_tr = [(h, v, "other", c, t) for h, v, _l, c, t in _undec if t not in _val_tables and t not in pool_excluded_tables]
+    if POOL_FRAC < 1.0:
+        undec_tr = select_real_fraction(undec_tr, POOL_FRAC, salt=POOL_FRAC_SALT)
 # FT_TITLE=1（既定オフ）：表の題名（materials/pool/titles.json。教材庫の表だけ。ほかの表は題名なし）を入力の文に入れる。学習・評価とも同じ対応表を通す
 TITLE = os.environ.get("FT_TITLE") == "1"
 unit_by_table = unit_context_map(g_all + b_all + b2_all + j_all + j3_all + pool_all)

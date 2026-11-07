@@ -6,6 +6,7 @@ from hashlib import sha256
 from typing import Iterable
 
 DEFAULT_REAL_FRAC_SALT = "jitsuris-ft-real-v1"
+POOL_FRAC_SALT = "jitsuris-ft-pool-v1"  # 教材庫の学習曲線（FT_POOL_FRAC、2026-11-07）
 SUPPORTED_REAL_FRACS = frozenset((Decimal("0.25"), Decimal("0.5"), Decimal("1.0")))
 _REAL_FRAC_QUARTERS = {Decimal("0.25"): 1, Decimal("0.5"): 2, Decimal("1.0"): 4}
 
