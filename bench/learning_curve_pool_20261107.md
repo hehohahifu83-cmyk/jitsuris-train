@@ -10,7 +10,7 @@ W1（2026-10-21、`bench/learning_curve_e5base.md`）は教材庫ができる前
 教材庫用の `FT_POOL_FRAC` を足した（`encoder_exp.py`、`real_fraction.py` の塩 `jitsuris-ft-pool-v1`）。変える要因は教材庫の割合だけ。
 
 ## 固定する条件
-- コードとデータ：jitsuris-train main のこの記録のコミット（教材庫 102 陣、`bench/pool_status.md` の 38,654 列、b186〜b196 まで。b187 の 217 列は入らない）。学習が終わるまで教材庫を確定しない。
+- コードとデータ：jitsuris-train main のこの記録のコミット（`cda4ed5`）（教材庫 102 陣、`bench/pool_status.md` の 38,654 列、b186〜b196 まで。b187 の 217 列は入らない）。学習が終わるまで教材庫を確定しない。
 - モデル `intfloat/multilingual-e5-base`、2 周、種子 1・2。設定は L と同じ（`bench/g24fix_prereg_20261104.md` の L：`FT_LABELFIX=materials/pool/labelfix_v24.jsonl`、`FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=160` ほか）に `FT_VAL=1` を足す。`FT_KEEP` は付けない（重みは残さない）。
 - 割合の選び方：教材庫の学習側（様式ごとの検証分け `jitsuris-poolval-v2`・様式の上限 4 表の後）から、表の名前の SHA-256 で表ごと選ぶ。0.25 ⊂ 0.5 ⊂ 1.0。見出し・値・ラベルは選ぶ条件に使わない。
 - 手元での確認（学習なし、データを作るところまで）：
