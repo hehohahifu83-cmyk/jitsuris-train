@@ -1,3 +1,23 @@
+# 2026-11-07 19:38 JST — Codex：W2許可5集合60ファイル全件監査と成果物確認
+
+## 確認済み事実
+
+- W2 run [42323220255](https://github.com/hehohahifu83-cmyk/jitsuris-train/actions/runs/42323220255) はsuccess。評価artifact `13557246189`（5,089,968 bytes）とモデルartifact `13557211258`（879,625,432 bytes、いずれも2026-12-07期限）を別々に確認した。`STATUS.md`のartifact未確認表示は実状態より遅れている。
+- 許可5集合（pool、general、business、business2、japan_procurement）、6仕事、ft/blend70の60予測JSON・65,280出力を全件再集計。問題4,712（wrong 2,653、unknown 1,721、other見落し338）、critical 234、固有問題行619、critical固有48。全12出力で再発する問題は233行。
+- 問題機構は、raw正解→guard unknown 1,184、raw誤答→guard unknown 537、raw誤答を受理2,653、other見落し338。低信頼閾値によるunknownは465。全固有行は `cpu_lab/reports/eval-audit-run-42323220255.md`。
+- 学習時間は割合1.0がloop 1688.4/1537.2秒、0.5が1049.8/1158.5秒、0.25が801.5/884.6秒。peak GPUは5.45〜5.55 GiB。train切詰めは0.62〜0.91%。japan_procurement入力の切詰めは11/66（16.67%）だが、個別誤りとの因果は未確認。
+- 事前規則のW2判定は全検証macro-F1 92.28/92.98/93.79、1.0−0.5＝+0.81ppで頭打ち。同一未知見出し1,121列では正しい率83.36→83.99→85.33%で少し改善するため、「改善は既知見出しだけ」は取り消し済み。
+- 未知見出し両seed誤り136行は全件原因分類済み。Claude独立30行との一致24/30。直しG再適用で31出力がunknown→correct、新規誤り0。ただしv10再現不一致11/13行は未解決。
+- `kaggle/kaggle.request=done`、Kaggleは2026-11-07 17:53 JSTにCOMPLETE。新しいKaggle学習は動いていない。現在の非完了Actionsは本監査commitに伴うCPU安全試験で、学習ではない。
+
+## 未確認・未完了
+
+- 残る6種の日付形について、W2学習側でdate/非dateの列数・表数を数えるClaude依頼は未完了。規則・ラベルはまだ変更しない。
+- v10再現不一致11/13行の原因（FT_VALSELなど入力選択差）は未確認。
+- ラベル境界34行は誤ラベル確定ではない。先生2人の独立確認と根拠裁定まで変更しない。
+- 619固有問題行のうち、元値・UNIT・兄弟列・出典・token化後入力を伴う直接原因調査は未知見出し136行だけ。残りはartifactから即時機構と再発性までを確認し、根本原因は未確定。
+- 固定評価例は教材へ転用しない。次は日付形の集計、v10差分特定、ラベル境界裁定を一要因ずつ行う。
+
 # 2026-11-07 15:28 JST — Codex：W2未知見出し136列の原因調査（変更なし）
 
 - 最終更新：2026-11-07 15:28 JST（Codex）。指定136列すべてを `research/w2_unknown/codex_causes.json` に分類。まとめ表は `codex_summary.md`、手判断は `codex_review_notes.json`、再現は `codex_causes.py`。
