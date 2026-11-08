@@ -1,3 +1,21 @@
+# 2026-11-08 19:22 JST — Codex：W2重大17列の独立ラベル・入力不足監査
+
+## 確認済み事実
+
+- W2評価artifact `13557246189`を再集計。許可5集合のftは10,880出力・critical 31件。教材庫検証（pool）のjob1/job2 ftは9,102出力・critical **29件・17固有列**。31件の残り2件はgeneral `debris cataloged` とbusiness `well-founded_bien-fonde`。
+- 既存要約の「投票区6列」はartifactと一致せず、正しくは投票区5列。漏れていた `export_interstate` 1列を含めて17列。詳細を `research/w2_unknown/critical_label_review_codex.md` に保存し、`critical_dictionary.md`の母集団と内訳を訂正。
+- 17列すべてで現ラベルを否定する根拠は見つからなかった。高確度：Sales/Lottery=amount、SNA=quantity、Avg. Time on Page=duration quantity、GIS=amount、GEO_CANT=id。中〜中高：全値0の投票区5列=id、`ssd_supplier_band1__m`=amount、`export_interstate`=quantity、`Value`=rate。
+- 主な不足は表題、単位（USD/EUR/CAD、FTE、tonnes、%、duration）、略語展開（SNA/GIS/OAS/GEO_CANT/SSDT）。Sales/Valueは多義語なので見出し単独辞書では安全に直せない。
+- KaggleはCOMPLETE、`kaggle.request=done`。W2の評価artifact `13557246189`とモデルartifact `13557211258`は別々に確認済み。新しい学習は開始・完了していない。STATUS.mdの「artifact未確認」は今回の新規artifactがないことを示すが、W2成果物の既確認事実は変わらない。
+- 日付の見張りは値の形だけでは広げない。0.5閾値を含めるとW2の両job 4,551/4,551の予測・理由を再現し、直しGは各31列unknown→正解、新規誤り0。規則・ラベル・教材・学習依頼は変更していない。
+
+## 未確認・未完了
+
+- 本監査はCodexの独立確認。ラベル疑義はClaudeの独立確認と根拠裁定まで変更しない。
+- 投票区の0が有効コードか欠損代替か、SSDTの通貨・million定義、wasteの単位、ValueのMetric Type全値は公開仕様の二次確認が必要。
+- 次は学習なしの一要因診断として、同じ17列へ表題のみ／単位のみ／略語展開のみを別々に加え、予測差と副作用を測る。固定評価例は教材へ転用しない。
+- blind_set*、sealed2/3、b018、セット3・5・7は未閲覧。
+
 # 2026-11-07 20:28 JST — Codex：日付候補6形の学習分布・v10不一致の診断完了
 
 - 最終更新：2026-11-07 20:28 JST（Codex）。`research/w2_unknown/date_shapes_and_replay.json`・同名md/py。W2の113dcabを再構成し、検証様式を除いた学習側29,696列（cap前34,103）を集計。生値は保存せず、規則/ラベル/教材/依頼は変更なし。
