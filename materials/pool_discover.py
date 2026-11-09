@@ -59,6 +59,11 @@ NATIONAL = [
     {"parent": "sagamihara", "host": "opendata.city.sagamihara.kanagawa.jp", "site": "http://opendata.city.sagamihara.kanagawa.jp"},
     {"parent": "machida", "host": "opendata.city.machida.tokyo.jp", "site": "http://opendata.city.machida.tokyo.jp"},
     {"parent": "niigata_city", "host": "opendata.city.niigata.lg.jp", "site": "http://opendata.city.niigata.lg.jp"},
+    # 2026-11-09：F1（評価の陣、bench/g24fix_prereg_20261104.md）。pool は hold。組織は research/f1/f1_orgs.py で自治体コードに別名でつないで
+    # hold に登録した組織だけを探す（ここでは登録しない）。--pool hold のときだけ使う
+    {"parent": "odp_jig", "host": "ckan.odp.jig.jp", "site": "https://ckan.odp.jig.jp", "pool": "hold"},
+    {"parent": "kanazawa_cat", "host": "catalog-data.city.kanazawa.ishikawa.jp", "site": "https://catalog-data.city.kanazawa.ishikawa.jp", "pool": "hold"},
+    {"parent": "sendai_city", "host": "data.city.sendai.jp", "site": "https://data.city.sendai.jp", "pool": "hold"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 # opendata.swiss は前の名乗り方（jitsuris-train-pool-discover/1.0 (metadata only)）と名乗りなしを HTTP 403 にする（2026-10-28 probe_hosts）
@@ -215,6 +220,8 @@ def register_national_orgs(alloc_path, today, limit=None, only=()):
     for nat in NATIONAL:
         if only and nat["host"] not in only:
             continue
+        if nat.get("pool", "train") != POOL_NAME:
+            continue
         try:
             names = get_json(f"{nat['site']}/api/3/action/organization_list")["result"]
         except Exception as exc:
@@ -222,13 +229,20 @@ def register_national_orgs(alloc_path, today, limit=None, only=()):
             continue
         names = sorted(str(n) for n in names)[:limit]
         orgs = {}
+        registered = {A.normalize_publisher_id(p["publisher_id"]) for p in alloc["publishers"]}
         for n in names:
             pid = f"{nat['parent']}:{n}"
-            alloc = A.add_assignment(alloc, pid, today)
-            if A.assignment_for(pid, alloc)["pool"] == "train":
-                orgs[n] = A.normalize_publisher_id(pid)
+            if nat.get("pool", "train") == "train":
+                alloc = A.add_assignment(alloc, pid, today)
+                if A.assignment_for(pid, alloc)["pool"] == "train":
+                    orgs[n] = A.normalize_publisher_id(pid)
+            else:
+                # F1：登録しない。別名で登録済みの公開元（自治体コード）が POOL_NAME のときだけ探す（外した組織は登録が無いので探さない）
+                canon = A.resolve_publisher_id(pid, alloc.get("aliases", {}))
+                if canon in registered and A.assignment_for(canon, alloc)["pool"] == POOL_NAME:
+                    orgs[n] = canon
         found[nat["host"]] = (nat, orgs)
-        stats[nat["host"]] = {"organizations": len(names), "train": len(orgs)}
+        stats[nat["host"]] = {"organizations": len(names), POOL_NAME: len(orgs)}
     Path(alloc_path).write_text(json.dumps(alloc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return found, stats
 
@@ -288,7 +302,7 @@ def main(argv=None):
     ap.add_argument("--limit-publishers", type=int)
     ap.add_argument("--budget-minutes", type=float, help="この時間を過ぎたら新しい組織を探さずに止めて書き出す")
     ap.add_argument("--query", help="CKAN・Socrata の検索語（例：予算+OR+budget。空白は +）。題名・説明に含むデータセットだけを探す")
-    ap.add_argument("--pool", default="train", choices=["train", "eval2", "eval3"], help="探す公開元のプール（eval2・eval3 は封印セット用。--national は train 専用）")
+    ap.add_argument("--pool", default="train", choices=["train", "eval2", "eval3", "hold"], help="探す公開元のプール（eval2・eval3 は封印セット用、hold は F1 用。--national は train と hold）")
     ap.add_argument("--include-used", action="store_true", help="もう使った表・教材庫の枠を見ない（2026-11-04 より前の動き）")
     a = ap.parse_args(argv)
     global DEADLINE, POOL_NAME, QUERY
@@ -296,8 +310,8 @@ def main(argv=None):
     QUERY = a.query.replace("+", " ") if a.query else None   # 依頼ファイルは空白で区切るので、検索語の空白は + で書く
     if a.pool != "train" and a.shirasagi:
         raise SystemExit("--shirasagi はtrain専用")
-    if a.pool != "train" and a.national:
-        raise SystemExit("--national の組織は親が train に固定なので、--pool eval2／eval3 と一緒に使えない")
+    if a.pool not in ("train", "hold") and a.national:
+        raise SystemExit("--national は train と hold（F1）だけ。--pool eval2／eval3 と一緒に使えない")
     if a.budget_minutes:
         DEADLINE = time.monotonic() + a.budget_minutes * 60
     KNOWN_RIDS.clear(); POOL_PUB.clear()
