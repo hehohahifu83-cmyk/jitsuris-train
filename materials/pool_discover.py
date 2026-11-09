@@ -199,6 +199,10 @@ def ckan_candidates(host, orgs, platform, limit=None, site=None, rows=1000):
                         stats["no_datastore"] += 1
                         if any(str(r.get("format") or "").lower() == "csv" for r in resources):
                             stats["csv_other_host"] += 1
+                            # 2026-11-09：どのホストか（許可の一覧に足すかを決めるため。ホスト名だけ、中身は見ない）
+                            for r in resources:
+                                if str(r.get("format") or "").lower() == "csv":
+                                    stats["csv_other_host:" + (urlparse(str(r.get("url") or "")).hostname or "?")] += 1
                         continue
                     stats["sheet"] += 1     # 取り出しは access=csv の道（fetch_rows が拡張子・形式で表計算を読む）
             seen_titles.add(key)
