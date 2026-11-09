@@ -26,3 +26,14 @@ def test_stops_when_nothing_matches(tmp_path):
     f.write_text(json.dumps({"table": "x", "header": "h", "from": "id", "label": "category", "decision": "change"}) + "\n", encoding="utf-8")
     with pytest.raises(SystemExit):
         apply_label_fix([("h", [], "id", [], "y")], [str(f)])
+
+
+
+def test_fix_to_S_drops_the_row(tmp_path):
+    """2026-11-09：付け直した先が S・unknown の行は外す（W2 の投票区の全部 0 の列の裁定）。"""
+    f = tmp_path / "fix.jsonl"
+    f.write_text(json.dumps({"table": "t", "header": "US HOUSE", "from": "id", "decision": "change", "label": "S"}) + "\n", encoding="utf-8")
+    rows = [("US HOUSE", ["0"], "id", [], "t"), ("WARD", ["1"], "id", [], "t")]
+    out, n = apply_label_fix(rows, [str(f)])
+    assert n == 1
+    assert [r[0] for r in out] == ["WARD"]

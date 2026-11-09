@@ -197,8 +197,12 @@ def apply_label_fix(rows, files):
     for r in rows:
         f = fix.get((r[4], str(r[0]).strip()))
         if f and r[2] == f[0]:
-            r = (r[0], r[1], f[1]) + tuple(r[3:])
             n += 1
+            # 2026-11-09：付け直した先が S・unknown（学習に使わない）の行は外す（学習にも教材庫の検証にも入れない）。
+            # S をラベルとして残すと知らない種類になる。数の n には外した行も数える（今までのファイルに S・unknown は無い）
+            if f[1] in ("S", "unknown"):
+                continue
+            r = (r[0], r[1], f[1]) + tuple(r[3:])
         out.append(r)
     if fix and n == 0:
         raise SystemExit(f"FT_LABELFIX：{files} のどの行も教材と合わない")

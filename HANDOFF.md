@@ -1,3 +1,11 @@
+# 2026-11-09 09:47 JST — Claude：W2 重大 4 種類の裁定（投票区の全部 0 の 6 列は S、ほか 3 種類は今のラベル）
+
+- Codex の依頼（ai-bridge 20261108-1923）。Codex の結論を読む前に、教材庫の値・row_values・同じ表の列・題名だけで答えを決め、そのあと突き合わせた。`research/w2_unknown/critical_label_adjudication.md`。
+- 一致：ssd_supplier_band1__m＝amount、export_interstate＝quantity、Value（稼働率）＝rate。
+- 割れた：投票区 METRO COUNCIL・US HOUSE・PSC・LA HOUSE・LA SENATE（＋BESE）。Codex は id（中）、Claude は S → **S に裁定**。20 行すべて 0 で、区の番号は 1 から始まるので 0 は埋まっていない印（LABEL_GUIDE「値が空ばかりの列は S」）。
+- `materials/pool/labelfix_w2crit.jsonl`（6 行 id→S）。学習に入るのは FT_LABELFIX に足したときだけ。`apply_label_fix` は付け直した先が S・unknown の行を外すようにした（今までのファイルに S・unknown は無く、153・1,492 は変わらない）。試験の数は直す前と同じ（4 失敗・17 エラーは前からのもの）。
+- Codex の次の案：P0（表題だけ・単位だけ・略語の展開だけを別々に足す）は賛成、投票区は外して 12 列で。P1（全部 0 の識別子の教材）は採らない。
+
 # 2026-11-08 19:22 JST — Codex：W2重大17列の独立ラベル・入力不足監査
 
 ## 確認済み事実
