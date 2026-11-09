@@ -66,7 +66,10 @@ def build():
         unit_arm = baseline + (' | 単位: ' + unit_add if unit_add else '')
         acronym_arm = baseline.replace('列名: ' + h + ' | 値:',
                                       '列名: ' + h + (' (' + expansion + ')' if expansion else '') + ' | 値:', 1)
-        arms = dict(baseline=baseline, title=title_arm, unit=unit_arm, acronym=acronym_arm)
+        # 2026-11-09 Claude 追加：単位を学習のときと同じ書き方（ctx_unit の「同じ表の単位列の値:」）で足す。
+        # 「単位:」は学習に無い書き方なので、unit 条件の効き目の弱さが書き方のせいかを分ける（結果を見たあとの追加の診断）
+        unit_trainfmt_arm = baseline + (' | 同じ表の単位列の値: ' + unit_add if unit_add else '')
+        arms = dict(baseline=baseline, title=title_arm, unit=unit_arm, acronym=acronym_arm, unit_trainfmt=unit_trainfmt_arm)
         result.append(dict(index=i, header=h, values=v, truth=truth, table=table,
                            original_title=title, unit_addition=unit_add, acronym_addition=expansion,
                            inputs=arms, changed={k: x != baseline for k,x in arms.items()},
