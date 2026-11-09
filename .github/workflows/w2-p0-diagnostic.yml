@@ -1,0 +1,67 @@
+name: W2 の P0 入力診断（学習なし・CPU）
+
+# 2026-11-09 Claude。Codex の P0（research/w2_unknown/p0_input_diagnostic.md）：W2 種子 1 の保存モデルで、
+# 同じ 12 列に「表題の全文だけ・単位だけ・略語の展開だけ」を別々に足して予測の差を見る。学習はしない。
+# 重みは Actions の中で W2 の run（42323220255）の jitsuris-model から取る（約 880MB。外では取れなかった）。
+# スクリプトが job1 の manifest の hash で重み・tokenizer・labels を照合し、基準の 12 列が保存の予測と一致しなければ「解釈しない」と書く。
+# 依頼：research/w2_unknown/p0.request の 1 行目を run にして push する。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "research/w2_unknown/p0.request"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: w2-p0-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  p0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 0 }   # W2 のコミット 113dcab の中身を git show で読む
+      - name: 依頼を読む
+        id: req
+        run: |
+          if [ "$(head -1 research/w2_unknown/p0.request | cut -d' ' -f1)" = "run" ]; then echo "proceed=true" >> "$GITHUB_OUTPUT"; else echo "proceed=false" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/download-artifact@v4
+        if: steps.req.outputs.proceed == 'true'
+        with:
+          name: jitsuris-model
+          run-id: 42323220255
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/w2-model
+      - uses: actions/setup-python@v5
+        if: steps.req.outputs.proceed == 'true'
+        with: { python-version: '3.11' }
+      - name: CPU の推論の道具（ラベルの手伝いの予測と同じ版）
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy scikit-learn 'transformers==5.16.1' 'tokenizers==0.23.1' 'safetensors==0.8.0' sentencepiece
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: P0 の推論（種子 1、12 列 × 4 条件）
+        if: steps.req.outputs.proceed == 'true'
+        env: { TOKENIZERS_PARALLELISM: 'false' }
+        run: |
+          set -eu
+          ls /tmp/w2-model
+          python research/w2_unknown/p0_input_diagnostic.py --model /tmp/w2-model/ft_out_job1 --output research/w2_unknown/p0_results.json
+          echo "done $(head -1 research/w2_unknown/p0.request)" > research/w2_unknown/p0.request
+      - name: 保存
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/w2_unknown/p0_results.json research/w2_unknown/p0.request
+          git diff --cached --quiet && exit 0
+          git commit -m "W2 の P0 入力診断の結果（自動、学習なし）"
+          git pull --rebase origin main
+          git push origin HEAD:main
