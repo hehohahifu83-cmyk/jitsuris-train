@@ -1,0 +1,680 @@
+{
+  "commit": "113dcab2a18ff7b753047b5f726e86cfb4efcefb",
+  "seed": 1,
+  "max_length": 160,
+  "status": "inputs_ready_inference_pending",
+  "rows": [
+    {
+      "index": 925,
+      "header": "Sales",
+      "values": [
+        "43980981",
+        "13407972",
+        "3427649",
+        "134082506",
+        "220029212"
+      ],
+      "truth": "amount",
+      "table": "https://data.pa.gov/resource/fhz7-8ncd.json",
+      "original_title": "Fine Wine & Good Spirits Retail Stores Sales by County, Annual, FY 2016-17 to Current, Liquor Control Board",
+      "unit_addition": "USD",
+      "acronym_addition": "",
+      "inputs": {
+        "baseline": "query: 列名: Sales | 値: 43980981, 13407972, 3427649, 134082506, 220029212 | 表の題名: Fine Wine & Good Spirits Retail Stores S | 同じ表の列: FIPS State Code, FIPS County Code, Pennsylvania County , County, Fiscal Year",
+        "title": "query: 列名: Sales | 値: 43980981, 13407972, 3427649, 134082506, 220029212 | 表の題名: Fine Wine & Good Spirits Retail Stores Sales by County, Annual, FY 2016-17 to Current, Liquor Control Board | 同じ表の列: FIPS State Code, FIPS County Code, Pennsylvania County , County, Fiscal Year",
+        "unit": "query: 列名: Sales | 値: 43980981, 13407972, 3427649, 134082506, 220029212 | 表の題名: Fine Wine & Good Spirits Retail Stores S | 同じ表の列: FIPS State Code, FIPS County Code, Pennsylvania County , County, Fiscal Year | 単位: USD",
+        "acronym": "query: 列名: Sales | 値: 43980981, 13407972, 3427649, 134082506, 220029212 | 表の題名: Fine Wine & Good Spirits Retail Stores S | 同じ表の列: FIPS State Code, FIPS County Code, Pennsylvania County , County, Fiscal Year"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": true,
+        "acronym": false
+      },
+      "saved_seed1": {
+        "index": 925,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "sales",
+        "truth": "amount",
+        "raw_prediction": "quantity",
+        "guarded_prediction": "quantity",
+        "decision_reason": null,
+        "prediction": "quantity",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "quantity",
+            "probability": 0.98555
+          },
+          {
+            "label": "amount",
+            "probability": 0.006598
+          },
+          {
+            "label": "other",
+            "probability": 0.00262
+          }
+        ]
+      }
+    },
+    {
+      "index": 1407,
+      "header": "Ticket Sales",
+      "values": [
+        "126729608",
+        "1401705",
+        "7443737",
+        "42078957",
+        "53575476"
+      ],
+      "truth": "amount",
+      "table": "https://data.pa.gov/resource/hymg-bws9.json",
+      "original_title": "Lottery Sales, Prizes, Commissions SFY 2010 - Current Annual County Revenue",
+      "unit_addition": "USD",
+      "acronym_addition": "",
+      "inputs": {
+        "baseline": "query: 列名: Ticket Sales | 値: 126729608, 1401705, 7443737, 42078957, 53575476 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2 | 同じ表の列: State Fiscal Year, Prizes Paid, Retailer Commissions, FIPS County Code",
+        "title": "query: 列名: Ticket Sales | 値: 126729608, 1401705, 7443737, 42078957, 53575476 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2010 - Current Annual County Revenue | 同じ表の列: State Fiscal Year, Prizes Paid, Retailer Commissions, FIPS County Code",
+        "unit": "query: 列名: Ticket Sales | 値: 126729608, 1401705, 7443737, 42078957, 53575476 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2 | 同じ表の列: State Fiscal Year, Prizes Paid, Retailer Commissions, FIPS County Code | 単位: USD",
+        "acronym": "query: 列名: Ticket Sales | 値: 126729608, 1401705, 7443737, 42078957, 53575476 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2 | 同じ表の列: State Fiscal Year, Prizes Paid, Retailer Commissions, FIPS County Code"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": true,
+        "acronym": false
+      },
+      "saved_seed1": {
+        "index": 1407,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "ticket sales",
+        "truth": "amount",
+        "raw_prediction": "quantity",
+        "guarded_prediction": "quantity",
+        "decision_reason": null,
+        "prediction": "quantity",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "quantity",
+            "probability": 0.981463
+          },
+          {
+            "label": "amount",
+            "probability": 0.010785
+          },
+          {
+            "label": "other",
+            "probability": 0.002542
+          }
+        ]
+      }
+    },
+    {
+      "index": 1409,
+      "header": "Retailer Commissions",
+      "values": [
+        "3058641",
+        "1830098",
+        "5889272",
+        "401410",
+        "1616780"
+      ],
+      "truth": "amount",
+      "table": "https://data.pa.gov/resource/hymg-bws9.json",
+      "original_title": "Lottery Sales, Prizes, Commissions SFY 2010 - Current Annual County Revenue",
+      "unit_addition": "USD",
+      "acronym_addition": "",
+      "inputs": {
+        "baseline": "query: 列名: Retailer Commissions | 値: 3058641, 1830098, 5889272, 401410, 1616780 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2 | 同じ表の列: State Fiscal Year, Ticket Sales, Prizes Paid, FIPS County Code",
+        "title": "query: 列名: Retailer Commissions | 値: 3058641, 1830098, 5889272, 401410, 1616780 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2010 - Current Annual County Revenue | 同じ表の列: State Fiscal Year, Ticket Sales, Prizes Paid, FIPS County Code",
+        "unit": "query: 列名: Retailer Commissions | 値: 3058641, 1830098, 5889272, 401410, 1616780 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2 | 同じ表の列: State Fiscal Year, Ticket Sales, Prizes Paid, FIPS County Code | 単位: USD",
+        "acronym": "query: 列名: Retailer Commissions | 値: 3058641, 1830098, 5889272, 401410, 1616780 | 表の題名: Lottery Sales, Prizes, Commissions SFY 2 | 同じ表の列: State Fiscal Year, Ticket Sales, Prizes Paid, FIPS County Code"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": true,
+        "acronym": false
+      },
+      "saved_seed1": {
+        "index": 1409,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "retailer commissions",
+        "truth": "amount",
+        "raw_prediction": "quantity",
+        "guarded_prediction": "quantity",
+        "decision_reason": null,
+        "prediction": "quantity",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "quantity",
+            "probability": 0.972895
+          },
+          {
+            "label": "id",
+            "probability": 0.010137
+          },
+          {
+            "label": "amount",
+            "probability": 0.008626
+          }
+        ]
+      }
+    },
+    {
+      "index": 1667,
+      "header": "Avg. Time on Page",
+      "values": [
+        "0:00:17",
+        "0:00:35",
+        "0:02:37",
+        "0:00:14",
+        "0:00:11"
+      ],
+      "truth": "quantity",
+      "table": "https://data.boston.gov/dataset/510aa56a-0902-45ae-b4fc-a124df1ec4dc/resource/f2042c1d-923a-46a3-9d0b-a610629b8959/download/digitalrecords-mostviewedrecords-2019-031.csv",
+      "original_title": "Most Viewed Digital Records in City Archives Digital Repository",
+      "unit_addition": "elapsed time (hours:minutes:seconds)",
+      "acronym_addition": "Avg. = Average",
+      "inputs": {
+        "baseline": "query: 列名: Avg. Time on Page | 値: 0:00:17, 0:00:35, 0:02:37, 0:00:14, 0:00:11 | 表の題名: Most Viewed Digital Records in City Arch | 同じ表の列: Page, Pageviews, Unique Pageviews, Entrances, Bounce Rate, % Exit",
+        "title": "query: 列名: Avg. Time on Page | 値: 0:00:17, 0:00:35, 0:02:37, 0:00:14, 0:00:11 | 表の題名: Most Viewed Digital Records in City Archives Digital Repository | 同じ表の列: Page, Pageviews, Unique Pageviews, Entrances, Bounce Rate, % Exit",
+        "unit": "query: 列名: Avg. Time on Page | 値: 0:00:17, 0:00:35, 0:02:37, 0:00:14, 0:00:11 | 表の題名: Most Viewed Digital Records in City Arch | 同じ表の列: Page, Pageviews, Unique Pageviews, Entrances, Bounce Rate, % Exit | 単位: elapsed time (hours:minutes:seconds)",
+        "acronym": "query: 列名: Avg. Time on Page (Avg. = Average) | 値: 0:00:17, 0:00:35, 0:02:37, 0:00:14, 0:00:11 | 表の題名: Most Viewed Digital Records in City Arch | 同じ表の列: Page, Pageviews, Unique Pageviews, Entrances, Bounce Rate, % Exit"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": true,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 1667,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "avg. time on page",
+        "truth": "quantity",
+        "raw_prediction": "date",
+        "guarded_prediction": "date",
+        "decision_reason": null,
+        "prediction": "date",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "date",
+            "probability": 0.851276
+          },
+          {
+            "label": "quantity",
+            "probability": 0.111969
+          },
+          {
+            "label": "rate",
+            "probability": 0.012333
+          }
+        ]
+      }
+    },
+    {
+      "index": 1992,
+      "header": "mainstream_sna_allocation__26_27",
+      "values": [
+        "0.5",
+        "2.0",
+        "3.0",
+        "1.83",
+        "1.75"
+      ],
+      "truth": "quantity",
+      "table": "https://opendata.ncse.ie/dataset/735d61de-6400-4b81-832d-8ff6cc84fa4f/resource/f1f60760-d195-4be7-9a05-1a97159cbef6/download/sna-and-set-hour-allocations-primary-schools.csv",
+      "original_title": "2026-2027 School Allocations",
+      "unit_addition": "full-time equivalent (FTE)",
+      "acronym_addition": "SNA = Special Needs Assistant",
+      "inputs": {
+        "baseline": "query: 列名: mainstream_sna_allocation__26_27 | 値: 0.5, 2.0, 3.0, 1.83, 1.75 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, special_class_snas__, total_sna_allocation",
+        "title": "query: 列名: mainstream_sna_allocation__26_27 | 値: 0.5, 2.0, 3.0, 1.83, 1.75 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, special_class_snas__, total_sna_allocation",
+        "unit": "query: 列名: mainstream_sna_allocation__26_27 | 値: 0.5, 2.0, 3.0, 1.83, 1.75 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, special_class_snas__, total_sna_allocation | 単位: full-time equivalent (FTE)",
+        "acronym": "query: 列名: mainstream_sna_allocation__26_27 (SNA = Special Needs Assistant) | 値: 0.5, 2.0, 3.0, 1.83, 1.75 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, special_class_snas__, total_sna_allocation"
+      },
+      "changed": {
+        "baseline": false,
+        "title": false,
+        "unit": true,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 1992,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "mainstream_sna_allocation__26_27",
+        "truth": "quantity",
+        "raw_prediction": "amount",
+        "guarded_prediction": "amount",
+        "decision_reason": null,
+        "prediction": "amount",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "amount",
+            "probability": 0.896251
+          },
+          {
+            "label": "rate",
+            "probability": 0.060405
+          },
+          {
+            "label": "quantity",
+            "probability": 0.022916
+          }
+        ]
+      }
+    },
+    {
+      "index": 1993,
+      "header": "special_class_snas__26_27",
+      "values": [
+        "1.83",
+        "2.0",
+        "2.0",
+        "3.66",
+        "1.83"
+      ],
+      "truth": "quantity",
+      "table": "https://opendata.ncse.ie/dataset/735d61de-6400-4b81-832d-8ff6cc84fa4f/resource/f1f60760-d195-4be7-9a05-1a97159cbef6/download/sna-and-set-hour-allocations-primary-schools.csv",
+      "original_title": "2026-2027 School Allocations",
+      "unit_addition": "full-time equivalent (FTE)",
+      "acronym_addition": "SNAs = Special Needs Assistants",
+      "inputs": {
+        "baseline": "query: 列名: special_class_snas__26_27 | 値: 1.83, 2.0, 2.0, 3.66, 1.83 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, total_sna_allocation",
+        "title": "query: 列名: special_class_snas__26_27 | 値: 1.83, 2.0, 2.0, 3.66, 1.83 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, total_sna_allocation",
+        "unit": "query: 列名: special_class_snas__26_27 | 値: 1.83, 2.0, 2.0, 3.66, 1.83 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, total_sna_allocation | 単位: full-time equivalent (FTE)",
+        "acronym": "query: 列名: special_class_snas__26_27 (SNAs = Special Needs Assistants) | 値: 1.83, 2.0, 2.0, 3.66, 1.83 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, total_sna_allocation"
+      },
+      "changed": {
+        "baseline": false,
+        "title": false,
+        "unit": true,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 1993,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "special_class_snas__26_27",
+        "truth": "quantity",
+        "raw_prediction": "rate",
+        "guarded_prediction": "rate",
+        "decision_reason": null,
+        "prediction": "rate",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "rate",
+            "probability": 0.653085
+          },
+          {
+            "label": "amount",
+            "probability": 0.201515
+          },
+          {
+            "label": "quantity",
+            "probability": 0.100693
+          }
+        ]
+      }
+    },
+    {
+      "index": 1994,
+      "header": "total_sna_allocation_26_27",
+      "values": [
+        "1.58",
+        "1.0",
+        "0.5",
+        "2.83",
+        "6.66"
+      ],
+      "truth": "quantity",
+      "table": "https://opendata.ncse.ie/dataset/735d61de-6400-4b81-832d-8ff6cc84fa4f/resource/f1f60760-d195-4be7-9a05-1a97159cbef6/download/sna-and-set-hour-allocations-primary-schools.csv",
+      "original_title": "2026-2027 School Allocations",
+      "unit_addition": "full-time equivalent (FTE)",
+      "acronym_addition": "SNA = Special Needs Assistant",
+      "inputs": {
+        "baseline": "query: 列名: total_sna_allocation_26_27 | 値: 1.58, 1.0, 0.5, 2.83, 6.66 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, special_class_snas__",
+        "title": "query: 列名: total_sna_allocation_26_27 | 値: 1.58, 1.0, 0.5, 2.83, 6.66 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, special_class_snas__",
+        "unit": "query: 列名: total_sna_allocation_26_27 | 値: 1.58, 1.0, 0.5, 2.83, 6.66 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, special_class_snas__ | 単位: full-time equivalent (FTE)",
+        "acronym": "query: 列名: total_sna_allocation_26_27 (SNA = Special Needs Assistant) | 値: 1.58, 1.0, 0.5, 2.83, 6.66 | 表の題名: 2026-2027 School Allocations | 同じ表の列: County, Dublin Area Codes, Roll Number, School Type, set_hours_26_27, set_posts__26_27, special_class_teachi, mainstream_sna_alloc, special_class_snas__"
+      },
+      "changed": {
+        "baseline": false,
+        "title": false,
+        "unit": true,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 1994,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "total_sna_allocation_26_27",
+        "truth": "quantity",
+        "raw_prediction": "amount",
+        "guarded_prediction": "amount",
+        "decision_reason": null,
+        "prediction": "amount",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "amount",
+            "probability": 0.873595
+          },
+          {
+            "label": "rate",
+            "probability": 0.071053
+          },
+          {
+            "label": "quantity",
+            "probability": 0.032561
+          }
+        ]
+      }
+    },
+    {
+      "index": 2074,
+      "header": "export_interstate",
+      "values": [
+        "0.000000000000000",
+        "0.000000000000000",
+        "0.000000000000000",
+        "0.000000000000000",
+        "0.000000000000000"
+      ],
+      "truth": "quantity",
+      "table": "https://discover.data.vic.gov.au/dataset/7d752f66-2e09-4fe5-886e-83f0982430e9/resource/483707e7-7959-45b8-b401-e0b916c1851f/download/wasteprojectionmodel_actuals_20230721.csv",
+      "original_title": "Victoria's waste projection model",
+      "unit_addition": "tonnes",
+      "acronym_addition": "",
+      "inputs": {
+        "baseline": "query: 列名: export_interstate | 値: 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000 | 表の題名: Victoria's waste projection model | 同じ表の列: financial_year, wpm_material_type, waste_stream, recycled, waste_to_energy, export_international, disposal, recovery_rate",
+        "title": "query: 列名: export_interstate | 値: 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000 | 表の題名: Victoria's waste projection model | 同じ表の列: financial_year, wpm_material_type, waste_stream, recycled, waste_to_energy, export_international, disposal, recovery_rate",
+        "unit": "query: 列名: export_interstate | 値: 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000 | 表の題名: Victoria's waste projection model | 同じ表の列: financial_year, wpm_material_type, waste_stream, recycled, waste_to_energy, export_international, disposal, recovery_rate | 単位: tonnes",
+        "acronym": "query: 列名: export_interstate | 値: 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000, 0.000000000000000 | 表の題名: Victoria's waste projection model | 同じ表の列: financial_year, wpm_material_type, waste_stream, recycled, waste_to_energy, export_international, disposal, recovery_rate"
+      },
+      "changed": {
+        "baseline": false,
+        "title": false,
+        "unit": true,
+        "acronym": false
+      },
+      "saved_seed1": {
+        "index": 2074,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "export_interstate",
+        "truth": "quantity",
+        "raw_prediction": "quantity",
+        "guarded_prediction": "quantity",
+        "decision_reason": null,
+        "prediction": "quantity",
+        "outcome": "correct",
+        "critical": false,
+        "top3": [
+          {
+            "label": "quantity",
+            "probability": 0.56456
+          },
+          {
+            "label": "category",
+            "probability": 0.266777
+          },
+          {
+            "label": "other",
+            "probability": 0.080969
+          }
+        ]
+      }
+    },
+    {
+      "index": 2220,
+      "header": "ssd_supplier_band1__m",
+      "values": [
+        "0.138",
+        "0.386",
+        "0.133",
+        "0.079",
+        "0.483"
+      ],
+      "truth": "amount",
+      "table": "https://www.revenue.ie/en/corporate/documents/statistics/excise/ssdt-liability.csv",
+      "original_title": "Sugar Sweetened Drinks Tax",
+      "unit_addition": "EUR million",
+      "acronym_addition": "SSD = Sugar Sweetened Drinks",
+      "inputs": {
+        "baseline": "query: 列名: ssd_supplier_band1__m | 値: 0.138, 0.386, 0.133, 0.079, 0.483 | 表の題名: Sugar Sweetened Drinks Tax | 同じ表の列: accounting_year, pd_start_dt, pd_end_dt, am_rateband1, am_rateband2, ssd_supplier_band2__, ssd_exporter_band1__, ssd_exporter_band2__, ssd_supplier_hectoli",
+        "title": "query: 列名: ssd_supplier_band1__m | 値: 0.138, 0.386, 0.133, 0.079, 0.483 | 表の題名: Sugar Sweetened Drinks Tax | 同じ表の列: accounting_year, pd_start_dt, pd_end_dt, am_rateband1, am_rateband2, ssd_supplier_band2__, ssd_exporter_band1__, ssd_exporter_band2__, ssd_supplier_hectoli",
+        "unit": "query: 列名: ssd_supplier_band1__m | 値: 0.138, 0.386, 0.133, 0.079, 0.483 | 表の題名: Sugar Sweetened Drinks Tax | 同じ表の列: accounting_year, pd_start_dt, pd_end_dt, am_rateband1, am_rateband2, ssd_supplier_band2__, ssd_exporter_band1__, ssd_exporter_band2__, ssd_supplier_hectoli | 単位: EUR million",
+        "acronym": "query: 列名: ssd_supplier_band1__m (SSD = Sugar Sweetened Drinks) | 値: 0.138, 0.386, 0.133, 0.079, 0.483 | 表の題名: Sugar Sweetened Drinks Tax | 同じ表の列: accounting_year, pd_start_dt, pd_end_dt, am_rateband1, am_rateband2, ssd_supplier_band2__, ssd_exporter_band1__, ssd_exporter_band2__, ssd_supplier_hectoli"
+      },
+      "changed": {
+        "baseline": false,
+        "title": false,
+        "unit": true,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 2220,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "ssd_supplier_band1__m",
+        "truth": "amount",
+        "raw_prediction": "quantity",
+        "guarded_prediction": "quantity",
+        "decision_reason": null,
+        "prediction": "quantity",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "quantity",
+            "probability": 0.698664
+          },
+          {
+            "label": "rate",
+            "probability": 0.221255
+          },
+          {
+            "label": "amount",
+            "probability": 0.032732
+          }
+        ]
+      }
+    },
+    {
+      "index": 2509,
+      "header": "t1gistotal",
+      "values": [
+        "972.9",
+        "228.49",
+        "372.49",
+        "762.9",
+        "694.9"
+      ],
+      "truth": "amount",
+      "table": "https://open.canada.ca/data/dataset/dfa4daf1-669e-4514-82cd-982f27707ed0/resource/0a7918f0-6e8a-433b-9ea2-60e2b8674cb5/download/table1_gis_for_single_who_receives_oas_pension_october2026.csv",
+      "original_title": "Old Age Security (OAS) - Table of Benefit Amounts by marital status and income level",
+      "unit_addition": "CAD per month",
+      "acronym_addition": "GIS = Guaranteed Income Supplement",
+      "inputs": {
+        "baseline": "query: 列名: t1gistotal | 値: 972.9, 228.49, 372.49, 762.9, 694.9 | 表の題名: Old Age Security (OAS) - Table of Benefi | 同じ表の列: t1benefityear, t1benefitquarter, t1incomeyear, t1income_from, t1income_to, t1gistotalwithoas65, t1gistotalwithoas75",
+        "title": "query: 列名: t1gistotal | 値: 972.9, 228.49, 372.49, 762.9, 694.9 | 表の題名: Old Age Security (OAS) - Table of Benefit Amounts by marital status and income level | 同じ表の列: t1benefityear, t1benefitquarter, t1incomeyear, t1income_from, t1income_to, t1gistotalwithoas65, t1gistotalwithoas75",
+        "unit": "query: 列名: t1gistotal | 値: 972.9, 228.49, 372.49, 762.9, 694.9 | 表の題名: Old Age Security (OAS) - Table of Benefi | 同じ表の列: t1benefityear, t1benefitquarter, t1incomeyear, t1income_from, t1income_to, t1gistotalwithoas65, t1gistotalwithoas75 | 単位: CAD per month",
+        "acronym": "query: 列名: t1gistotal (GIS = Guaranteed Income Supplement) | 値: 972.9, 228.49, 372.49, 762.9, 694.9 | 表の題名: Old Age Security (OAS) - Table of Benefi | 同じ表の列: t1benefityear, t1benefitquarter, t1incomeyear, t1income_from, t1income_to, t1gistotalwithoas65, t1gistotalwithoas75"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": true,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 2509,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "t1gistotal",
+        "truth": "amount",
+        "raw_prediction": "rate",
+        "guarded_prediction": "rate",
+        "decision_reason": null,
+        "prediction": "rate",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "rate",
+            "probability": 0.756219
+          },
+          {
+            "label": "quantity",
+            "probability": 0.126069
+          },
+          {
+            "label": "other",
+            "probability": 0.062571
+          }
+        ]
+      }
+    },
+    {
+      "index": 3096,
+      "header": "Value",
+      "values": [
+        "100",
+        "100",
+        "99.98",
+        "100",
+        "100"
+      ],
+      "truth": "rate",
+      "table": "https://open.canada.ca/data/dataset/d521eba3-8534-4a15-b31a-aca14e10c296/resource/0470eeb1-69d0-4e54-83b9-862789bf4840/download/external-credential-service-management-availability-en-march-2022.csv",
+      "original_title": " External Credential Management Service Availability",
+      "unit_addition": "%",
+      "acronym_addition": "",
+      "inputs": {
+        "baseline": "query: 列名: Value | 値: 100, 100, 99.98, 100, 100 | 表の題名:  External Credential Management Service  | 同じ表の列: Fiscal Year, Fiscal Period, Month, Date, Branch, Service, Metric Type",
+        "title": "query: 列名: Value | 値: 100, 100, 99.98, 100, 100 | 表の題名:  External Credential Management Service Availability | 同じ表の列: Fiscal Year, Fiscal Period, Month, Date, Branch, Service, Metric Type",
+        "unit": "query: 列名: Value | 値: 100, 100, 99.98, 100, 100 | 表の題名:  External Credential Management Service  | 同じ表の列: Fiscal Year, Fiscal Period, Month, Date, Branch, Service, Metric Type | 単位: %",
+        "acronym": "query: 列名: Value | 値: 100, 100, 99.98, 100, 100 | 表の題名:  External Credential Management Service  | 同じ表の列: Fiscal Year, Fiscal Period, Month, Date, Branch, Service, Metric Type"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": true,
+        "acronym": false
+      },
+      "saved_seed1": {
+        "index": 3096,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "value",
+        "truth": "rate",
+        "raw_prediction": "amount",
+        "guarded_prediction": "amount",
+        "decision_reason": null,
+        "prediction": "amount",
+        "outcome": "wrong",
+        "critical": true,
+        "top3": [
+          {
+            "label": "amount",
+            "probability": 0.939501
+          },
+          {
+            "label": "rate",
+            "probability": 0.027253
+          },
+          {
+            "label": "quantity",
+            "probability": 0.011405
+          }
+        ]
+      }
+    },
+    {
+      "index": 3542,
+      "header": "GEO_CANT",
+      "values": [
+        "11",
+        "10",
+        "1",
+        "2",
+        "2"
+      ],
+      "truth": "id",
+      "table": "https://dam-api.bfs.admin.ch/hub/api/dam/assets/18084204/master",
+      "original_title": "{'en': 'Length of roads (without national roads) by communes 2020', 'de': 'Strassenlänge (ohne Nationalstrassen) nach Gemeinde 2020', 'it': 'Lunghezza delle strade (senza strade nazionali) per Comune 2020', 'fr': 'Longueur des routes (sans routes nationales) selon la commune 2020'}",
+      "unit_addition": "",
+      "acronym_addition": "GEO_CANT = canton geographical code",
+      "inputs": {
+        "baseline": "query: 列名: GEO_CANT | 値: 11, 10, 1, 2, 2 | 表の題名: {'en': 'Length of roads (without nationa | 同じ表の列: REF_YEAR, GEO_COMM, VALUE",
+        "title": "query: 列名: GEO_CANT | 値: 11, 10, 1, 2, 2 | 表の題名: {'en': 'Length of roads (without national roads) by communes 2020', 'de': 'Strassenlänge (ohne Nationalstrassen) nach Gemeinde 2020', 'it': 'Lunghezza delle strade (senza strade nazionali) per Comune 2020', 'fr': 'Longueur des routes (sans routes nationales) selon la commune 2020'} | 同じ表の列: REF_YEAR, GEO_COMM, VALUE",
+        "unit": "query: 列名: GEO_CANT | 値: 11, 10, 1, 2, 2 | 表の題名: {'en': 'Length of roads (without nationa | 同じ表の列: REF_YEAR, GEO_COMM, VALUE",
+        "acronym": "query: 列名: GEO_CANT (GEO_CANT = canton geographical code) | 値: 11, 10, 1, 2, 2 | 表の題名: {'en': 'Length of roads (without nationa | 同じ表の列: REF_YEAR, GEO_COMM, VALUE"
+      },
+      "changed": {
+        "baseline": false,
+        "title": true,
+        "unit": false,
+        "acronym": true
+      },
+      "saved_seed1": {
+        "index": 3542,
+        "dataset": "val_pool",
+        "seed": "1",
+        "condition": "ft",
+        "column": "geo_cant",
+        "truth": "id",
+        "raw_prediction": "category",
+        "guarded_prediction": "category",
+        "decision_reason": null,
+        "prediction": "category",
+        "outcome": "wrong",
+        "critical": false,
+        "top3": [
+          {
+            "label": "category",
+            "probability": 0.508742
+          },
+          {
+            "label": "quantity",
+            "probability": 0.349918
+          },
+          {
+            "label": "other",
+            "probability": 0.086679
+          }
+        ]
+      }
+    }
+  ]
+}
