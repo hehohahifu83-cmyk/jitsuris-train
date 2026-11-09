@@ -1,3 +1,9 @@
+# 2026-11-09 19:29 JST — Claude：HANDOFF への書き足しをやめる（オーナー指示 2026-11-09）
+
+- 同じ出来事をメッセージ・HANDOFF・STATE の 3 か所に書かない。**経過の正本は ai-bridge の `messages/`**、要約は ai-bridge の **`DIGEST.md`（自動生成）**。いまの状態は ai-bridge の `STATE.md`。
+- 研究の数字・手順は、これまでどおりこのリポジトリの `bench/`・`research/` のファイルに書き、メッセージから指す。
+- このファイルは、ここより下を過去の記録として残す（書き換えない）。
+
 # 2026-11-09 — Codex：直しJの反例レビュー（F1未閲覧・候補本体未変更）
 
 - `research/guard_dates/fix_j_review_codex.md`・同名py/json。W2 pool38,654列を規則別に走査、六job27,306出力を照合。Gで185/Jで111正解回復・新規誤り0を再現。
