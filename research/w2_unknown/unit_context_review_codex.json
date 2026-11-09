@@ -1,0 +1,1392 @@
+{
+  "commit": "113dcab2a18ff7b753047b5f726e86cfb4efcefb",
+  "currency_regex": "\\b(?:usd|eur|gbp|cad|dollars?|euros?)\\b|[$€£]",
+  "unit_tables": 132,
+  "scopes": {
+    "pool_all": {
+      "n": 38654,
+      "unit_rows": 1023,
+      "unit_labels": {
+        "account": 8,
+        "address": 48,
+        "amount": 15,
+        "category": 439,
+        "date": 195,
+        "id": 200,
+        "org": 14,
+        "other": 22,
+        "quantity": 61,
+        "rate": 13,
+        "text": 8
+      },
+      "currency_rows": 103,
+      "currency_tables": 14,
+      "currency_labels": {
+        "account": 1,
+        "address": 10,
+        "amount": 7,
+        "category": 44,
+        "date": 21,
+        "id": 19,
+        "quantity": 1
+      },
+      "currency_amount_quantity": {
+        "amount": 7,
+        "quantity": 1
+      }
+    },
+    "pool_train_before_cap": {
+      "n": 34103,
+      "unit_rows": 914,
+      "unit_labels": {
+        "account": 7,
+        "address": 47,
+        "amount": 13,
+        "category": 387,
+        "date": 173,
+        "id": 180,
+        "org": 12,
+        "other": 21,
+        "quantity": 54,
+        "rate": 13,
+        "text": 7
+      },
+      "currency_rows": 96,
+      "currency_tables": 13,
+      "currency_labels": {
+        "account": 1,
+        "address": 10,
+        "amount": 7,
+        "category": 41,
+        "date": 19,
+        "id": 17,
+        "quantity": 1
+      },
+      "currency_amount_quantity": {
+        "amount": 7,
+        "quantity": 1
+      }
+    },
+    "pool_train": {
+      "n": 29696,
+      "unit_rows": 906,
+      "unit_labels": {
+        "account": 7,
+        "address": 47,
+        "amount": 13,
+        "category": 380,
+        "date": 173,
+        "id": 180,
+        "org": 12,
+        "other": 21,
+        "quantity": 53,
+        "rate": 13,
+        "text": 7
+      },
+      "currency_rows": 96,
+      "currency_tables": 13,
+      "currency_labels": {
+        "account": 1,
+        "address": 10,
+        "amount": 7,
+        "category": 41,
+        "date": 19,
+        "id": 17,
+        "quantity": 1
+      },
+      "currency_amount_quantity": {
+        "amount": 7,
+        "quantity": 1
+      }
+    }
+  },
+  "pool_augmented_label_exposure": {
+    "n": 89088,
+    "currency_rows": 288,
+    "currency_labels": {
+      "account": 3,
+      "address": 30,
+      "amount": 21,
+      "category": 123,
+      "date": 57,
+      "id": 51,
+      "quantity": 3
+    }
+  },
+  "currency_table_details": [
+    {
+      "table": "https://data.boston.gov/dataset/d7112e58-9531-42fc-9dcc-95c5b03b781b/resource/b056ffa3-9c22-4d01-9c8f-b91dd47f38f3/download/street-light-control-box-electric-power-cost-usage-details.csv",
+      "unit": "UOM: kWh, USD, USD/kWh",
+      "train_labels": {
+        "account": 1,
+        "address": 4,
+        "category": 3
+      },
+      "train_columns": [
+        {
+          "header": "Division/Sitegroup",
+          "truth": "account"
+        },
+        {
+          "header": "Site",
+          "truth": "address"
+        },
+        {
+          "header": "City",
+          "truth": "address"
+        },
+        {
+          "header": "State",
+          "truth": "address"
+        },
+        {
+          "header": "Country",
+          "truth": "address"
+        },
+        {
+          "header": "Type",
+          "truth": "category"
+        },
+        {
+          "header": "Category",
+          "truth": "category"
+        },
+        {
+          "header": "UOM",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://data.gov.au/data/dataset/d78ffd0e-229a-4b42-9212-a247522cf2fc/resource/152fe910-bef2-46fd-b256-5b7d0d6b17b7/download/ier-2017-csv-database.csv",
+      "unit": "Unit: $'000",
+      "train_labels": {
+        "address": 1,
+        "amount": 1,
+        "category": 6,
+        "date": 1,
+        "id": 1
+      },
+      "train_columns": [
+        {
+          "header": "Government",
+          "truth": "category"
+        },
+        {
+          "header": "Place of exp (State/Territory)",
+          "truth": "address"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "Exp code",
+          "truth": "id"
+        },
+        {
+          "header": "Direct or Indirect exp",
+          "truth": "category"
+        },
+        {
+          "header": "Indigenous specific or Mainstream exp",
+          "truth": "category"
+        },
+        {
+          "header": "Indigenous or non-Indigenous exp",
+          "truth": "category"
+        },
+        {
+          "header": "Component of Indigenous exp",
+          "truth": "category"
+        },
+        {
+          "header": "Unit",
+          "truth": "category"
+        },
+        {
+          "header": "Data",
+          "truth": "amount"
+        }
+      ]
+    },
+    {
+      "table": "https://opendata.centralbank.ie/dataset/710dfae6-e3ae-429e-95de-a02498ea5183/resource/c63c7d7a-2a58-4e4e-9879-746474638a6d/download/securities-issue-statistics-current.csv",
+      "unit": "Units: Millions of Euro",
+      "train_labels": {
+        "category": 6,
+        "date": 1,
+        "id": 1,
+        "quantity": 1
+      },
+      "train_columns": [
+        {
+          "header": "Date",
+          "truth": "date"
+        },
+        {
+          "header": "obs__status",
+          "truth": "category"
+        },
+        {
+          "header": "obs__conf_",
+          "truth": "category"
+        },
+        {
+          "header": "Series key",
+          "truth": "id"
+        },
+        {
+          "header": "Title complement",
+          "truth": "category"
+        },
+        {
+          "header": "Decimals",
+          "truth": "quantity"
+        },
+        {
+          "header": "Units",
+          "truth": "category"
+        },
+        {
+          "header": "Issuance Type",
+          "truth": "category"
+        },
+        {
+          "header": "Currency",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/VCA02/CSV/1.0/en",
+      "unit": "UNIT: €million",
+      "train_labels": {
+        "address": 1,
+        "category": 3,
+        "date": 2,
+        "id": 3
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(A1)",
+          "truth": "date"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "C03749V04498",
+          "truth": "id"
+        },
+        {
+          "header": "Product",
+          "truth": "category"
+        },
+        {
+          "header": "C03748V04497",
+          "truth": "id"
+        },
+        {
+          "header": "Country",
+          "truth": "address"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://bimpowerapps.blob.core.windows.net/public-files/Public%20Datasets/National%20Seafood%20survey%20fisheries.csv",
+      "unit": "unit: euro",
+      "train_labels": {
+        "category": 3,
+        "date": 1,
+        "id": 2
+      },
+      "train_columns": [
+        {
+          "header": "year",
+          "truth": "date"
+        },
+        {
+          "header": "fishing_tech",
+          "truth": "id"
+        },
+        {
+          "header": "Gear",
+          "truth": "category"
+        },
+        {
+          "header": "vessel_length",
+          "truth": "id"
+        },
+        {
+          "header": "Vessel Length",
+          "truth": "category"
+        },
+        {
+          "header": "unit",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/G0113/CSV/1.0/en",
+      "unit": "UNIT: Euro Million",
+      "train_labels": {
+        "category": 3,
+        "date": 2,
+        "id": 1
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(A1)",
+          "truth": "date"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "State",
+          "truth": "category"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://open.canada.ca/data/dataset/5ab871c2-d811-4b33-93cc-6bb1683c26d2/resource/59418abd-6474-454f-87fa-1d5df2794660/download/ef2026-cost-data-electricity.csv",
+      "unit": "Unit: CAD/kW",
+      "train_labels": {
+        "address": 1,
+        "category": 4,
+        "date": 2
+      },
+      "train_columns": [
+        {
+          "header": "Technology",
+          "truth": "category"
+        },
+        {
+          "header": "Scenario",
+          "truth": "category"
+        },
+        {
+          "header": "Province/Territory",
+          "truth": "address"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "Dollar Year",
+          "truth": "date"
+        },
+        {
+          "header": "Field",
+          "truth": "category"
+        },
+        {
+          "header": "Unit",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/FIQ02/CSV/1.0/en",
+      "unit": "UNIT: Euro Million",
+      "train_labels": {
+        "category": 3,
+        "date": 2,
+        "id": 2
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(Q1)",
+          "truth": "date"
+        },
+        {
+          "header": "Quarter",
+          "truth": "date"
+        },
+        {
+          "header": "C02568V03113",
+          "truth": "id"
+        },
+        {
+          "header": "Item",
+          "truth": "category"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/G0115/CSV/1.0/en",
+      "unit": "UNIT: Euro, %",
+      "train_labels": {
+        "category": 2,
+        "date": 2,
+        "id": 1
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(A1)",
+          "truth": "date"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "http://data.daff.gov.au/data/warehouse/agcomd9abcc004/agcomd9abcc20180306_6R2bY/AgCommodities201803_Stats_v1.0.0.xlsx",
+      "unit": "unit: $m",
+      "train_labels": {
+        "address": 1,
+        "amount": 6,
+        "category": 1
+      },
+      "train_columns": [
+        {
+          "header": "Trade",
+          "truth": "address"
+        },
+        {
+          "header": "unit",
+          "truth": "category"
+        },
+        {
+          "header": "2011–12",
+          "truth": "amount"
+        },
+        {
+          "header": "2012–13",
+          "truth": "amount"
+        },
+        {
+          "header": "2013–14",
+          "truth": "amount"
+        },
+        {
+          "header": "2014–15",
+          "truth": "amount"
+        },
+        {
+          "header": "2015–16",
+          "truth": "amount"
+        },
+        {
+          "header": "2016–17",
+          "truth": "amount"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/HSA08/CSV/1.0/en",
+      "unit": "UNIT: Number, Euro Million",
+      "train_labels": {
+        "category": 3,
+        "date": 2,
+        "id": 2
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(A1)",
+          "truth": "date"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "C02350V02827",
+          "truth": "id"
+        },
+        {
+          "header": "House Type New or Second hand",
+          "truth": "category"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/HSQ06/CSV/1.0/en",
+      "unit": "UNIT: Euro",
+      "train_labels": {
+        "address": 1,
+        "category": 2,
+        "date": 2,
+        "id": 2
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(Q1)",
+          "truth": "date"
+        },
+        {
+          "header": "Quarter",
+          "truth": "date"
+        },
+        {
+          "header": "C02343V02817",
+          "truth": "id"
+        },
+        {
+          "header": "Area",
+          "truth": "address"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/HSA06/CSV/1.0/en",
+      "unit": "UNIT: Euro",
+      "train_labels": {
+        "address": 1,
+        "category": 2,
+        "date": 2,
+        "id": 2
+      },
+      "train_columns": [
+        {
+          "header": "STATISTIC",
+          "truth": "id"
+        },
+        {
+          "header": "Statistic",
+          "truth": "category"
+        },
+        {
+          "header": "TLIST(A1)",
+          "truth": "date"
+        },
+        {
+          "header": "Year",
+          "truth": "date"
+        },
+        {
+          "header": "C02343V02817",
+          "truth": "id"
+        },
+        {
+          "header": "Area",
+          "truth": "address"
+        },
+        {
+          "header": "UNIT",
+          "truth": "category"
+        }
+      ]
+    },
+    {
+      "table": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/HSQ08/CSV/1.0/en",
+      "unit": "UNIT: Number, Euro Million",
+      "train_labels": {},
+      "train_columns": []
+    }
+  ],
+  "p0": {
+    "4arms": {
+      "sha256": "928d600ec3a883e6722cc7899a5b0c556222a6d74dccd3ebbcf3d4d9dc7680b5",
+      "counts": {
+        "baseline": {
+          "wrong": 11,
+          "correct": 1
+        },
+        "title": {
+          "wrong": 10,
+          "correct": 1,
+          "unknown": 1
+        },
+        "unit": {
+          "wrong": 6,
+          "correct": 2,
+          "unknown": 4
+        },
+        "acronym": {
+          "wrong": 9,
+          "unknown": 2,
+          "correct": 1
+        }
+      }
+    },
+    "5arms": {
+      "sha256": "691090a59a5dc12f79551c78ab16ee1bc3af9b8c70c9faee82dd6f8c10209b4a",
+      "counts": {
+        "baseline": {
+          "wrong": 11,
+          "correct": 1
+        },
+        "title": {
+          "wrong": 10,
+          "correct": 1,
+          "unknown": 1
+        },
+        "unit": {
+          "wrong": 6,
+          "correct": 2,
+          "unknown": 4
+        },
+        "acronym": {
+          "wrong": 9,
+          "unknown": 2,
+          "correct": 1
+        },
+        "unit_trainfmt": {
+          "wrong": 7,
+          "correct": 3,
+          "unknown": 2
+        }
+      }
+    }
+  },
+  "p0_effects": [
+    {
+      "index": 925,
+      "header": "Sales",
+      "truth": "amount",
+      "predictions": {
+        "baseline": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9855495095252991
+          ]
+        },
+        "title": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9849071502685547
+          ]
+        },
+        "unit": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9692930579185486
+          ]
+        },
+        "acronym": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9855495095252991
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9634273052215576
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 1407,
+      "header": "Ticket Sales",
+      "truth": "amount",
+      "predictions": {
+        "baseline": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9814625978469849
+          ]
+        },
+        "title": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.97490394115448
+          ]
+        },
+        "unit": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9200040698051453
+          ]
+        },
+        "acronym": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9814625978469849
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9373641610145569
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 1409,
+      "header": "Retailer Commissions",
+      "truth": "amount",
+      "predictions": {
+        "baseline": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9728947877883911
+          ]
+        },
+        "title": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9751771092414856
+          ]
+        },
+        "unit": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9378812909126282
+          ]
+        },
+        "acronym": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9728947877883911
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.9518359303474426
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 1667,
+      "header": "Avg. Time on Page",
+      "truth": "quantity",
+      "predictions": {
+        "baseline": {
+          "raw": "date",
+          "guarded": "date",
+          "reason": null,
+          "top1": [
+            "date",
+            0.8512738943099976
+          ]
+        },
+        "title": {
+          "raw": "date",
+          "guarded": "date",
+          "reason": null,
+          "top1": [
+            "date",
+            0.8813552260398865
+          ]
+        },
+        "unit": {
+          "raw": "date",
+          "guarded": "date",
+          "reason": null,
+          "top1": [
+            "date",
+            0.6043621301651001
+          ]
+        },
+        "acronym": {
+          "raw": "quantity",
+          "guarded": "unknown",
+          "reason": "numeric_values_not_parseable",
+          "top1": [
+            "quantity",
+            0.5091010332107544
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "date",
+          "guarded": "date",
+          "reason": null,
+          "top1": [
+            "date",
+            0.7042272090911865
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 1992,
+      "header": "mainstream_sna_allocation__26_27",
+      "truth": "quantity",
+      "predictions": {
+        "baseline": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.8962509036064148
+          ]
+        },
+        "title": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.8962509036064148
+          ]
+        },
+        "unit": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.6865255236625671
+          ]
+        },
+        "acronym": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.7917920351028442
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.6468225717544556
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 1993,
+      "header": "special_class_snas__26_27",
+      "truth": "quantity",
+      "predictions": {
+        "baseline": {
+          "raw": "rate",
+          "guarded": "rate",
+          "reason": null,
+          "top1": [
+            "rate",
+            0.6530847549438477
+          ]
+        },
+        "title": {
+          "raw": "rate",
+          "guarded": "rate",
+          "reason": null,
+          "top1": [
+            "rate",
+            0.6530847549438477
+          ]
+        },
+        "unit": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.8091012239456177
+          ]
+        },
+        "acronym": {
+          "raw": "rate",
+          "guarded": "rate",
+          "reason": null,
+          "top1": [
+            "rate",
+            0.7361483573913574
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.8590127825737
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 1994,
+      "header": "total_sna_allocation_26_27",
+      "truth": "quantity",
+      "predictions": {
+        "baseline": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.8735938668251038
+          ]
+        },
+        "title": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.8735938668251038
+          ]
+        },
+        "unit": {
+          "raw": "amount",
+          "guarded": "unknown",
+          "reason": "probability_below_threshold",
+          "top1": [
+            "amount",
+            0.45259442925453186
+          ]
+        },
+        "acronym": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.7990805506706238
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.6201127171516418
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 2074,
+      "header": "export_interstate",
+      "truth": "quantity",
+      "predictions": {
+        "baseline": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.5645579695701599
+          ]
+        },
+        "title": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.5645579695701599
+          ]
+        },
+        "unit": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.8704617023468018
+          ]
+        },
+        "acronym": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.5645579695701599
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.8968043923377991
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 2220,
+      "header": "ssd_supplier_band1__m",
+      "truth": "amount",
+      "predictions": {
+        "baseline": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.6986631155014038
+          ]
+        },
+        "title": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.6986631155014038
+          ]
+        },
+        "unit": {
+          "raw": "quantity",
+          "guarded": "unknown",
+          "reason": "numeric_top2_too_close",
+          "top1": [
+            "quantity",
+            0.5019595623016357
+          ]
+        },
+        "acronym": {
+          "raw": "rate",
+          "guarded": "rate",
+          "reason": null,
+          "top1": [
+            "rate",
+            0.5613369941711426
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "amount",
+          "guarded": "unknown",
+          "reason": "numeric_top2_too_close",
+          "top1": [
+            "amount",
+            0.5369528532028198
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 2509,
+      "header": "t1gistotal",
+      "truth": "amount",
+      "predictions": {
+        "baseline": {
+          "raw": "rate",
+          "guarded": "rate",
+          "reason": null,
+          "top1": [
+            "rate",
+            0.756219744682312
+          ]
+        },
+        "title": {
+          "raw": "rate",
+          "guarded": "unknown",
+          "reason": "numeric_top2_too_close",
+          "top1": [
+            "rate",
+            0.5137924551963806
+          ]
+        },
+        "unit": {
+          "raw": "amount",
+          "guarded": "unknown",
+          "reason": "probability_below_threshold",
+          "top1": [
+            "amount",
+            0.40284085273742676
+          ]
+        },
+        "acronym": {
+          "raw": "amount",
+          "guarded": "unknown",
+          "reason": "numeric_top2_too_close",
+          "top1": [
+            "amount",
+            0.5551100969314575
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "rate",
+          "guarded": "unknown",
+          "reason": "probability_below_threshold",
+          "top1": [
+            "rate",
+            0.42828798294067383
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 3096,
+      "header": "Value",
+      "truth": "rate",
+      "predictions": {
+        "baseline": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.9395009875297546
+          ]
+        },
+        "title": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.5630154609680176
+          ]
+        },
+        "unit": {
+          "raw": "amount",
+          "guarded": "unknown",
+          "reason": "numeric_top2_too_close",
+          "top1": [
+            "amount",
+            0.5709019303321838
+          ]
+        },
+        "acronym": {
+          "raw": "amount",
+          "guarded": "amount",
+          "reason": null,
+          "top1": [
+            "amount",
+            0.9395009875297546
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "rate",
+          "guarded": "rate",
+          "reason": null,
+          "top1": [
+            "rate",
+            0.8235212564468384
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": true,
+        "unit_trainfmt": true
+      }
+    },
+    {
+      "index": 3542,
+      "header": "GEO_CANT",
+      "truth": "id",
+      "predictions": {
+        "baseline": {
+          "raw": "category",
+          "guarded": "category",
+          "reason": null,
+          "top1": [
+            "category",
+            0.5087410807609558
+          ]
+        },
+        "title": {
+          "raw": "quantity",
+          "guarded": "quantity",
+          "reason": null,
+          "top1": [
+            "quantity",
+            0.895064115524292
+          ]
+        },
+        "unit": {
+          "raw": "category",
+          "guarded": "category",
+          "reason": null,
+          "top1": [
+            "category",
+            0.5087410807609558
+          ]
+        },
+        "acronym": {
+          "raw": "category",
+          "guarded": "category",
+          "reason": null,
+          "top1": [
+            "category",
+            0.7422422766685486
+          ]
+        },
+        "unit_trainfmt": {
+          "raw": "category",
+          "guarded": "category",
+          "reason": null,
+          "top1": [
+            "category",
+            0.5087410807609558
+          ]
+        }
+      },
+      "changed_units": {
+        "unit": false,
+        "unit_trainfmt": false
+      }
+    }
+  ],
+  "common_arm_max_probability_delta": 3.2782554626464844e-06,
+  "limitations": [
+    "pool only; excludes synthetic and other real training sources",
+    "currency pattern explicit; not a universal currency detector",
+    "marginal label counts do not identify conditional feature use or causal training effects"
+  ]
+}
