@@ -64,6 +64,10 @@ NATIONAL = [
     {"parent": "odp_jig", "host": "ckan.odp.jig.jp", "site": "https://ckan.odp.jig.jp", "pool": "hold"},
     {"parent": "kanazawa_cat", "host": "catalog-data.city.kanazawa.ishikawa.jp", "site": "https://catalog-data.city.kanazawa.ishikawa.jp", "pool": "hold"},
     {"parent": "sendai_city", "host": "data.city.sendai.jp", "site": "https://data.city.sendai.jp", "pool": "hold"},
+    # G1（海外の確かめの陣、2026-11-11。bench/g1_prereg_20261111.md）。組織は research/g1/g1_orgs.py で hold に登録済み
+    {"parent": "alberta_cat", "host": "open.alberta.ca", "site": "https://open.alberta.ca", "pool": "hold"},
+    {"parent": "ontario_cat", "host": "data.ontario.ca", "site": "https://data.ontario.ca", "pool": "hold"},
+    {"parent": "berlin_cat", "host": "datenregister.berlin.de", "site": "https://datenregister.berlin.de", "pool": "hold"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 # opendata.swiss は前の名乗り方（jitsuris-train-pool-discover/1.0 (metadata only)）と名乗りなしを HTTP 403 にする（2026-10-28 probe_hosts）
