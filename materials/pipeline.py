@@ -171,6 +171,24 @@ def normalize_license(raw):
     # （cc-by-2.5・cc-by-3.0-au・「Creative Commons Attribution 3.0 Australia」）は表示だけのライセンスなので cc-by にまとめる
     if re.fullmatch(r"cc-by(-de)?/[0-9.]+", v):   # 2026-11-11 Berlin の書き方（cc-by/4.0・cc-by-de/3.0）
         return "cc-by"
+    # 2026-11-12 G2（GovData.de、bench/fixm_prereg_20261112.md）：DCAT-AP.de のライセンスの URI と、ドイツ語の書き方
+    m = re.fullmatch(r"https?://(www\.)?dcat-ap\.de/def/licenses/([a-z0-9-]+)(/[0-9.-]+)?", v)
+    if m:
+        name = m.group(2)
+        if name == "dl-by-de":
+            return "dl-de-by-2.0"
+        if name == "dl-zero-de":
+            return "dl-de-zero-2.0"
+        if name == "cc-by":
+            return "cc-by"
+        if name == "cc-zero":
+            return "cc0"
+        return v
+    if re.fullmatch(r"https?://(www\.)?govdata\.de/dl-de/by-2-0", v) or v == "datenlizenz deutschland namensnennung 2.0" or \
+            re.search(r"datenlizenz deutschland\W+namensnennung\W+version 2\.0", v):
+        return "dl-de-by-2.0"
+    if v == "namensnennung 4.0":
+        return "cc-by"
     if re.search(r"creativecommons\.org/publicdomain/zero", v):
         return "cc0"
     if re.search(r"creativecommons\.org/licenses/by/", v) or re.fullmatch(r"cc-by-[0-9.]+(-(au|intl|int|nz))?", v) \

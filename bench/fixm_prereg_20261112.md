@@ -24,3 +24,9 @@
 ## 守ること
 - G2 は 1 回だけ測る。測ったあとに正解・製品の形・決まりを G2 に合わせて変えない。
 - 封印セット・blind_set*・b018・セット 3・5・7 は使わない・読まない。費用のかかるもの（API・有料の GPU）は使わない。
+
+## 2026-11-11 23:10 JST 追記（候補探しの 1 回目のあと、採用の前。値は見ていない）
+- 1 回目（`candidates_g2_20261112.json`）は **候補 0**。全部ライセンスで落ちた：GovData.de は DCAT-AP.de の URI（`http://dcat-ap.de/def/licenses/dl-by-de/2.0` 7,048・`…/cc-by/4.0` 1,279・`…/dl-zero-de/2.0` 886 など）やドイツ語の文（「Datenlizenz Deutschland Namensnennung 2.0」・「Namensnennung 4.0」）で書く。
+- 足すもの（`materials/pipeline.py` の normalize_license。どれも G1 で許した出典の表示・ゼロのライセンスの書き方の違い）：dl-by-de → dl-de-by-2.0、dl-zero-de → dl-de-zero-2.0、cc-by(/4.0) → cc-by、cc-zero → cc0、govdata.de/dl-de/by-2-0 と「Datenlizenz Deutschland – Namensnennung – Version 2.0」→ dl-de-by-2.0、「Namensnennung 4.0」→ cc-by。
+- 足さないもの：other-closed、「öffentlich」・access-right public・INSPIRE の「制限なし」（ライセンスではなく公開の範囲）。
+- 2 回目の候補を `candidates_g2_20261112b.json` に書く。1 回目は採用に使わない。ファイルの置き場所で落ちる数は 2 回目で見る。
