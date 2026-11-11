@@ -62,7 +62,10 @@ ORG_HOSTS = [
     ("alberta", "https://open.alberta.ca"),
     ("queensland", "https://www.data.qld.gov.au"),
     ("nsw", "https://data.nsw.gov.au/data"),
-    ("austria", "https://www.data.gv.at/katalog"),   # 2026-11-12 G2 に足す（bench/fixm_prereg_20261112.md）
+    ("austria", "https://www.data.gv.at/katalog"),   # 2026-11-12 G2 に足す（bench/fixm_prereg_20261112.md）。404 だったので下の場所も試す
+    ("austria_root", "https://www.data.gv.at"),
+    ("austria_nowww", "https://data.gv.at/katalog"),
+    ("austria_odp", "https://www.opendataportal.at"),
 ]
 AGENTS = {
     "pool_discover": "jitsuris-train-pool-discover/1.0 (metadata only)",
@@ -113,7 +116,7 @@ def count_orgs():
     out = []
     only = ORG_ONLY[0]
     for site, base in ORG_HOSTS:
-        if only and site != only:
+        if only and not site.startswith(only):
             continue
         orgs, err, offset = [], None, 0
         while True:
