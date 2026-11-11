@@ -36,3 +36,8 @@
 - 足すもの（`allowed_hosts.json` の csv_domains の `ckan.govdata.de`）：**表を出した組織そのものの公式サイトだけ**（F1 の data.odp.jig.jp・G1 の Berlin 統計局と同じ扱い。表の持ち主はカタログの組織）。bund.de と連邦機関・省（bundesjustizamt.de・bsh.de・bmas.de・dpma.de・baua.de・bundesfinanzministerium.de・zoll.de・bamf.de・bka.de・bzga.de・bundesnetzagentur.de・bundesgesundheitsministerium.de・bfarm.de・bafa.de・bzst.de・bundespolizei.de・bmvi.de・auswaertiges-amt.de・datenportal.bmbf.de）、州・市（sachsen.de・brandenburg.de・stuttgart.de・soest.de）、農業研究の公的リポジトリ（openagrar.de・bmel-forschung.de）。
 - 足さないもの：doi.org・gitlab.opencode.de・民間や事業の個別サイト（staedtebaufoerderung.info・armuts-und-reichtumsbericht.de・mauttabelle.de・rohstofftransparenz.de など）。
 - 3 回目の候補を `candidates_g2_20261112c.json` に書く。1・2 回目は採用に使わない。
+
+## 2026-11-12 02:00 JST 追記（候補探しの 3 回目のあと、採用の前。値は見ていない）
+- 3 回目（`candidates_g2_20261112c.json`）：**192 表・21 公開元**（連邦の省・庁と州。15 表が 9 公開元）。1・2 回目は採用に使わない。
+- 公開元が 21 と少なく、G1 の「1 公開元 2 表まで」では 42 表しか取れない。**採用の上限を F1 と同じ 1 公開元 15 表まで・全体 160 表まで（ハッシュの順）に変える**（`independent_eval/g2.py` の TABLES_PER_PUBLISHER）。偏りは、結果を公開元ごとにも書いて扱う（F1 の鯖江市と同じ）。列が 1,200 に届かなければ、残りの候補（32 表）は adopt-extra で足す。
+- 採用：**160 表・21 公開元**（全部 CSV）。落とした：全体で 160 表まで 32。adopt-extra の上限も 1 公開元 15 表にそろえた（足すときは残りの 32 表）。

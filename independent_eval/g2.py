@@ -31,7 +31,7 @@ POOL = "hold"
 WORK = ROOT / "materials" / "pool" / "work" / "g2"
 OUT = ROOT / "independent_eval" / "results" / "g2"
 SALT = "jitsuris-g2-v1"
-TABLES_PER_PUBLISHER = 2
+TABLES_PER_PUBLISHER = 15   # 2026-11-12：候補の公開元が 21 と少ないので F1 と同じ上限にした（事前記録の追記、採用の前）
 MAX_TABLES = 160
 COLS_PER_TABLE = 10
 SAME_HEADERS_TABLES = 2
@@ -101,7 +101,7 @@ def cmd_adopt(a):
     print(f"adopted {len(adopted)}/{len(cands)} tables from {len({x['publisher_id'] for x in adopted})} publishers; dropped {dict(why)}")
 
 
-EXTRA_PER_PUBLISHER = 5
+EXTRA_PER_PUBLISHER = 15   # G2：採用の上限と同じ（足すときは残りの候補を全部）
 EXTRA_TOTAL = 320
 EXTRA_ADOPTED = ROOT / "materials" / "pool" / "work" / "g2x" / "adopted.json"
 
