@@ -62,6 +62,7 @@ ORG_HOSTS = [
     ("alberta", "https://open.alberta.ca"),
     ("queensland", "https://www.data.qld.gov.au"),
     ("nsw", "https://data.nsw.gov.au/data"),
+    ("austria", "https://www.data.gv.at/katalog"),   # 2026-11-12 G2 に足す（bench/fixm_prereg_20261112.md）
 ]
 AGENTS = {
     "pool_discover": "jitsuris-train-pool-discover/1.0 (metadata only)",
@@ -104,10 +105,16 @@ def get_json(url):
         return json.loads(resp.read().decode("utf-8"))
 
 
+ORG_ONLY = [None]   # 出力の名前に「austria」があればそのホストだけ数える
+
+
 def count_orgs():
     """組織の一覧を頁ごとに取る（organization_list、all_fields）。名前・題名・package_count だけを残す。"""
     out = []
+    only = ORG_ONLY[0]
     for site, base in ORG_HOSTS:
+        if only and site != only:
+            continue
         orgs, err, offset = [], None, 0
         while True:
             url = f"{base}/api/3/action/organization_list?all_fields=true&limit=25&offset={offset}"
@@ -134,6 +141,8 @@ def count_orgs():
 def main(argv=None):
     path = (argv or sys.argv[1:])[0]
     if "orgs" in path:
+        if "austria" in path:
+            ORG_ONLY[0] = "austria"
         doc = {"created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "created_by": "materials/pool/probe_hosts.py（orgs）",
                "metadata_only": True, "hosts": count_orgs()}
         with open(path, "w", encoding="utf-8") as fh:
