@@ -68,6 +68,8 @@ NATIONAL = [
     {"parent": "alberta_cat", "host": "open.alberta.ca", "site": "https://open.alberta.ca", "pool": "hold"},
     {"parent": "ontario_cat", "host": "data.ontario.ca", "site": "https://data.ontario.ca", "pool": "hold"},
     {"parent": "berlin_cat", "host": "datenregister.berlin.de", "site": "https://datenregister.berlin.de", "pool": "hold"},
+    # G2（2 つ目の海外の陣、2026-11-12。bench/fixm_prereg_20261112.md）。組織は research/g2/g2_orgs.py で hold に登録済み
+    {"parent": "govdata_cat", "host": "ckan.govdata.de", "site": "https://ckan.govdata.de", "pool": "hold"},
 ]
 HOSTS = {"data.bodik.jp", "api.us.socrata.com"} | allowed_ckan_hosts()
 # opendata.swiss は前の名乗り方（jitsuris-train-pool-discover/1.0 (metadata only)）と名乗りなしを HTTP 403 にする（2026-10-28 probe_hosts）
