@@ -42,7 +42,8 @@ NOT_USED = ("unknown", "S")
 # 再配布できる条件だけ（DATA_COLLECTION_PROTOCOL 第 2 章：CC0・CC BY・政府標準利用規約 2.0・PDL 1.0・OGL）。NC・SA・不明は入れない。
 # 政府標準利用規約の CKAN の ID は、カタログでの表記を確かめてから足す（2026-10-22 時点で未確認）。
 ALLOWED_LICENSES = {"cc-by-4.0", "cc-by-40-intl", "cc-by", "cc-by-21", "cc-by-21-jp", "cc-by-30", "cc-zero", "cc0", "cc0-1.0", "odc-by",
-                    "ogl-uk-3.0", "ogl-canada-2.0", "pdl1.0", "public-domain"}   # pdl1.0・cc-by-21 は 2026-10-22 に内訳を見て追加。public-domain は CC0 と同じ扱い
+                    "ogl-uk-3.0", "ogl-canada-2.0", "pdl1.0", "public-domain",
+                    "ogla", "ogl-on-1.0", "dl-de-by-2.0", "dl-de-zero-2.0"}   # 2026-11-11 G1（bench/g1_prereg_20261111.md）：Alberta・Ontario の政府ライセンス（OGL-Canada と同じ出典の表示）、ドイツのデータライセンス（表示・ゼロ）   # pdl1.0・cc-by-21 は 2026-10-22 に内訳を見て追加。public-domain は CC0 と同じ扱い
 PER_PUBLISHER_BATCH = 3      # 1 陣で 1 公開元あたりの表
 PER_PUBLISHER_POOL = 15      # 教材庫全体で 1 公開元あたりの表（系統の偏りを抑える）
 SAME_HEADERS_PER_PUBLISHER = 3   # 同じ公開元で見出しの組が同じ表（DATA_COLLECTION_PROTOCOL 第 2 章）
@@ -168,6 +169,8 @@ def normalize_license(raw):
         return v   # 非営利・継承・改変禁止は一覧に無いので、そのまま返して落とす
     # 書き方の違い（2026-10-24 の候補集めで落ちていた）：URL（creativecommons.org/licenses/by/4.0）、版・国つきの CC BY
     # （cc-by-2.5・cc-by-3.0-au・「Creative Commons Attribution 3.0 Australia」）は表示だけのライセンスなので cc-by にまとめる
+    if re.fullmatch(r"cc-by(-de)?/[0-9.]+", v):   # 2026-11-11 Berlin の書き方（cc-by/4.0・cc-by-de/3.0）
+        return "cc-by"
     if re.search(r"creativecommons\.org/publicdomain/zero", v):
         return "cc0"
     if re.search(r"creativecommons\.org/licenses/by/", v) or re.fullmatch(r"cc-by-[0-9.]+(-(au|intl|int|nz))?", v) \
