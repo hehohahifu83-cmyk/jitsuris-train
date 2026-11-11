@@ -102,3 +102,6 @@
 | ontario_cat:tourism-culture-and-gaming | 2 | 100.0% | 100.0% |
 | ontario_cat:francophone-affairs | 2 | 100.0% | 100.0% |
 | ontario_cat:citizenship-and-multiculturalism | 2 | 50.0% | 16.7% |
+
+## 追記（2026-11-11）：実行環境による差
+- 上の数は scikit-learn 1.9.1 での採点。scikit-learn 1.8.0（Codex と同じ）では L+G 79.83%・L24+G 80.29%・差 +0.46・区間 −0.13〜+1.04・重大 6 → 6（`codex_reproduced_20261111.md` と完全に一致）。検査役を採点のたびに学習し直すため。判定は同じ。
