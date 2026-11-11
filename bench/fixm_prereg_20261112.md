@@ -49,3 +49,8 @@
 ## 2026-11-12 07:30 JST 追記（凍結の前）：G2 にオーストリアを足す
 - オーナー「効果的だと思う方」（Claude の案：GovData.de だけでは約 550 列で直し M を測るには少ないので、未使用の data.gv.at を足す）。
 - data.gv.at（オーストリア、ドイツ語の CKAN）の組織をメタデータだけ数え（`materials/pool/probe_hosts.py`、出力 `materials/pool/probe/orgs_austria_20261112.json`）、教材庫・F1・G1 と重ならない組織を hold で登録してから、GovData.de と同じ道で候補 → 採用 → 取り出し → G2 にまとめて凍結する。決まり（採用の上限・凍結・読み方）は GovData.de と同じ。
+
+## 2026-11-12 08:30 JST 凍結（値・ラベル・予測を見る前）
+- オーストリアは足さない：data.gv.at の CKAN の組織一覧が、試した 3 つの場所すべてで 404（`orgs_austria_20261112.json`・`…b.json`。opendataportal.at も JSON を返さない）。サイトの作りが変わったと見られる。
+- GovData.de の分（g2 の 65 表・451 列 ＋ g2x の 14 表・96 列）を凍結した（数は `independent_eval/results/g2/provenance.json`）。目安の 1,200 列には届かない。読み方（決まり 1〜4）は変えない。区間が広くなるので「確かめられなかった」になりやすいことを結果に書く。
+- 凍結：**452 列・68 表・12 公開元**（1 表 10 列を超えた 20 列・同じ見出しの組 8 表を落とした）。set の SHA-256 `83b708061d2f185917e1b25918070e5a285ca07797bd8b64aa4e55c4e19aa68b`。ラベル用シートは `independent_eval/g2_sheets.py`（非公開の ai-bridge `labels/g2/`）。
