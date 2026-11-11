@@ -30,3 +30,9 @@
 - 足すもの（`materials/pipeline.py` の normalize_license。どれも G1 で許した出典の表示・ゼロのライセンスの書き方の違い）：dl-by-de → dl-de-by-2.0、dl-zero-de → dl-de-zero-2.0、cc-by(/4.0) → cc-by、cc-zero → cc0、govdata.de/dl-de/by-2-0 と「Datenlizenz Deutschland – Namensnennung – Version 2.0」→ dl-de-by-2.0、「Namensnennung 4.0」→ cc-by。
 - 足さないもの：other-closed、「öffentlich」・access-right public・INSPIRE の「制限なし」（ライセンスではなく公開の範囲）。
 - 2 回目の候補を `candidates_g2_20261112b.json` に書く。1 回目は採用に使わない。ファイルの置き場所で落ちる数は 2 回目で見る。
+
+## 2026-11-12 00:35 JST 追記（候補探しの 2 回目のあと、採用の前。値は見ていない）
+- 2 回目（`candidates_g2_20261112b.json`）も **候補 0**。ライセンスは通るようになり、今度はファイルの置き場所で落ちた（GovData.de の外のホスト 1,337：連邦司法庁 962・連邦海事水路庁 573・連邦労働社会省 265・ザクセン州統計局 62 など。CSV でない資料 11,601 はそのまま落とす）。
+- 足すもの（`allowed_hosts.json` の csv_domains の `ckan.govdata.de`）：**表を出した組織そのものの公式サイトだけ**（F1 の data.odp.jig.jp・G1 の Berlin 統計局と同じ扱い。表の持ち主はカタログの組織）。bund.de と連邦機関・省（bundesjustizamt.de・bsh.de・bmas.de・dpma.de・baua.de・bundesfinanzministerium.de・zoll.de・bamf.de・bka.de・bzga.de・bundesnetzagentur.de・bundesgesundheitsministerium.de・bfarm.de・bafa.de・bzst.de・bundespolizei.de・bmvi.de・auswaertiges-amt.de・datenportal.bmbf.de）、州・市（sachsen.de・brandenburg.de・stuttgart.de・soest.de）、農業研究の公的リポジトリ（openagrar.de・bmel-forschung.de）。
+- 足さないもの：doi.org・gitlab.opencode.de・民間や事業の個別サイト（staedtebaufoerderung.info・armuts-und-reichtumsbericht.de・mauttabelle.de・rohstofftransparenz.de など）。
+- 3 回目の候補を `candidates_g2_20261112c.json` に書く。1・2 回目は採用に使わない。
