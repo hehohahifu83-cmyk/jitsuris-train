@@ -29,7 +29,7 @@ import reserve_eval as R  # noqa: E402
 import g1 as G  # noqa: E402
 import f1_eval as F1E  # noqa: E402
 
-LABELS_SHA = "606d4d3150c35d9d6e3d7f4f85b32efa8f18369d8ed82f036cdd6dfa5c9bbefa"
+LABELS_SHA = "6b5679faff9d7a87ad2367bee637d4a26611853851889e106f367d245747b7a6"
 SET_SHA = "d96ab7776b4070afcf0b5f8ee23c123ba076636bfcc58688d42d2c14537c409a"
 PRED_DIR = os.path.join(ROOT, "independent_eval", "predictions_g1")
 SEEDS = (1, 2, 3)
