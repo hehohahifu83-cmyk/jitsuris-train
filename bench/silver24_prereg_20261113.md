@@ -24,3 +24,10 @@
 ## 守ること
 - 封印セット・blind_set*・b018・セット 3・5・7 は使わない。G3 の正解は、予測の前に確定する（2 人の独立ラベル → 裁定 → Codex の見直し）。予測を見たあとで正解・決まりを変えない。
 - GitTables 1M は今回は使わない（表ごとの権利の確認が終わっていない）。
+
+## 2026-11-13 追記（学習のあと、G3 の予測の前。予測・採点はまだ見ていない）
+- L24S の学習は終わった：Kaggle 完了 2026-11-12T18:28Z、成果物は run **43266270727** の `jitsuris-model`（ft_out_job1〜3）。3 本とも FT_SILVER=`materials/model_corpora/silver/train_A.jsonl.gz`・FT_SILVER_EPOCHS=1・FT_LABELFIX＝L24 と同じ 4 ファイル・FT_TITLE=1・種子 1〜3、学習の commit 66bbb87（銀のファイルの SHA-256 `0a06e0ffb7a287280a3423536822aaf16f60938fe9da8d921c6e0209847b5f2d`、事前記録の先頭と一致）。学習 1 本 1,735〜1,773 秒。
+  - 重みの SHA-256：job1 `4bd5489ce4d8cdbb…`、job2 `85e9e9c2a7e534c2…`、job3 `dfac0920936fa319…`。
+- 採点：`research/g3/g3_eval.py`（SHA-256 `4bf552aafdb22232e0be2f7b1c6eac85e0aa916c5477ee7b34580a3c0726ce53`）。形は L+G・L24+G・L24+G+M・L24S+G・L24+G+R・L24S+G+R（R＝rho の金額の守り）。主 1＝M（表で引き直す、`bench/fixm_prereg_20261112.md`）、主 2＝銀（L24S+G 対 L24+G、公開元で引き直す）。Python 3.12・scikit-learn 1.8.0・NumPy 2.3.5・SciPy 1.17.0 でないと止まる。
+- 予測：`.github/workflows/g3-predict.yml`（SHA-256 `7bb2089924e0ec5537064f5b6e46e04005bcbe260511e7dfe862f48d8ac1ccba`。L・L24・L24S 各 3 本、重み・設定・学習の commit の付け直し 4 ファイルと銀のファイルの SHA を照合）。題名：`independent_eval/results/g3/titles.json`（126 表、adopted の題名を corpus の resource_page で表につないだもの。SHA-256 `281e038bc3c5994b5e368416fedeb2023cb4a079300abc8c67f0d4b15aa5773c`）。
+- 正解：ai-bridge `labels/g3/final.jsonl`（SHA-256 `1162b62032d580e59345f0ca44ed588d1e8d05a707fb0453d54adb380994bbeb`）。**Codex の裁定の見直しが返ってから**予測を 1 回だけ依頼する。見直しで正解が直れば、SHA を書き直したうえで予測の前にここへ追記する。
