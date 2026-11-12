@@ -125,7 +125,7 @@ def cmd_adopt_extra(a):
     wide, why = S2.adopt(cands, S2.pools(), urls, rids, pool=POOL, per_publisher=EXTRA_PER_PUBLISHER)
     new = sorted((x for x in wide if x["resource_url"] not in have), key=lambda x: h(x["resource_url"]))[:max(0, EXTRA_TOTAL - len(have))]
     new = [dict(x, n=str(len(have) + k + 1)) for k, x in enumerate(new)]
-    doc = {"schema_version": 1, "batch": "g3", "pool": POOL, "set_id": SET_ID, "decided_by": "independent_eval/g2.py adopt-extra（規則だけ）",
+    doc = {"schema_version": 1, "batch": "g3", "pool": POOL, "set_id": SET_ID, "decided_by": "independent_eval/g3.py adopt-extra（規則だけ）",
            "decided_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "candidates": first["candidates"],
            "rule": f"1 公開元 {EXTRA_PER_PUBLISHER} 表まで、全体 {EXTRA_TOTAL} 表まで（もう採用した {len(have)} 表は残す）", "adopted": new, "values_viewed": False}
     EXTRA_ADOPTED.parent.mkdir(parents=True, exist_ok=True)
