@@ -31,7 +31,7 @@ POOL = "hold"
 WORK = ROOT / "materials" / "pool" / "work" / "g3"
 OUT = ROOT / "independent_eval" / "results" / "g3"
 SALT = "jitsuris-g3-v1"
-TABLES_PER_PUBLISHER = 2
+TABLES_PER_PUBLISHER = 5   # 2026-11-12：候補が少ないので 2 → 5（採用の前）
 MAX_TABLES = 320
 COLS_PER_TABLE = 10
 SAME_HEADERS_TABLES = 2
@@ -46,7 +46,7 @@ def f1_publishers():
     sys.path.insert(0, str(ROOT / "independent_eval"))
     import allocation as A
     rows = json.load(open(ROOT / "research" / "g3" / "g3_orgs.json", encoding="utf-8"))["rows"]
-    return {A.normalize_publisher_id(r["publisher_id"]) for r in rows if r["g3"]}
+    return {A.normalize_publisher_id(r["publisher_id"]) for r in rows if r["g1"]}   # 2026-11-12：G1 の公開元も入れる（表は G1 と重ならない。事前記録の追記）
 
 
 def select(rows):
