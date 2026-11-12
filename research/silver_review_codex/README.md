@@ -49,3 +49,22 @@ s009（org）はホテルの名前として判断したが、機関か場所か�
 ## 検証
 
 `test_silver_train.py` 4件成功。`sample.py`で標本を再抽出し、`compare.py`で75件の対応と集計を再現した。検査対象コードの変更はない。
+
+## C3s の再現結果
+
+`OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python research/c3u_eval.py --models c3a c3u c3s` は終了0。scikit-learn 1.8.0、NumPy 2.3.5、SciPy 1.17.0。標準出力を `c3_replay.md` に保存した。
+C3a と C3s は採点2851列、正86.2%、不明274、誤120、重大4で一致。重大の列も同じ：b017 replicate、b064 Number・GEO_CANT・NO_COMPLEMENTAIRE。
+したがって「今の形で銀による重大の増えなし」は再現したが、Claudeの `silver_crit_why.md` の列名（Amount per Container を含み GEO_CANT がない）は再現しない。C3u も重大4だが内訳は異なる。
+昔の採点は2852列で、現行の採点は2851列。過去の2→4と現在の4→4の差を、後段の製品の直しだけに断定することはできない。正解ラベル・除外対象等の差も固定した切り分けが要る。
+
+## C3b の再現結果と差異
+
+`python research/silver_crit_why.py` は終了0。環境は上記と同じ版（スレッド数は環境既定）。生成JSONを `silver_replay.json`、標準出力を `silver_replay.txt` に保存し、既存のClaudeのJSONは保存済みの内容に戻した。
+
+- C3b の重大は **6列**（Claudeの記録5列と不一致）、うちC3aでも重大だった列は2列。
+- Claude記録の5列は一致。追加は b063-0410 `wasserkraft_kwh`（正解quantity、本体amount → 見張りamount → 検査役unknown → rhoでamount、C3a最終unknown）。よって「増えた3列」は本環境では4列。
+- 数を取り違えた5列（Fossil fuels、Total (All categories)、abfall_kwh、klein_wasserkraftwerk_kwh、wasserkraft_kwh）はすべてquantity→amount、rho復帰。replicate はid→quantity、本体の段。方向と経路は見立てと一致するが、厳密な件数は再現しない。
+- `silver_crit_why.py` のc3s 0は重大0という結果ではない。各batchの `pred_c3s_seed1.json` が全8陣で存在せず、道具が黙ってスキップするためである。C3sはdev1029uにある保存予測を読む `c3u_eval.py` で検証した。
+- 追加1列の原因（検査役の再構築のスレッド差等）は未確定。同じ依存版だけでは完全再現を確認できない。次の事前記録では依存版に加えて採点コード・正解と除外・予測入力・スレッド条件も固定し、同じ検査役を保存して使う案を推奨する。
+
+**条件付き学習の前にClaudeへ依頼すること**：C3bの5/6列の差、C3sの重大列名の差、2852/2851列の差を説明し、今回の銀ラベル不一致を裁定する。経路の再現だけで原因解明完了とはせず、事前記録と学習の依頼はまだ行わない。
