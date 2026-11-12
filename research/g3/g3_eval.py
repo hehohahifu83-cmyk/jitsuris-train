@@ -33,6 +33,9 @@ import reserve_eval as R  # noqa: E402
 import g3 as G  # noqa: E402
 import f1_eval as F1E  # noqa: E402
 import recheck as RC  # noqa: E402
+import fixes as FX  # noqa: E402
+import eval_fixes as _EF  # noqa: E402
+assert FX is _EF.FX, "eval_fixes の fixes と別のものを差し替えている"
 import fix_m as FM  # noqa: E402
 import rho_amount_guard as RG  # noqa: E402
 import sklearn  # noqa: E402
@@ -48,6 +51,17 @@ SEEDS = (1, 2, 3)
 PRED = {"L": {1: "pred_l_job2.json", 2: "pred_l_job3.json", 3: "pred_l_job4.json"},
         "L24": {1: "pred_l24_job1.json", 2: "pred_l24_job2.json", 3: "pred_l24_job3.json"},
         "L24S": {1: "pred_l24s_job1.json", 2: "pred_l24s_job2.json", 3: "pred_l24s_job3.json"}}
+# 予測の由来の照合（2026-11-13 Codex の点検 1・2 を受けて足した）：重み（モデル×本）・種子・セット・題名の SHA
+WEIGHTS = {("L", 1): "df4958d40c50bc7696d070faccfacb21741d3ec99143aa3b310b9415ad59ba1c",
+           ("L", 2): "55d3a5a346afa41325ab4c0e78586700985e26bfda523b35f9960af2a8f78c92",
+           ("L", 3): "d12dd6d658c5e4d5c28ced997536a9470b97c63253667c56579df42718f155a1",
+           ("L24", 1): "201d9757040ae4bd27c35cc2a9baaba47c5110dbec404dd4cca1a487a312c180",
+           ("L24", 2): "981168cac01307a39e34aa24f36a6741c5484e4e6af2b5d3d4dd1cda2174ca76",
+           ("L24", 3): "a6811a32a41641bc5fc90af2d1e42c558e9d870084712c58260d407fe6efe3af",
+           ("L24S", 1): "4bd5489ce4d8cdbb783d67042c6338ce95b730fe1ca576f7854fa87c9b58eefe",
+           ("L24S", 2): "85e9e9c2a7e534c2ced4de0dbc787820c3a14dce0dd5bb4ccdc4092bb3ddddf2",
+           ("L24S", 3): "dfac0920936fa319f4b038c1d48c42f40c996fe7012992e430d85a04795588d4"}
+TITLES_SHA = "281e038bc3c5994b5e368416fedeb2023cb4a079300abc8c67f0d4b15aa5773c"
 # 形：名前 → (重み, 直し M, rho の守り)
 ARMS = {"L+G": ("L", False, False), "L24+G": ("L24", False, False), "L24+G+M": ("L24", True, False),
         "L24S+G": ("L24S", False, False), "L24+G+R": ("L24", False, True), "L24S+G+R": ("L24S", False, True)}
@@ -86,6 +100,26 @@ def load_g3(labels_path):
     return {"g3": out}
 
 
+def check_predictions(ids):
+    """9 本の予測ファイルの由来を照合する。違えば止まる。"""
+    want = set(ids)
+    if len(want) != len(ids):
+        raise SystemExit("G3 の列 id が重複している")
+    for (model, s), wsha in WEIGHTS.items():
+        path = os.path.join(PRED_DIR, PRED[model][s])
+        d = json.load(open(path, encoding="utf-8"))
+        ck, ti = d.get("checkpoint") or {}, d.get("titles") or {}
+        if d.get("set_sha256") != SET_SHA or d.get("set_id") != G.SET_ID:
+            raise SystemExit(f"{path}: セットの SHA・id が違う")
+        if ck.get("weights_sha256") != wsha or str(ck.get("seed")) != str(s):
+            raise SystemExit(f"{path}: 重み・種子が {model} の {s} 本目と違う")
+        if ti.get("sha256") != TITLES_SHA:
+            raise SystemExit(f"{path}: 題名の SHA が違う")
+        got = [r["id"] for r in d["rows"]]
+        if len(got) != len(set(got)) or set(got) != want:
+            raise SystemExit(f"{path}: 列 id の集合が g3.json と違う（重複・欠け・余り）")
+
+
 class _Nothing:
     def __enter__(self):
         return None
@@ -96,16 +130,21 @@ class _Nothing:
 
 def run(base, mv, labels, model, s, with_m, with_guard):
     data = D.with_job(base, os.path.join(PRED_DIR, PRED[model][s]))
-    orig = RC.cue_types
+    # 直し M：eval_fixes.run の FX.use が RC.cue_types を make_cue_types(fixes) で置き換えるので、
+    # その生成した関数の結果に M を足す（2026-11-13 Codex の点検 1。RC.cue_types に足すだけでは上書きされて消えていた）。
+    orig = FX.make_cue_types
     if with_m:
-        RC.cue_types = lambda h, u="": orig(h, u) | FM.extra_cues(h, u)
+        def make_with_m(fixes):
+            f = orig(fixes)
+            return lambda h, u="": f(h, u) | FM.extra_cues(h, u)
+        FX.make_cue_types = make_with_m
     try:
         with (RG.use() if with_guard else _Nothing()):
             D.EF._PCACHE.clear()
             p = {}
             res = D.EF.run(data, mv, labels, D.PRODUCT + ("K",), per=p)
     finally:
-        RC.cue_types = orig
+        FX.make_cue_types = orig
     return res, p
 
 
@@ -132,6 +171,9 @@ def main(argv=None):
     mv, _, _ = D.E.fit(np.hstack([D.V.matrix([c["values"] for c in train]), D.E.table_matrix(train)])[okm], np.array([c["truth"] for c in train])[okm])
     base = load_g3(a.labels)
     cols = {c["id"]: c for c in base["g3"]}
+    check_predictions([c["id"] for c in json.load(open(os.path.join(ROOT, "independent_eval", "results", "g3", "g3.json"), encoding="utf-8"))["columns"]])
+    if sha(os.path.join(ROOT, "independent_eval", "results", "g3", "titles.json")) != TITLES_SHA:
+        raise SystemExit("titles.json が事前記録の SHA と違う")
     res, per, raw = {}, {}, {}
     for arm, (model, m, g) in ARMS.items():
         for s in SEEDS:

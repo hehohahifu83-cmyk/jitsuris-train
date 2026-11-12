@@ -39,6 +39,12 @@ jobs:
           if [ "$(head -1 independent_eval/g3_predict.request)" != "run g3-20261113-v1 once" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           if ls independent_eval/predictions_g3/pred_*.json >/dev/null 2>&1; then echo "予測がもうある（1 回だけ）"; exit 1; fi
           echo "41bb6c1832c0e6659c0b56766253769fd303564499a93e5c98c7c97676d3051a  independent_eval/results/g3/g3.json" | sha256sum -c -
+          echo "281e038bc3c5994b5e368416fedeb2023cb4a079300abc8c67f0d4b15aa5773c  independent_eval/results/g3/titles.json" | sha256sum -c -
+          mkdir -p independent_eval/predictions_g3
+          { echo "commit $(git rev-parse HEAD)"; sha256sum research/g3/g3_eval.py research/guard_dates/fix_m.py research/silver/rho_amount_guard.py \
+              evaluate_independent.py .github/workflows/g3-predict.yml independent_eval/results/g3/g3.json independent_eval/results/g3/titles.json; } \
+            > independent_eval/predictions_g3/run_record.txt
+          cat independent_eval/predictions_g3/run_record.txt
           echo "proceed=true" >> "$GITHUB_OUTPUT"
 
       - name: 重み 9 本ぶんの場所を空ける
@@ -146,6 +152,15 @@ jobs:
               --titles independent_eval/results/g3/titles.json
           done
           echo "done g3-20261113-v1 (9 predictions)" > independent_eval/g3_predict.request
+
+      - name: 途中で失敗したときも予測・台帳・記録を残す（再実行の前に回収して理由を書く）
+        if: failure() && steps.gate.outputs.proceed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: g3-predictions-partial
+          path: independent_eval/predictions_g3/
+          retention-days: 30
+          if-no-files-found: ignore
 
       - name: 予測と台帳だけを保存
         if: steps.gate.outputs.proceed == 'true'

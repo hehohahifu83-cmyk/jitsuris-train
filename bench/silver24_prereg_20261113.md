@@ -31,3 +31,11 @@
 - 採点：`research/g3/g3_eval.py`（SHA-256 `4bf552aafdb22232e0be2f7b1c6eac85e0aa916c5477ee7b34580a3c0726ce53`）。形は L+G・L24+G・L24+G+M・L24S+G・L24+G+R・L24S+G+R（R＝rho の金額の守り）。主 1＝M（表で引き直す、`bench/fixm_prereg_20261112.md`）、主 2＝銀（L24S+G 対 L24+G、公開元で引き直す）。Python 3.12・scikit-learn 1.8.0・NumPy 2.3.5・SciPy 1.17.0 でないと止まる。
 - 予測：`.github/workflows/g3-predict.yml`（SHA-256 `7bb2089924e0ec5537064f5b6e46e04005bcbe260511e7dfe862f48d8ac1ccba`。L・L24・L24S 各 3 本、重み・設定・学習の commit の付け直し 4 ファイルと銀のファイルの SHA を照合）。題名：`independent_eval/results/g3/titles.json`（126 表、adopted の題名を corpus の resource_page で表につないだもの。SHA-256 `281e038bc3c5994b5e368416fedeb2023cb4a079300abc8c67f0d4b15aa5773c`）。
 - 正解：ai-bridge `labels/g3/final.jsonl`（SHA-256 `1162b62032d580e59345f0ca44ed588d1e8d05a707fb0453d54adb380994bbeb`）。**Codex の裁定の見直しが返ってから**予測を 1 回だけ依頼する。見直しで正解が直れば、SHA を書き直したうえで予測の前にここへ追記する。
+
+## 2026-11-13 追記 2（Codex の予測前の点検を受けた直し。予測・採点はまだ見ていない）
+- Codex の点検：ai-bridge `messages/20261113-0753_codex-to-claude_g3-preflight-review.md`、再現 `research/g3/codex_review/`。G3 の裁定 118 列は支持（正解は変えない、SHA `1162b620…bbeb` のまま）。必須の直し 2 点を Claude も再現して直した。
+  1. **直し M が採点の中で消えていた**：`RC.cue_types` に足しても、`eval_fixes.run` の `FX.use` が `make_cue_types(fixes)` で置き換えていた。→ M の形だけ `FX.make_cue_types` が作る関数の結果に `FM.extra_cues` を足す形に直した（finally で必ず戻す）。合成の確かめ：Funding→amount、Students・abfall_kwh→quantity が再確認まで届く。M なしの形には漏れない。例外のあとも元の関数に戻る。
+  2. **予測の由来を照合していなかった**：`check_predictions` を足した。9 本それぞれのセットの SHA・set_id、重みの SHA（モデル×本、L・L24 は G2 の照合済みの記録、L24S は学習の manifest）、種子、題名の SHA、790 列の id の集合（重複・欠け・余り）を照合し、違えば止まる。偽の重み・種子 999・偽のセット・偽の題名・欠け・重複の 6 通りで止まることを確かめた。
+- workflow の補強：gate で titles.json の SHA も照合。実行の commit と道具・セット・題名の SHA を `predictions_g3/run_record.txt` に残す。途中で失敗したら予測・台帳・記録を artifact `g3-predictions-partial` に残す。**再実行は、その artifact を回収し、理由を事前記録に書いてから**にする（1 回だけの予測を守る）。
+- 新しい SHA-256：`research/g3/g3_eval.py` **`b8b37850f5bce4285c57916e20fb6d8635eecc31bc9546edb54f910018d092c1`**、`.github/workflows/g3-predict.yml` **`be37690399f6292d210322568f7663e627ede9b368f6ad6b6c39e2704af8ab7b`**（前の追記の SHA に代わる）。題名・正解・セットは変えていない。
+- 判定の決まり・形・引き直しの単位は変えていない。G3 で M の語に当たる列は 790 列のうち 31（列名・単位だけで数えた。値・正解・予測は見ていない）。
