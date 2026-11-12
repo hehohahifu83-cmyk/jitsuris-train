@@ -60,3 +60,4 @@
 - **採点する列は 228**（S 157。正解が amount の列 5・rate 2・quantity 51）。直し M が狙う金額・率の列がとても少ないので、決まり 1 の +0.5（約 1 列分）は超えても、決まり 4 の区間の下限が 0 を超えるのは難しい見込み。読み方は変えない。
 - 採点：`research/g2/g2_eval.py`（SHA-256 `8bd5f69071a7bed46dc8dec954b3c0313b539b244bed12349d47e67623913f5f`、scikit-learn 1.8.0・NumPy 2.3.5・SciPy 1.17.0 でないと止まる）。予測：`.github/workflows/g2-predict.yml`（G1 と同じ照合）。題名：`independent_eval/results/g2/titles.json`。
 - 予測は Codex の裁定の見直しの返事のあとに 1 回だけ回す。見直しで正解が変われば、採点の道具の正解の SHA の 1 行だけを直して記録する。
+- 2026-11-12 15:50 JST：Codex の見直し（`labels/g2/adjudication_review_codex.md`）で 31 列とも維持。g2-0238 の理由だけを訂正、確定ラベルの SHA は同じ。予測を 1 回だけ依頼する。
