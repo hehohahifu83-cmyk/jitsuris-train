@@ -1,0 +1,937 @@
+{
+ "schema_version": 1,
+ "set_id": "g3-20261112-v1",
+ "frozen_utc": "2026-11-12T16:35:50+00:00",
+ "set_path": "independent_eval/results/g3/g3.json",
+ "set_sha256": "41bb6c1832c0e6659c0b56766253769fd303564499a93e5c98c7c97676d3051a",
+ "column_count": 790,
+ "table_count": 126,
+ "publisher_count": 31,
+ "columns_per_publisher": {
+  "ontario_cat:education": 70,
+  "ontario_cat:environment-conservation-and-parks": 66,
+  "ontario_cat:children-community-and-social-services": 60,
+  "alberta_cat:community-and-social-services": 55,
+  "alberta_cat:agricultureandforestry": 55,
+  "ontario_cat:natural-resources": 54,
+  "alberta_cat:economicdevelopmentandtrade": 53,
+  "ontario_cat:labour-immigration-training-and-skills-development": 48,
+  "ontario_cat:agriculture-food-and-rural-affairs": 46,
+  "alberta_cat:health": 31,
+  "ontario_cat:finance": 29,
+  "alberta_cat:municipalaffairs": 27,
+  "alberta_cat:environment-and-protected-areas": 22,
+  "ontario_cat:health": 22,
+  "alberta_cat:advancededucation": 22,
+  "ontario_cat:economic-development-job-creation-and-trade": 20,
+  "alberta_cat:energy": 18,
+  "ontario_cat:public-and-business-service-delivery-and-procurement": 18,
+  "ontario_cat:municipal-affairs-and-housing": 12,
+  "berlin_cat:senatsverwaltung-fur-finanzen": 10,
+  "ontario_cat:tourism-culture-and-gaming": 10,
+  "ontario_cat:energy-and-mines": 9,
+  "ontario_cat:seniors-and-accessibility": 5,
+  "alberta_cat:treasuryboardandfinance": 5,
+  "alberta_cat:energy-and-minerals": 5,
+  "alberta_cat:jobs-economy-and-northern-development": 4,
+  "ontario_cat:sport": 3,
+  "ontario_cat:solicitor-general": 3,
+  "alberta_cat:labour-and-immigration": 3,
+  "alberta_cat:jobsskillstrainingandlabour2013-2016": 3,
+  "alberta_cat:environmentandparks": 2
+ },
+ "known_header_share": 0.3354,
+ "selection": {
+  "drop_over_10_columns": 0,
+  "drop_same_headers": 6
+ },
+ "corpus_sha256": "0fdb7a27f9f6744efdbc3d44db6bd0f836ea6af9652603581645704c9ea4da8f",
+ "corpus_extra_sha256": "f41d62eb0eaebbbc71af6bcc5aaabac882f89f6f98306e4b1d9a45bfb4c7ac0d",
+ "labels_written": false,
+ "values_viewed": false,
+ "predictions_made": false,
+ "tables": [
+  {
+   "table_id": "t001",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/4a067cb5-cb51-49f4-a0b0-5795976d4e61/resource/eb410ae1-0a1e-4ac7-833f-d075db497b6e/download/pdd-service-planning-caseload-by-region.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t002",
+   "publisher": "alberta_cat:energy",
+   "resource_url": "https://open.alberta.ca/dataset/2c85abea-b2c8-4fd6-9987-b8f3eee63a01/resource/a756f83a-21f6-4d0e-866d-f5d6fdfbbd55/download/senergycommunicationswebsitescurrentgas-migrationaer_facility_and_facility_cost_centre_listing.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t003",
+   "publisher": "alberta_cat:environment-and-protected-areas",
+   "resource_url": "https://open.alberta.ca/dataset/47f8a9f1-55d2-474a-a6a4-8f5c345a309a/resource/edecead1-9637-4217-81cd-10994d16b593/download/compliance_cost_containment_designees_and_support_2018-2020.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t004",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/0e2a7d83-237c-4dab-a8a1-6a6923762bb3/resource/a4d4ad83-e272-42ee-ac58-80f262b6ef20/download/tab-70.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t005",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/15e94168-378a-45af-9bfc-cf2fa60d0265/resource/128362ba-f0b8-4ff9-9305-0dbe3592eec1/download/fscd-active-caseload-by-service-category.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t006",
+   "publisher": "alberta_cat:environment-and-protected-areas",
+   "resource_url": "https://open.alberta.ca/dataset/47dbabf8-38e1-4692-aa7d-064acc85d450/resource/1f8d54e0-179b-4520-abce-2611f4a63d22/download/epa-water-licences-active.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t007",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/4Other/PHAP/Invertebrate_Counts.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t008",
+   "publisher": "ontario_cat:public-and-business-service-delivery-and-procurement",
+   "resource_url": "https://files.ontario.ca/opendata/land_titles_assurance_fund_annual_payouts.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t009",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/d7f7dda1-f2b7-48dc-8140-e11ab23feec9/resource/04615eb5-cb04-454e-8f53-b78814e654cb/download/ctygrape_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t010",
+   "publisher": "ontario_cat:labour-immigration-training-and-skills-development",
+   "resource_url": "https://data.ontario.ca/dataset/51109b53-9ef9-4d8b-af19-a0f729facb19/resource/1b98cc6c-4a57-4493-8a65-f393e1345717/download/data_sets_2022_23_nsp.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t011",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/8d48cc27-3916-4e60-bf99-b01cacac6e47/resource/cfe363b1-c3d7-4252-ae52-d6acd18b236b/download/fee-for-service-utilization-by-functional-centre-and-site-type-2010-2011-to-2014-2015.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t012",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/4a493355-1283-4197-9928-7bb7baa01939/resource/958bbdcd-4de0-49c1-8d96-58bb9a1ce25b/download/grossdomesticproductbasic.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t013",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/9344cade-c6ac-4d94-b810-dff10342e35a/resource/0c0fa82c-76d6-4ee7-9c03-c165364ef610/download/table-77-alberta-major-crops-acreage.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t014",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/0743f4d3-64bb-4b76-b9fc-51743c7a7f46/resource/03c9c0c0-d453-4ae2-825f-f77e3baefb46/download/fsl_schlist_2425_prelim_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t015",
+   "publisher": "ontario_cat:health",
+   "resource_url": "https://data.ontario.ca/dataset/6c2ca4e6-0df6-4b7d-9bc5-a71412135a7e/resource/5d843d1c-3092-422a-b1f5-511923925313/download/eo_decisions_and_ced_recommendations.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t016",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/1473a7e7-ac7d-46c5-9387-4fba1a086500/resource/ecad9e99-3b4e-489e-8ca6-6ca58d34891d/download/alberta-post-secondary-graduate-earnings-by-field-of-study.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t017",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/07586958-ffd4-4293-aec0-3b32e0f7de7b/resource/b0fef8bb-8b07-4962-8192-bbf899195cd5/download/private_school_location_list_en_2.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t018",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/9831236f-6e01-447a-9e28-b9c6b3348631/resource/74aa6226-7798-4130-ba44-8546e3198186/download/school_board_contact_list_september2026_en_csv.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t019",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/1Air/OETR-Emissions_Trading_Registry/Facility_Information_Ontario_Emissions_Trading_Program.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t020",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/c01555d1-96ee-46c3-a0a9-3a307bcb8a6f/resource/c332a9bc-8409-4a41-b322-d13e13dcdb03/download/ghtomato_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t021",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/ff3473f8-2d3f-45aa-b7d4-047923960d6b/resource/5fab2767-ac27-4f62-82de-677c04c44f50/download/opvgstats_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t022",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/6acc9dd9-97fe-4930-a562-f65660ca42d1/resource/ba6a04b4-1939-474b-9cd6-51a364d7eec3/download/farmcashreceipts.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t023",
+   "publisher": "ontario_cat:sport",
+   "resource_url": "https://data.ontario.ca/dataset/cc0de32b-23dc-451d-9113-e4140df45af3/resource/a93fcf00-1576-4fd1-bd1d-048c0482ef5f/download/csrif_list_of_recipients_en_updated_mar_26.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t024",
+   "publisher": "alberta_cat:jobs-economy-and-northern-development",
+   "resource_url": "https://open.alberta.ca/dataset/3b0d4bae-b7a8-48ed-9c79-776da1379a5f/resource/4dfc1eb8-7bee-43dd-84a3-60adeb6e0599/download/jend-ohs-futures-developing-performance-indicators-albertas-internal-responsibility-system-2018.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t025",
+   "publisher": "alberta_cat:municipalaffairs",
+   "resource_url": "https://open.alberta.ca/dataset/8dae0ffd-dbb7-46f7-89eb-efa64b2ce385/resource/8fb5c6e2-e7b3-4d21-bbcd-3feee1847912/download/2019_mapl_web.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t026",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/mci_microloans_for_women.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t027",
+   "publisher": "ontario_cat:economic-development-job-creation-and-trade",
+   "resource_url": "https://files.ontario.ca/opendata/premiers_catalyst_awards_0.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t028",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/5fe90738-cf6b-4464-88b1-f814c4709088/resource/b222d89a-d1cb-4f1b-9813-a8bdce590408/download/high-school-transition-rate-by-service-region-2016-to-2020.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t029",
+   "publisher": "alberta_cat:jobs-economy-and-northern-development",
+   "resource_url": "https://open.alberta.ca/dataset/cb87df37-ff8b-49de-9f4d-ea163b664d60/resource/fe0fe60c-a22a-4503-b780-fc2bae0a8eee/download/jend-ohs-futures-exoskeleton-trials-on-farm-tasks.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t030",
+   "publisher": "ontario_cat:labour-immigration-training-and-skills-development",
+   "resource_url": "https://files.ontario.ca/opendata/mci_ontario_bridge_training_program.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t031",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/0dfd5f5f-c597-41e4-b246-944219db06fa/resource/bddd83e2-3f4a-426d-adae-420b219b801a/download/table_4.1.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t032",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/developmental_services_survey_dataset_0.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t033",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/7e72cb89-6a90-4f0f-b4c3-1a23d13a3327/resource/ce08e3d3-37f5-4935-82fd-f94d482ed661/download/table-88-canola-acreage-and-production-for-alberta-census-divisions.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t034",
+   "publisher": "ontario_cat:municipal-affairs-and-housing",
+   "resource_url": "https://data.ontario.ca/dataset/ef2d71bf-fa0f-4460-aa6f-9c87ffa67696/resource/f7b44381-3ce8-438f-97e2-a24bac052b7e/download/dca_affordable_residential_units_bulletin-june_1_2024_en.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t035",
+   "publisher": "ontario_cat:seniors-and-accessibility",
+   "resource_url": "https://data.ontario.ca/dataset/4766488c-420a-4e8e-8829-003ff97a348b/resource/ecdfd968-1469-4f3a-aef4-834407983c1c/download/open_data_-_scg_2016-2018_final.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t036",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/fb3a7c18-90af-453e-bc0a-a76ecc471862/resource/f3a8c2a3-09d9-4715-9044-d8a0189f572c/download/public_school_contact_list_september2026_en.txt",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t037",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/1898_adr_cas_referrals.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t038",
+   "publisher": "berlin_cat:senatsverwaltung-fur-finanzen",
+   "resource_url": "https://berlin.de/sen/finanzen/dokumentendownload/haushalt/doppelhaushalt_2020_2021.xlsx",
+   "title": "",
+   "license": "cc-by"
+  },
+  {
+   "table_id": "t039",
+   "publisher": "ontario_cat:public-and-business-service-delivery-and-procurement",
+   "resource_url": "https://data.ontario.ca/dataset/07620f7e-af02-4359-8694-61ac991b163e/resource/55971a13-e1ce-44f4-88de-f715a8f87943/download/345a_health_and_education_official_names_1_0.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t040",
+   "publisher": "alberta_cat:environmentandparks",
+   "resource_url": "https://open.alberta.ca/dataset/ebecfb84-2704-48a9-ae99-438141f9b6c7/resource/6529f72e-52b8-486d-80ef-54122918ca6b/download/aep-oil-sands-quarterly-report-2020-10.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t041",
+   "publisher": "ontario_cat:labour-immigration-training-and-skills-development",
+   "resource_url": "https://data.ontario.ca/dataset/bf95788f-e27f-4d1f-a850-97f5f36de480/resource/a4892666-52e4-40af-b557-a634c9a7c698/download/2012to2017.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t042",
+   "publisher": "alberta_cat:environment-and-protected-areas",
+   "resource_url": "https://open.alberta.ca/dataset/4e98e0f4-340b-47e3-9797-2529a56173a3/resource/22bf5311-b286-4b2e-ab4f-9898ec67d018/download/epa-area-fugitive-emissions-from-oil-sands-mines-2011-2021.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t043",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/a0accd2b-1754-4f3a-971a-95e413eca180/resource/ee682103-2cc2-411f-809f-58c3a4611b9c/download/mefposigoatotalscientificexpenditurescsvv2.02015-07-09.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t044",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/62b245ab-7e96-4350-96f1-9414dc313d8c/resource/45eddf46-62c5-450f-8e59-f25991c682a9/download/tab-95.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t045",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/ocb_-_first_sheet.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t046",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://files.ontario.ca/ais_summary_database_metadata.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t047",
+   "publisher": "ontario_cat:labour-immigration-training-and-skills-development",
+   "resource_url": "https://data.ontario.ca/dataset/86e4ae14-c9fb-409a-b758-20b2390e894f/resource/b975beb6-31b3-4ab8-98c3-98765aef8b4a/download/dataset_es_client_outcomes_22-23_table_1.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t048",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/1Air/rea.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t049",
+   "publisher": "alberta_cat:treasuryboardandfinance",
+   "resource_url": "https://open.alberta.ca/dataset/7e66f8a0-ed3c-4eb9-a049-fb15b3490b51/resource/838cc452-c354-42dd-bd9b-8ec959f1e70a/download/blue-book-2019-20-wire-transfer-payments.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t050",
+   "publisher": "ontario_cat:labour-immigration-training-and-skills-development",
+   "resource_url": "https://data.ontario.ca/dataset/6f45e482-023f-4a70-ac77-c448b093e617/resource/170272d9-32ca-4337-b38e-311bcc594d44/download/participants_in_owea_by_cmsm_and_program_2016-17_to_2022-23.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t051",
+   "publisher": "ontario_cat:energy-and-mines",
+   "resource_url": "https://ontario.ca/v1/files/fuel-prices/pumppricesall.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t052",
+   "publisher": "ontario_cat:finance",
+   "resource_url": "https://data.ontario.ca/dataset/c9051b0e-db9d-4421-b981-5c01f5f4e45f/resource/80319925-6bd6-4816-a325-1c2127fd0cea/download/labour-sponsored-investment-funds.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t053",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/b7f03241-bdd6-4fe4-b9f3-3cbbfb856f05/resource/d9492ad9-d2ee-4b16-9fd6-c3c3bfad8e99/download/tab-79.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t054",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/71180f90-802c-41ff-92c7-8eb8513c4273/resource/966b55be-0a1c-44ea-a863-fa035684ac25/download/tab-2-.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t055",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/44f42287-eadd-46d7-a856-d9918d43ed0b/resource/c8a2a3e6-7f8b-41d0-9db2-bae467af2473/download/carrots_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t056",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/6dc97b50-5bbb-482d-8dd5-c9b23cd770dc/resource/05caae97-5ccb-43d5-8c31-a59ec86df2f2/download/energyprices.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t057",
+   "publisher": "ontario_cat:finance",
+   "resource_url": "https://data.ontario.ca/dataset/f6db7f5c-a19f-49e1-9c5d-d8ebe49fd69f/resource/d02df9a9-dfe3-4ac1-bf2a-8c387d7ff73e/download/energy-property-tax-credit-student-residences_csv.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t058",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://data.ontario.ca/dataset/769e155c-4c2e-4acd-ac0c-e6e475d1fcfc/resource/5c70a894-a030-4a79-a3f0-94edabcfc0b4/download/mecp-cdwi-covidrelief-en-utf8-2020-12-18.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t059",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/deb6e8be-5b71-4d4e-8d50-1ae08c8dbf3c/resource/61d62c0e-784a-4061-8bbe-8ee8a42afde7/download/moose_2025.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t060",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/2Water/inlandlakes/crayfish_data.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t061",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/e4137011-a524-4945-a696-015915588df2/resource/d501eed0-5b80-4b60-8bfb-b9fbe84d1f90/download/utilization-by-age-sex-2012-2013-to-2014-2015.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t062",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/3a9595ae-5579-436e-a734-dd37e9858246/resource/a14c8dc2-c196-405d-b1e4-d28959384661/download/investment.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t063",
+   "publisher": "ontario_cat:health",
+   "resource_url": "https://data.ontario.ca/dataset/0987af23-934f-4063-800b-9ae34e9dc10d/resource/5985b461-f741-4b2e-9e7e-1fefa0902b3e/download/fertility_clinic_provider_list_english.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t064",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/4Other/SAC/spill_occurrences_2003-2022.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t065",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/89175dcc-0232-4ce1-b12c-b7c4ba5869bd/resource/60974b8b-637f-42ef-a1b7-d88c3a48574a/download/ae-completion-rates-credential-type-publicly-funded-post-sec-institutions-2023-2024-cohorts.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t066",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/08a9c92a-fffe-4786-8e16-5992f86dad50/resource/4abf11e3-3aaa-4d3b-a5cf-2e48bf9454b6/download/system-program-completions-within-the-alberta-post-secondary-education-system.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t067",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/446cc4d9-6a1a-4a3e-8864-dc3fc202a16d/resource/7ddf03c0-7ce9-409c-9a1b-f9e1380af24f/download/jobvacancies.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t068",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/b7736402-a3c7-49aa-ab40-64533f5e002d/resource/86f0627b-5a05-4339-95b0-b8a101238519/download/pdd-caseload-by-service-type.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t069",
+   "publisher": "ontario_cat:finance",
+   "resource_url": "https://data.ontario.ca/dataset/c78a77af-b182-4c4d-8a1a-95dc8eef2d0c/resource/2e567641-99bd-450e-9b88-58c6a06bd68e/download/fuel-tax-rates-dye-cost_oct_to_dec_2026.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t070",
+   "publisher": "alberta_cat:treasuryboardandfinance",
+   "resource_url": "https://open.alberta.ca/dataset/31035bfe-bdca-4e1c-ba70-af0158223424/resource/0d05c0f4-7ba5-49ee-94ad-cc8f16512cb8/download/data-dictionary-for-open-data_2018-11-16.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t071",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/dataset_-_yof_granting_data_fiscal_year_2013-16.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t072",
+   "publisher": "alberta_cat:municipalaffairs",
+   "resource_url": "https://open.alberta.ca/dataset/496f5f83-08f6-4c9b-9965-7f13d44cb1e5/resource/df1e5df0-cba2-4a43-9082-c1756c7b5945/download/sample-3-year-operating-and-5-year-capital-plan.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t073",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/62663a22-6dde-4da0-bd34-a7d30c410f91/resource/afdedf83-5185-4084-bff3-d5c1ffd0661c/download/fscd-in-planning-caseload-by-region.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t074",
+   "publisher": "ontario_cat:public-and-business-service-delivery-and-procurement",
+   "resource_url": "https://data.ontario.ca/dataset/d96071cd-f306-4f1a-9433-668affc232d9/resource/7925d49d-5b1b-4402-9d28-4da76d7987a2/download/mgcs-onterm-lexicons-ontario-accessibility-reports-en-utf8-2022-02-10.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t075",
+   "publisher": "ontario_cat:municipal-affairs-and-housing",
+   "resource_url": "https://data.ontario.ca/dataset/f747d884-bee8-466f-be95-16766253786c/resource/a805b025-3ec1-4dda-8857-1897d5cfd159/download/mmah-small-rural-funding-en-2019-03-28-v2.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t076",
+   "publisher": "alberta_cat:municipalaffairs",
+   "resource_url": "https://open.alberta.ca/dataset/a45d9548-470f-4d8d-9be7-011ae2f4b93f/resource/2440380c-5b93-4f07-aaba-9dec1dd17489/download/public-library-statistics-2016.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t077",
+   "publisher": "alberta_cat:energy-and-minerals",
+   "resource_url": "https://open.alberta.ca/dataset/382b7a1e-9c34-47c7-9531-38e67ca5441d/resource/94ddf42e-aeb4-4cd1-a0b4-c63c627ebb60/download/energy_royalty_revenue_workbook.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t078",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/aea29685-41cb-4073-8056-165d82bd7faf/resource/b8b0680b-b29c-47c6-8322-360a16b1a24b/download/pdd-waiting-for-services.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t079",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/a66a37b8-4e99-4455-827a-0d56a7c58432/resource/e5a2864e-758d-4d2a-942a-782907f9dbd3/download/table_2.2.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t080",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/1f711bda-8953-46df-a09f-a66035a01717/resource/c26c7fe8-f59e-44f7-ad6a-6f6400b6fe8e/download/enbrd_suspensions_0708-2122.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t081",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/057667ac-8150-4818-bbe6-745bae324d82/resource/b97d3706-cb8f-4b44-ab68-40c9c1eeac46/download/iaeard42177-csv-energy.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t082",
+   "publisher": "alberta_cat:energy",
+   "resource_url": "https://open.alberta.ca/dataset/7be7a829-ec09-44bc-94e5-ca42e0af9b8d/resource/55cd919f-bb7e-47d6-afaf-10611df9ebb4/download/oilsands-projects-map-data-2016-august.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t083",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/81c48bca-938c-413c-8c35-a33f96ed8660/resource/08ad34d5-9e87-49ff-a255-0963f002e0f6/download/number__of_schools_by_board_1819_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t084",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/bfc25c69-84a5-4f6c-bbf2-7528233c3541/resource/ee9631f5-f5b6-47b3-b73b-37d1c60abc9d/download/pdd-service-provider-caseloads-by-region.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t085",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/52a7f71b-ce0e-447f-85f5-fdb7942ba994/resource/ef2f71c7-412b-40c3-996a-4e490af5642e/download/table_4.4.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t086",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/9fdc6aff-4ca4-437a-a204-f1ac275fd148/resource/f844f924-4629-4a86-a706-799752e7db84/download/goaprovincialharvesttoannualallowablecutcomparisoncsvv2.02015-07-28.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t087",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/acc3b920-83c5-4bbb-8c2c-0fb496680325/resource/5c5cfa0e-7ebb-4b5f-8527-f7aabf5d5ed1/download/fscd-cost-by-service-category.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t088",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/2d2c39a7-9318-4db1-8555-a5d105e48619/resource/50549b35-0e39-4853-8842-d55b3cbbecba/download/enbrd_expulsions_0708_2022.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t089",
+   "publisher": "alberta_cat:community-and-social-services",
+   "resource_url": "https://open.alberta.ca/dataset/42b0e6b3-6264-41ad-83e9-ec1962441edf/resource/472bca4f-af5c-4686-84bc-64d8b258d1c2/download/pdd-service-planning-caseload-provincial.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t090",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/05fed7c0-82e8-49e3-80f6-e3cbd38edd38/resource/f4e16f0c-deb0-4a79-a7a4-93f6e89ae603/download/top-20-fee-codes-by-expenditures-2014-2015.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t091",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/d46a91b9-727d-45d6-9e8c-e2b3b265ea5d/resource/239de98d-fbf9-48ef-9f57-c6bd176106c9/download/white-tailed_deer_2025.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t092",
+   "publisher": "ontario_cat:public-and-business-service-delivery-and-procurement",
+   "resource_url": "https://www.doingbusiness.mgs.gov.on.ca/mbs/psb/vordb.nsf/SettingDocView/enterprise_vor_program/$File/enterprise_vor_program.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t093",
+   "publisher": "ontario_cat:tourism-culture-and-gaming",
+   "resource_url": "https://data.ontario.ca/dataset/11bccdd9-6de7-40fb-916f-021f5eff1683/resource/bbbed5b9-f67a-4c3b-a60b-8ddf6712c493/download/tourism_outlook_-_inbound.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t094",
+   "publisher": "ontario_cat:public-and-business-service-delivery-and-procurement",
+   "resource_url": "https://data.ontario.ca/dataset/c707bd8c-1d30-4073-b8db-821ffd33153d/resource/e3dcc5da-a957-4bc2-ab70-cdcb23628469/download/nfp_funding_directory_en3_0.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t095",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/6889a142-7a14-4998-9095-5332bac40703/resource/f94ebc3e-71ce-4706-9603-abe1ac340448/download/fmudetails.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t096",
+   "publisher": "ontario_cat:seniors-and-accessibility",
+   "resource_url": "https://data.ontario.ca/dataset/dd2c8e97-30b2-4dc9-b144-3386eb81ce6c/resource/839f4031-5e0c-4a0b-8e87-5fe85edd5960/download/msaa-2025_2026_salc_annual_funding-english-2025-06-30.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t097",
+   "publisher": "ontario_cat:finance",
+   "resource_url": "https://files.ontario.ca/opendata/tobacco-tax-rates_6.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t098",
+   "publisher": "ontario_cat:finance",
+   "resource_url": "https://data.ontario.ca/dataset/9ae4eb3f-8b65-47f5-98be-57f536db9ac7/resource/ad983180-b2b2-4601-b8da-58a0e5bf1dec/download/65-74-single-pensioner-april-1-to-june_30-2024.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t099",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/d320749e-093a-41ea-97ec-0b01c916a5e5/resource/b4429ca2-ae7d-42f7-bd3f-f641795eefa3/download/forest_resource_mills_2020-21-en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t100",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/a33275b4-5ac4-4347-a39c-62adc2b0d510/resource/73072c55-4db4-4287-b467-c217798acfa7/download/weeklycornprice_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t101",
+   "publisher": "ontario_cat:health",
+   "resource_url": "https://data.ontario.ca/dataset/1b5ff63f-48a1-4db6-965f-ab6acbab9f29/resource/c7f2590f-362a-498f-a06c-da127ec41a33/download/icu_beds.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t102",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/187dbcbc-7cc5-4a41-8e70-f2fa838f88d6/resource/088a23b8-5858-4079-a035-715663f3ed00/download/wild_turkey_2025.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t103",
+   "publisher": "ontario_cat:solicitor-general",
+   "resource_url": "https://data.ontario.ca/dataset/a5d68dba-a739-4361-977c-f8ae7c5f816d/resource/946a1ee5-f362-4f89-9518-f9541f933706/download/cpp_data_list_of_recipients_and_allocations.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t104",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/c0b6ef80-858e-475e-a933-67f0f573a277/resource/ecd6e538-4614-45ca-8fee-7eb4d7903c4d/download/definitions_for_arwoods_2022_en.docx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t105",
+   "publisher": "alberta_cat:energy",
+   "resource_url": "https://open.alberta.ca/dataset/da380caa-ad7f-4bf9-bdc7-9a3d5de1ede7/resource/f74aa451-5e2e-47a5-84c6-a42d297fafdb/download/mefposigoanaturalgasreferencepricecsvv51.02016-06-16.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t106",
+   "publisher": "ontario_cat:education",
+   "resource_url": "https://data.ontario.ca/dataset/b8202094-4d94-49bb-a654-0bdd419f5b42/resource/9cdd8823-3a3d-4af8-815f-467d7edd6393/download/public_school_education_capital_information-en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t107",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/2014-15_mcys_minor_capital_by_program.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t108",
+   "publisher": "alberta_cat:labour-and-immigration",
+   "resource_url": "https://open.alberta.ca/dataset/215f7169-4615-4c13-a58e-413aebd384ca/resource/847aa5c7-6edd-4868-91d8-8385f64540b9/download/lbr-ohs-futures-power-of-perception-building-risk-aware-cultures.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t109",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/safe_homestudies_data_-_2011-12_to_2013-14_updated_-_adm_approved_3.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t110",
+   "publisher": "ontario_cat:economic-development-job-creation-and-trade",
+   "resource_url": "https://files.ontario.ca/opendata/post-doctoral_fellowship.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t111",
+   "publisher": "alberta_cat:agricultureandforestry",
+   "resource_url": "https://open.alberta.ca/dataset/57c6a7bf-e41f-419d-b79b-b35ef49f4899/resource/c3730a57-9ee1-447a-bf77-6fb0c6817ed5/download/tab-82.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t112",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/dc42a1c6-18a6-448c-b1de-8641f8c245dd/resource/696d4e71-8271-46a6-9009-d48ebbcd4c0c/download/mushroom_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t113",
+   "publisher": "ontario_cat:public-and-business-service-delivery-and-procurement",
+   "resource_url": "https://data.ontario.ca/dataset/81326603-f0a5-44e1-a475-ecabb56705d7/resource/9923d4fd-3884-45f8-a731-16df3313939f/download/ontario_art_collection_open_data_set_oct_28_2025.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t114",
+   "publisher": "alberta_cat:jobsskillstrainingandlabour2013-2016",
+   "resource_url": "https://open.alberta.ca/dataset/eb96616f-648e-4448-be4f-881dd8fdc26f/resource/cc6391cd-3ef4-43bd-b4c0-0479d24cab9d/download/stcproportionofimmigrantsbyeconomicregionscsvv3.02014-08-11.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t115",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/d0ab6458-423e-44da-a089-d24ef8e60d82/resource/006503b6-3cc4-45d0-8242-c85e28a11ec0/download/goadesktopejjulie.zhoudesktopgoaprogramcompletionsbycredentialtypev2.02015-07-23.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t116",
+   "publisher": "alberta_cat:advancededucation",
+   "resource_url": "https://open.alberta.ca/dataset/70a152e9-86d5-456c-a4e0-dca2aa7ffcbe/resource/08822809-0223-43ef-92f5-e9da8828bda6/download/stcproportionpopulationwpost-seceducationcsvv3.02015-06-15.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t117",
+   "publisher": "alberta_cat:economicdevelopmentandtrade",
+   "resource_url": "https://open.alberta.ca/dataset/a977452a-17e5-491e-a109-9146f23a3463/resource/684ad288-da98-4a79-b5eb-be9c34d44fa9/download/goadesktopejjulie.zhoudesktopstccansim383-0029realgdpperhourworkedcsvv6.02015-11-30.csv",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t118",
+   "publisher": "ontario_cat:children-community-and-social-services",
+   "resource_url": "https://files.ontario.ca/opendata/mcys_estimates_dataset_0.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t119",
+   "publisher": "ontario_cat:natural-resources",
+   "resource_url": "https://data.ontario.ca/dataset/3d26ebab-fe03-4c99-bce3-9f0af91e1ede/resource/63bfc593-4923-4eb4-bed8-ee97d9fac0b0/download/trapper_harvest_data_1993_2024_27jan2026.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t120",
+   "publisher": "alberta_cat:health",
+   "resource_url": "https://open.alberta.ca/dataset/0aaa90ce-dda9-4d36-a91b-88a19b59c2b8/resource/579c488e-e5e8-41a7-8e75-86e9244f4fca/download/table_4.8.xlsx",
+   "title": "",
+   "license": "ogla"
+  },
+  {
+   "table_id": "t121",
+   "publisher": "ontario_cat:labour-immigration-training-and-skills-development",
+   "resource_url": "https://data.ontario.ca/dataset/f6d89916-4d03-4f81-a200-1d9c81f564ac/resource/134efc5d-8606-49cd-b132-cfed20e3fd35/download/dataset_es_financials_2022-23.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t122",
+   "publisher": "ontario_cat:health",
+   "resource_url": "https://data.ontario.ca/dataset/e560486a-61c2-4949-bd3c-799128518c4a/resource/3968961f-62de-4f1f-bef8-af6226575aa3/download/communication_aids_vendors_en_march_2026.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t123",
+   "publisher": "ontario_cat:agriculture-food-and-rural-affairs",
+   "resource_url": "https://data.ontario.ca/dataset/8969a4bc-5001-4b4b-b309-6d33d9f8cbef/resource/1d30556d-7079-4086-afa9-3a31d9cb43ee/download/potatofcr_en.xlsx",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t124",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/1Air/GHG_by_year/GHG_Data_2010_2024.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t125",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/4Other/PHAP/Pollen_Monitoring_Network_Data_2015_2019.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  },
+  {
+   "table_id": "t126",
+   "publisher": "ontario_cat:environment-conservation-and-parks",
+   "resource_url": "https://files.ontario.ca/moe_mapping/downloads/2Water/GLGCF/GLGCF_EN.csv",
+   "title": "",
+   "license": "ogl-on-1.0"
+  }
+ ]
+}
