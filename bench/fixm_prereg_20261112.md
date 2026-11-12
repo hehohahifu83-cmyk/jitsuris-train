@@ -54,3 +54,9 @@
 - オーストリアは足さない：data.gv.at の CKAN の組織一覧が、試した 3 つの場所すべてで 404（`orgs_austria_20261112.json`・`…b.json`。opendataportal.at も JSON を返さない）。サイトの作りが変わったと見られる。
 - GovData.de の分（g2 の 65 表・451 列 ＋ g2x の 14 表・96 列）を凍結した（数は `independent_eval/results/g2/provenance.json`）。目安の 1,200 列には届かない。読み方（決まり 1〜4）は変えない。区間が広くなるので「確かめられなかった」になりやすいことを結果に書く。
 - 凍結：**452 列・68 表・12 公開元**（1 表 10 列を超えた 20 列・同じ見出しの組 8 表を落とした）。set の SHA-256 `83b708061d2f185917e1b25918070e5a285ca07797bd8b64aa4e55c4e19aa68b`。ラベル用シートは `independent_eval/g2_sheets.py`（非公開の ai-bridge `labels/g2/`）。
+
+## 2026-11-12 11:30 JST 正解の確定と道具の固定（予測の前）
+- 先生 2 人の答え（互いに SHA だけを連絡）：Claude `45bc01c3…60a3`、Codex `f224c19c…35ec8`。一致 421 / 452（93.1%）。31 列を規則で裁定（Codex 29・Claude 2、非公開の ai-bridge `labels/g2/adjudication.md`）。確定ラベルの SHA-256 `b734c0d32b98e0259625419d7692ff77c403acad8ef7be8b203c9dde25690c04`。
+- **採点する列は 228**（S 157。正解が amount の列 5・rate 2・quantity 51）。直し M が狙う金額・率の列がとても少ないので、決まり 1 の +0.5（約 1 列分）は超えても、決まり 4 の区間の下限が 0 を超えるのは難しい見込み。読み方は変えない。
+- 採点：`research/g2/g2_eval.py`（SHA-256 `8bd5f69071a7bed46dc8dec954b3c0313b539b244bed12349d47e67623913f5f`、scikit-learn 1.8.0・NumPy 2.3.5・SciPy 1.17.0 でないと止まる）。予測：`.github/workflows/g2-predict.yml`（G1 と同じ照合）。題名：`independent_eval/results/g2/titles.json`。
+- 予測は Codex の裁定の見直しの返事のあとに 1 回だけ回す。見直しで正解が変われば、採点の道具の正解の SHA の 1 行だけを直して記録する。
