@@ -1,26 +1,28 @@
 {
-  "prediction_metadata_mismatch_accepted": true,
+  "g3_eval_sha256": "b8b37850f5bce4285c57916e20fb6d8635eecc31bc9546edb54f910018d092c1",
+  "workflow_sha256": "be37690399f6292d210322568f7663e627ede9b368f6ad6b6c39e2704af8ab7b",
   "current_without_M": {
     "Funding": [],
     "Students": [],
     "abfall_kwh": []
   },
   "current_with_M": {
-    "Funding": [],
-    "Students": [],
-    "abfall_kwh": []
+    "Funding": ["amount"],
+    "Students": ["quantity"],
+    "abfall_kwh": ["quantity"]
   },
-  "proposed_factory_M": {
-    "Funding": [
-      "amount"
-    ],
-    "Students": [
-      "quantity"
-    ],
-    "abfall_kwh": [
-      "quantity"
-    ]
-  },
+  "M_exception_restoration": "passed",
+  "prediction_origin_negative_checks_rejected": [
+    "set_sha256",
+    "set_id",
+    "weights_sha256",
+    "seed",
+    "titles.sha256",
+    "missing_id",
+    "duplicate_id",
+    "extra_id",
+    "duplicate_input_ids"
+  ],
   "R_module_identity_and_behavior": "passed",
   "context_restoration": "passed",
   "rows": 790,
