@@ -1,0 +1,76 @@
+{
+ "additional_underflow_gap": {
+  "nonzero_decimal": "1e-324 in decimal notation",
+  "current_N": "amount",
+  "should_preserve_precision_stop": true
+ },
+ "candidate_sha256": "d6a73e871fa1931aec7e199b0e1a455755e1bd6e3cb8acbfcb8fff42408c3be2",
+ "cases": [
+  {
+   "synthetic": "0.120000001",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "0.1200000010",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "0.0000000001",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "0.12000000000000001",
+   "precision_stop": false
+  },
+  {
+   "synthetic": "123456789012345678901234567890.0000000001",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "0.125",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "147233988.24099997",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "663216.16324774758",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "1.234,567",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "1,2345",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "1,234.567",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "$0.123",
+   "precision_stop": true
+  },
+  {
+   "synthetic": "$12,345",
+   "precision_stop": false
+  },
+  {
+   "synthetic": "3,205,468",
+   "precision_stop": false
+  },
+  {
+   "synthetic": "159417.82999999999",
+   "precision_stop": false
+  },
+  {
+   "synthetic": "41636.120000000003",
+   "precision_stop": false
+  }
+ ],
+ "equivalent_trailing_zeros_48_cases": "passed",
+ "other_stops_mixed_values_and_exception_restoration": "passed"
+}
