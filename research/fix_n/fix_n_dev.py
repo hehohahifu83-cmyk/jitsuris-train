@@ -62,7 +62,7 @@ def main():
          "| 陣 | 本 | 採点 | 正しい 今→N | 不明 今→N | 重大 今→N | ほか 今→N | 変えた出力 | 当たりに | 悪く | 外れのまま |",
          "|---|---:|---:|---|---|---|---|---:|---:|---:|---:|"]
     detail = []
-    rel_total = {}
+    outside, out_n = [], {}
     for name, jobs in sets.items():
         tot = {"今": [0] * 5, "N": [0] * 5}
         ch = []
@@ -72,29 +72,30 @@ def main():
                 D.EF._PCACHE.clear()
                 p = {}
                 if arm == "N":
-                    released = []
-                    inner = N.n_check_assert
-
-                    def counting(pred, top3, values, header, *x, **y):
-                        out = inner(pred, top3, values, header, *x, **y)
-                        if N._orig(pred, top3, values, header, *x, **y)[1] == "amount_precision" and out[1] != "amount_precision":
-                            released.append(str(header))
-                        return out
-                    N.n_check_assert = counting
-                    try:
-                        with N.use():
-                            r = D.EF.run(j, mv, labels, D.PRODUCT + ("K",), per=p)
-                    finally:
-                        N.n_check_assert = inner
-                    scored_hdr = [str(v[2]) for k, v in p.items()]
-                    unscored = [h for h in released if h not in scored_hdr]
-                    if unscored:
-                        detail.append(f"- {name} 本{i + 1}：採点の範囲外の列で直し N が止めを外した（列名）：{unscored}")
-                    rel_total[name] = rel_total.get(name, 0) + len(released)
+                    with N.use():
+                        r = D.EF.run(j, mv, labels, D.PRODUCT + ("K",), per=p)
                 else:
                     r = D.EF.run(j, mv, labels, D.PRODUCT + ("K",), per=p)
                 tot[arm] = [x + y for x, y in zip(tot[arm], r)]
                 res[arm] = p
+            # 採点の範囲外（正解が空・unknown・S・other・person）の列の最終の答えも、id×本で比べる。
+            # 正解は採点の絞り込みにしか使われない（eval_fixes.run:77）ので、写しの正解を印に置き換えて絞り込みだけを外す。元の正解は変えない。
+            u = {b: [dict(c, truth="__範囲外__") if (not c["truth"] or c["truth"] in ("unknown", "S", "other", "person")) else c for c in cs] for b, cs in j.items()}
+            orig_truth = {c["id"]: c["truth"] for cs in j.values() for c in cs}
+            fin = {}
+            for arm in ("今", "N"):
+                D.EF._PCACHE.clear()
+                q = {}
+                if arm == "N":
+                    with N.use():
+                        D.EF.run(u, mv, labels, D.PRODUCT + ("K",), per=q)
+                else:
+                    D.EF.run(u, mv, labels, D.PRODUCT + ("K",), per=q)
+                fin[arm] = {k: v for k, v in q.items() if v[1] == "__範囲外__"}
+            for k in fin["今"]:
+                if fin["今"][k][0] != fin["N"][k][0]:
+                    outside.append(f"- {name} 本{i + 1} {k} [{str(fin['今'][k][2])[:40]}] 元の正解 {orig_truth[k] or '（空）'}：最終 {fin['今'][k][0]} → {fin['N'][k][0]}")
+                    out_n[name] = out_n.get(name, 0) + 1
             for k in res["今"]:
                 x, y = res["今"][k], res["N"][k]
                 if x[0] != y[0]:
@@ -104,9 +105,9 @@ def main():
         L.append(f"| {name} | {len(jobs)} | {tot['今'][0]} | {tot['今'][1]}→{tot['N'][1]} | {tot['今'][2]}→{tot['N'][2]} | {tot['今'][3]}→{tot['N'][3]} | "
                  f"{tot['今'][4]}→{tot['N'][4]} | {len(ch)} | {good} | {bad} | {len(ch) - good - bad} |")
         detail += [f"- {name} 本{c[0]} {c[1]} [{str(c[2])[:40]}] 正解 {c[3]}：{c[4]} → {c[5]}（値 {' / '.join(v[:18] for v in c[6])}）" for c in ch]
-        print(name, tot, len(ch), good, bad, rel_total.get(name, 0), flush=True)
-    L += ["", "直し N が再確認の止めを外した数（見張りのあとの言い切りの段、採点の範囲外も含む）：" + "、".join(f"{k} {v}" for k, v in rel_total.items()), "",
-          "採点の範囲外（正解が unknown・S・other・person）の列で外したものは、下の「採点の範囲外」の行に列名を書く（無ければ行が無い）。", "",
+        print(name, tot, len(ch), good, bad, out_n.get(name, 0), flush=True)
+    L += ["", f"## 採点の範囲外の列で最終の答えが変わったもの（id×本、{sum(out_n.values())} 件）", "",
+          "正解が空・unknown・S・other・person の列は採点に入らない。そこへの新しい言い切りは重大の数に出ないので、ここに全部書く。", ""] + (outside or ["- なし"]) + ["",
           "## 変えた出力（全部）", ""] + detail
     open(os.path.join(HERE, "fix_n_dev.md"), "w", encoding="utf-8").write("\n".join(L) + "\n")
 

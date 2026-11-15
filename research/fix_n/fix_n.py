@@ -6,20 +6,23 @@ recheck.py の amount_precision（金額なのに小数が 3 桁以上）が、�
 直し N：amount_precision で下げたときだけ、値ごとに「本当に細かい小数か」を次の厳しい決まりで見直し、1 つも無ければ次の規則（確率の低さ）だけを見る。
   - 千の区切り：英語式の厳密な形だけ（通貨の記号は任意、1〜3 桁＋「,3 桁」の繰り返し、小数は「.」の後ろ）。小数カンマ・欧州式・崩れた区切りは今の決まりのまま。
     区切りの後ろの小数は、今と同じく 0 を除いて 3 桁以上なら細かい小数。
-  - 表計算の誤差：「数字.数字」で小数 10 桁以上の値だけ。Decimal で小数 2 桁に丸めた値との差が 1e-8 以下（値の大きさで広げない絶対の上限）なら 2 桁とみなす。
-    それ以外（差が大きい・桁が少ない）は今の決まりのまま。
+  - 表計算の誤差（2026-11-15 Codex の点検で直した）：「数字.数字」の値で、Decimal で小数 2 桁に丸めた値 d2 について、
+    (1) 差が 1e-8 以下（絶対の上限）、かつ (2) 値を倍精度に直したものと d2 を倍精度に直したものの差が 2 ULP 以内（倍精度の表現の揺れだけ）
+    の両方を満たすときだけ 2 桁とみなす。文字の桁数では決めない（0.120000001 と 0.1200000010 は同じ判定、0.0000000001 は止めたまま）。
+    計算の例外（桁が大きすぎるなど）や上の条件を満たさないものは今の決まりのまま。
   - 1 つでも本当に細かい小数が残れば、止めたまま。通貨の記号があるだけでは通さない。元の値は書き換えない。
 ほかの止め（amount_without_cue・手がかりのぶつかり・期間の列名・検査役・rho・辞書・末尾の通貨確認）は変えない。
 使い方：with use(): の中だけ recheck.check_assert を包む（製品の形 PRODUCT は check_assert を置き換えないので、外から包めば効く。
         G2・I1 の直しを入れた形とは組み合わせない。use() は入るときにそれを確かめる）。
 """
+import math
 import re
 from decimal import Decimal, InvalidOperation
 
 import recheck as R
 
 _THOUSANDS = re.compile(r"[-−]?\s*(?:[$€£¥]|R\$|US\$|C\$|CA\$)?\s*\d{1,3}(?:,\d{3})+(?:\.(\d+))?")
-_FLOAT_NOISE = re.compile(r"-?\d+\.(\d{10,})")
+_FLOAT_NOISE = re.compile(r"-?\d+\.\d+")
 _NOISE_MAX = Decimal("1e-8")
 
 
@@ -33,15 +36,24 @@ def truly_precise(v):
     m = _THOUSANDS.fullmatch(v)
     if m:
         return len((m.group(1) or "").rstrip("0")) >= 3
-    m = _FLOAT_NOISE.fullmatch(v)
-    if m:
-        try:
-            d = Decimal(v)
-        except InvalidOperation:
-            return _precise_now(v)
-        if abs(d - d.quantize(Decimal("0.01"))) <= _NOISE_MAX:
-            return False
+    if _precise_now(v) and _FLOAT_NOISE.fullmatch(v) and _float_noise(v):
+        return False
     return _precise_now(v)
+
+
+def _float_noise(v):
+    """v が小数 2 桁の値を倍精度で書き出したときの揺れだけか。例外・範囲外は False（今の止めを保つ）。"""
+    try:
+        d = Decimal(v)
+        d2 = d.quantize(Decimal("0.01"))
+        if abs(d - d2) > _NOISE_MAX:
+            return False
+        x, x2 = float(d), float(d2)
+        if not (math.isfinite(x) and math.isfinite(x2)):
+            return False
+        return abs(x - x2) <= 2 * math.ulp(x2)
+    except (InvalidOperation, OverflowError, ValueError, ArithmeticError):
+        return False
 
 
 _orig = R.check_assert
