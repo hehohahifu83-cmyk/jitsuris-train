@@ -150,25 +150,38 @@ if TITLE:
     for _t, _ttl in json.load(open("materials/pool/titles.json", encoding="utf-8")).items():
         unit_by_table[_t] = unit_by_table.get(_t, "") + TITLE_SEP + _ttl
     print(f"FT_TITLE=1: table titles for {sum(TITLE_SEP in v for v in unit_by_table.values())} tables", flush=True)
+# FT_ROWCTX=1（2026-11-17、方法 T1。bench/table_reading_plan_20261116.md）：列の入力に、同じ表のほかの列の同じ行の値を足す。
+# 行のそろった値（row_values・row_index）を持つのは教材庫だけ。ほかの表には足さない。予測（evaluate_independent.py）も同じ関数で作る
+ROWCTX = os.environ.get("FT_ROWCTX") == "1"
+RCX = None
+if ROWCTX:
+    if not (POOL or POOL_VALONLY):
+        raise SystemExit("FT_ROWCTX は FT_POOL=1（か FT_POOL_VALONLY=1）と一緒に使う（行のそろった値は教材庫にだけある）")
+    from encoder_context import ROWCTX_VERSION, row_context_map
+    _recs = [json.loads(_l) for _f in _pool_files for _l in open(_f, encoding="utf-8") if _l.strip()]
+    for _d in _recs:
+        _d["header"] = _d["header"].lstrip("\ufeff")
+    RCX, _rcx_why = row_context_map(_recs)
+    print(f"FT_ROWCTX=1 ({ROWCTX_VERSION}): row context for {len(RCX)} tables; not aligned {len(_rcx_why)} tables", flush=True)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb, indicator_by_table=IND) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
 if JP3:   # 日本の調達（jtr）と同じ倍率・表あたりの上限。種は別
     real_rows += real_train_rows_with_units(j3tr, 6, 9, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
     print(f"FT_JP3=1: +{len(j3tr)} jp3 source rows ({len({r[4] for r in j3tr})} tables)", flush=True)
 if POOL:
-    real_rows += real_train_rows_with_units(pooltr, POOL_COPIES, 10, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
+    real_rows += real_train_rows_with_units(pooltr, POOL_COPIES, 10, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND, rowctx_by_table=RCX)
     print(f"FT_POOL=1: +{len(pooltr)} pool source rows ({len({r[4] for r in pooltr})} tables) x{POOL_COPIES}; validation {len(poolval)}", flush=True)
 # FT_POOL_HARD_COPIES=k（既定 0＝足さない）：教材庫のうち、先生とモデルが食い違って Claude が裁定した列（batch_*.jsonl の teacher が claude-…）を k 回ぶん余分に足す（2026-10-24）。
 # 今のモデルが迷う列そのものなので、同じ数の列でも学ぶことが多いはず。検証側の表には足さない（pooltr の中だけ）
 POOL_HARD_COPIES = int(os.environ.get("FT_POOL_HARD_COPIES", "0") or 0)
 if undec_tr:
-    real_rows += real_train_rows_with_units(undec_tr, POOL_UNDEC, 12, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
+    real_rows += real_train_rows_with_units(undec_tr, POOL_UNDEC, 12, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND, rowctx_by_table=RCX)
     print(f"FT_POOL_UNDECIDABLE={POOL_UNDEC}: +{len(undec_tr)} undecidable pool rows as other x{POOL_UNDEC}", flush=True)
 if POOL and POOL_HARD_COPIES > 0:
     from pool_families import adjudicated_keys
     _hard_keys = adjudicated_keys(_pool_files)
     _hard = [r for r in pooltr if (str(r[4]), r[0]) in _hard_keys]
-    real_rows += real_train_rows_with_units(_hard, POOL_HARD_COPIES, 11, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
+    real_rows += real_train_rows_with_units(_hard, POOL_HARD_COPIES, 11, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND, rowctx_by_table=RCX)
     print(f"FT_POOL_HARD_COPIES={POOL_HARD_COPIES}: +{len(_hard)} adjudicated pool rows x{POOL_HARD_COPIES}", flush=True)
 # FT_POOL_HARD_LIST=<一覧>（既定なし）：苦手克服モデル（2026-10-26、オーナー指示）。一覧（research/experts/hard_list.py が作る materials/pool/hard_list.jsonl。
 # 本体が間違えた・不明になった列と、それに似た教材）の列を FT_POOL_HARD_LIST_COPIES 回（既定 3）ぶん余分に足す。検証側の表には足さない（pooltr の中だけ）
@@ -180,7 +193,7 @@ if POOL_HARD_LIST:
         raise SystemExit("FT_POOL_HARD_LIST は FT_POOL=1 と一緒に使う")
     _keys = {(d["table"], d["header"]) for d in (json.loads(l) for l in open(POOL_HARD_LIST, encoding="utf-8") if l.strip())}
     pool_hard_list_rows = [r for r in pooltr if (str(r[4]), r[0]) in _keys]
-    real_rows += real_train_rows_with_units(pool_hard_list_rows, POOL_HARD_LIST_COPIES, 13, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
+    real_rows += real_train_rows_with_units(pool_hard_list_rows, POOL_HARD_LIST_COPIES, 13, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND, rowctx_by_table=RCX)
     print(f"FT_POOL_HARD_LIST={POOL_HARD_LIST}: +{len(pool_hard_list_rows)} listed pool rows x{POOL_HARD_LIST_COPIES} (list {len(_keys)})", flush=True)
 print(f"FT_REAL_FRAC={REAL_FRAC:g}: selected {len(selected_tables)}/{len(real_tables)} tables and {len(selected_source_rows)}/{len(all_source_rows)} source rows; expanded real rows {len(real_rows)}; synthetic rows unchanged", flush=True)
 rows = syn + real_rows
@@ -194,7 +207,7 @@ if VAL_MODE:   # 検証モードでは固定の試験を評価しない（検証
     tests = {}
     for _name, _vr in (("検証（一般）", gval), ("検証（業務）", bval), ("検証（業務2）", b2val), ("検証（日本の調達）", jval), ("検証（jp3）", j3val), ("検証（教材庫）", poolval)):
         if _vr:
-            tests[_name] = attach_unit_context(_vr, unit_by_table, IND)
+            tests[_name] = attach_unit_context(_vr, unit_by_table, IND, RCX if _name == "検証（教材庫）" else None)
     print("FT_VAL=1: 検証モード（固定の試験は評価しない）。検証の行数 " + ", ".join(f"{k} {len(v)}" for k, v in tests.items()), flush=True)
 
 
@@ -202,7 +215,7 @@ CTX_UNIT = os.environ.get("FT_CTX_UNIT") == "1"  # 同じ表の UNIT / Unit / �
 VAL_PROF = os.environ.get("FT_VALPROF") == "1"  # W3a：値の形（value_profile.py）を値の直後に足す（既定オフ。オフなら入力の文は従来と同じ）
 
 def text(r, prefix):
-    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT, val_profile=VAL_PROF, title=TITLE)
+    return format_encoder_text(r, prefix, ctx_unit=CTX_UNIT, val_profile=VAL_PROF, title=TITLE, row_ctx=ROWCTX)
 
 
 def run(model_name, prefix, out):

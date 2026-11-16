@@ -155,6 +155,9 @@ def checkpoint_info(checkpoint_dir):
         "val_select": str(env.get("FT_VALSEL", "")) == "1",
         "unit_ext": str(env.get("FT_UNITX", "")) == "1",
         "title": str(env.get("FT_TITLE", "")) == "1",
+        # 2026-11-17 方法 T1：同じ行のほかの列の値（FT_ROWCTX）。決まりは manifest の extra.row_context
+        "row_ctx": str(env.get("FT_ROWCTX", "")) == "1",
+        "row_ctx_spec": extra.get("row_context"),
         "seed": (manifest.get("run") or {}).get("seed"),
         "labels": labels,
         "train_commit": manifest.get("commit"),
@@ -164,7 +167,27 @@ def checkpoint_info(checkpoint_dir):
 def texts_of(rows, info, title=False):
     """モデルに入れる文字列（学習・評価と同じ encoder_context.format_encoder_text）。title=True は rows の単位の欄に題名が入っているとき（--titles）。"""
     from encoder_context import format_encoder_text
-    return [format_encoder_text(r, info["prefix"], ctx_unit=info["ctx_unit"], val_profile=info.get("val_profile", False), title=title) for r in rows]
+    return [format_encoder_text(r, info["prefix"], ctx_unit=info["ctx_unit"], val_profile=info.get("val_profile", False), title=title,
+                                row_ctx=info.get("row_ctx", False)) for r in rows]
+
+
+def with_row_contexts(rows, set_data, info):
+    """FT_ROWCTX の重み：主セットの row_context（表 → {headers, rows}、凍結のときに encoder_context.table_row_context で作ったもの）から、
+    学習と同じ with_row_context で同じ行の文を付ける。決まりの版が学習と違えば止まる。主セットに row_context が無ければ止まる。"""
+    import encoder_context as ec
+    spec = info.get("row_ctx_spec") or {}
+    want = {"version": ec.ROWCTX_VERSION, "rows": ec.ROWCTX_ROWS, "max_cols": ec.ROWCTX_MAX_COLS, "max_cell": ec.ROWCTX_MAX_CELL, "max_header": ec.ROWCTX_MAX_HEADER}
+    if spec != want:
+        raise SystemExit(f"同じ行の文の決まりが学習（{spec}）と今の道具（{want}）で違う")
+    rc = set_data.get("row_context")
+    if not isinstance(rc, dict):
+        raise SystemExit("FT_ROWCTX の重みなのに、主セットに row_context（表ごとの同じ行の値）が無い")
+    out = []
+    for r, c in zip(rows, set_data["columns"]):
+        out.append(r[:4] + (ec.with_row_context(r[4], rc.get(c.get("table") or ""), r[0]),))
+    meta = {"version": ec.ROWCTX_VERSION, "tables_with_context": len(rc),
+            "columns_with_context": sum(ec.ROW_SEP in r[4] for r in out), "columns": len(out)}
+    return out, meta
 
 
 def with_titles(rows, set_data, titles):
@@ -271,6 +294,9 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
         raw_t = read_bytes(titles_path)
         model_rows = with_titles(model_rows, set_data, json.loads(raw_t.decode("utf-8")))
         titles_meta = {"path": titles_path, "sha256": sha256_bytes(raw_t), "columns_with_title": sum(TITLE_SEP in r[4] for r in model_rows)}
+    rowctx_meta = None
+    if info.get("row_ctx"):   # 題名の後に付ける（format_encoder_text は ROW_SEP を先に切り分ける）
+        model_rows, rowctx_meta = with_row_contexts(model_rows, set_data, info)
     variants = [model_rows] + (tta_variants(model_rows, set_data, tta) if tta else [])
     probs, seconds = None, 0.0
     for vr in variants:   # tta：元の行と k 個の変え方の確率の平均（見張り以降は元の rows のまま）
@@ -291,6 +317,7 @@ def predict(set_path, checkpoint_dir, out_path, ledger_path=None, device="cpu", 
            "input": {k: info.get(k, False) for k in ("val_select", "unit_ext", "title")},
            "labels": info["labels"], "device": device,
            **({"titles": titles_meta} if titles_meta else {}),
+           **({"row_context": rowctx_meta} if rowctx_meta else {}),
            **({"tta": {"k": tta, "salt": TTA_SALT, "values": 5}} if tta else {}),
            "timing": {"columns": len(rows), "seconds": round(float(seconds), 3), "ms_per_column": round(1000 * float(seconds) / len(rows), 3)},
            "rows": preds}

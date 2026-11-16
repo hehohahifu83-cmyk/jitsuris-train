@@ -101,6 +101,8 @@ print(f"model_type={MODEL_TYPE} params={sum(p.numel() for p in model.parameters(
 AUG = os.environ.get("FT_AUG") == "1"  # 入れ方の水増し（教育方針の改訂の3）：毎回、値の選び方・並べ方・文脈の列・書き方を変える。試験は固定の text() のまま
 if AUG and os.environ.get("FT_VALPROF") == "1":
     raise SystemExit("FT_AUG=1 と FT_VALPROF=1 は同時に使えない（text_aug は値の形を入れない）")
+if AUG and os.environ.get("FT_ROWCTX") == "1":
+    raise SystemExit("FT_AUG=1 と FT_ROWCTX=1 は同時に使えない（text_aug は同じ行の値を入れない）")
 def text_aug(r, prefix):
     h, v = r[0], [str(x) for x in r[1]]; ctx = list(r[3]) if len(r) > 3 and r[3] else []
     pick = random.random()
@@ -117,6 +119,12 @@ def text_aug(r, prefix):
     if form == 0: return f"{prefix}列名: {h} | 値: {vals} | 同じ表の列: {cs}"
     if form == 1: return f"{prefix}{h}: {vals} （同じ表: {cs}）"
     return f"{prefix}列「{h}」の値は {vals}。同じ表には {cs} がある。"
+def _rowctx_spec():
+    """FT_ROWCTX=1 のときの同じ行の文の決まり（予測で同じ文を作るために manifest に残す）。オフなら None。"""
+    if os.environ.get("FT_ROWCTX") != "1":
+        return None
+    import encoder_context as _ec
+    return {"version": _ec.ROWCTX_VERSION, "rows": _ec.ROWCTX_ROWS, "max_cols": _ec.ROWCTX_MAX_COLS, "max_cell": _ec.ROWCTX_MAX_CELL, "max_header": _ec.ROWCTX_MAX_HEADER}
 train_setup_start = time.time()
 train_rows = rows
 per_label_limit = os.environ.get("FT_LIMIT_PER_LABEL")
@@ -222,7 +230,7 @@ manifest = provenance.build_manifest(
     model_name=NAME, hf_repo_id=provenance.hf_repo_id_from_path(NAME), epochs=EPOCHS, seed=seed_text or "default", labels=labels,
     train_rows=train_rows, replay_rows=replay_rows, tests={tn: provenance.rows_digest(te) for tn, te in tests.items()},
     source_model_dir=(init_model_path or (NAME if os.path.isdir(NAME) else None)),
-    extra={"model_type": MODEL_TYPE, "config_changes": config_changes, "no_dropout": NO_DROPOUT, "dropout_override": DROPOUT, "prefix": PREFIX, "max_length": MAX_LEN,
+    extra={"model_type": MODEL_TYPE, "config_changes": config_changes, "no_dropout": NO_DROPOUT, "dropout_override": DROPOUT, "prefix": PREFIX, "max_length": MAX_LEN, "row_context": _rowctx_spec(),
            "token_stats": token_stats, "request_args": _args_txt, "device": DEV,
            "gpu": (torch.cuda.get_device_name(0) if DEV == "cuda" else None), "eval_mode": "validation" if os.environ.get("FT_VAL") == "1" else "fixed_tests"})
 manifest["status"] = "started"

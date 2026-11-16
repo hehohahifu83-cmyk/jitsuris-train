@@ -97,9 +97,12 @@ def _with_indicator(header, unit_full, indicator_by_table, table):
     return unit_for(header, unit, indicator_by_table.get(table, "")) + sep + ttl
 
 
-def attach_unit_context(rows, by_table, indicator_by_table=None):
-    """評価用の5列tupleへ、同一表の単位欄の短い値だけを追加する。"""
-    return [tuple(row[:4]) + (_with_indicator(row[0], by_table.get(row[4], ""), indicator_by_table, row[4]),) if len(row) >= 5 else tuple(row) for row in rows]
+def attach_unit_context(rows, by_table, indicator_by_table=None, rowctx_by_table=None):
+    """評価用の5列tupleへ、同一表の単位欄の短い値だけを追加する。rowctx_by_table を渡すと同じ行の文も付ける（FT_ROWCTX）。"""
+    def unit(row):
+        u = _with_indicator(row[0], by_table.get(row[4], ""), indicator_by_table, row[4])
+        return with_row_context(u, rowctx_by_table.get(row[4]), row[0]) if rowctx_by_table is not None else u
+    return [tuple(row[:4]) + (unit(row),) if len(row) >= 5 else tuple(row) for row in rows]
 
 
 LOAD_REAL_JUNK = {"nan", "None", "", "NaN", "null", "NULL"}   # exp7.JUNK と同じ（load_real が外す値）
@@ -120,7 +123,7 @@ def load_rows_valsel(files, junk=LOAD_REAL_JUNK):
     return out
 
 
-def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, perturb_header, per_table=30, indicator_by_table=None):
+def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, perturb_header, per_table=30, indicator_by_table=None, rowctx_by_table=None):
     """exp7.real_train_rows と同じ抽出・水増しを行い、単位例を第5要素として保持する。"""
     rng = random.Random(seed)
     by = defaultdict(list)
@@ -135,6 +138,8 @@ def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, pe
         if label == "other" and not keep_other:
             continue
         unit = _with_indicator(header, unit_by_table.get(table, ""), indicator_by_table, table)
+        if rowctx_by_table is not None:   # 同じ行の文は元の列名で自分を除いて作る（水増しで列名を変える前）
+            unit = with_row_context(unit, rowctx_by_table.get(table), header)
         for _ in range(copies):
             vals = rng.sample(values, max(1, int(len(values) * rng.uniform(0.6, 1.0)))) if values else []
             ctx = rng.sample(context, max(1, int(len(context) * rng.uniform(0.4, 1.0)))) if context and rng.random() < 0.8 else None
@@ -142,7 +147,7 @@ def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, pe
     return out
 
 
-def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False, title=False):
+def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False, title=False, row_ctx=False):
     """従来の encoder 入力。ctx_unit=True のときだけ UNIT 例を末尾に追加する。
     val_profile=True（W3a、FT_VALPROF=1）のときだけ、値の直後に「値の形」（value_profile.py）を入れる。切り詰めで先に落ちるのが同じ表の列名になるよう、値の直後に置く。"""
     header, values = row[0], row[1]
@@ -153,10 +158,13 @@ def format_encoder_text(row, prefix="", ctx_unit=False, val_profile=False, title
         prof = value_profile(values[:5])
         shape = f" | 値の形: {prof}" if prof else ""
     unit = row[4] if len(row) > 4 else ""
-    unit, _, table_title = str(unit or "").partition(TITLE_SEP)
+    unit, _, row_text = str(unit or "").partition(ROW_SEP)   # FT_ROWCTX：同じ行の文は単位の欄の最後（無ければ空）
+    unit, _, table_title = unit.partition(TITLE_SEP)
     # title=True（FT_TITLE=1、2026-10-25）：表の題名を値の後に入れる（research/root-cause-audit-2026-10-24.md 原因 3：件数か金額かは題名で決まる列が多い）
     ttl = f" | 表の題名: {table_title[:40]}" if title and table_title else ""
-    base = f"{prefix}列名: {header} | 値: {', '.join(str(x)[:30] for x in values[:5])}{shape}{ttl} | 同じ表の列: {', '.join(str(x)[:20] for x in context[:12])}"
+    # row_ctx=True（FT_ROWCTX=1、方法 T1）：同じ行のほかの列の値を、題名の後・同じ表の列名の前に入れる
+    rctx = f" | 同じ行: {row_text}" if row_ctx and row_text else ""
+    base = f"{prefix}列名: {header} | 値: {', '.join(str(x)[:30] for x in values[:5])}{shape}{ttl}{rctx} | 同じ表の列: {', '.join(str(x)[:20] for x in context[:12])}"
     if ctx_unit and unit:
         base += f" | 同じ表の単位列の値: {str(unit)[:240]}"
     return base
@@ -242,3 +250,74 @@ def apply_value_fix(rows, files):
         bad = [t for t in want if seen.get(t, 0) != want[t]][:3]
         raise SystemExit(f"FT_VALUEFIX：一覧の列の数が教材と合わない {bad}")
     return out, sum(seen.values())
+
+
+# ---------------------------------------------------------------- 方法 T1：同じ行のほかの列の値（FT_ROWCTX=1）
+# 2026-11-17 Claude（bench/table_reading_plan_20261116.md の改訂の節。Codex の点検 bench/table_reading_review_codex_20261116.md）。
+# 列ごとの入力に、同じ表のほかの列の「同じ行の値」を足す。行は表の id と元の行番号（row_index）の固定のハッシュで ROWCTX_ROWS 行を選び、
+# 同じ表の全列で同じ行にする。ラベル・列名・予測では選ばない。行がそろわない表（row_index の不一致・重複・長さの違い・同じ列名が 2 つ以上）には足さない。
+# 既定はオフで、オフなら入力の文は今までと同じ。学習（encoder_exp.py）と予測（evaluate_independent.py）で同じ関数を通す。
+ROW_SEP = "\x1d"          # 単位の欄の最後に、作った「同じ行」の文を付けるときの区切り（TITLE_SEP より後ろ）
+ROWCTX_VERSION = "rowctx-v1"
+ROWCTX_ROWS = 2           # 足す行の数
+ROWCTX_MAX_COLS = 9       # 足すほかの列の数の上限（元の列の順に先頭から）
+ROWCTX_MAX_CELL = 24      # 1 つの値の文字の上限
+ROWCTX_MAX_HEADER = 20    # ほかの列の名前の文字の上限
+
+
+def table_row_context(table, cols):
+    """cols：同じ表の列（元の列の順）の dict（header・row_values・row_index）。(文脈 or None, 理由 or None) を返す。
+    文脈：{"headers": [...], "rows": [[値, ...], ...]}（rows は選んだ行ごと、headers と同じ順）。"""
+    import hashlib
+    if not cols:
+        return None, "列が無い"
+    heads = [str(c.get("header")) for c in cols]
+    if len(set(heads)) != len(heads):
+        return None, "同じ列名が 2 つ以上"
+    ri = [tuple(c.get("row_index") or ()) for c in cols]
+    if any(not r for r in ri):
+        return None, "row_index が空の列がある"
+    if len(set(ri)) != 1:
+        return None, "列ごとに row_index が違う"
+    idx = list(ri[0])
+    if len(set(idx)) != len(idx):
+        return None, "同じ行番号の重複"
+    if any(len(c.get("row_values") or []) != len(idx) for c in cols):
+        return None, "row_values と row_index の長さが違う"
+    key = lambda p: hashlib.sha256(f"{table}|{idx[p]}".encode("utf-8")).hexdigest()  # noqa: E731
+    pos = sorted(sorted(range(len(idx)), key=key)[:ROWCTX_ROWS])
+    return {"headers": heads, "rows": [[str(c["row_values"][p]) for c in cols] for p in pos]}, None
+
+
+def row_context_map(records):
+    """records：教材庫の行の dict（table・header・row_values・row_index）。表ごとの文脈と、足さない表の理由を返す。列の順は records の順。"""
+    by = defaultdict(list)
+    for d in records:
+        by[d["table"]].append(d)
+    ctx, why = {}, {}
+    for t, cols in by.items():
+        c, w = table_row_context(t, cols)
+        if c is None:
+            why[t] = w
+        else:
+            ctx[t] = c
+    return ctx, why
+
+
+def render_row_context(ctx, header):
+    """対象の列（header）を除いて「名前=値; …」を行ごとに作り、行を「 / 」でつなぐ。足すものが無ければ空。"""
+    if not ctx:
+        return ""
+    keep = [i for i, h in enumerate(ctx["headers"]) if h != str(header)][:ROWCTX_MAX_COLS]
+    if not keep:
+        return ""
+    rows = []
+    for r in ctx["rows"]:
+        rows.append("; ".join(f"{ctx['headers'][i][:ROWCTX_MAX_HEADER]}={str(r[i]).strip()[:ROWCTX_MAX_CELL]}" for i in keep))
+    return " / ".join(rows)
+
+
+def with_row_context(unit_full, ctx, header):
+    """単位の欄（単位の例＋TITLE_SEP＋題名）の最後に ROW_SEP＋同じ行の文を付ける。足すものが無ければ元のまま。"""
+    txt = render_row_context(ctx, header)
+    return f"{unit_full}{ROW_SEP}{txt}" if txt else unit_full
