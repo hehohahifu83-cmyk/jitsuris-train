@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections import defaultdict
 import os
 import re
 import sys
@@ -179,13 +180,32 @@ def with_row_contexts(rows, set_data, info):
     want = {"version": ec.ROWCTX_VERSION, "rows": ec.ROWCTX_ROWS, "max_cols": ec.ROWCTX_MAX_COLS, "max_cell": ec.ROWCTX_MAX_CELL, "max_header": ec.ROWCTX_MAX_HEADER}
     if spec != want:
         raise SystemExit(f"同じ行の文の決まりが学習（{spec}）と今の道具（{want}）で違う")
-    rc = set_data.get("row_context")
-    if not isinstance(rc, dict):
-        raise SystemExit("FT_ROWCTX の重みなのに、主セットに row_context（表ごとの同じ行の値）が無い")
+    rc, none = set_data.get("row_context"), set_data.get("row_context_none")
+    if not isinstance(rc, dict) or not isinstance(none, dict):
+        raise SystemExit("FT_ROWCTX の重みなのに、主セットに row_context（表ごとの同じ行の値）と row_context_none（付けない表と理由）が無い")
+    cols = set_data["columns"]
+    if len(rows) != len(cols):
+        raise SystemExit("行の数と主セットの列の数が違う")
+    tables = defaultdict(list)
+    for c in cols:
+        tables[c.get("table") or ""].append(str(c["header"]))
+    # 2026-11-17 Codex の点検 2：どの表も、文脈か付けない理由のどちらか 1 つだけ。文脈の列は主セットのその表の列と同じ並び。形が違えば止まる
+    for t, heads in tables.items():
+        if (t in rc) == (t in none):
+            raise SystemExit(f"表 {t}：row_context と row_context_none のどちらか 1 つだけに入っていない")
+        if t in none and not str(none[t]).strip():
+            raise SystemExit(f"表 {t}：文脈を付けない理由が空")
+        if t in rc and rc[t]["headers"] != heads:
+            raise SystemExit(f"表 {t}：文脈の列が主セットのその表の列（順も）と違う")
+    if set(rc) - set(tables) or set(none) - set(tables):
+        raise SystemExit("主セットに無い表の文脈がある")
     out = []
-    for r, c in zip(rows, set_data["columns"]):
-        out.append(r[:4] + (ec.with_row_context(r[4], rc.get(c.get("table") or ""), r[0]),))
-    meta = {"version": ec.ROWCTX_VERSION, "tables_with_context": len(rc),
+    try:
+        for r, c in zip(rows, cols):
+            out.append(r[:4] + (ec.with_row_context(r[4], rc.get(c.get("table") or ""), r[0]),))
+    except ValueError as e:
+        raise SystemExit(f"文脈の形が違う：{e}")
+    meta = {"version": ec.ROWCTX_VERSION, "tables_with_context": len(rc), "tables_without_context": dict(sorted(none.items())),
             "columns_with_context": sum(ec.ROW_SEP in r[4] for r in out), "columns": len(out)}
     return out, meta
 

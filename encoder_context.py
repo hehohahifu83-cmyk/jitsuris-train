@@ -139,7 +139,9 @@ def real_train_rows_with_units(rows, copies, seed, keep_other, unit_by_table, pe
             continue
         unit = _with_indicator(header, unit_by_table.get(table, ""), indicator_by_table, table)
         if rowctx_by_table is not None:   # 同じ行の文は元の列名で自分を除いて作る（水増しで列名を変える前）
-            unit = with_row_context(unit, rowctx_by_table.get(table), header)
+            _ctx = rowctx_by_table.get(table)
+            if _ctx and str(header) in _ctx["headers"]:   # 文脈に使える列の集合に入っていない列（決められない列の足しなど）には付けない
+                unit = with_row_context(unit, _ctx, header)
         for _ in range(copies):
             vals = rng.sample(values, max(1, int(len(values) * rng.uniform(0.6, 1.0)))) if values else []
             ctx = rng.sample(context, max(1, int(len(context) * rng.uniform(0.4, 1.0)))) if context and rng.random() < 0.8 else None
@@ -289,10 +291,14 @@ def table_row_context(table, cols):
     return {"headers": heads, "rows": [[str(c["row_values"][p]) for c in cols] for p in pos]}, None
 
 
-def row_context_map(records):
-    """records：教材庫の行の dict（table・header・row_values・row_index）。表ごとの文脈と、足さない表の理由を返す。列の順は records の順。"""
+def row_context_map(records, allowed=None):
+    """records：教材庫の行の dict（table・header・row_values・row_index）。表ごとの文脈と、足さない表の理由を返す。列の順は records の順。
+    allowed：文脈に使ってよい列の (表, 列名) の集合（2026-11-17 Codex の点検 1）。学習ではモデルに渡す行（付け直しで S・unknown にして外した列は入らない）、
+    評価では主セットの列だけ。入っていない列は文脈にも入れない（除いた列を文脈で戻さない）。None は全部（試験用）。"""
     by = defaultdict(list)
     for d in records:
+        if allowed is not None and (d["table"], str(d["header"])) not in allowed:
+            continue
         by[d["table"]].append(d)
     ctx, why = {}, {}
     for t, cols in by.items():
@@ -304,10 +310,27 @@ def row_context_map(records):
     return ctx, why
 
 
+def check_row_context(ctx, header):
+    """文脈の形を確かめる（2026-11-17 Codex の点検 2）。違えば ValueError。
+    headers は重ならない文字列の並び、rows は 1〜ROWCTX_ROWS 行で各行は headers と同じ幅の文字列、対象の列名はちょうど 1 回入っている。"""
+    if not isinstance(ctx, dict) or set(ctx) != {"headers", "rows"}:
+        raise ValueError("文脈は headers と rows だけを持つ dict")
+    heads, rows = ctx["headers"], ctx["rows"]
+    if not isinstance(heads, list) or not all(isinstance(h, str) for h in heads) or len(set(heads)) != len(heads):
+        raise ValueError("headers は重ならない文字列の並び")
+    if not isinstance(rows, list) or not 1 <= len(rows) <= ROWCTX_ROWS:
+        raise ValueError(f"rows は 1〜{ROWCTX_ROWS} 行")
+    if any(not isinstance(r, list) or len(r) != len(heads) or not all(isinstance(v, str) for v in r) for r in rows):
+        raise ValueError("各行は headers と同じ幅の文字列の並び")
+    if heads.count(str(header)) != 1:
+        raise ValueError(f"対象の列 {header!r} が文脈にちょうど 1 回入っていない")
+
+
 def render_row_context(ctx, header):
-    """対象の列（header）を除いて「名前=値; …」を行ごとに作り、行を「 / 」でつなぐ。足すものが無ければ空。"""
+    """対象の列（header）を除いて「名前=値; …」を行ごとに作り、行を「 / 」でつなぐ。足すものが無ければ空。文脈の形が違えば ValueError。"""
     if not ctx:
         return ""
+    check_row_context(ctx, header)
     keep = [i for i, h in enumerate(ctx["headers"]) if h != str(header)][:ROWCTX_MAX_COLS]
     if not keep:
         return ""

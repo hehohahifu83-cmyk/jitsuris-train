@@ -82,17 +82,52 @@ class RowContextTest(unittest.TestCase):
         ctx, _ = ec.table_row_context(T, COLS)
         spec = {"version": ec.ROWCTX_VERSION, "rows": ec.ROWCTX_ROWS, "max_cols": ec.ROWCTX_MAX_COLS, "max_cell": ec.ROWCTX_MAX_CELL, "max_header": ec.ROWCTX_MAX_HEADER}
         info = {"row_ctx": True, "row_ctx_spec": spec, "prefix": "", "ctx_unit": False}
-        set_data = {"columns": [{"header": "Alberta", "values": ["1"], "siblings": ["When"], "table": "t001"}], "row_context": {"t001": ctx}}
-        rows = [("Alberta", ["1"], "", ["When"], "")]
+        cols = [{"header": h, "values": ["1"], "siblings": [], "table": "t001"} for h in ctx["headers"]] + [{"header": "X", "values": ["1"], "siblings": [], "table": "t002"}]
+        set_data = {"columns": cols, "row_context": {"t001": ctx}, "row_context_none": {"t002": "同じ列名が 2 つ以上"}}
+        rows = [(c["header"], ["1"], "", ["When"], "") for c in cols]
         out, meta = ev.with_row_contexts(rows, set_data, info)
         train_unit = ec.with_row_context("", ctx, "Alberta")
-        self.assertEqual(out[0][4], train_unit)
-        self.assertEqual(meta["columns_with_context"], 1)
-        self.assertEqual(ev.texts_of(out, info), [ec.format_encoder_text(("Alberta", ["1"], "", ["When"], train_unit), "", row_ctx=True)])
+        self.assertEqual(out[2][4], train_unit)
+        self.assertEqual(meta["columns_with_context"], 3)
+        self.assertEqual(out[3][4], "")   # 理由つきで付けない表
+        self.assertEqual(ev.texts_of(out[2:3], info), [ec.format_encoder_text(("Alberta", ["1"], "", ["When"], train_unit), "", row_ctx=True)])
         with self.assertRaises(SystemExit):
             ev.with_row_contexts(rows, {"columns": set_data["columns"]}, info)
+        bad_sets = [dict(set_data, row_context={}),                                   # 表の文脈が黙って消える
+                    dict(set_data, row_context_none={}),                              # 付けない表の理由が無い
+                    dict(set_data, row_context_none={"t002": "x", "t001": "y"}),      # 両方に入る
+                    dict(set_data, row_context={"t001": dict(ctx, headers=["When", "Alberta", "ValueType"])}),   # 並びが違う
+                    dict(set_data, row_context={"t001": dict(ctx, rows=ctx["rows"] + [ctx["rows"][0]])}),        # 3 行
+                    dict(set_data, row_context={"t001": dict(ctx, headers=["When", "Amount", "Amount"])})]       # 同じ名前
+        for bad in bad_sets:
+            with self.assertRaises(SystemExit):
+                ev.with_row_contexts(rows, bad, info)
+        with self.assertRaises(SystemExit):
+            ev.with_row_contexts(rows[:-1], set_data, info)                           # 行と列の数の違い
         with self.assertRaises(SystemExit):
             ev.with_row_contexts(rows, set_data, dict(info, row_ctx_spec=dict(spec, rows=3)))
+
+
+    def test_excluded_columns_do_not_come_back(self):
+        # Codex の反例：付け直しで S にして外した列（Dropped）は、ほかの列の文脈にも入らない
+        recs = [dict(col("Dropped", ["secret1", "secret2"], [1, 2]), table=T), dict(col("Kept", ["a", "b"], [1, 2]), table=T)]
+        ctx, _ = ec.row_context_map(recs, allowed={(T, "Kept")})
+        self.assertEqual(ctx[T]["headers"], ["Kept"])
+        self.assertEqual(ec.render_row_context(ctx[T], "Kept"), "")
+        rows = ec.attach_unit_context([("Kept", ["a"], "category", [], T)], {}, None, ctx)
+        self.assertNotIn("secret", rows[0][4])
+
+    def test_render_rejects_bad_shapes(self):
+        ctx, _ = ec.table_row_context(T, COLS)
+        for bad, h in ((dict(ctx, headers=["Amount", "Amount", "X"]), "Amount"), (ctx, "AMOUNT"),
+                       (dict(ctx, rows=ctx["rows"] * 2), "Alberta"), (dict(ctx, rows=[["1"]]), "Alberta"), (dict(ctx, extra=1), "Alberta")):
+            with self.assertRaises(ValueError):
+                ec.render_row_context(bad, h)
+
+    def test_training_skips_columns_outside_context(self):
+        ctx, _ = ec.table_row_context(T, COLS)
+        out = ec.real_train_rows_with_units([("Extra", ["1"], "other", [], T)], 1, 1, True, {}, lambda rng, h: h, rowctx_by_table={T: ctx})
+        self.assertNotIn(ec.ROW_SEP, out[0][4])
 
 
 if __name__ == "__main__":

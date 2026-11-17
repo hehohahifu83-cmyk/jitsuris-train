@@ -161,7 +161,9 @@ if ROWCTX:
     _recs = [json.loads(_l) for _f in _pool_files for _l in open(_f, encoding="utf-8") if _l.strip()]
     for _d in _recs:
         _d["header"] = _d["header"].lstrip("\ufeff")
-    RCX, _rcx_why = row_context_map(_recs)
+    # 文脈に使う列は、モデルに渡す教材庫の行（pool_all、付け直しで外した列は入らない）と同じ集合だけ（Codex の点検 1）
+    _allowed = {(str(r[4]), str(r[0])) for r in pool_all}
+    RCX, _rcx_why = row_context_map(_recs, allowed=_allowed)
     print(f"FT_ROWCTX=1 ({ROWCTX_VERSION}): row context for {len(RCX)} tables; not aligned {len(_rcx_why)} tables", flush=True)
 syn = build_train({"syn": 400, "muni": 2, "cur": 4}, split_curriculum()[0])
 real_rows = real_train_rows_with_units(gtr, 3, 5, True, unit_by_table, perturb, indicator_by_table=IND) + real_train_rows_with_units(btr, 6, 6, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND) + real_train_rows_with_units(b2tr, 6, 7, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND) + real_train_rows_with_units(jtr, 6, 8, True, unit_by_table, perturb, per_table=60, indicator_by_table=IND)
