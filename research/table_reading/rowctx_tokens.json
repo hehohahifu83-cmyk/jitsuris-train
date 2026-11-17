@@ -1,0 +1,90 @@
+{
+ "tokenizer": "intfloat/multilingual-e5-base",
+ "revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+ "max_length": 256,
+ "rows": 4561,
+ "spec": {
+  "version": "rowctx-v1",
+  "rows": 2,
+  "max_cols": 9,
+  "max_cell": 24,
+  "max_header": 20
+ },
+ "control-256": {
+  "tokens": {
+   "mean": 105.1,
+   "p50": 104,
+   "p95": 150,
+   "max": 230
+  },
+  "truncated_at_256": 0.0,
+  "truncated_at_160": 0.0314,
+  "kept_within_256": {
+   "値まで（全部）": {
+    "rows": 4561,
+    "kept": 4561,
+    "share": 1.0
+   },
+   "題名（全部）": {
+    "rows": 4516,
+    "kept": 4516,
+    "share": 1.0
+   },
+   "同じ行の 1 行目（全部）": {
+    "rows": 0,
+    "kept": 0,
+    "share": null
+   },
+   "同じ行の 2 行目（全部）": {
+    "rows": 0,
+    "kept": 0,
+    "share": null
+   },
+   "同じ表の列（始まり）": {
+    "rows": 4561,
+    "kept": 4561,
+    "share": 1.0
+   }
+  },
+  "rows_with_row_context": 0
+ },
+ "T1-256": {
+  "tokens": {
+   "mean": 249.7,
+   "p50": 253,
+   "p95": 366,
+   "max": 530
+  },
+  "truncated_at_256": 0.4935,
+  "truncated_at_160": 0.8584,
+  "kept_within_256": {
+   "値まで（全部）": {
+    "rows": 4561,
+    "kept": 4561,
+    "share": 1.0
+   },
+   "題名（全部）": {
+    "rows": 4516,
+    "kept": 4516,
+    "share": 1.0
+   },
+   "同じ行の 1 行目（全部）": {
+    "rows": 4542,
+    "kept": 4528,
+    "share": 0.9969
+   },
+   "同じ行の 2 行目（全部）": {
+    "rows": 4542,
+    "kept": 3664,
+    "share": 0.8067
+   },
+   "同じ表の列（始まり）": {
+    "rows": 4561,
+    "kept": 3441,
+    "share": 0.7544
+   }
+  },
+  "rows_with_row_context": 4542
+ },
+ "tables_not_aligned": 7
+}
