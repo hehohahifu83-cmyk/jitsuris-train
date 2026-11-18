@@ -1,4 +1,14 @@
 {
+ "diagnostic_version": "v2",
+ "input_flags": {
+  "FT_CTX_UNIT": "1",
+  "FT_TITLE": "1",
+  "FT_VALPROF": null,
+  "FT_VALSEL": null,
+  "FT_UNITX": null,
+  "FT_AUG": null,
+  "prefix": "query: "
+ },
  "tokenizer": "intfloat/multilingual-e5-base",
  "revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
  "max_length": 256,
@@ -12,7 +22,7 @@
  },
  "control-256": {
   "tokens": {
-   "mean": 105.1,
+   "mean": 105.5,
    "p50": 104,
    "p95": 150,
    "max": 230
@@ -44,18 +54,28 @@
     "rows": 4561,
     "kept": 4561,
     "share": 1.0
+   },
+   "同じ表の列（全部）": {
+    "rows": 4561,
+    "kept": 4561,
+    "share": 1.0
+   },
+   "単位列の値（全部）": {
+    "rows": 109,
+    "kept": 109,
+    "share": 1.0
    }
   },
   "rows_with_row_context": 0
  },
  "T1-256": {
   "tokens": {
-   "mean": 249.7,
+   "mean": 250.1,
    "p50": 253,
    "p95": 366,
    "max": 530
   },
-  "truncated_at_256": 0.4935,
+  "truncated_at_256": 0.4948,
   "truncated_at_160": 0.8584,
   "kept_within_256": {
    "値まで（全部）": {
@@ -82,6 +102,16 @@
     "rows": 4561,
     "kept": 3441,
     "share": 0.7544
+   },
+   "同じ表の列（全部）": {
+    "rows": 4561,
+    "kept": 2310,
+    "share": 0.5065
+   },
+   "単位列の値（全部）": {
+    "rows": 109,
+    "kept": 86,
+    "share": 0.789
    }
   },
   "rows_with_row_context": 4542
