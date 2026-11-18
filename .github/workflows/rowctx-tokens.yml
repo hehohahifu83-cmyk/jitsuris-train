@@ -1,7 +1,7 @@
 name: 方法 T1 の入力のトークンでの残り方（教材庫の検証の行だけ、CPU）
 
 # 2026-11-17 Claude（Codex の点検 3）。research/table_reading/rowctx_tokens.py を、L24 と同じトークナイザー（intfloat/multilingual-e5-base の同じ版）で回す。
-# 依頼：research/table_reading/rowctx_tokens.request を「run rowctx-tokens-v1」にして push する。学習・予測・G4 は使わない。
+# 依頼：research/table_reading/rowctx_tokens.request を「run rowctx-tokens-v2」にして push する。学習・予測・G4 は使わない。
 on:
   workflow_dispatch:
   push:
@@ -26,7 +26,7 @@ jobs:
       - name: 依頼を確かめる
         id: gate
         run: |
-          if [ "$(head -1 research/table_reading/rowctx_tokens.request)" != "run rowctx-tokens-v1" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "$(head -1 research/table_reading/rowctx_tokens.request)" != "run rowctx-tokens-v2" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           echo "proceed=true" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.proceed == 'true'
@@ -40,7 +40,7 @@ jobs:
       - name: 結果だけを保存
         if: steps.gate.outputs.proceed == 'true'
         run: |
-          echo "done rowctx-tokens-v1" > research/table_reading/rowctx_tokens.request
+          echo "done rowctx-tokens-v2" > research/table_reading/rowctx_tokens.request
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/table_reading/rowctx_tokens.json research/table_reading/rowctx_tokens.request

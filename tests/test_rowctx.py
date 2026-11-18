@@ -96,6 +96,10 @@ class RowContextTest(unittest.TestCase):
         bad_sets = [dict(set_data, row_context={}),                                   # 表の文脈が黙って消える
                     dict(set_data, row_context_none={}),                              # 付けない表の理由が無い
                     dict(set_data, row_context_none={"t002": "x", "t001": "y"}),      # 両方に入る
+                    dict(set_data, row_context_none={"t002": None}),                   # 理由が文字列でない（Codex の再点検）
+                    dict(set_data, row_context_none={"t002": []}),
+                    dict(set_data, row_context_none={"t002": False}),
+                    dict(set_data, row_context_none={"t002": "  "}),
                     dict(set_data, row_context={"t001": dict(ctx, headers=["When", "Alberta", "ValueType"])}),   # 並びが違う
                     dict(set_data, row_context={"t001": dict(ctx, rows=ctx["rows"] + [ctx["rows"][0]])}),        # 3 行
                     dict(set_data, row_context={"t001": dict(ctx, headers=["When", "Amount", "Amount"])})]       # 同じ名前

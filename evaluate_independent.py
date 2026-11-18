@@ -193,8 +193,8 @@ def with_row_contexts(rows, set_data, info):
     for t, heads in tables.items():
         if (t in rc) == (t in none):
             raise SystemExit(f"表 {t}：row_context と row_context_none のどちらか 1 つだけに入っていない")
-        if t in none and not str(none[t]).strip():
-            raise SystemExit(f"表 {t}：文脈を付けない理由が空")
+        if t in none and not (isinstance(none[t], str) and none[t].strip()):
+            raise SystemExit(f"表 {t}：文脈を付けない理由が空でない文字列でない")
         if t in rc and rc[t]["headers"] != heads:
             raise SystemExit(f"表 {t}：文脈の列が主セットのその表の列（順も）と違う")
     if set(rc) - set(tables) or set(none) - set(tables):
