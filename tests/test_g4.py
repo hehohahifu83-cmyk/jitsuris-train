@@ -100,13 +100,113 @@ class FreezeTest(unittest.TestCase):
                 G.check_set(bad, rows)
 
     def test_unit_only_from_set_columns(self):
-        rows = self.rows() + [crow("https://x/t1.csv", f"extra{i}", ["u"] * 3, [4, 9, 12]) for i in range(10)] + \
-            [crow("https://x/t1.csv", "Unit", ["SECRETUNIT"] * 3, [4, 9, 12])]
+        # 表 u1 は 12 列で、Unit の列はハッシュの順で必ず選ばれない（固定の例。選ばれないことも確かめる）
+        t = "https://x/u1.csv"
+        rows = [crow(t, f"extra{i}", ["u"] * 3, [4, 9, 12]) for i in range(11)] + [crow(t, "Unit", ["SECRETUNIT"] * 3, [4, 9, 12])]
         doc, _, sel = G.build_set(rows)
-        picked = {r["header"] for r in sel if r["table"] == "https://x/t1.csv"}
-        if "Unit" not in picked:   # 選ばれなかった単位の列の値は、単位の欄にも文脈にも入らない
-            self.assertTrue(all("SECRETUNIT" not in c["unit"] for c in doc["columns"]))
-            self.assertNotIn("SECRETUNIT", str(doc["row_context"]))
+        self.assertNotIn("Unit", {r["header"] for r in sel})
+        self.assertTrue(all("SECRETUNIT" not in c["unit"] for c in doc["columns"]))
+        self.assertNotIn("SECRETUNIT", str(doc["row_context"]))
+        self.assertNotIn("SECRETUNIT", str(doc))
+
+    def test_context_values_per_table(self):
+        # 別の表の同じ名前の列の値を混ぜた文脈を拒否する（再生成の一致とは別の照合）
+        idx = [1, 2]
+        rows = [crow("https://x/a.csv", "Name", ["alpha", "beta"], idx), crow("https://x/a.csv", "N", ["1", "2"], idx),
+                crow("https://x/b.csv", "Name", ["gamma", "delta"], idx), crow("https://x/b.csv", "M", ["3", "4"], idx)]
+        doc, _, sel = G.build_set(rows)
+        G.check_context_values(doc, sel)
+        ta = next(t for t, c in doc["row_context"].items() if "N" in c["headers"])
+        bad = {**doc, "row_context": {**doc["row_context"], ta: {**doc["row_context"][ta],
+               "rows": [[("gamma" if h == "Name" else v) for h, v in zip(doc["row_context"][ta]["headers"], r)] for r in doc["row_context"][ta]["rows"]]}}}
+        with self.assertRaises(SystemExit):
+            G.check_context_values(bad, sel)
+
+
+def ent(url, pub=A, batch="g4", replaces=None):
+    e = {"resource_url": url, "publisher_id": pub, "batch": batch}
+    if replaces:
+        e["replaces"] = replaces
+    return e
+
+
+class CorpusJoinTest(unittest.TestCase):
+    def row(self, page, table=None, pub=A, batch="g4"):
+        return {"table": table or page + ".csv", "resource_page": page, "publisher": pub, "batch_src": batch, "header": "h"}
+
+    def test_ok_and_missing(self):
+        e = {"p1": ent("p1"), "p2": ent("p2"), "p3": ent("p3", batch="g4x", replaces="p2")}
+        rows = [self.row("p1"), self.row("p3", batch="g4x")]
+        self.assertEqual(G.check_corpus(rows, e), 1)   # p2 は取れず、p3 が置き換え
+
+    def test_rejects(self):
+        e = {"p1": ent("p1"), "p2": ent("p2"), "p3": ent("p3", batch="g4x", replaces="p2")}
+        bads = [[self.row("zz")],                                        # 採用していない表
+                [self.row("p1"), self.row("p1", table="other.csv")],    # 同じ資源が 2 つの表
+                [self.row("p1", pub=B)],                                 # 公開元が違う
+                [self.row("p1", batch="g4x")],                           # 取り出しが違う
+                [self.row("p2"), self.row("p3", batch="g4x")],           # 置き換えた元も入っている
+                [self.row("p1", table="same.csv"), self.row("p2", table="same.csv")]]   # 別の資源が同じ表
+        for rows in bads:
+            with self.assertRaises(SystemExit):
+                G.check_corpus(rows, e)
+
+
+class AtomicFreezeTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self.tmp = tempfile.mkdtemp()
+        self.old = (G.WORK, G.WORK_X, G.pools, G.used_publishers)
+        from pathlib import Path
+        G.WORK, G.WORK_X = Path(self.tmp) / "g4", Path(self.tmp) / "g4x"
+        G.pools = lambda: {A: "hold"}
+        G.used_publishers = lambda: set()
+        idx = [4, 9, 12]
+        self.rows = [dict(crow("https://x/t1.csv", "When", ["2010", "2011", "2012"], idx), batch_src="g4", resource_page="p1"),
+                     dict(crow("https://x/t1.csv", "Alberta", ["1", "2", "3"], idx), batch_src="g4", resource_page="p1")]
+        self.ent = {"p1": ent("p1")}
+
+    def tearDown(self):
+        import shutil
+        G.WORK, G.WORK_X, G.pools, G.used_publishers = self.old
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_ok_then_refuse_existing(self):
+        from pathlib import Path
+        out = Path(self.tmp) / "out" / "g4"
+        G.atomic_freeze(out, self.rows, self.ent)
+        self.assertEqual(sorted(p.name for p in out.iterdir()), ["g4.json", "provenance.json", "titles.json"])
+        with self.assertRaises(SystemExit):
+            G.atomic_freeze(out, self.rows, self.ent)
+        self.assertEqual([p.name for p in out.parent.iterdir()], ["g4"])   # 一時ディレクトリが残らない
+
+    def test_failure_leaves_nothing(self):
+        from pathlib import Path
+        out = Path(self.tmp) / "out2" / "g4"
+        with self.assertRaises(SystemExit):
+            G.atomic_freeze(out, self.rows + [dict(self.rows[0], resource_page="zz", table="https://x/z.csv")], self.ent)
+        self.assertFalse(out.exists())
+        self.assertEqual(list(out.parent.iterdir()), [])
+        orig = G.check_set
+        G.check_set = lambda doc, rows: (_ for _ in ()).throw(SystemExit("照合の失敗"))
+        try:
+            with self.assertRaises(SystemExit):
+                G.atomic_freeze(out, self.rows, self.ent)
+        finally:
+            G.check_set = orig
+        self.assertFalse(out.exists())
+        self.assertEqual(list(out.parent.iterdir()), [])
+
+
+class NoSealedTest(unittest.TestCase):
+    def test_does_not_open_sealed(self):
+        import subprocess
+        code = ("import sys\nopened=[]\nsys.addaudithook(lambda e,a: opened.append(a[0]) if e=='open' and isinstance(a[0],str) else None)\n"
+                "sys.path.insert(0,'independent_eval')\nimport g4\ng4.used_resources(); g4.used_publishers(); g4.pools()\n"
+                "bad=[p for p in opened if 'sealed' in p or 'blind_set' in p or 'b018' in p]\nprint(len(bad))\n")
+        out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+        self.assertEqual(out, "0")
+        self.assertNotIn("sealed2", sys.modules)
 
 
 if __name__ == "__main__":
