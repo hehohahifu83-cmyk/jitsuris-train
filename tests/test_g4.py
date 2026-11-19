@@ -164,7 +164,7 @@ class AtomicFreezeTest(unittest.TestCase):
         idx = [4, 9, 12]
         self.rows = [dict(crow("https://x/t1.csv", "When", ["2010", "2011", "2012"], idx), batch_src="g4", resource_page="p1"),
                      dict(crow("https://x/t1.csv", "Alberta", ["1", "2", "3"], idx), batch_src="g4", resource_page="p1")]
-        self.ent = {"p1": ent("p1")}
+        self.ent = {"p1": dict(ent("p1"), title="T1 title")}
 
     def tearDown(self):
         import shutil
@@ -179,6 +179,26 @@ class AtomicFreezeTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             G.atomic_freeze(out, self.rows, self.ent)
         self.assertEqual([p.name for p in out.parent.iterdir()], ["g4"])   # 一時ディレクトリが残らない
+
+    def test_verify_checks_all_three_files(self):
+        # Codex の再点検 2 の反例：題名の書き換え・空の provenance・g4.json の書き換えを拒否する
+        import json
+        from pathlib import Path
+        out = Path(self.tmp) / "out3" / "g4"
+        G.atomic_freeze(out, self.rows, self.ent)
+        G.check_artifacts(out, self.rows, self.ent)
+        files = {n: (out / n).read_bytes() for n in ("g4.json", "provenance.json", "titles.json")}
+        prov = json.loads(files["provenance.json"])
+        bads = [("titles.json", json.dumps({"t001": "wrong title"})), ("provenance.json", "{}"),
+                ("provenance.json", json.dumps({**prov, "frozen_utc": ""})),
+                ("provenance.json", json.dumps({**prov, "row_context_sha256": "0" * 64})),
+                ("g4.json", files["g4.json"].decode("utf-8").replace("When", "Whan"))]
+        for name, text in bads:
+            (out / name).write_text(text, encoding="utf-8")
+            with self.assertRaises(SystemExit):
+                G.check_artifacts(out, self.rows, self.ent)
+            (out / name).write_bytes(files[name])
+        G.check_artifacts(out, self.rows, self.ent)
 
     def test_failure_leaves_nothing(self):
         from pathlib import Path
@@ -196,6 +216,36 @@ class AtomicFreezeTest(unittest.TestCase):
             G.check_set = orig
         self.assertFalse(out.exists())
         self.assertEqual(list(out.parent.iterdir()), [])
+
+
+class ReserveRuleTest(unittest.TestCase):
+    """Codex の再点検 1 の反例：同じ元の 2 回の置き換え・控えの記録の書き換え・取れていた表の置き換えを拒否する。"""
+    def first(self):
+        p = {"resource_url": "p", "publisher_id": A, "resource_id": "pid", "n": "1"}
+        r1 = {"resource_url": "r1", "publisher_id": A, "resource_id": "rid1", "platform": "ckan", "host": "h", "access": "datastore", "license": "ogla", "title": "t1"}
+        r2 = dict(r1, resource_url="r2", resource_id="rid2", title="t2")
+        return {"adopted": [p], "reserves": {A: [r1, r2]}}
+
+    def test_ok(self):
+        first = self.first()
+        want, failed = G.expected_reserves(first, set())
+        self.assertEqual([x["resource_url"] for x in want], ["r1"])
+        ent = G.adopted_entries(first, {"adopted": want, "failed": failed}, set())
+        self.assertEqual(ent["r1"]["replaces"], "p")
+        self.assertEqual(ent["r1"]["batch"], "g4x")
+
+    def test_rejects(self):
+        first = self.first()
+        want, failed = G.expected_reserves(first, set())
+        r2 = dict(first["reserves"][A][1], n="3", replaces="p")
+        bads = [({"adopted": want + [r2], "failed": failed}, set()),                       # 同じ元を 2 回置き換え
+                ({"adopted": [dict(want[0], resource_id="WRONG")], "failed": failed}, set()),   # 控えの記録の書き換え
+                ({"adopted": want, "failed": failed}, {"p"}),                                  # 取れていた表の置き換え
+                ({"adopted": [dict(want[0], replaces="zz")], "failed": failed}, set()),        # 置き換え元の違い
+                ({"adopted": want, "failed": 0}, set())]                                       # 取れなかった数の違い
+        for x_doc, pages in bads:
+            with self.assertRaises(SystemExit):
+                G.adopted_entries(first, x_doc, pages)
 
 
 class NoSealedTest(unittest.TestCase):

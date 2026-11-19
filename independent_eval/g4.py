@@ -215,40 +215,38 @@ def cmd_adopt(a):
     print(f"adopted {len(adopted)}/{len(cands)} tables from {len({x['publisher_id'] for x in adopted})} publishers; dropped {dict(why)}")
 
 
-def fetched_tables(work):
-    """取り出せた表（corpus.jsonl に行がある資源の resource_page・table）。"""
-    got = set()
+def fetched_pages(work):
+    """取り出せた表の resource_page（corpus.jsonl に行がある資源。採用の resource_url と同じもの）。"""
     p = work / "corpus.jsonl"
-    if p.exists():
-        for line in open(p, encoding="utf-8"):
-            if line.strip():
-                r = json.loads(line)
-                got.add(r.get("resource_page") or r["table"])
-                got.add(r["table"])
-    return got
+    return {r.get("resource_page") or r["table"] for r in _read_jsonl(p)} if p.exists() else set()
 
 
-def cmd_reserve(a):
-    """1 回目に取れなかった表だけを、同じ公開元の控えの 1 番目で置き換える（1 回だけ。控えも取れなければ打ち切り）。"""
-    out = WORK_X / "adopted.json"
-    if out.exists():
-        raise SystemExit("g4x/adopted.json がもうある（1 回だけ）")
-    first = json.load(open(WORK / "adopted.json", encoding="utf-8"))
-    got = fetched_tables(WORK)
-    failed = [x for x in first["adopted"] if x["resource_url"] not in got]
-    used = Counter()
-    new = []
+def expected_reserves(first, got_pages):
+    """控えの置き換えの決まり（reserve と照合で同じ関数）：1 回目の採用の順に、取れなかった表ごとに、同じ公開元の控えを先頭から 1 つずつ。
+    控えが尽きた公開元はそこで打ち切り。返すのは g4x の採用の記録の並び（控えの記録そのもの＋n＋replaces）と取れなかった表の数。"""
+    failed = [x for x in first["adopted"] if x["resource_url"] not in got_pages]
+    used, new = Counter(), []
     for x in failed:
         pub = norm_pub(x["publisher_id"])
         res = first["reserves"].get(pub) or []
         if used[pub] < len(res):
             new.append(dict(res[used[pub]], n=str(len(first["adopted"]) + len(new) + 1), replaces=x["resource_url"]))
             used[pub] += 1
+    return new, len(failed)
+
+
+def cmd_reserve(a):
+    """1 回目に取れなかった表だけを、同じ公開元の控えで置き換える（1 回だけ。控えも取れなければ打ち切り）。"""
+    out = WORK_X / "adopted.json"
+    if out.exists():
+        raise SystemExit("g4x/adopted.json がもうある（1 回だけ）")
+    first = json.load(open(WORK / "adopted.json", encoding="utf-8"))
+    new, failed = expected_reserves(first, fetched_pages(WORK))
     doc = {"schema_version": 1, "batch": "g4", "pool": POOL, "set_id": SET_ID, "decided_by": "independent_eval/g4.py reserve（規則だけ）",
-           "decided_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "failed": len(failed), "adopted": new, "values_viewed": False}
+           "decided_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "failed": failed, "adopted": new, "values_viewed": False}
     WORK_X.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"failed {len(failed)}; reserves {len(new)}")
+    print(f"failed {failed}; reserves {len(new)}")
 
 
 def select(rows):
@@ -272,21 +270,23 @@ def select(rows):
     return cols, stats
 
 
-def adopted_entries():
-    """g4 と g4x の採用（resource_url → 記録）。g4x の各表は、g4 で行が取れなかった表の置き換え（replaces）で、同じ公開元の控えの中にあるもの。"""
-    first = json.load(open(WORK / "adopted.json", encoding="utf-8"))
+def adopted_entries(first=None, x_doc=None, g4_pages=None):
+    """g4 と g4x の採用（resource_url → 記録）。2026-11-19 Codex の再点検 1：g4x の採用は、1 回目の採用・控え・1 回目に取れた表から
+    `expected_reserves` が一通りに作るものと、記録の全部（resource_url・resource_id・publisher_id・platform・host・access・license・題名・n・replaces）が
+    同じでなければ止まる（同じ元の 2 回の置き換え・控えの記録の書き換え・取れていた表の置き換えを拒否する）。
+    corpus の行は resource_id を持たないので、資源の同一性は「corpus の resource_page ＝ この照合を通った採用の resource_url」でたどる。"""
+    first = first if first is not None else json.load(open(WORK / "adopted.json", encoding="utf-8"))
     ent = {x["resource_url"]: dict(x, batch="g4") for x in first["adopted"]}
     if len(ent) != len(first["adopted"]):
         raise SystemExit("g4 の採用に同じ資源が 2 つある")
-    px = WORK_X / "adopted.json"
-    if px.exists():
-        for x in json.load(open(px, encoding="utf-8"))["adopted"]:
-            pub = norm_pub(x["publisher_id"])
-            rep = x.get("replaces")
-            if rep not in ent or ent[rep]["batch"] != "g4" or norm_pub(ent[rep]["publisher_id"]) != pub:
-                raise SystemExit("g4x の表の置き換え元が g4 の同じ公開元の採用でない")
-            if x["resource_url"] not in {r["resource_url"] for r in first["reserves"].get(pub, [])}:
-                raise SystemExit("g4x の表がその公開元の控えにない")
+    if x_doc is None and (WORK_X / "adopted.json").exists():
+        x_doc = json.load(open(WORK_X / "adopted.json", encoding="utf-8"))
+    if x_doc is not None:
+        got = g4_pages if g4_pages is not None else fetched_pages(WORK)
+        want, failed = expected_reserves(first, got)
+        if x_doc.get("adopted") != want or x_doc.get("failed") != failed:
+            raise SystemExit("g4x の採用が、控えの決まりで作り直したものと違う")
+        for x in want:
             if x["resource_url"] in ent:
                 raise SystemExit("g4x の表が g4 の採用と重なる")
             ent[x["resource_url"]] = dict(x, batch="g4x")
@@ -400,8 +400,11 @@ def check_set(doc, rows):
     return True
 
 
-def freeze_to(out_dir, rows, ent):
-    """凍結の 3 つのファイルを out_dir に作る（out_dir はまだ無い場所。作ってから全部を照合する）。"""
+TIME_FIELDS = ("frozen_utc",)   # provenance の中で、作り直して一致を求めない項目（時刻だけ）
+
+
+def build_artifacts(rows, ent):
+    """凍結の 3 つの中身（セット・provenance（時刻を除く）・題名）を、corpus の行と照合済みの採用から一通りに作る。"""
     pool_of = pools()
     used = used_publishers()
     bad = [r for r in rows if pool_of.get(r.get("publisher")) != POOL or norm_pub(r.get("publisher")) in used
@@ -410,13 +413,11 @@ def freeze_to(out_dir, rows, ent):
         raise SystemExit(f"G4 の公開元でない行がある：{len(bad)}")
     missing = check_corpus(rows, ent)
     doc, meta, sel = build_set(rows)
-    out_dir.mkdir(parents=True)
-    set_path = out_dir / "g4.json"
-    set_path.write_text(json.dumps(doc, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
+    body = json.dumps(doc, ensure_ascii=False, indent=0) + "\n"
     page = {r["table"]: r.get("resource_page") or r["table"] for r in sel}
     corpus, extra = WORK / "corpus.jsonl", WORK_X / "corpus.jsonl"
-    prov = {"schema_version": 1, "set_id": SET_ID, "frozen_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "set_path": "independent_eval/results/g4/g4.json", "set_sha256": sha_file(set_path),
+    prov = {"schema_version": 1, "set_id": SET_ID,
+            "set_path": "independent_eval/results/g4/g4.json", "set_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
             "column_count": len(doc["columns"]), "table_count": len(meta["tables"]), "publisher_count": len({r["publisher"] for r in sel}),
             "adopted_tables": len(ent), "adopted_not_fetched": missing,
             "columns_per_catalog": dict(Counter(norm_pub(r["publisher"]).split(":")[0] for r in sel)),
@@ -430,11 +431,39 @@ def freeze_to(out_dir, rows, ent):
             "tables": [{"table_id": meta["tid"][t], "publisher": next(r["publisher"] for r in sel if r["table"] == t), "resource_url": t,
                         "resource_page": page[t], "title": (ent.get(page[t]) or {}).get("title", ""),
                         "license": next(r.get("license", "") for r in sel if r["table"] == t)} for t in meta["tables"]]}
-    (out_dir / "provenance.json").write_text(json.dumps(prov, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     titles = {x["table_id"]: x["title"] for x in prov["tables"] if x["title"]}
-    (out_dir / "titles.json").write_text(json.dumps(titles, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    check_set(json.loads(set_path.read_text(encoding="utf-8")), rows)
+    return doc, body, prov, titles
+
+
+def check_artifacts(out_dir, rows, ent):
+    """凍結の 3 つのファイル（g4.json・provenance.json・titles.json）を全部、作り直したものと照合する（Codex の再点検 2）。
+    provenance は時刻（TIME_FIELDS）だけを除いて一致、時刻は空でない文字列。g4.json はバイトの SHA も provenance と一致。"""
+    doc, body, prov, titles = build_artifacts(rows, ent)
+    raw = (out_dir / "g4.json").read_bytes()
+    if raw.decode("utf-8") != body or hashlib.sha256(raw).hexdigest() != prov["set_sha256"]:
+        raise SystemExit("g4.json が作り直したものと違う")
+    got_prov = json.loads((out_dir / "provenance.json").read_text(encoding="utf-8"))
+    if not isinstance(got_prov, dict) or any(not isinstance(got_prov.get(k), str) or not got_prov.get(k) for k in TIME_FIELDS):
+        raise SystemExit("provenance.json の時刻が無い")
+    if {k: v for k, v in got_prov.items() if k not in TIME_FIELDS} != prov:
+        raise SystemExit("provenance.json が作り直したものと違う")
+    if json.loads((out_dir / "titles.json").read_text(encoding="utf-8")) != titles:
+        raise SystemExit("titles.json が作り直したものと違う")
+    check_set(json.loads(raw), rows)
     return prov
+
+
+def freeze_to(out_dir, rows, ent):
+    """凍結の 3 つのファイルを out_dir に作る（out_dir はまだ無い場所）。作ったあと、3 つ全部を作り直したものと照合する。"""
+    doc, body, prov, titles = build_artifacts(rows, ent)
+    out_dir.mkdir(parents=True)
+    (out_dir / "g4.json").write_text(body, encoding="utf-8")
+    full = {"schema_version": prov["schema_version"], "set_id": prov["set_id"], "frozen_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            **{k: v for k, v in prov.items() if k not in ("schema_version", "set_id")}}
+    (out_dir / "provenance.json").write_text(json.dumps(full, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    (out_dir / "titles.json").write_text(json.dumps(titles, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    check_artifacts(out_dir, rows, ent)
+    return full
 
 
 def atomic_freeze(out, rows, ent):
@@ -458,10 +487,7 @@ def cmd_freeze(a):
 
 
 def cmd_verify(a):
-    doc = json.load(open(OUT / "g4.json", encoding="utf-8"))
-    rows = load_rows()
-    check_corpus(rows, adopted_entries())
-    check_set(doc, rows)
+    check_artifacts(OUT, load_rows(), adopted_entries())
     print("ok")
 
 
