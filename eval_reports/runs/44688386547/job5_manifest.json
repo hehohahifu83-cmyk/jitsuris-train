@@ -1,0 +1,323 @@
+{
+ "amp": {
+  "active_at_end": true,
+  "fallback_enabled": false,
+  "fallback_step": null,
+  "mode": "fp16"
+ },
+ "code": {
+  "batching.py": "63fc63c69c4aae25934b5e313a1770532e7c570757189dbaca27b7c7bf683464",
+  "encoder_context.py": "6780b5aadf0469d477d543644c6ea9c90b38d253c72d29cec813479f4c7b080b",
+  "encoder_exp.py": "b0f7c547099a43b2577455fda570cb148baf31956269a6eb90e8a795495c59d0",
+  "evaluation_records.py": "acc16dd65e8ee5473c61125dff363fafc6c43ca5121c2a853ab8ef09f32a6757",
+  "exp7.py": "8e51d4e8e01cb01844207462154dab736d8c16a2526cdc1e62c4307fc784f799",
+  "features.py": "1b5c86f902a2ff45dccd219f4daa8cc2abdd6f00d94aaf50eda600be256583ec",
+  "finetune_exp.py": "5ff72dcdeeb42e2e1468e6922b0433cdee9d3dc0adab86aeffdb7d7c4669bc16",
+  "gen.py": "5c4d82d085b64b9ce48a5b62ce7082bf11ed9413bd6b51a103f42afb369123fa",
+  "jobs.py": "43f066047d8a8af34e92eaa139fb48462439bcc90d5fbf567e00c17e6ed9bf6e",
+  "llm_baseline.py": "fd997645f1f7d6cf6daea9ac4e858fbfbeda9a4ef1a832fe3c1fe9d9ba9981df",
+  "model_setup.py": "6b1de34b0c2d3e23467bc2081bc64a663c4fc74ca5a81026ff7d79f80fb5ee85",
+  "provenance.py": "7e6842f4b019a59b71898c0fcbd1e346a2a953b810a3d5a61f65694732943f90",
+  "train3.py": "87177b6f24e9b3db24b15e57d003845fd307a7e32a73a99e31ab6a7942ee2062",
+  "val_split.py": "911baee2b13c86fe5e09c4371068d5db4e7b76897a9c87d4f0afee9e3d3b1a16"
+ },
+ "commit": "20dca1286798e4cd2f198ae8a8d47dc77d8e4abb",
+ "created_utc": "2026-11-20T07:47:29Z",
+ "extra": {
+  "config_changes": {},
+  "device": "cuda",
+  "dropout_override": null,
+  "eval_mode": "fixed_tests",
+  "gpu": "Tesla T4",
+  "max_length": 256,
+  "model_type": "xlm-roberta",
+  "no_dropout": false,
+  "prefix": "query: ",
+  "request_args": "hfmodel/intfloat__multilingual-e5-base 2 FT_SEED=1 FT_BS=32 FT_ACC=2 FT_CKPT=0 FT_SORT=1 FT_PAD8=1 FT_FUSED=1 FT_CTX_UNIT=1 FT_FREEZE_EMB=0 FT_FOCAL_GAMMA=1.5 FT_LR=3e-5 FT_POOL=1 FT_TITLE=1 FT_MAX_LEN=256 FT_KEEP=1 FT_LABELFIX=materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl ++ FT_SEED=2 FT_LABELFIX=materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl ++ FT_SEED=3 FT_LABELFIX=materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl ++ FT_SEED=1 FT_ROWCTX=1 FT_LABELFIX=materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl ++ FT_SEED=2 FT_ROWCTX=1 FT_LABELFIX=materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl ++ FT_SEED=3 FT_ROWCTX=1 FT_LABELFIX=materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl",
+  "row_context": {
+   "max_cell": 24,
+   "max_cols": 9,
+   "max_header": 20,
+   "rows": 2,
+   "version": "rowctx-v1"
+  },
+  "token_stats": {
+   "train": {
+    "max": 581,
+    "max_length": 256,
+    "mean": 170.2567478981435,
+    "n": 157123,
+    "p50": 171,
+    "p95": 316,
+    "p99": 369,
+    "truncated": 33662,
+    "truncated_rate": 0.21423979939283236
+   },
+   "本物（一般）": {
+    "max": 191,
+    "max_length": 256,
+    "mean": 95.86422976501305,
+    "n": 383,
+    "p50": 99,
+    "p95": 134,
+    "p99": 170,
+    "truncated": 0,
+    "truncated_rate": 0.0
+   },
+   "本物（日本の調達）": {
+    "max": 199,
+    "max_length": 256,
+    "mean": 109.1304347826087,
+    "n": 92,
+    "p50": 111,
+    "p95": 158,
+    "p99": 199,
+    "truncated": 0,
+    "truncated_rate": 0.0
+   },
+   "本物（業務2）": {
+    "max": 180,
+    "max_length": 256,
+    "mean": 89.59323770491804,
+    "n": 976,
+    "p50": 90,
+    "p95": 125,
+    "p99": 158,
+    "truncated": 0,
+    "truncated_rate": 0.0
+   },
+   "本物（業務）": {
+    "max": 150,
+    "max_length": 256,
+    "mean": 92.35510204081632,
+    "n": 490,
+    "p50": 91,
+    "p95": 138,
+    "p99": 145,
+    "truncated": 0,
+    "truncated_rate": 0.0
+   },
+   "開発用220": {
+    "max": 186,
+    "max_length": 256,
+    "mean": 106.89090909090909,
+    "n": 220,
+    "p50": 105,
+    "p95": 146,
+    "p99": 167,
+    "truncated": 0,
+    "truncated_rate": 0.0
+   }
+  }
+ },
+ "labels": {
+  "count": 16,
+  "sha256": "50527885e0331bc0469bbd2d794f105a3a0a1fe56dc7ea9138a55e38c403f8cb"
+ },
+ "libraries": {
+  "numpy": "2.1.3",
+  "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+  "python": "3.13.15",
+  "safetensors": "0.8.0",
+  "scikit-learn": "1.6.1",
+  "tokenizers": "0.23.1",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.16.1"
+ },
+ "model": {
+  "hf_repo_id": "intfloat/multilingual-e5-base",
+  "hf_revision": {
+   "license": "mit",
+   "patterns": [
+    "*.json",
+    "*.safetensors",
+    "*.model",
+    "*.txt",
+    "sentencepiece*",
+    "tokenizer*"
+   ],
+   "repo": "intfloat/multilingual-e5-base",
+   "revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+   "top_level_files": [
+    "config.json",
+    "model.safetensors",
+    "modules.json",
+    "sentence_bert_config.json",
+    "sentencepiece.bpe.model",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json"
+   ]
+  },
+  "name_or_path": "hfmodel/intfloat__multilingual-e5-base",
+  "source_files": {
+   "config.json": "9dab198f24c8c0879e481cf7822005d5ecbceedbacb390ffafa594e28d31bac4",
+   "special_tokens_map.json": "06e405a36dfe4b9604f484f6a1e619af1a7f7d09e34a8555eb0b77b66318067f",
+   "tokenizer.json": "62c24cdc13d4c9952d63718d6c9fa4c287974249e16b7ade6d5a85e7bbb75626",
+   "tokenizer_config.json": "efb5c0d09722e5fe59a462cd2a9976ee216d55b037597d997cd3fe833216da15"
+  },
+  "source_weights": {
+   "model.safetensors": {
+    "bytes": 1112201288,
+    "sha256": "a18a44fad1d0b46ded15928144138cff1135d5cc8233bdd90be5f18822de09a7"
+   }
+  }
+ },
+ "model_config": {
+  "attn_implementation": "sdpa",
+  "classifier_pooling": null,
+  "hidden_size": 768,
+  "layers": 12,
+  "model_type": "xlm-roberta",
+  "parameters": 278055952,
+  "vocab_size": 250002
+ },
+ "outputs": {
+  "FINETUNE_RESULTS.md": "3ad73baf45ccae9efd51d125db4fe44a6c95cc614b0e4b44f35d64fb0ef05341",
+  "errors_business2_blend50.json": "3c4eeba8540bd43e6fffe46b4c28612fabdbba72292a9174ca2cfffb3dfbfb53",
+  "errors_business2_blend60.json": "ec8b23490fa31f6abf73821f1d9fab10239f90685c7f24de7cb4d8ae3a93d1ae",
+  "errors_business2_blend70.json": "4dbe6e1a9f24009f62bed34007dc0611ebc5d6f4c2059a81f64eb73c9896446a",
+  "errors_business2_ft.json": "fb8eb2470689b9d0e34537d08a90a9187f2f9ae34f37fce1fa238d07b24b3bfc",
+  "errors_business2_sparse.json": "ca28ea69bafc1fc3de836f2fe9a1fb629eb9555f54af49e070fe70c98205b323",
+  "errors_business_blend50.json": "70142bcc42fc9fdff3e5666c24507cf19cfc7c675210c4e22ed040cd18e98c38",
+  "errors_business_blend60.json": "2861f4ca53fd70d71fd7bc57a9cf2db365a49bfae2bb30ccd7cf403f24a88ca3",
+  "errors_business_blend70.json": "f122fe1512aa3b8b312899d817862216a9489ee4b9e4408894e215a8ccaa3bcb",
+  "errors_business_ft.json": "2dae42666b5ebc05c05b8c41b2b899ee41a7ba31bc42b2ae3904100c8cb59977",
+  "errors_business_sparse.json": "e8a048e688d655820371c5166a42869f7e6b19519c97a8550e57b997f9482fab",
+  "errors_dev220_blend50.json": "afd1d09dce599599d12122fc109ad746c40337102c82f1f29d94b09d6a653e61",
+  "errors_dev220_blend60.json": "b016cf22b4ec17c6a6ac3b2dd5fbdfe45ecb9bb42746089db40d15f5771ba5cb",
+  "errors_dev220_blend70.json": "3442d95338e9c0cce855ff1c65c688c9107becee72b12119c880395276c973c1",
+  "errors_dev220_ft.json": "47be037d02f4d4ab21de3eda1bbdfe9a39d08afe8b86f19e1175d45e6c3a754e",
+  "errors_dev220_sparse.json": "a7645e0d7b0b08f135ec976ae4f882f28119329c7be6c1aec364f171ee2beabe",
+  "errors_general_blend50.json": "7294166e8905d216cb203348fc790f07c39a4225ca15dbc2e7f2904cef6a9f16",
+  "errors_general_blend60.json": "dbcf862414d83f7f46db0f4b688e7b1f6db65c5d7e32ca9f47ded30d732eb782",
+  "errors_general_blend70.json": "3dd473a468127c2e86067816fcf1832d37a3c37074e5486e045b12fbb54ee14a",
+  "errors_general_ft.json": "db5f955c8ace377dedcf8d1de8a3e89e8d381aeca49f9477add140bc60307a93",
+  "errors_general_sparse.json": "1b48d3b8acaa13040e1944e8181a9a47c7d1505389e1a4e8d6962628c6aea5b8",
+  "errors_japan_procurement_blend50.json": "76941e977e8ef780fe4a02a432974e66e01daa08fe7ced55cf2b530fe1c825a6",
+  "errors_japan_procurement_blend60.json": "9f87fb4f964c2a61aa5b8c901ed1c762af627945df5cf1a5d7c16d92a56d989a",
+  "errors_japan_procurement_blend70.json": "6668978bfc1f9bdbcc1062ec95dd1adf22b36eb301c8010dc2a498486976067c",
+  "errors_japan_procurement_ft.json": "4de8d40b1569bb9b823151d1d2f1d7b082c96cdb1b8f0071bb89b4fea11cd79e",
+  "errors_japan_procurement_sparse.json": "308981e9c9e97e08a5389f3d4af989f747e3a6daa86914ad01da9bdddf42f256",
+  "probs_business2_blend50.json": "a35da3691c21b9dc9f483e438f18e8e6b91d7ab19d6daf557b5ec1f5fc57a20c",
+  "probs_business2_blend60.json": "30671cf86a57372a6af916656d10685071b5934ee7157e24e375eb31ec264356",
+  "probs_business2_blend70.json": "77e6d3e600bbfaaacd89947e7eab3e4d1cc8f703d77c2ea1fc95a5db9751ccaf",
+  "probs_business2_ft.json": "9115f0209a6965ad70f958c1e16a762e51dfc39282d0d2b14e6623d38db0d5f1",
+  "probs_business2_sparse.json": "5afbbddf6bc1b4f17e0e42a4c90b44e0ac800dd3ff78b558b2ae91a4b9f9f820",
+  "probs_business_blend50.json": "574fd33d96999232941a5d75b68ac31a5594c56efbb1580b5540a8c7cb8e5812",
+  "probs_business_blend60.json": "eec5b8d6f3ebbfe6eae22c57000989ce824ef3e9d36218c605346274f505cdb5",
+  "probs_business_blend70.json": "841950a705b00cc94aaeea4be09e8bf64e687e2972a1bad2b0cbc6334d49ab4c",
+  "probs_business_ft.json": "a3674ce9b4a5b30aa645a5727f1afa76cd568cf7c48bd81e0f43e76063329a36",
+  "probs_business_sparse.json": "c42d411d55ba123e5326eead0153ca45a5c8cb485a5e4cef13555adb5bd4d345",
+  "probs_dev220_blend50.json": "0f8fe1a3a9a683d6b46d53da089d9767cd4b95c4a78b10f7decaeb326d0b7a70",
+  "probs_dev220_blend60.json": "60b30398f79627c03d9c42bd74fc091196c1eac157fb84bd590c3e2cd725cc1c",
+  "probs_dev220_blend70.json": "ae898fbcc7f81d4b35a471d4f1e6aecd37f75ebfc2112735abfb477b49a117ce",
+  "probs_dev220_ft.json": "015b148655b238c1a3cd70099693a24984ea499d79501ea0dc4f50c9672ef427",
+  "probs_dev220_sparse.json": "82e723b46aaea18d0dcf3ffb9c156dafbe793d77462753aaa192b05b6b98ed3a",
+  "probs_general_blend50.json": "2ea50600b0dd0b4cff01429d6d71209711b0f22fb4423d328db9c0f2b4e2de28",
+  "probs_general_blend60.json": "d17fc36efab9fc94d506733986c7de3203efbc42fff5b2c18d0c71a616a442ce",
+  "probs_general_blend70.json": "3e50316fa0a3dd481176ad7f6b929b29732fb11e1a7e7ba2e07464ede3febd77",
+  "probs_general_ft.json": "d40c1e850c1a24e839b585da2fe90a536c9471219d4a3c45b8eeebe0cacaf134",
+  "probs_general_sparse.json": "0b776150ea19f9bedfdbc05a9b2fc8e7006d39e6da09a4c2c058b246f9912823",
+  "probs_japan_procurement_blend50.json": "1b3e7647de30a35a59e867e20d87d89449494c5060757ae6c4c286f9df7c12d3",
+  "probs_japan_procurement_blend60.json": "c37bdd012bdfdd95ad7d61add84bba726d0bdd83e09b374f0c3b951012759e3d",
+  "probs_japan_procurement_blend70.json": "822d70fb73562d9b08d578f1afd5eb77b383530b439a564b6377a47a0f38c7e8",
+  "probs_japan_procurement_ft.json": "a62730631d82fbf29e926e97bd3c6367a0977a4624d4b8ee864105c54920dc75",
+  "probs_japan_procurement_sparse.json": "befb40bbd67a2ad10468e73f24311b0a943ce71eb0b08dd6f020daf874ccf2eb"
+ },
+ "replay_rows": {
+  "count": 0
+ },
+ "run": {
+  "env": {
+   "FT_ACC": "2",
+   "FT_BS": "32",
+   "FT_CKPT": "0",
+   "FT_CPU_THREADS": "2",
+   "FT_CTX_UNIT": "1",
+   "FT_FOCAL_GAMMA": "1.5",
+   "FT_FREEZE_EMB": "0",
+   "FT_FUSED": "1",
+   "FT_KEEP": "1",
+   "FT_LABELFIX": "materials/pool/labelfix_v24.jsonl,materials/pool/labelfix_g24_b3.jsonl,materials/pool/labelfix_g24_sheet.jsonl,materials/pool/labelfix_g24_pool.jsonl",
+   "FT_LR": "3e-5",
+   "FT_MAX_LEN": "256",
+   "FT_PAD8": "1",
+   "FT_POOL": "1",
+   "FT_ROWCTX": "1",
+   "FT_SEED": "2",
+   "FT_SORT": "1",
+   "FT_TITLE": "1"
+  },
+  "epochs": 2.0,
+  "seed": "2"
+ },
+ "saved_model": {
+  "files": {
+   "config.json": "121508af5fc9d6b72c94cd0fb4a313d482b322839af75560eb1b86b6a82f7e3f",
+   "labels.json": "fc7e758c07c6b2107cc587a5d50981c7107c1f9a04ab4dc7753c063167ffa3bf",
+   "tokenizer.json": "a514807cffabd8abaf028cfaffe7ff0c4f60b97ea2db80c41f14172ae6b018ca",
+   "tokenizer_config.json": "be6a8a750e107313ee6d27f17135d8dfe7bbee506787f44d9434ae2dff012024"
+  },
+  "weights": {
+   "model.safetensors": {
+    "bytes": 1112248072,
+    "sha256": "139601790e3e1d252b900aafedaccb4536666e7d78394f6e72556fc109bc197d"
+   }
+  }
+ },
+ "schema_version": 1,
+ "status": "completed",
+ "tests": {
+  "本物（一般）": {
+   "count": 383,
+   "sha256_ordered": "507b38ee9b136700da7c3d587858b8b3b6552f69192a1ee0d0a52543e21658ff",
+   "sha256_unordered": "b6c6aa84409423a0ed521831a271ba3c6d72f8483ae4b4df203860c499f40bea"
+  },
+  "本物（日本の調達）": {
+   "count": 92,
+   "sha256_ordered": "9d806199e611cde8a33d8603fcda90f61e53bd5e015b6a386c3b17af753571a3",
+   "sha256_unordered": "f7a386ec15ded101fe1ea59bfc8b1d08969f8e1d8a14f5214670789ef2af5161"
+  },
+  "本物（業務2）": {
+   "count": 976,
+   "sha256_ordered": "7ff85df23607edc245aad91cffc7b39dc17ad2657b441b801513e084ead92298",
+   "sha256_unordered": "5c0397c708f625238ec6c7305476eeff156939ffc37ea33b35d3f9dc80e55072"
+  },
+  "本物（業務）": {
+   "count": 490,
+   "sha256_ordered": "caa43619281be1fa478fcac32b3d797c71fc652cf2baf277102e3267c51bd406",
+   "sha256_unordered": "148ec1f3e05ae562484ff9602bfbb020ea2f521e8c19edbbc5e986d66c34b10b"
+  },
+  "開発用220": {
+   "count": 220,
+   "sha256_ordered": "6f917e68b045dec07c0d14002d19fb50583789063eae9607fd5fa32c0b890c7b",
+   "sha256_unordered": "c120d33d5b2994d1d996f74d84097b0c8d02ed3a59bd305c6adf6f7bee365ec0"
+  }
+ },
+ "timing": {
+  "eval_seconds": 22.5,
+  "inference_rows": {
+   "本物（一般）": 383,
+   "本物（日本の調達）": 92,
+   "本物（業務2）": 976,
+   "本物（業務）": 490,
+   "開発用220": 220
+  },
+  "inference_seconds": {
+   "本物（一般）": 2.94,
+   "本物（日本の調達）": 0.76,
+   "本物（業務2）": 5.93,
+   "本物（業務）": 3.18,
+   "開発用220": 1.67
+  },
+  "peak_gpu_gib": 7.32,
+  "train_loop_seconds": 3023.2,
+  "train_total_seconds": 3061.6
+ },
+ "train_rows": {
+  "count": 157123,
+  "sha256_ordered": "9d8b70b0823ff10a94bbc366a5ddaf9ff280ee7e3e5b60b09e94106c1c330478",
+  "sha256_unordered": "4c3d31994784e29b09d6f8f610e02d01065b0cb80195bd3c6a5931b64a71ca52"
+ }
+}
