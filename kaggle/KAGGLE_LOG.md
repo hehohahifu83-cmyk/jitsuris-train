@@ -1594,3 +1594,4 @@ ModuleNotFoundError: No module named 'six'
     [仕事6] train batch=32, accumulation=2, effective=64, checkpointing=False, sort=True, pad_multiple=8, fused=True, freeze_embeddings=False
     [仕事5] peak GPU memory 7.3 GiB; training loop 3023s
     [仕事6] peak GPU memory 7.3 GiB; training loop 3340s
+2026-11-20T10:54:53Z 状態確認（定期）：jitsurio/jitsuris-train has status "KernelWorkerStatus.COMPLETE"
