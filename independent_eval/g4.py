@@ -48,6 +48,27 @@ POOL = "hold"
 WORK = ROOT / "materials" / "pool" / "work" / "g4"
 WORK_X = ROOT / "materials" / "pool" / "work" / "g4x"
 OUT = ROOT / "independent_eval" / "results" / "g4"
+SET_FILE = "g4.json"
+ID_PREFIX = "g4"
+EXCLUDE_USED_PUBLISHERS = True   # G4：G1〜G3 で表を採った公開元を除く。G4b（use_variant("g4b")）は除かない
+OWN_WORKS = ("g4", "g4x", "g4b", "g4bx")   # 自分の作業ディレクトリ（使い済みの資源として読まない。G4 の 18 表は値・ラベル・予測を見ていない）
+
+
+def use_variant(name):
+    """G4b（2026-11-22、bench/g4b_prereg_20261122.md）：G4 が小さすぎた（採用 18 表・取り出し 6 表 25 列）ので、値・ラベル・予測を見る前に
+    公開元の範囲だけを改めた陣。G1〜G3 と公開元は重なってよい、表・データセット・資源は重ならない。ほかの決まり・塩は G4 と同じ。"""
+    global SET_ID, WORK, WORK_X, OUT, SET_FILE, ID_PREFIX, EXCLUDE_USED_PUBLISHERS
+    if name == "g4":
+        return
+    if name != "g4b":
+        raise SystemExit(f"知らない陣：{name}")
+    SET_ID = "g4b-20261122-v1"
+    WORK = ROOT / "materials" / "pool" / "work" / "g4b"
+    WORK_X = ROOT / "materials" / "pool" / "work" / "g4bx"
+    OUT = ROOT / "independent_eval" / "results" / "g4b"
+    SET_FILE = "g4b.json"
+    ID_PREFIX = "g4b"
+    EXCLUDE_USED_PUBLISHERS = False
 SALT = "jitsuris-g4-v1"
 CATALOGS = ("alberta_cat", "govdata_cat")
 TABLES_PER_PUBLISHER = 3
@@ -120,7 +141,7 @@ def used_resources():
         for t in json.load(open(prov, encoding="utf-8")).get("tables", []):
             urls.update({t.get("resource_url", ""), t.get("request_url", "")})
     works = [d for d in sorted((ROOT / "materials" / "pool" / "work").iterdir())
-             if d.is_dir() and d.name not in SEALED_WORKS and not d.name.startswith("blind") and d.name not in ("g4", "g4x")]
+             if d.is_dir() and d.name not in SEALED_WORKS and not d.name.startswith("blind") and d.name not in OWN_WORKS]
     for f in [d / "adopted.json" for d in works] + sorted((ROOT / "materials").glob("s11_*_adopted_*.json")):
         if not f.exists():
             continue
@@ -204,12 +225,12 @@ def cmd_adopt(a):
     for f in a.candidates:
         cands += json.load(open(f, encoding="utf-8")).get("selected") or []
     urls, rids, datasets = used_resources()
-    adopted, reserves, why = adopt_rule(cands, pools(), used_publishers(), urls, rids, datasets)
+    adopted, reserves, why = adopt_rule(cands, pools(), used_publishers() if EXCLUDE_USED_PUBLISHERS else set(), urls, rids, datasets)
     WORK.mkdir(parents=True, exist_ok=True)
     doc = {"schema_version": 1, "batch": "g4", "pool": POOL, "set_id": SET_ID, "decided_by": "independent_eval/g4.py adopt（規則だけ）",
            "decided_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "candidates": [str(Path(f).as_posix()) for f in a.candidates],
            "candidates_sha256": {str(Path(f).as_posix()): sha_file(f) for f in a.candidates},
-           "used_provenance_sha256": {f: sha_file(ROOT / f) for f in USED_PROVENANCE}, "used_publishers": len(used_publishers()),
+           "used_provenance_sha256": {f: sha_file(ROOT / f) for f in USED_PROVENANCE}, "used_publishers": len(used_publishers()) if EXCLUDE_USED_PUBLISHERS else 0, "exclude_used_publishers": EXCLUDE_USED_PUBLISHERS,
            "candidate_count": len(cands), "dropped": dict(why), "adopted": adopted, "reserves": reserves, "values_viewed": False}
     out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"adopted {len(adopted)}/{len(cands)} tables from {len({x['publisher_id'] for x in adopted})} publishers; dropped {dict(why)}")
@@ -340,7 +361,7 @@ def build_set(rows):
     units = EC.unit_context_map([(r["header"], r["values"], "", r.get("context") or [], r["table"]) for r in sel])
     out_cols = []
     for k, r in enumerate(sel, 1):
-        out_cols.append({"id": f"g4-{k:04d}", "table": tid[r["table"]], "source": r["publisher"], "language": r.get("language", ""),
+        out_cols.append({"id": f"{ID_PREFIX}-{k:04d}", "table": tid[r["table"]], "source": r["publisher"], "language": r.get("language", ""),
                          "header": r["header"], "values": r["values"][:5] or [""], "siblings": r.get("context") or [],
                          "unit": units.get(r["table"], "")})
     by_t = defaultdict(list)
@@ -406,7 +427,7 @@ TIME_FIELDS = ("frozen_utc",)   # provenance の中で、作り直して一致�
 def build_artifacts(rows, ent):
     """凍結の 3 つの中身（セット・provenance（時刻を除く）・題名）を、corpus の行と照合済みの採用から一通りに作る。"""
     pool_of = pools()
-    used = used_publishers()
+    used = used_publishers() if EXCLUDE_USED_PUBLISHERS else set()
     bad = [r for r in rows if pool_of.get(r.get("publisher")) != POOL or norm_pub(r.get("publisher")) in used
            or norm_pub(r.get("publisher")).split(":")[0] not in CATALOGS]
     if bad:
@@ -417,7 +438,7 @@ def build_artifacts(rows, ent):
     page = {r["table"]: r.get("resource_page") or r["table"] for r in sel}
     corpus, extra = WORK / "corpus.jsonl", WORK_X / "corpus.jsonl"
     prov = {"schema_version": 1, "set_id": SET_ID,
-            "set_path": "independent_eval/results/g4/g4.json", "set_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+            "set_path": str((OUT / SET_FILE).relative_to(ROOT).as_posix()), "set_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
             "column_count": len(doc["columns"]), "table_count": len(meta["tables"]), "publisher_count": len({r["publisher"] for r in sel}),
             "adopted_tables": len(ent), "adopted_not_fetched": missing,
             "columns_per_catalog": dict(Counter(norm_pub(r["publisher"]).split(":")[0] for r in sel)),
@@ -439,7 +460,7 @@ def check_artifacts(out_dir, rows, ent):
     """凍結の 3 つのファイル（g4.json・provenance.json・titles.json）を全部、作り直したものと照合する（Codex の再点検 2）。
     provenance は時刻（TIME_FIELDS）だけを除いて一致、時刻は空でない文字列。g4.json はバイトの SHA も provenance と一致。"""
     doc, body, prov, titles = build_artifacts(rows, ent)
-    raw = (out_dir / "g4.json").read_bytes()
+    raw = (out_dir / SET_FILE).read_bytes()
     if raw.decode("utf-8") != body or hashlib.sha256(raw).hexdigest() != prov["set_sha256"]:
         raise SystemExit("g4.json が作り直したものと違う")
     got_prov = json.loads((out_dir / "provenance.json").read_text(encoding="utf-8"))
@@ -457,7 +478,7 @@ def freeze_to(out_dir, rows, ent):
     """凍結の 3 つのファイルを out_dir に作る（out_dir はまだ無い場所）。作ったあと、3 つ全部を作り直したものと照合する。"""
     doc, body, prov, titles = build_artifacts(rows, ent)
     out_dir.mkdir(parents=True)
-    (out_dir / "g4.json").write_text(body, encoding="utf-8")
+    (out_dir / SET_FILE).write_text(body, encoding="utf-8")
     full = {"schema_version": prov["schema_version"], "set_id": prov["set_id"], "frozen_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             **{k: v for k, v in prov.items() if k not in ("schema_version", "set_id")}}
     (out_dir / "provenance.json").write_text(json.dumps(full, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
@@ -493,6 +514,7 @@ def cmd_verify(a):
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
+    ap.add_argument("--variant", default="g4", choices=["g4", "g4b"])
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("adopt")
     p.add_argument("--candidates", nargs="+", required=True)
@@ -500,6 +522,7 @@ def main(argv=None):
     sub.add_parser("freeze")
     sub.add_parser("verify")
     a = ap.parse_args(argv)
+    use_variant(a.variant)
     {"adopt": cmd_adopt, "reserve": cmd_reserve, "freeze": cmd_freeze, "verify": cmd_verify}[a.cmd](a)
 
 

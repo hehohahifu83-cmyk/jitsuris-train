@@ -261,3 +261,24 @@ class NoSealedTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class VariantG4bTest(unittest.TestCase):
+    def test_g4b_paths_and_used_publishers(self):
+        import importlib
+        g = importlib.reload(G)
+        try:
+            g.use_variant("g4b")
+            self.assertEqual(g.SET_ID, "g4b-20261122-v1")
+            self.assertEqual((g.WORK.name, g.WORK_X.name, g.OUT.name, g.SET_FILE, g.ID_PREFIX), ("g4b", "g4bx", "g4b", "g4b.json", "g4b"))
+            self.assertFalse(g.EXCLUDE_USED_PUBLISHERS)
+            self.assertEqual(g.SALT, "jitsuris-g4-v1")   # 塩は G4 と同じ
+            # 公開元が G1〜G3 と重なってよい（used_pubs を空で渡す）。資源・データセットの除外は残る
+            cs = [cand(U, "d1", "r1"), cand(U, "d2", "r2")]
+            adopted, _, why = g.adopt_rule(cs, POOLS, set(), {cs[1]["resource_url"]}, set(), set())
+            self.assertEqual([x["resource_id"] for x in adopted], ["r1"])
+            self.assertEqual(why["使い済みの資源"], 1)
+            with self.assertRaises(SystemExit):
+                g.use_variant("g5")
+        finally:
+            importlib.reload(G)
