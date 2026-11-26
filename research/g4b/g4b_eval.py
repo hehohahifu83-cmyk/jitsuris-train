@@ -111,8 +111,8 @@ def check_predictions(ids):
                 raise SystemExit(f"{path}: T1 の予測に同じ行の文が全部の列に付いていない")
         elif rc:
             raise SystemExit(f"{path}: control・L24 の予測に同じ行の文が付いている")
-        if (model in ("C", "T")) != (int(ck.get("max_length") or 0) == 256):
-            raise SystemExit(f"{path}: 入力の長さが形と合わない")
+        if int(ck.get("max_length") or 0) != {"C": 256, "T": 256, "L24": 160}[model]:
+            raise SystemExit(f"{path}: 入力の長さが形と合わない（C・T は 256、L24 は 160）")
         got = [r["id"] for r in d["rows"]]
         if len(got) != len(set(got)) or set(got) != want:
             raise SystemExit(f"{path}: 列 id の集合が g4b.json と違う（重複・欠け・余り）")

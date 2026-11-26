@@ -34,8 +34,9 @@ jobs:
       - name: 1 回だけの依頼と凍結のセットを確かめる
         id: gate
         run: |
-          if [ "$(head -1 independent_eval/g4b_predict.request)" != "run g4b-20261126-v1 once" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          if ls independent_eval/predictions_g4b/pred_*.json >/dev/null 2>&1; then echo "予測がもうある（1 回だけ）"; exit 1; fi
+          # 1 回だけの門（independent_eval/oneshot.py、Codex の点検 1）：依頼が run でなければ何もしない。予測か開始の印があれば止める
+          r=$(python -I independent_eval/oneshot.py check independent_eval/g4b_predict.request "run g4b-20261126-v1 once" independent_eval/predictions_g4b)
+          if [ "$r" != "proceed" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           echo "b452695332509f3b13c719c97e6be00caed4df41c16c8d02deb3efeee6195dfc  independent_eval/results/g4b/g4b.json" | sha256sum -c -
           echo "a9719e3556f7d99e7a10e6e53f7e235f6ad3beca0a931323fa2b47b2d7a175ff  independent_eval/results/g4b/titles.json" | sha256sum -c -
           mkdir -p independent_eval/predictions_g4b
@@ -44,6 +45,17 @@ jobs:
             > independent_eval/predictions_g4b/run_record.txt
           cat independent_eval/predictions_g4b/run_record.txt
           echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+      - name: 予測の前に開始の印を main に確定する（途中で失敗しても、同じ依頼の再実行は門で止まる）
+        if: steps.gate.outputs.proceed == 'true'
+        run: |
+          python -I independent_eval/oneshot.py start independent_eval/g4b_predict.request "run g4b-20261126-v1 once" independent_eval/predictions_g4b
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add independent_eval/predictions_g4b/STARTED independent_eval/predictions_g4b/run_record.txt independent_eval/g4b_predict.request
+          git commit -m "G4b の予測を始めた印（1 回だけ）"
+          git pull --rebase origin main
+          git push origin HEAD:main
 
       - name: 重み 9 本ぶんの場所を空ける
         if: steps.gate.outputs.proceed == 'true'
@@ -107,6 +119,8 @@ jobs:
                       raise SystemExit(f"{tag} job{j}: weight verification failed")
                   if env.get("FT_LABELFIX") != FOUR or env.get("FT_VALUEFIX") or env.get("FT_SILVER") or str(env.get("FT_TITLE")) != "1" or seed != str(k):
                       raise SystemExit(f"{tag} job{j}: settings do not match the preregistration")
+                  if tag == "l24" and (int(extra.get("max_length") or 0) != 160 or str(env.get("FT_MAX_LEN")) != "160"):
+                      raise SystemExit(f"l24 job{j}: length is not 160")
                   if tag in ("c", "t"):
                       if str(env.get("FT_MAX_LEN")) != "256" or int(extra.get("max_length") or 0) != 256 or not str(m.get("commit", "")).startswith("20dca128"):
                           raise SystemExit(f"{tag} job{j}: length or commit differs")
@@ -148,15 +162,6 @@ jobs:
           python research/g4b/g4b_tokens.py /tmp/ct-model/ft_out_job4 independent_eval/predictions_g4b/t1_tokens.json
           echo "done g4b-20261126-v1 (9 predictions)" > independent_eval/g4b_predict.request
 
-      - name: 途中で失敗したときも予測・台帳・記録を残す（再実行の前に回収して理由を書く）
-        if: failure() && steps.gate.outputs.proceed == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: g4b-predictions-partial
-          path: independent_eval/predictions_g4b/
-          retention-days: 30
-          if-no-files-found: ignore
-
       - name: 予測と台帳だけを保存
         if: steps.gate.outputs.proceed == 'true'
         run: |
@@ -166,3 +171,12 @@ jobs:
           git commit -m "G4b の予測（control-256・T1-256・L24 各 3 本、自動、1 回だけ）"
           git pull --rebase origin main
           git push origin HEAD:main
+
+      - name: 予測・台帳・記録を必ず artifact にも残す（最後の保存が失敗しても回収できる。再実行の前に回収して理由を書く）
+        if: always() && steps.gate.outputs.proceed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: g4b-predictions-run
+          path: independent_eval/predictions_g4b/
+          retention-days: 30
+          if-no-files-found: ignore
