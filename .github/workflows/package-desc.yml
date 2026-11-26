@@ -1,0 +1,39 @@
+name: データセットの説明だけを取る（メタデータだけ）
+
+# 2026-11-26 Claude。research/g4b/package_desc.py。依頼：research/g4b/package_desc.request の 1 行目を「desc <host> <id> [<host> <id> ...]」にして push する。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'research/g4b/package_desc.request'
+
+permissions:
+  contents: write
+
+jobs:
+  desc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: 取る
+        id: req
+        run: |
+          read -r cmd rest <<< "$(head -1 research/g4b/package_desc.request)"
+          if [ "$cmd" != "desc" ]; then echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          python -I research/g4b/package_desc.py $rest
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+      - name: 保存
+        if: steps.req.outputs.proceed == 'true'
+        run: |
+          echo "done" > research/g4b/package_desc.request
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/g4b/package_desc.json research/g4b/package_desc.request
+          git commit -m "データセットの説明（自動・メタデータだけ）"
+          git pull --rebase origin main
+          git push origin HEAD:main
